@@ -7,7 +7,6 @@
 
 ## Features
 
-* 
 * Horizontal and vertical scrolling
 * Infinite horizontal scrolling
 * Zooming
@@ -18,6 +17,8 @@
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
+
+This pod requires a minimum deployment target of iOS 9.0.
 
 ## Installation
 
