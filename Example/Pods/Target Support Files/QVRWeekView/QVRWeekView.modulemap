@@ -1,0 +1,6 @@
+framework module QVRWeekView {
+  umbrella header "QVRWeekView-umbrella.h"
+
+  export *
+  module * { export * }
+}
