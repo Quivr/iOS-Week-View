@@ -5,6 +5,14 @@
 [![License](https://img.shields.io/cocoapods/l/QVRWeekView.svg?style=flat)](http://cocoapods.org/pods/QVRWeekView)
 [![Platform](https://img.shields.io/cocoapods/p/QVRWeekView.svg?style=flat)](http://cocoapods.org/pods/QVRWeekView)
 
+## Features
+
+* 
+* Horizontal and vertical scrolling
+* Infinite horizontal scrolling
+* Zooming
+* Colour, size and font customization features
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -22,7 +30,7 @@ pod "QVRWeekView"
 
 ## Author
 
-reilem, reilemx@gmail.com
+Reinert Lemmens, reilemx@gmail.com
 
 ## License
 

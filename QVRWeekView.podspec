@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'QVRWeekView'
-  s.version          = '0.1.0'
-  s.summary          = 'A short description of QVRWeekView.'
+s.name             = 'QVRWeekView'
+s.version          = '0.1.0'
+s.summary          = 'QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -17,26 +17,26 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
+s.description      = 'QVRWeekView is a framework which provides a calendar view that can be customized to display between 1 to 7 days in both portrait and landscape mode. Includes customization features to customize colours, fonts and sizes.'
 
-  s.homepage         = 'https://github.com/reilem/QVRWeekView'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'reilem' => 'reilemx@gmail.com' }
-  s.source           = { :git => 'https://github.com/reilem/QVRWeekView.git', :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+s.homepage         = 'https://github.com/Quivr/iOS-Week-View'
+# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+s.license          = { :type => 'MIT', :file => 'LICENSE' }
+s.author           = { 'Reinert' => 'reilemx@gmail.com' }
+s.source           = { :git => 'https://github.com/Quivr/iOS-Week-View.git', :tag => s.version.to_s }
+# s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+s.ios.deployment_target = '8.0'
 
-  s.source_files = 'QVRWeekView/Classes/**/*'
-  
-  # s.resource_bundles = {
-  #   'QVRWeekView' => ['QVRWeekView/Assets/*.png']
-  # }
+s.source_files = 'QVRWeekView/Classes/**/*'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+s.frameworks = 'UIKit'
+
+# s.resource_bundles = {
+#   'QVRWeekView' => ['QVRWeekView/Assets/*.png']
+# }
+
+# s.public_header_files = 'Pod/Classes/**/*.h'
+
+# s.dependency 'AFNetworking', '~> 2.3'
 end
