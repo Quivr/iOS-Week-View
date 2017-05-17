@@ -14,6 +14,7 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		8E981E40A5BD184BBB4798D3 /* Pods_QVRWeekView_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9771834794770B7AC7731FA6 /* Pods_QVRWeekView_Tests.framework */; };
+		916093711ECC987C004E62E3 /* QVRWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 916093701ECC987C004E62E3 /* QVRWeekView.framework */; };
 		D373495F948282220F0D1913 /* Pods_QVRWeekView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,7 +30,7 @@
 
 /* Begin PBXFileReference section */
 		151BE1390A46AE4302D3E07B /* Pods-QVRWeekView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QVRWeekView_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.release.xcconfig"; sourceTree = "<group>"; };
-		430F99C434712BB8F2B4F746 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		430F99C434712BB8F2B4F746 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* QVRWeekView_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QVRWeekView_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -40,8 +41,9 @@
 		607FACE51AFB9204008FA782 /* QVRWeekView_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QVRWeekView_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		6A346FEA39F63FCFB086D222 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		8A7E091BF618C864BC18215D /* QVRWeekView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = QVRWeekView.podspec; path = ../QVRWeekView.podspec; sourceTree = "<group>"; };
+		6A346FEA39F63FCFB086D222 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		8A7E091BF618C864BC18215D /* QVRWeekView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = QVRWeekView.podspec; path = ../QVRWeekView.podspec; sourceTree = "<group>"; };
+		916093701ECC987C004E62E3 /* QVRWeekView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QVRWeekView.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/QVRWeekView-cphihpjbtxcyhogcobqkvpdydsfy/Build/Products/Debug-iphonesimulator/QVRWeekView/QVRWeekView.framework"; sourceTree = "<group>"; };
 		9771834794770B7AC7731FA6 /* Pods_QVRWeekView_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QVRWeekView_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A778E5177EE518E5FF85E4C3 /* Pods-QVRWeekView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QVRWeekView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QVRWeekView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				916093711ECC987C004E62E3 /* QVRWeekView.framework in Frameworks */,
 				D373495F948282220F0D1913 /* Pods_QVRWeekView_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -72,6 +75,7 @@
 		03389EBEE9792EAA7212ABA6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				916093701ECC987C004E62E3 /* QVRWeekView.framework */,
 				CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */,
 				9771834794770B7AC7731FA6 /* Pods_QVRWeekView_Tests.framework */,
 			);
@@ -443,7 +447,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -483,7 +487,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -497,6 +501,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = QVRWeekView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -511,6 +516,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = QVRWeekView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
