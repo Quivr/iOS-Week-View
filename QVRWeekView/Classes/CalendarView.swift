@@ -217,13 +217,12 @@ public class CalendarView : UIView, UIScrollViewDelegate {
         }
     }
     
-    // MARK: - INTERNAL FUNCTIONS -
-
-    
-    func showToday() {
+    public func showToday() {
         dayScrollView.showToday()
     }
     
+    // MARK: - INTERNAL FUNCTIONS -
+
     func zoomView(_ sender:UIPinchGestureRecognizer) {
         
         let currentScale = sender.scale

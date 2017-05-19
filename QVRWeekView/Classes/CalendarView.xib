@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarView" customModule="ProjectCalendar" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarView" customModule="QVRWeekView" customModuleProvider="target">
             <connections>
                 <outlet property="dayScrollView" destination="dhg-SP-fAj" id="bUp-E7-Ixh"/>
                 <outlet property="hourSideBarBottomConstraint" destination="SY8-ah-q4Y" id="RWR-Um-sdV"/>
@@ -30,13 +30,14 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dhg-SP-fAj" customClass="DayScrollView" customModule="ProjectCalendar" customModuleProvider="target">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dhg-SP-fAj" customClass="DayScrollView" customModule="QVRWeekView" customModuleProvider="target">
                     <rect key="frame" x="25" y="35" width="350" height="632"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </scrollView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uo6-Ir-nWX" userLabel="SideBarView">
                     <rect key="frame" x="0.0" y="35" width="25" height="632"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VcM-2k-vaz" customClass="HourSideBarView" customModule="ProjectCalendar" customModuleProvider="target">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VcM-2k-vaz" customClass="HourSideBarView" customModule="QVRWeekView" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="25" height="592"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>

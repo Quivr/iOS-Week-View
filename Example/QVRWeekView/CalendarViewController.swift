@@ -9,12 +9,16 @@
 import UIKit
 import QVRWeekView
 
-class ViewController: UIViewController {
+class CalendarViewController: UIViewController {
 
+    @IBOutlet var calendarView: CalendarView!
+    
+    @IBAction func todayButtonPress(_ sender: Any) {
+        calendarView.showToday()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let cV = CalendarView(frame: self.view.frame)
-        self.view.addSubview(cV)
     }
 
     override func didReceiveMemoryWarning() {
