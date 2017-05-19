@@ -22,6 +22,11 @@ struct LayoutConsts {
 
 struct LayoutDefaults {
     
+    static let dayLabelFontSize = CGFloat(14)
+    static let hourLabelFontSize = CGFloat(12)
+    static let eventLabelFontSize = CGFloat(12)
+    static let eventLabelMinimumScale = CGFloat(0.85)
+    
     // Best not to change these
     static let topBarHeight = CGFloat(35)
     static let sideBarWidth = CGFloat(25)
@@ -38,7 +43,6 @@ struct LayoutDefaults {
     
     // Changing these doesn't add much but risks breaking the smoothness and niceness
     static let velocityOffsetMultiplier = CGFloat(1.5)
-    static let dayLabelFontSize = CGFloat(14)
     
     static let minimumZoom = CGFloat(0.75)
     static let maximumZoom = CGFloat(3.0)

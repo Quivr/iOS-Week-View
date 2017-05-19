@@ -8,13 +8,17 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EventView" customModule="QVRWeekView">
+            <connections>
+                <outlet property="textLabel" destination="mBC-6L-qBW" id="cgS-fd-r4I"/>
+            </connections>
+        </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clipsSubviews="YES" alpha="0.90000000000000002" contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBC-6L-qBW">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBC-6L-qBW">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="72"/>
                     <string key="text">Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test Long Text Test</string>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
@@ -24,9 +28,10 @@
             </subviews>
             <color key="backgroundColor" red="0.52232530381944442" green="0.42594401041666669" blue="0.740966796875" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="mBC-6L-qBW" secondAttribute="trailing" id="7uD-eR-vrm"/>
                 <constraint firstItem="mBC-6L-qBW" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="VSm-XE-6wI"/>
-                <constraint firstItem="mBC-6L-qBW" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="bu7-Ej-bEc"/>
+                <constraint firstItem="mBC-6L-qBW" firstAttribute="height" relation="lessThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="height" id="Vhj-L4-D0Z"/>
+                <constraint firstAttribute="trailing" secondItem="mBC-6L-qBW" secondAttribute="trailing" id="dnz-1h-Djn"/>
+                <constraint firstItem="mBC-6L-qBW" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="hqC-W6-ic6"/>
             </constraints>
             <point key="canvasLocation" x="34.5" y="53.5"/>
         </view>

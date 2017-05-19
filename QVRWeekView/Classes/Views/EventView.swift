@@ -10,6 +10,8 @@ import UIKit
 
 class EventView: UIView {
 
+    @IBOutlet var textLabel: UILabel!
+    
     var view:UIView?
     
     required init?(coder aDecoder: NSCoder) {
@@ -27,6 +29,7 @@ class EventView: UIView {
         setView()
         view!.prepareForInterfaceBuilder()
     }
+
     
     private func setView() {
         let bundle = Bundle(for: type(of: self))
@@ -39,6 +42,10 @@ class EventView: UIView {
             self.addSubview(self.view!)
         }
         self.backgroundColor = UIColor.clear
+        
+        textLabel.font = UIFont.boldSystemFont(ofSize: LayoutDefaults.eventLabelFontSize)
+        textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
+        textLabel.adjustsFontSizeToFitWidth = true
     }
 
 }
