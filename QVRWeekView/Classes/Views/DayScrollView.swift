@@ -385,9 +385,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
         
         // Set portrait visisble days variable
         self.portraitVisibleDays = days
-        let ori = UIDevice.current.orientation
         // If device orientation is portrait
-        if ori == .portrait {
+        if UIApplication.shared.statusBarOrientation.isPortrait {
             updateContentOrientation()
             return true
         }
@@ -403,9 +402,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
         
         // Set portrait visisble days variable
         self.landscapeVisibleDays = days
-        let ori = UIDevice.current.orientation
         // If device orientation is portrait
-        if ori == .landscapeRight || ori == .landscapeLeft {
+        if UIApplication.shared.statusBarOrientation.isLandscape {
             updateContentOrientation()
             return true
         }
@@ -420,7 +418,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
     
     func setPortraitDayViewSideSpacing(to width:CGFloat) -> Bool{
         self.portraitDayViewSideSpacing = width
-        if UIDevice.current.orientation.isPortrait {
+        if UIApplication.shared.statusBarOrientation.isPortrait {
             updateContentOrientation()
             return true
         }
@@ -431,7 +429,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
     
     func setLandscapeDayViewSideSpacing(to width:CGFloat) -> Bool{
         self.landscapeDayViewSideSpacing = width
-        if UIDevice.current.orientation.isLandscape {
+        if UIApplication.shared.statusBarOrientation.isLandscape {
             updateContentOrientation()
             return true
         }
@@ -453,11 +451,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
     
     private func setDeviceOrientationValues() {
 
-        if UIDevice.current.orientation.isPortrait {
+        if UIApplication.shared.statusBarOrientation.isPortrait {
             currentVisibleDays = portraitVisibleDays
             currentDayViewSideSpacing = portraitDayViewSideSpacing
         }
-        else if UIDevice.current.orientation.isLandscape {
+        else if UIApplication.shared.statusBarOrientation.isLandscape {
             currentVisibleDays = landscapeVisibleDays
             currentDayViewSideSpacing = landscapeDayViewSideSpacing
         }
@@ -505,7 +503,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
         var currentWidth = self.frame.width
         let currentHeight = self.frame.height
         // This check is done because frame.width will fetch height instead when first loading in landscape mode.
-        if UIDevice.current.orientation.isLandscape && currentHeight > currentWidth{
+        if UIApplication.shared.statusBarOrientation.isLandscape && currentHeight > currentWidth{
             currentWidth = currentHeight
         }
         // Width of a day column

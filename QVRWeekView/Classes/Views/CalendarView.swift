@@ -239,6 +239,7 @@ public class CalendarView : UIView, UIScrollViewDelegate {
     }
     
     func deviceOrientationChanged() {
+        
         dayScrollView.updateContentOrientation()
         updateLabelsAndConstraints()
     }
