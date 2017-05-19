@@ -7,24 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		088BD5902D47D8796CC5F7952A1B8DBF /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65A35A3B0FC48B4FD7DC2C7AA465812E /* EventView.swift */; };
-		475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B4ADB24ACD8A5D5E03BED541950153 /* DateSupport.swift */; };
-		5D1B3835B1EA8995F83A44814A395C2B /* HourSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD4F102B0E70A6BFFAE6767630913AA9 /* HourSideBarView.swift */; };
-		6CB1D1803080CA5AB6EF7993BB40BA70 /* CalendarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 853B3C1C3DF6148161EE78CAB5557B48 /* CalendarView.xib */; };
-		6EAFB2C9ED36B283A50C27081AC5F73A /* EventView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 5DB7288607FAFA2B31CF1791C27D2D0D /* EventView.xib */; };
 		71848169A0D0B0F2BDBBAAE434F3925C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
-		7FE98922A7A5136FB969A606F1B6F921 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54CC1CED1A6FE312FC67DDA0BC579BE /* CalendarView.swift */; };
 		84CFEDC3399056583BAD7312BC4E57D7 /* QVRWeekView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		88124DAA5C9569FC63F7A35102EB7B6E /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD2248F0D1A2AA78162824F6B94D7 /* DayView.swift */; };
-		9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = EF1145157C1936526481E50D7955F556 /* HourSideBarView.xib */; };
+		910EB2961ECF85A40058284E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB2881ECF85A40058284E /* Constants.swift */; };
+		910EB2971ECF85A40058284E /* DateSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB2891ECF85A40058284E /* DateSupport.swift */; };
+		910EB2981ECF85A40058284E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB28A1ECF85A40058284E /* Extensions.swift */; };
+		910EB2991ECF85A40058284E /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB28C1ECF85A40058284E /* CalendarView.swift */; };
+		910EB29A1ECF85A40058284E /* DayScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB28D1ECF85A40058284E /* DayScrollView.swift */; };
+		910EB29B1ECF85A40058284E /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB28E1ECF85A40058284E /* DayView.swift */; };
+		910EB29C1ECF85A40058284E /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB28F1ECF85A40058284E /* EventView.swift */; };
+		910EB29D1ECF85A40058284E /* HourSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 910EB2901ECF85A40058284E /* HourSideBarView.swift */; };
 		9BD2DDE25252CC369CA6CA00DBB0E82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
 		B7C192B79647FCC471050141264C082C /* Pods-QVRWeekView_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D8EDB947530E206C08028C5FB635F39 /* Pods-QVRWeekView_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C81B90E8542310EAB6CBE3E9CB0A651F /* DayView.xib in Sources */ = {isa = PBXBuildFile; fileRef = E081F3180646AC26FBFE4E472F210B12 /* DayView.xib */; };
 		E5AA6D130445E6B50A26413559282C84 /* Pods-QVRWeekView_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1936D5EBBB54C8DDCDC7C8583364859D /* Pods-QVRWeekView_Example-dummy.m */; };
 		EA104EE8FEFF31B13B16AEB1EFBF69F0 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B63C6A64CF66340668996F78DA6BB482 /* UIKit.framework */; };
-		EACC9EFDA234938673377AC6A1E38685 /* DayScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19011C2129F53E8C662C49BA63391DDD /* DayScrollView.swift */; };
-		F562BC88485077A6246163BD7FF71DB2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B7EBC69BBB6E641109455F38186A3F /* Extensions.swift */; };
-		F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 420B78FBD3219C9FEF5E624A61E95D99 /* Constants.swift */; };
 		FB96B635A0BF4DC268CADB07708259D4 /* QVRWeekView-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E64DC90A4146C252640C66322DD8C1A6 /* QVRWeekView-dummy.m */; };
 /* End PBXBuildFile section */
 
@@ -40,37 +36,37 @@
 
 /* Begin PBXFileReference section */
 		000E3800C904964C48D81B30B936E37F /* QVRWeekView.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = QVRWeekView.xcconfig; sourceTree = "<group>"; };
-		01B7EBC69BBB6E641109455F38186A3F /* Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		03B4ADB24ACD8A5D5E03BED541950153 /* DateSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DateSupport.swift; sourceTree = "<group>"; };
 		0D8EDB947530E206C08028C5FB635F39 /* Pods-QVRWeekView_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-QVRWeekView_Example-umbrella.h"; sourceTree = "<group>"; };
-		19011C2129F53E8C662C49BA63391DDD /* DayScrollView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayScrollView.swift; sourceTree = "<group>"; };
 		1936D5EBBB54C8DDCDC7C8583364859D /* Pods-QVRWeekView_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-QVRWeekView_Example-dummy.m"; sourceTree = "<group>"; };
-		209AD2248F0D1A2AA78162824F6B94D7 /* DayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
-		420B78FBD3219C9FEF5E624A61E95D99 /* Constants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "QVRWeekView-umbrella.h"; sourceTree = "<group>"; };
 		506318BB03621ED24495898C9D2C7EFE /* Pods-QVRWeekView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-QVRWeekView_Example.release.xcconfig"; sourceTree = "<group>"; };
 		5CE8CBAC42803CA0D03E3CAE251B0B6D /* Pods-QVRWeekView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-QVRWeekView_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		5DB7288607FAFA2B31CF1791C27D2D0D /* EventView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = EventView.xib; sourceTree = "<group>"; };
 		605780D677CBA714E8898264B68AFCC5 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		65A35A3B0FC48B4FD7DC2C7AA465812E /* EventView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
-		7FD2FD96A2A5B1B671B145E4488FF6AA /* Pods_QVRWeekView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_QVRWeekView_Example.framework; path = "Pods-QVRWeekView_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		853B3C1C3DF6148161EE78CAB5557B48 /* CalendarView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
+		7FD2FD96A2A5B1B671B145E4488FF6AA /* Pods_QVRWeekView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QVRWeekView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8653DBF587241D12833CDDCC9384D94A /* Pods-QVRWeekView_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-QVRWeekView_Example-frameworks.sh"; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		955FFDC1095EBEC1F6BB4B14BC950856 /* Pods-QVRWeekView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-QVRWeekView_Example.modulemap"; sourceTree = "<group>"; };
-		A54CC1CED1A6FE312FC67DDA0BC579BE /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		A6D65A7B7C73F2DEEAC33F7B7B6BE27D /* QVRWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = QVRWeekView.framework; path = QVRWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AD4F102B0E70A6BFFAE6767630913AA9 /* HourSideBarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HourSideBarView.swift; sourceTree = "<group>"; };
-		B2F47A18AC8BAF452BFBFE1B3CEF0E82 /* QVRWeekView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = QVRWeekView.modulemap; sourceTree = "<group>"; };
+		910EB2881ECF85A40058284E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		910EB2891ECF85A40058284E /* DateSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateSupport.swift; sourceTree = "<group>"; };
+		910EB28A1ECF85A40058284E /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		910EB28C1ECF85A40058284E /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		910EB28D1ECF85A40058284E /* DayScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayScrollView.swift; sourceTree = "<group>"; };
+		910EB28E1ECF85A40058284E /* DayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		910EB28F1ECF85A40058284E /* EventView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
+		910EB2901ECF85A40058284E /* HourSideBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourSideBarView.swift; sourceTree = "<group>"; };
+		910EB2921ECF85A40058284E /* CalendarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
+		910EB2931ECF85A40058284E /* DayView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DayView.xib; sourceTree = "<group>"; };
+		910EB2941ECF85A40058284E /* EventView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EventView.xib; sourceTree = "<group>"; };
+		910EB2951ECF85A40058284E /* HourSideBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HourSideBarView.xib; sourceTree = "<group>"; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		955FFDC1095EBEC1F6BB4B14BC950856 /* Pods-QVRWeekView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-QVRWeekView_Example.modulemap"; sourceTree = "<group>"; };
+		A6D65A7B7C73F2DEEAC33F7B7B6BE27D /* QVRWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QVRWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B2F47A18AC8BAF452BFBFE1B3CEF0E82 /* QVRWeekView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = QVRWeekView.modulemap; sourceTree = "<group>"; };
 		B63C6A64CF66340668996F78DA6BB482 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		BF9C683C03E1A73C3F9536F73B86F653 /* Pods-QVRWeekView_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-QVRWeekView_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		C3D03250DCAC3D5011ACE8846C16E0C0 /* QVRWeekView-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "QVRWeekView-prefix.pch"; sourceTree = "<group>"; };
 		D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		DCB5FA03D76641C357411DA3A2E58862 /* Pods-QVRWeekView_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-QVRWeekView_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		E081F3180646AC26FBFE4E472F210B12 /* DayView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = DayView.xib; sourceTree = "<group>"; };
 		E40F2239CF0E60418FA5C75252B3D24C /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E64DC90A4146C252640C66322DD8C1A6 /* QVRWeekView-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "QVRWeekView-dummy.m"; sourceTree = "<group>"; };
-		EF1145157C1936526481E50D7955F556 /* HourSideBarView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = HourSideBarView.xib; sourceTree = "<group>"; };
 		F800BFE99784DE7FF18692511FC8839C /* Pods-QVRWeekView_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-QVRWeekView_Example-resources.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,7 +127,6 @@
 			children = (
 				F068E55BFCA851ACCDB0118B4BA3B597 /* Classes */,
 			);
-			name = QVRWeekView;
 			path = QVRWeekView;
 			sourceTree = "<group>";
 		};
@@ -172,6 +167,39 @@
 			);
 			sourceTree = "<group>";
 		};
+		910EB2871ECF85A40058284E /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				910EB2881ECF85A40058284E /* Constants.swift */,
+				910EB2891ECF85A40058284E /* DateSupport.swift */,
+				910EB28A1ECF85A40058284E /* Extensions.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		910EB28B1ECF85A40058284E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				910EB28C1ECF85A40058284E /* CalendarView.swift */,
+				910EB28D1ECF85A40058284E /* DayScrollView.swift */,
+				910EB28E1ECF85A40058284E /* DayView.swift */,
+				910EB28F1ECF85A40058284E /* EventView.swift */,
+				910EB2901ECF85A40058284E /* HourSideBarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		910EB2911ECF85A40058284E /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				910EB2921ECF85A40058284E /* CalendarView.xib */,
+				910EB2931ECF85A40058284E /* DayView.xib */,
+				910EB2941ECF85A40058284E /* EventView.xib */,
+				910EB2951ECF85A40058284E /* HourSideBarView.xib */,
+			);
+			path = Xibs;
+			sourceTree = "<group>";
+		};
 		9DE487A3E932758ABC5F78978CCE27F7 /* QVRWeekView */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,20 +222,10 @@
 		F068E55BFCA851ACCDB0118B4BA3B597 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A54CC1CED1A6FE312FC67DDA0BC579BE /* CalendarView.swift */,
-				853B3C1C3DF6148161EE78CAB5557B48 /* CalendarView.xib */,
-				420B78FBD3219C9FEF5E624A61E95D99 /* Constants.swift */,
-				03B4ADB24ACD8A5D5E03BED541950153 /* DateSupport.swift */,
-				19011C2129F53E8C662C49BA63391DDD /* DayScrollView.swift */,
-				209AD2248F0D1A2AA78162824F6B94D7 /* DayView.swift */,
-				E081F3180646AC26FBFE4E472F210B12 /* DayView.xib */,
-				65A35A3B0FC48B4FD7DC2C7AA465812E /* EventView.swift */,
-				5DB7288607FAFA2B31CF1791C27D2D0D /* EventView.xib */,
-				01B7EBC69BBB6E641109455F38186A3F /* Extensions.swift */,
-				AD4F102B0E70A6BFFAE6767630913AA9 /* HourSideBarView.swift */,
-				EF1145157C1936526481E50D7955F556 /* HourSideBarView.xib */,
+				910EB2871ECF85A40058284E /* Common */,
+				910EB28B1ECF85A40058284E /* Views */,
+				910EB2911ECF85A40058284E /* Xibs */,
 			);
-			name = Classes;
 			path = Classes;
 			sourceTree = "<group>";
 		};
@@ -308,19 +326,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FE98922A7A5136FB969A606F1B6F921 /* CalendarView.swift in Sources */,
-				6CB1D1803080CA5AB6EF7993BB40BA70 /* CalendarView.xib in Sources */,
-				F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */,
-				475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */,
-				EACC9EFDA234938673377AC6A1E38685 /* DayScrollView.swift in Sources */,
-				88124DAA5C9569FC63F7A35102EB7B6E /* DayView.swift in Sources */,
-				C81B90E8542310EAB6CBE3E9CB0A651F /* DayView.xib in Sources */,
-				088BD5902D47D8796CC5F7952A1B8DBF /* EventView.swift in Sources */,
-				6EAFB2C9ED36B283A50C27081AC5F73A /* EventView.xib in Sources */,
-				F562BC88485077A6246163BD7FF71DB2 /* Extensions.swift in Sources */,
-				5D1B3835B1EA8995F83A44814A395C2B /* HourSideBarView.swift in Sources */,
-				9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */,
+				910EB29D1ECF85A40058284E /* HourSideBarView.swift in Sources */,
+				910EB29B1ECF85A40058284E /* DayView.swift in Sources */,
+				910EB29A1ECF85A40058284E /* DayScrollView.swift in Sources */,
+				910EB2991ECF85A40058284E /* CalendarView.swift in Sources */,
+				910EB2971ECF85A40058284E /* DateSupport.swift in Sources */,
 				FB96B635A0BF4DC268CADB07708259D4 /* QVRWeekView-dummy.m in Sources */,
+				910EB2961ECF85A40058284E /* Constants.swift in Sources */,
+				910EB2981ECF85A40058284E /* Extensions.swift in Sources */,
+				910EB29C1ECF85A40058284E /* EventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
