@@ -258,7 +258,7 @@
                 <constraint firstAttribute="trailing" secondItem="S5x-wg-lEe" secondAttribute="trailing" id="IWk-BE-lC1"/>
                 <constraint firstAttribute="trailing" secondItem="5Nf-KM-OcQ" secondAttribute="trailing" id="Ii0-T6-EeW"/>
                 <constraint firstItem="5Nf-KM-OcQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="w6e-pA-Tdn"/>
-                <constraint firstAttribute="bottom" secondItem="S5x-wg-lEe" secondAttribute="bottom" id="yh1-st-vld"/>
+                <constraint firstAttribute="bottom" secondItem="S5x-wg-lEe" secondAttribute="bottom" priority="750" id="yh1-st-vld"/>
             </constraints>
             <point key="canvasLocation" x="70.5" y="64.5"/>
         </view>
