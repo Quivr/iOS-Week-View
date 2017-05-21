@@ -4,7 +4,7 @@ import UIKit
 /**
  Class of the day view columns generated and displayed within DayScrollView
  */
-class DayView : UIView {
+class DayView : UICollectionViewCell {
     
     @IBOutlet var seperators:[UIView]!
     @IBOutlet var overlayView:UIView!

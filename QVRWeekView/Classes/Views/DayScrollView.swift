@@ -133,29 +133,34 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
         
         // Calculate min,max and page index/offets.
         calculateIndexAndOffsetConstants()
-        
+
         // Calculate height and width variables
         widthCalculations()
         heightCalculations()
+
+//        // Generate day views and add them to scroll view and all day view array
+//        for i in 0...Int(totalDayCount-1) {
+//            let index = CGFloat(i)
+//            let currentDay = DayView(frame: generateDayFrame(withIndex: index))
+//            currentDay.setDayId(as: getDate(forIndex: Int(index)))
+//            allDayViews.append(currentDay)
+//            
+//            self.addSubview(currentDay)
+//        }
+//        
+//        currentPeriodOffset = 0
+//        currentPageOffset = todayPageOffset
+//        
+//        // Update the day views, content size and offset
+//        updateDayViewsAndContentSize()
+//        updateOffset()
+//        // Render events
+//        renderEvents()
         
-        // Generate day views and add them to scroll view and all day view array
-        for i in 0...Int(totalDayCount-1) {
-            let index = CGFloat(i)
-            let currentDay = DayView(frame: generateDayFrame(withIndex: index))
-            currentDay.setDayId(as: getDate(forIndex: Int(index)))
-            allDayViews.append(currentDay)
-            
-            self.addSubview(currentDay)
-        }
+        let dayCollectionView = DayCollectionView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: 1000), collectionViewLayout: DayCollectionViewFlowLayout())
+        self.addSubview(dayCollectionView)
         
-        currentPeriodOffset = 0
-        currentPageOffset = todayPageOffset
-        
-        // Update the day views, content size and offset
-        updateDayViewsAndContentSize()
-        updateOffset()
-        // Render events
-        renderEvents()
+        self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
         
         // Set scroll view properties
         self.isDirectionalLockEnabled = true
@@ -174,13 +179,13 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate {
         let currentX = self.contentOffset.x
         currentPageOffset = Int(floor((currentX - CGFloat(periodLength)*totalDayViewWidth)/totalDayViewWidth))
         
-        // Recenter logic
-        if currentX > maxOffsetX {
-            scrollContentBackToCenter(withPeriodOffsetChange: +1)
-        }
-        else if currentX < minOffsetX {
-            scrollContentBackToCenter(withPeriodOffsetChange: -1)
-        }
+//        // Recenter logic
+//        if currentX > maxOffsetX {
+//            scrollContentBackToCenter(withPeriodOffsetChange: +1)
+//        }
+//        else if currentX < minOffsetX {
+//            scrollContentBackToCenter(withPeriodOffsetChange: -1)
+//        }
     }
     
     // MARK: - INTERNAL FUNCTIONS -

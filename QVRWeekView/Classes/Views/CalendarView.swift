@@ -17,7 +17,7 @@ import UIKit
  updated width and height whenever device orientation changes. This works and has only been tested with constraints but as 
  long as frame is updated before new device orientation notifications are sent it should work fine.
  */
-public class CalendarView : UIView, UIScrollViewDelegate {
+public class CalendarView : UIView {
     
     // MARK: - OUTLETS -
     
