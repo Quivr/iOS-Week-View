@@ -11,7 +11,7 @@ import QVRWeekView
 
 class CalendarViewController: UIViewController {
 
-    @IBOutlet var calendarView: CalendarView!
+    @IBOutlet var calendarView: WeekView!
     
     @IBAction func todayButtonPress(_ sender: Any) {
         calendarView.showToday()

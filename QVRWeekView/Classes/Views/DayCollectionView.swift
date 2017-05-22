@@ -8,11 +8,15 @@
 
 import UIKit
 
+// MARK: - LAYOUT VARIABLES -
+
+// MARK: - DAY COLLECTION VIEW -
+
 class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
 
-    let cellWidth = CGFloat(150)
-    let sideSpacing = CGFloat(10)
     private var didJustCrossBorder: Bool = false
+    
+    // MARK: - INITIALIZERS & OVERRIDES -
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -28,20 +32,21 @@ class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollect
         
         self.backgroundColor = UIColor.clear
         self.register(DayView.self, forCellWithReuseIdentifier: "customCell")
+        self.showsVerticalScrollIndicator = false
+        self.showsHorizontalScrollIndicator = false
         self.dataSource = self
         self.delegate = self
-        self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinchGesture)))
         
     }
     
+    // MARK: - INTERNAL FUNCTIONS -
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x < 0 {
-            print("crossed")
             didJustCrossBorder = true
             scrollView.contentOffset.x = 640
         }
         else if scrollView.contentOffset.x > 1120 {
-            print("crossed")
             didJustCrossBorder = true
             scrollView.contentOffset.x = 640
         }
@@ -49,7 +54,9 @@ class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollect
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if didJustCrossBorder && !decelerate {
-            let targetOffset = round(scrollView.contentOffset.x/(cellWidth+sideSpacing))*(cellWidth+sideSpacing)
+            
+            let totalDayViewCellWidth = LayoutVariables.totalDayViewCellWidth
+            let targetOffset = round(scrollView.contentOffset.x/totalDayViewCellWidth)*totalDayViewCellWidth
             scrollView.setContentOffset(CGPoint(x: targetOffset, y: scrollView.contentOffset.y), animated: true)
             didJustCrossBorder = false
         }
@@ -57,7 +64,9 @@ class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollect
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if didJustCrossBorder {
-            let targetOffset = round(scrollView.contentOffset.x/(cellWidth+sideSpacing))*(cellWidth+sideSpacing)
+            
+            let totalDayViewCellWidth = LayoutVariables.totalDayViewCellWidth
+            let targetOffset = round(scrollView.contentOffset.x/totalDayViewCellWidth)*totalDayViewCellWidth
             scrollView.setContentOffset(CGPoint(x: targetOffset, y: scrollView.contentOffset.y), animated: true)
             didJustCrossBorder = false
         }
@@ -70,19 +79,11 @@ class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollect
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         return collectionView.dequeueReusableCell(withReuseIdentifier: "customCell", for: indexPath)
     }
-    
-    func pinchGesture() {
-        let layout = self.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.itemSize = CGSize(width: 150, height: 500)
-    }
-
-
 }
 
+// MARK: - DAY COLLECTION VIEW
+
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
-    
-    let cellWidth = CGFloat(150)
-    let sideSpacing = CGFloat(10)
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -95,18 +96,18 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
     
     func initialize() {
-        self.itemSize = CGSize(width: cellWidth, height: 950)
-        self.minimumInteritemSpacing = sideSpacing
-        self.minimumLineSpacing = 10.0
+        self.itemSize = CGSize(width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.dayViewCellHeight)
+        self.minimumLineSpacing = LayoutVariables.dayViewHorizontalSpacing
         self.scrollDirection = .horizontal
-        self.sectionInset = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
     }
     
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        
-        var targetCell = round(proposedContentOffset.x/(cellWidth+sideSpacing))
+        let totalDayViewWidth = LayoutVariables.totalDayViewCellWidth
+        var targetCell = round(proposedContentOffset.x/totalDayViewWidth)
         targetCell = round(targetCell + velocity.x)
-        let targetOffset = targetCell*(cellWidth+sideSpacing)
+        let targetOffset = targetCell*totalDayViewWidth
+        
+        print(collectionViewContentSize)
         
         return CGPoint(x: targetOffset, y: proposedContentOffset.y)
         

@@ -9,33 +9,29 @@
 import Foundation
 import UIKit
 
-struct LayoutConsts {
-    
-    // This is added for some extra room at the bottom
-    static let bottomBufferHeight = CGFloat(20)
-    // Number of days inside a period
-    static let periodLength = 7
-    // Number of periods rendered on screen
-    static let numberOfPeriods = 3
-
-}
-
 struct LayoutDefaults {
+    
+    // MARK: - FONTS -
     
     static let dayLabelFontSize = CGFloat(14)
     static let hourLabelFontSize = CGFloat(12)
     static let eventLabelFontSize = CGFloat(12)
     static let eventLabelMinimumScale = CGFloat(0.85)
     
+    // MARK: - SIZES -
+    
     // Best not to change these
     static let topBarHeight = CGFloat(35)
     static let sideBarWidth = CGFloat(25)
     
     // These can be changed
-    static let portraitDayViewSideSpacing = CGFloat(5)
-    static let landscapeDayViewSideSpacing = CGFloat(1)
-    static let dayViewMaximumTopSpacing = CGFloat(15)
-    static let dayViewCellHeight = CGFloat(55)
+    static let portraitDayViewHorizontalSpacing = CGFloat(5)
+    static let landscapeDayViewHorizontalSpacing = CGFloat(1)
+    
+    static let portraitDayViewVerticalSpacing = CGFloat(10)
+    static let landscapeDayViewVerticalSpacing = CGFloat(5)
+    
+    static let dayViewCellHeight = CGFloat(1400)
     
     // These can be changed easily
     static let visibleDaysPortrait = CGFloat(2)
@@ -46,6 +42,11 @@ struct LayoutDefaults {
     
     static let minimumZoom = CGFloat(0.75)
     static let maximumZoom = CGFloat(3.0)
+    
+    // This is added for some extra room at the bottom
+    static let bottomBufferHeight = CGFloat(20)
+    
+    // MARK: - COLOURS -
     
     static let backgroundGray = UIColor(red: 190/255, green: 190/255, blue: 190/255, alpha: 1.0)
     static let topBarGray = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
@@ -67,11 +68,5 @@ struct NibNames {
     static let dayView = "DayView"
     static let eventView = "EventView"
     static let hourSideBarView = "HourSideBarView"
-    static let calendarView = "CalendarView"
-}
-
-enum Direction {
-    case none
-    case left
-    case right
+    static let weekView = "WeekView"
 }

@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /**
- Class of the side bar hour label view contained within the CalendarView
+ Class of the side bar hour label view contained within the WeekView
  */
 @IBDesignable
 class HourSideBarView : UIView {

@@ -42,7 +42,7 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="1" green="0.053439670139999999" blue="0.2003309462" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="VcM-2k-vaz" firstAttribute="top" secondItem="uo6-Ir-nWX" secondAttribute="top" id="257-A5-8hg"/>
                         <constraint firstItem="VcM-2k-vaz" firstAttribute="leading" secondItem="uo6-Ir-nWX" secondAttribute="leading" id="OM4-b8-9me"/>

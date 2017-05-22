@@ -1,23 +1,18 @@
 //
 //  CalendarView.swift
-//  ProjectCalendar
-//
-//  Created by Reinert Lemmens on 5/9/17.
-//  Copyright © 2017 lemonrainn. All rights reserved.
-//
 
 import Foundation
 import UIKit
 
 /**
- Class of the main calendar view. This view can be placed anywhere and will adapt to given size. All behaviours are internal, 
+ Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
  and all customization can be done with public functions. No delegates required.
  
- CalendarView can be used in either landscape or portrait mode but for it to work CalendarView.frame is required to be given
+ WeekView can be used in either landscape or portrait mode but for it to work WeekView is required to be given
  updated width and height whenever device orientation changes. This works and has only been tested with constraints but as 
  long as frame is updated before new device orientation notifications are sent it should work fine.
  */
-public class CalendarView : UIView {
+public class WeekView : UIView {
     
     // MARK: - OUTLETS -
     
@@ -45,9 +40,9 @@ public class CalendarView : UIView {
     // The actual view being displayed, all other views are subview of this mainview
     private var mainView:UIView!
     // Left side buffer for top bar
-    var topBarLeftBuffer:CGFloat!
+    var topBarLeftBuffer:CGFloat = 0
     // Top side buffer for side bar
-    var sideBarTopBuffer:CGFloat!
+    var sideBarTopBuffer:CGFloat = 0
     // The scale of the latest pinch event
     private var lastTouchScale = CGFloat(0)
     
@@ -57,26 +52,20 @@ public class CalendarView : UIView {
     private var topBarHeight = LayoutDefaults.topBarHeight
     // Width of side bar
     private var sideBarWidth = LayoutDefaults.sideBarWidth
-    // Height of an hour cell in a day column
-    private var dayViewCellHeight = LayoutDefaults.dayViewCellHeight
-    
-    // MARK: - CONSTANTS -
-    
-    private let totalDayCount = (LayoutConsts.numberOfPeriods*LayoutConsts.periodLength)
     
     // MARK - CONSTRUCTORS/OVERRIDES -
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initCalendarView()
+        initWeekView()
     }
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
-        initCalendarView()
+        initWeekView()
     }
     
-    private func initCalendarView() {
+    private func initWeekView() {
         // Get the view layout from the nib
         setView()
         // Update top bar and side constraints
@@ -172,17 +161,11 @@ public class CalendarView : UIView {
     }
     
     public func setDayViewCellColor(to color: UIColor) {
-        for dayView in dayScrollView.allDayViews {
-            dayView.view!.backgroundColor = color
-        }
+        // TODO: IMPLEMENT WITH COLLECTION VIEW
     }
     
     public func setDayViewCellSeperatorColor(to color: UIColor) {
-        for dayView in dayScrollView.allDayViews {
-            for seperator in dayView.seperators {
-                seperator.backgroundColor = color
-            }
-        }
+        // TODO: IMPLEMENT WITH COLLECTION VIEW
     }
     
     /**
@@ -212,9 +195,7 @@ public class CalendarView : UIView {
      Updates the time displayed on the calendar
      */
     public func updateTimeDisplayed() {
-        if dayScrollView != nil {
-            dayScrollView.updateDisplayedDates(withPeriodChange: 0)
-        }
+        // TODO: IMPLEMENT WITH COLLECTION VIEW
     }
     
     public func showToday() {
@@ -264,12 +245,12 @@ public class CalendarView : UIView {
     private func updateTopAndSideBarConstraints() {
 
         // Height of total side bar
-        let sideBarHeight = dayScrollView.dayViewHeight + dayViewCellHeight - 1
+        let dayViewCellHeight = LayoutVariables.dayViewCellHeight
+        let sideBarHeight = dayViewCellHeight
         
         // Set position and size constraints for side bar
-        hourSideBarBottomConstraint.constant = dayViewCellHeight
+        hourSideBarBottomConstraint.constant = dayViewCellHeight/24
         sideBarHeightConstraint.constant = sideBarHeight
-        sideBarTopBuffer = dayScrollView.sideBarTopSpacingAdjuster
         
         // Set correct size and constraints of top bar
         topBarWidthConstraint.constant = dayScrollView.contentSize.width
@@ -281,8 +262,9 @@ public class CalendarView : UIView {
     
     private func createDayLabels() {
         
+        // TODO: IMPLEMENT NEW LABEL AMOUNT COUNT
         // Add days and day labels to scroll view
-        for i in 0...Int(totalDayCount-1) {
+        for i in 0...Int(7-1) {
             
             let index = CGFloat(i)
             
@@ -299,7 +281,7 @@ public class CalendarView : UIView {
     }
     
     private func generateDayLabelFrame(forIndex index:CGFloat) -> CGRect{
-        return CGRect(x: index*(dayScrollView.totalDayViewWidth), y: 0, width: dayScrollView.dayViewWidth, height: topBarHeight)
+        return CGRect(x: index*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarHeight)
     }
     
     private func getDayLabelText(withIndex index:Int) -> String{
@@ -308,7 +290,7 @@ public class CalendarView : UIView {
     
     private func setView() {
         let bundle = Bundle(for: type(of: self))
-        let nib = UINib(nibName: NibNames.calendarView, bundle: bundle)
+        let nib = UINib(nibName: NibNames.weekView, bundle: bundle)
         self.mainView = nib.instantiate(withOwner: self, options: nil).first as? UIView
         
         if mainView != nil {

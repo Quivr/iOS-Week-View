@@ -4,12 +4,11 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HourSideBarView" customModule="ProjectCalendar" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HourSideBarView" customModule="QVRWeekView" customModuleProvider="target">
             <connections>
                 <outletCollection property="hourLabels" destination="H70-qF-c97" collectionClass="NSMutableArray" id="1ap-hd-fRo"/>
                 <outletCollection property="hourLabels" destination="yYQ-bT-gbh" collectionClass="NSMutableArray" id="5xK-Xr-Aml"/>

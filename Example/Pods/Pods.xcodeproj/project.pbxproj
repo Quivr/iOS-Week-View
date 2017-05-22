@@ -10,10 +10,10 @@
 		088BD5902D47D8796CC5F7952A1B8DBF /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC1848EA24D2AF284A79BDC21DC7159 /* EventView.swift */; };
 		475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDECB60EF24808406344D943F94D7320 /* DateSupport.swift */; };
 		5D1B3835B1EA8995F83A44814A395C2B /* HourSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F52337A84E5D171A641028554AB7C865 /* HourSideBarView.swift */; };
-		6CB1D1803080CA5AB6EF7993BB40BA70 /* CalendarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 3C3A1D9F8547CB90A39B0ABFB4E48391 /* CalendarView.xib */; };
+		6CB1D1803080CA5AB6EF7993BB40BA70 /* WeekView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 3C3A1D9F8547CB90A39B0ABFB4E48391 /* WeekView.xib */; };
 		6EAFB2C9ED36B283A50C27081AC5F73A /* EventView.xib in Sources */ = {isa = PBXBuildFile; fileRef = F8F1B64AB90195F11DFD15D3E7D1FD8A /* EventView.xib */; };
 		71848169A0D0B0F2BDBBAAE434F3925C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
-		7FE98922A7A5136FB969A606F1B6F921 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811C490CB430017CEC4F9F7F96AB687 /* CalendarView.swift */; };
+		7FE98922A7A5136FB969A606F1B6F921 /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811C490CB430017CEC4F9F7F96AB687 /* WeekView.swift */; };
 		84CFEDC3399056583BAD7312BC4E57D7 /* QVRWeekView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88124DAA5C9569FC63F7A35102EB7B6E /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C07F8773196E4490E6BE841E4CA592 /* DayView.swift */; };
 		9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */; };
@@ -44,7 +44,7 @@
 		0D8EDB947530E206C08028C5FB635F39 /* Pods-QVRWeekView_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-QVRWeekView_Example-umbrella.h"; sourceTree = "<group>"; };
 		1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = HourSideBarView.xib; sourceTree = "<group>"; };
 		1936D5EBBB54C8DDCDC7C8583364859D /* Pods-QVRWeekView_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-QVRWeekView_Example-dummy.m"; sourceTree = "<group>"; };
-		3C3A1D9F8547CB90A39B0ABFB4E48391 /* CalendarView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
+		3C3A1D9F8547CB90A39B0ABFB4E48391 /* WeekView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = WeekView.xib; sourceTree = "<group>"; };
 		4789EBF5988B646957AB784D33C3E35B /* DayScrollView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayScrollView.swift; sourceTree = "<group>"; };
 		502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "QVRWeekView-umbrella.h"; sourceTree = "<group>"; };
 		506318BB03621ED24495898C9D2C7EFE /* Pods-QVRWeekView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-QVRWeekView_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 		A6D65A7B7C73F2DEEAC33F7B7B6BE27D /* QVRWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QVRWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2F47A18AC8BAF452BFBFE1B3CEF0E82 /* QVRWeekView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = QVRWeekView.modulemap; sourceTree = "<group>"; };
 		B63C6A64CF66340668996F78DA6BB482 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		B811C490CB430017CEC4F9F7F96AB687 /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		B811C490CB430017CEC4F9F7F96AB687 /* WeekView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
 		BDECB60EF24808406344D943F94D7320 /* DateSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DateSupport.swift; sourceTree = "<group>"; };
 		BF9C683C03E1A73C3F9536F73B86F653 /* Pods-QVRWeekView_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-QVRWeekView_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		C3D03250DCAC3D5011ACE8846C16E0C0 /* QVRWeekView-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "QVRWeekView-prefix.pch"; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 		28DD6AA719C5584F52FF8CFB18713A2B /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
-				3C3A1D9F8547CB90A39B0ABFB4E48391 /* CalendarView.xib */,
+				3C3A1D9F8547CB90A39B0ABFB4E48391 /* WeekView.xib */,
 				5CA99B02E9F58B4DAB0A5C48ED686327 /* DayView.xib */,
 				F8F1B64AB90195F11DFD15D3E7D1FD8A /* EventView.xib */,
 				1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */,
@@ -189,7 +189,7 @@
 		95396AEEDCD5D6DA0B49B2E4A9646E3B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B811C490CB430017CEC4F9F7F96AB687 /* CalendarView.swift */,
+				B811C490CB430017CEC4F9F7F96AB687 /* WeekView.swift */,
 				4789EBF5988B646957AB784D33C3E35B /* DayScrollView.swift */,
 				9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */,
 				F0C07F8773196E4490E6BE841E4CA592 /* DayView.swift */,
@@ -333,8 +333,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FE98922A7A5136FB969A606F1B6F921 /* CalendarView.swift in Sources */,
-				6CB1D1803080CA5AB6EF7993BB40BA70 /* CalendarView.xib in Sources */,
+				7FE98922A7A5136FB969A606F1B6F921 /* WeekView.swift in Sources */,
+				6CB1D1803080CA5AB6EF7993BB40BA70 /* WeekView.xib in Sources */,
 				F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */,
 				9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */,
 				475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */,

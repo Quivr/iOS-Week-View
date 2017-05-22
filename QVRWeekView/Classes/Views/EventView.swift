@@ -1,10 +1,4 @@
-//
-//  EventView.swift
-//  ProjectCalendar
-//
-//  Created by Reinert Lemmens on 5/14/17.
-//  Copyright © 2017 lemonrainn. All rights reserved.
-//
+
 
 import UIKit
 
