@@ -129,7 +129,7 @@ class DayViewCell : UICollectionViewCell {
     
     private func setView() {
         let bundle = Bundle(for: type(of: self))
-        let nib = UINib(nibName: NibNames.dayView, bundle: bundle)
+        let nib = UINib(nibName: NibNames.dayViewCell, bundle: bundle)
         self.view = nib.instantiate(withOwner: self, options: nil).first as? UIView
         
         if view != nil {

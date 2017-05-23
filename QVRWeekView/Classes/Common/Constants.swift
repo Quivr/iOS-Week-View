@@ -65,7 +65,7 @@ struct LayoutDefaults {
 }
 
 struct NibNames {
-    static let dayView = "DayView"
+    static let dayViewCell = "DayViewCell"
     static let eventView = "EventView"
     static let hourSideBarView = "HourSideBarView"
     static let weekView = "WeekView"
