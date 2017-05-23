@@ -17,7 +17,15 @@ extension String {
 }
 
 extension Date {
-        
+    
+    func getDayOfYear() -> Int {
+        return Calendar.current.ordinality(of: .day, in: .year, for: self)!
+    }
+    
+    func getDayOfWeek() -> Int {
+        return (Calendar.current.component(.weekday, from: self)-1)
+    }
+    
     func hasPassed() -> Bool {
         return (self.compare(Date()).rawValue == -1)
     }
@@ -66,6 +74,23 @@ extension Date {
         let monthStr = df.monthSymbols[month-1].getFirstNCharacters(n: 3)
         
         return "\(dayOfWeek) \(day) \(monthStr)"
+    }
+    
+    func getDaysInYear(withYearOffset offset:Int) -> Int {
+        
+        let cal = Calendar.current
+        let year = cal.component(.year, from: self)
+        var dateComps = DateComponents()
+        dateComps.day = 1
+        dateComps.month = 1
+        dateComps.year = year + offset
+        
+        let firstJanuaryThisYear = cal.date(from: dateComps)!
+        
+        dateComps.year = year + 1 + offset
+        
+        let firstJanuaryNextYear = cal.date(from: dateComps)!
+        return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
     }
 }
 

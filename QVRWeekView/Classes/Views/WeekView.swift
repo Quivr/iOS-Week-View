@@ -37,12 +37,13 @@ public class WeekView : UIView {
     
     // Array of all daylabels
     var allDayLabels:[UILabel] = []
-    // The actual view being displayed, all other views are subview of this mainview
-    private var mainView:UIView!
     // Left side buffer for top bar
     var topBarLeftBuffer:CGFloat = 0
     // Top side buffer for side bar
     var sideBarTopBuffer:CGFloat = 0
+    
+    // The actual view being displayed, all other views are subview of this mainview
+    private var mainView:UIView!
     // The scale of the latest pinch event
     private var lastTouchScale = CGFloat(0)
     
@@ -227,7 +228,7 @@ public class WeekView : UIView {
     
     func setTopAndSideBarPositionConstraints() {
         sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
-        topBarXPositionConstraint.constant = -dayScrollView.contentOffset.x + topBarLeftBuffer
+        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
     }
     
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -246,11 +247,13 @@ public class WeekView : UIView {
 
         // Height of total side bar
         let dayViewCellHeight = LayoutVariables.dayViewCellHeight
-        let sideBarHeight = dayViewCellHeight
+        let dayViewCellHourHeight = dayViewCellHeight/24
+        let sideBarHeight = dayViewCellHeight + dayViewCellHourHeight
         
         // Set position and size constraints for side bar
-        hourSideBarBottomConstraint.constant = dayViewCellHeight/24
+        hourSideBarBottomConstraint.constant = dayViewCellHourHeight
         sideBarHeightConstraint.constant = sideBarHeight
+        sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
         
         // Set correct size and constraints of top bar
         topBarWidthConstraint.constant = dayScrollView.contentSize.width
@@ -285,7 +288,7 @@ public class WeekView : UIView {
     }
     
     private func getDayLabelText(withIndex index:Int) -> String{
-        return dayScrollView.getDate(forIndex: index).getDayLabelString()
+        return Date().getDayLabelString()
     }
     
     private func setView() {

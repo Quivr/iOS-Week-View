@@ -15,7 +15,7 @@
 		71848169A0D0B0F2BDBBAAE434F3925C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
 		7FE98922A7A5136FB969A606F1B6F921 /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B811C490CB430017CEC4F9F7F96AB687 /* WeekView.swift */; };
 		84CFEDC3399056583BAD7312BC4E57D7 /* QVRWeekView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		88124DAA5C9569FC63F7A35102EB7B6E /* DayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C07F8773196E4490E6BE841E4CA592 /* DayView.swift */; };
+		88124DAA5C9569FC63F7A35102EB7B6E /* DayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C07F8773196E4490E6BE841E4CA592 /* DayViewCell.swift */; };
 		9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */; };
 		9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */; };
 		9BD2DDE25252CC369CA6CA00DBB0E82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
@@ -70,7 +70,7 @@
 		E40F2239CF0E60418FA5C75252B3D24C /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E64DC90A4146C252640C66322DD8C1A6 /* QVRWeekView-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "QVRWeekView-dummy.m"; sourceTree = "<group>"; };
 		EFC1848EA24D2AF284A79BDC21DC7159 /* EventView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
-		F0C07F8773196E4490E6BE841E4CA592 /* DayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayView.swift; sourceTree = "<group>"; };
+		F0C07F8773196E4490E6BE841E4CA592 /* DayViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayViewCell.swift; sourceTree = "<group>"; };
 		F52337A84E5D171A641028554AB7C865 /* HourSideBarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HourSideBarView.swift; sourceTree = "<group>"; };
 		F800BFE99784DE7FF18692511FC8839C /* Pods-QVRWeekView_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-QVRWeekView_Example-resources.sh"; sourceTree = "<group>"; };
 		F8F1B64AB90195F11DFD15D3E7D1FD8A /* EventView.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; path = EventView.xib; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 				B811C490CB430017CEC4F9F7F96AB687 /* WeekView.swift */,
 				4789EBF5988B646957AB784D33C3E35B /* DayScrollView.swift */,
 				9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */,
-				F0C07F8773196E4490E6BE841E4CA592 /* DayView.swift */,
+				F0C07F8773196E4490E6BE841E4CA592 /* DayViewCell.swift */,
 				EFC1848EA24D2AF284A79BDC21DC7159 /* EventView.swift */,
 				F52337A84E5D171A641028554AB7C865 /* HourSideBarView.swift */,
 			);
@@ -339,7 +339,7 @@
 				9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */,
 				475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */,
 				EACC9EFDA234938673377AC6A1E38685 /* DayScrollView.swift in Sources */,
-				88124DAA5C9569FC63F7A35102EB7B6E /* DayView.swift in Sources */,
+				88124DAA5C9569FC63F7A35102EB7B6E /* DayViewCell.swift in Sources */,
 				C81B90E8542310EAB6CBE3E9CB0A651F /* DayView.xib in Sources */,
 				088BD5902D47D8796CC5F7952A1B8DBF /* EventView.swift in Sources */,
 				6EAFB2C9ED36B283A50C27081AC5F73A /* EventView.xib in Sources */,

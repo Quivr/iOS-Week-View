@@ -15,9 +15,6 @@ class DateSupport {
     static let secondsInADay:Int = 60*60*24
     static let hoursInDay:Int = 24
     
-    static func getFirstDateOfWeek() -> Date {
-        return getDayDate(forDaysInFuture: -(getWeekDayOfToday()))
-    }
     
     static func getDayDate(forDaysInFuture days:Int) -> Date {
         
@@ -26,16 +23,5 @@ class DateSupport {
         
         return date
     }
-    
-    static func getWeekDayOfToday() -> Int {
-        return (Calendar.current.component(.weekday, from: Date())-1)
-    }
-    
-    static func getDaysInCurrentYear() -> Int {
-        
-        let cal = Calendar.current
-        let dayRange = cal.range(of: .day, in: .year, for: Date())
-        
-        return dayRange != nil ? Int(dayRange!.count) : 0
-    }
+
 }

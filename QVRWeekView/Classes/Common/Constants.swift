@@ -28,8 +28,8 @@ struct LayoutDefaults {
     static let portraitDayViewHorizontalSpacing = CGFloat(5)
     static let landscapeDayViewHorizontalSpacing = CGFloat(1)
     
-    static let portraitDayViewVerticalSpacing = CGFloat(10)
-    static let landscapeDayViewVerticalSpacing = CGFloat(5)
+    static let portraitDayViewVerticalSpacing = CGFloat(15)
+    static let landscapeDayViewVerticalSpacing = CGFloat(10)
     
     static let dayViewCellHeight = CGFloat(1400)
     
@@ -38,7 +38,7 @@ struct LayoutDefaults {
     static let visibleDaysLandscape = CGFloat(7)
     
     // Changing these doesn't add much but risks breaking the smoothness and niceness
-    static let velocityOffsetMultiplier = CGFloat(1.5)
+    static let velocityOffsetMultiplier = CGFloat(1.05)
     
     static let minimumZoom = CGFloat(0.75)
     static let maximumZoom = CGFloat(3.0)
@@ -69,4 +69,8 @@ struct NibNames {
     static let eventView = "EventView"
     static let hourSideBarView = "HourSideBarView"
     static let weekView = "WeekView"
+}
+
+struct CellKeys {
+    static let dayViewCell = "DayViewCell"
 }

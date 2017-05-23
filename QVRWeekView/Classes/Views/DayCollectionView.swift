@@ -12,73 +12,28 @@ import UIKit
 
 // MARK: - DAY COLLECTION VIEW -
 
-class DayCollectionView: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate {
-
-    private var didJustCrossBorder: Bool = false
+class DayCollectionView: UICollectionView {
     
     // MARK: - INITIALIZERS & OVERRIDES -
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initCollection()
+        initialize()
     }
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
-        initCollection()
+        initialize()
     }
     
-    private func initCollection() {
-        
+    private func initialize() {
         self.backgroundColor = UIColor.clear
-        self.register(DayView.self, forCellWithReuseIdentifier: "customCell")
+        self.register(DayViewCell.self, forCellWithReuseIdentifier: CellKeys.dayViewCell)
         self.showsVerticalScrollIndicator = false
         self.showsHorizontalScrollIndicator = false
-        self.dataSource = self
-        self.delegate = self
-        
+        self.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
-    // MARK: - INTERNAL FUNCTIONS -
-
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.x < 0 {
-            didJustCrossBorder = true
-            scrollView.contentOffset.x = 640
-        }
-        else if scrollView.contentOffset.x > 1120 {
-            didJustCrossBorder = true
-            scrollView.contentOffset.x = 640
-        }
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if didJustCrossBorder && !decelerate {
-            
-            let totalDayViewCellWidth = LayoutVariables.totalDayViewCellWidth
-            let targetOffset = round(scrollView.contentOffset.x/totalDayViewCellWidth)*totalDayViewCellWidth
-            scrollView.setContentOffset(CGPoint(x: targetOffset, y: scrollView.contentOffset.y), animated: true)
-            didJustCrossBorder = false
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if didJustCrossBorder {
-            
-            let totalDayViewCellWidth = LayoutVariables.totalDayViewCellWidth
-            let targetOffset = round(scrollView.contentOffset.x/totalDayViewCellWidth)*totalDayViewCellWidth
-            scrollView.setContentOffset(CGPoint(x: targetOffset, y: scrollView.contentOffset.y), animated: true)
-            didJustCrossBorder = false
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        return collectionView.dequeueReusableCell(withReuseIdentifier: "customCell", for: indexPath)
-    }
 }
 
 // MARK: - DAY COLLECTION VIEW
@@ -95,7 +50,7 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
         initialize()
     }
     
-    func initialize() {
+    private func initialize() {
         self.itemSize = CGSize(width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.dayViewCellHeight)
         self.minimumLineSpacing = LayoutVariables.dayViewHorizontalSpacing
         self.scrollDirection = .horizontal
@@ -103,13 +58,14 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
         let totalDayViewWidth = LayoutVariables.totalDayViewCellWidth
-        var targetCell = round(proposedContentOffset.x/totalDayViewWidth)
-        targetCell = round(targetCell + velocity.x)
-        let targetOffset = targetCell*totalDayViewWidth
+        let xOffset = proposedContentOffset.x
+        let xVelocity = velocity.x
         
-        print(collectionViewContentSize)
+        let cellOffset = round(xOffset / totalDayViewWidth)
+        let velocityOffset = round(xVelocity * LayoutVariables.velocityOffsetMultiplier)
+        let targetXOffset = (cellOffset + velocityOffset)*totalDayViewWidth
         
-        return CGPoint(x: targetOffset, y: proposedContentOffset.y)
+        return CGPoint(x: targetXOffset, y: proposedContentOffset.y)
         
     }
     

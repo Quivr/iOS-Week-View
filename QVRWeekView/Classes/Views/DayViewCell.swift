@@ -4,7 +4,7 @@ import UIKit
 /**
  Class of the day view columns generated and displayed within DayScrollView
  */
-class DayView : UICollectionViewCell {
+class DayViewCell : UICollectionViewCell {
     
     @IBOutlet var seperators:[UIView]!
     @IBOutlet var overlayView:UIView!
@@ -67,8 +67,8 @@ class DayView : UICollectionViewCell {
 
     }
     
-    func setDayId(`as` id:Date) {
-        date = id
+    func setDate(`as` date:Date) {
+        self.date = date
         
         if date.hasPassed() {
             overlayView.isHidden = false
