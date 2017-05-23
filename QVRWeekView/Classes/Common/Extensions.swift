@@ -19,7 +19,7 @@ extension String {
 extension Date {
     
     func getDayOfYear() -> Int {
-        return Calendar.current.ordinality(of: .day, in: .year, for: self)!
+        return (Calendar.current.ordinality(of: .day, in: .year, for: self)!-1)
     }
     
     func getDayOfWeek() -> Int {
@@ -32,9 +32,13 @@ extension Date {
     
     func isToday() -> Bool {
         
+        return isSameDayAs(Date())
+    }
+    
+    func isSameDayAs(_ day:Date) -> Bool {
         let cal = Calendar.current
         let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
-        let todayComponents = cal.dateComponents(dayComponenets, from: Date())
+        let todayComponents = cal.dateComponents(dayComponenets, from: day)
         let selfComponents = cal.dateComponents(dayComponenets, from: self)
         
         if todayComponents == selfComponents {

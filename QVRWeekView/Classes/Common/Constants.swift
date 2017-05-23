@@ -38,7 +38,7 @@ struct LayoutDefaults {
     static let visibleDaysLandscape = CGFloat(7)
     
     // Changing these doesn't add much but risks breaking the smoothness and niceness
-    static let velocityOffsetMultiplier = CGFloat(1.05)
+    static let velocityOffsetMultiplier = CGFloat(1.25)
     
     static let minimumZoom = CGFloat(0.75)
     static let maximumZoom = CGFloat(3.0)

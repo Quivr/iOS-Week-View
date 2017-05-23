@@ -17,6 +17,7 @@ class DayViewCell : UICollectionViewCell {
     private var bottomAdjustmentBuffer = CGFloat(0)
     private var dottedSeperators:[CAShapeLayer] = []
     private(set) var date:Date!
+    private(set) var events:[EventView]!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -65,6 +66,21 @@ class DayViewCell : UICollectionViewCell {
             }
         }
 
+        updateBottomOverlayConstraint()
+    }
+    
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        return layoutAttributes
+    }
+    
+    func clearValues() {
+        date = nil
+        if events != nil && events.count != 0 {
+            for event in events {
+                event.removeFromSuperview()
+            }
+        }
+        events = nil
     }
     
     func setDate(`as` date:Date) {
@@ -97,6 +113,13 @@ class DayViewCell : UICollectionViewCell {
         }
         else {
             self.view!.backgroundColor = LayoutDefaults.defaultDayViewColor
+        }
+    }
+    
+    func setEventViews(_ events:[EventView]) {
+        self.events = events
+        for event in events {
+            self.addSubview(event)
         }
     }
     

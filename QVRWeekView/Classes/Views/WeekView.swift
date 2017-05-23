@@ -36,7 +36,9 @@ public class WeekView : UIView {
     // MARK: - PRIVATE VARIABLES -
     
     // Array of all daylabels
-    var allDayLabels:[UILabel] = []
+    var visibleDayLabels:[Date:UILabel] = [:]
+    // Array of labels not being displayed
+    var discardedDayLabels:[UILabel] = []
     // Left side buffer for top bar
     var topBarLeftBuffer:CGFloat = 0
     // Top side buffer for side bar
@@ -69,15 +71,8 @@ public class WeekView : UIView {
     private func initWeekView() {
         // Get the view layout from the nib
         setView()
-        // Update top bar and side constraints
-        updateTopAndSideBarConstraints()
-        // Draw day labels
-        createDayLabels()
         // Create pinch recognizer
         self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView)))
-        // Create device orientation listeners
-        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        NotificationCenter.default.addObserver(self, selector: #selector(deviceOrientationChanged), name: Notification.Name.UIDeviceOrientationDidChange, object: nil)
         // Set clipping to bounds (prevents side bar and other sub view protrusion)
         self.clipsToBounds = true
     }
@@ -94,13 +89,13 @@ public class WeekView : UIView {
     
     public func setVisibleDaysPortrait(numberOfDays days: Int){
         if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
-            updateLabelsAndConstraints()
+            updateTopAndSideBarConstraints()
         }
     }
     
     public func setVisibleDaysLandscape(numberOfDays days: Int){
         if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
-            updateLabelsAndConstraints()
+            updateTopAndSideBarConstraints()
         }
     }
     
@@ -120,15 +115,11 @@ public class WeekView : UIView {
     }
     
     public func setDayLabelFont(to font: UIFont) {
-        for label in allDayLabels {
-            label.font = font
-        }
+        // TODO: REIMPLEMENT
     }
     
     public func setDayLabelTextColor(to color: UIColor) {
-        for label in allDayLabels {
-            label.textColor = color
-        }
+        // TODO: REIMPLEMENT
     }
     
     public func setSideBarColor(to color: UIColor) {
@@ -178,13 +169,13 @@ public class WeekView : UIView {
     
     public func setDayViewSideSpacingPortrait(to width: CGFloat) {
         if dayScrollView.setPortraitDayViewSideSpacing(to: width) {
-            updateLabelsAndConstraints()
+            updateTopAndSideBarConstraints()
         }
     }
     
     public func setDayViewSideSpacingLandscape(to width: CGFloat) {
         if dayScrollView.setLandscapeDayViewSideSpacing(to: width) {
-            updateLabelsAndConstraints()
+            updateTopAndSideBarConstraints()
         }
     }
     
@@ -220,31 +211,47 @@ public class WeekView : UIView {
         updateTopAndSideBarConstraints()
     }
     
-    func deviceOrientationChanged() {
+    func addLabel(forIndexPath indexPath:IndexPath, withDate date:Date) {
         
-        dayScrollView.updateContentOrientation()
-        updateLabelsAndConstraints()
+        var label:UILabel!
+        if discardedDayLabels.count != 0 {
+            label = discardedDayLabels[0]
+            label.frame = generateDayLabelFrame(forIndex: indexPath)
+            discardedDayLabels.remove(at: 0)
+        }
+        else {
+            label = makeDayLabel(withIndexPath: indexPath)
+        }
+        
+        label.text = date.getDayLabelString()
+        visibleDayLabels[date] = label
+        self.topBarView.addSubview(label)
     }
     
-    func setTopAndSideBarPositionConstraints() {
-        sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
-        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
+    func discardLabel(withDate date:Date) {
+        
+        if let label = visibleDayLabels[date]{
+            label.removeFromSuperview()
+            visibleDayLabels.removeValue(forKey: date)
+            discardedDayLabels.append(label)
+        }
+        
+        trashExcessLabels()
     }
     
-    // MARK: - PRIVATE/HELPER FUNCTIONS -
-    
-    private func updateLabelsAndConstraints() {
+    func updateVisibleLabelsAndMainConstraints() {
         updateTopAndSideBarConstraints()
-        
-        var index = CGFloat(0)
-        for label in allDayLabels {
-            label.frame = generateDayLabelFrame(forIndex: index)
-            index += 1
+        for cell in dayScrollView.dayCollectionView.visibleCells {
+            let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
+            if let dayViewCell = cell as? DayViewCell {
+                let date = dayViewCell.date!
+                visibleDayLabels[date]!.frame = generateDayLabelFrame(forIndex: indexPath)
+            }
         }
     }
     
     private func updateTopAndSideBarConstraints() {
-
+        
         // Height of total side bar
         let dayViewCellHeight = LayoutVariables.dayViewCellHeight
         let dayViewCellHourHeight = dayViewCellHeight/24
@@ -256,39 +263,45 @@ public class WeekView : UIView {
         sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
         
         // Set correct size and constraints of top bar
-        topBarWidthConstraint.constant = dayScrollView.contentSize.width
+        topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width
         topBarLeftBuffer = sideBarWidth
         
         setTopAndSideBarPositionConstraints()
     }
-
     
-    private func createDayLabels() {
+    func setTopAndSideBarPositionConstraints() {
+        sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
+        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
+    }
+    
+    // MARK: - PRIVATE/HELPER FUNCTIONS -
+    
+    private func trashExcessLabels() {
         
-        // TODO: IMPLEMENT NEW LABEL AMOUNT COUNT
-        // Add days and day labels to scroll view
-        for i in 0...Int(7-1) {
-            
-            let index = CGFloat(i)
-            
-            // Make and add day label to top bar
-            let labelFrame = generateDayLabelFrame(forIndex: index)
-            let dayLabel = UILabel(frame: labelFrame)
-            dayLabel.font = UIFont.boldSystemFont(ofSize: LayoutDefaults.dayLabelFontSize)
-            dayLabel.text = getDayLabelText(withIndex: i)
-            dayLabel.textAlignment = .center
-            allDayLabels.append(dayLabel)
-            topBarView.addSubview(dayLabel)
-            
+        let maxAllowed = Int(LayoutVariables.visibleDays)+1
+        
+        if discardedDayLabels.count > maxAllowed {
+            let overflow = discardedDayLabels.count - maxAllowed
+            for i in 0...overflow {
+                discardedDayLabels.remove(at: i)
+            }
         }
+        
     }
     
-    private func generateDayLabelFrame(forIndex index:CGFloat) -> CGRect{
-        return CGRect(x: index*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarHeight)
+    private func makeDayLabel(withIndexPath indexPath:IndexPath) -> UILabel{
+    
+        // Make as daylabel
+        let labelFrame = generateDayLabelFrame(forIndex: indexPath)
+        let dayLabel = UILabel(frame: labelFrame)
+        dayLabel.font = UIFont.boldSystemFont(ofSize: LayoutDefaults.dayLabelFontSize)
+        dayLabel.textAlignment = .center
+        return dayLabel
     }
     
-    private func getDayLabelText(withIndex index:Int) -> String{
-        return Date().getDayLabelString()
+    private func generateDayLabelFrame(forIndex indexPath:IndexPath) -> CGRect{
+        let row = CGFloat(indexPath.row)
+        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarHeight)
     }
     
     private func setView() {
