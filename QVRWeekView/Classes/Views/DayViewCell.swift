@@ -45,24 +45,15 @@ class DayViewCell : UICollectionViewCell {
     
     
     func clearValues() {
-        date = nil
-        if events != nil && events.count != 0 {
-            for event in events.values {
-                if let eventView = eventViews[event[EventKeys.id]!] {
-                    eventView.removeFromSuperview()
-                }
-            }
+        for view in self.subviews {
+            view.removeFromSuperview()
         }
+        date = nil
         events = nil
         eventViews = nil
-        if hourIndicatorView != nil {
-            hourIndicatorView.removeFromSuperview()
-            hourIndicatorView = nil
-        }
-        if overlayView != nil {
-            overlayView.removeFromSuperview()
-            overlayView = nil
-        }
+        overlayView = nil
+        hourIndicatorView = nil
+        
     }
     
     func setDate(`as` date:Date) {
@@ -127,23 +118,8 @@ class DayViewCell : UICollectionViewCell {
     
     private func updateOverlay() {
         
-        if isOverlayHidden {
-            print(self.subviews)
-            if hourIndicatorView != nil {
-                hourIndicatorView.removeFromSuperview()
-                hourIndicatorView = nil
-            }
-            if overlayView != nil {
-                overlayView.removeFromSuperview()
-                overlayView = nil
-            }
-        }
-        else {
+        if !isOverlayHidden {
             overlayView.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height)
-            if isHourIndicatorHidden && hourIndicatorView != nil{
-                hourIndicatorView.removeFromSuperview()
-                hourIndicatorView = nil
-            }
         }
         
     }
