@@ -36,25 +36,23 @@ public class WeekView : UIView {
     // MARK: - PRIVATE VARIABLES -
     
     // Array of all daylabels
-    var visibleDayLabels:[Date:UILabel] = [:]
+    private var visibleDayLabels:[Date:UILabel] = [:]
     // Array of labels not being displayed
-    var discardedDayLabels:[UILabel] = []
+    private var discardedDayLabels:[UILabel] = []
     // Left side buffer for top bar
-    var topBarLeftBuffer:CGFloat = 0
+    private var topBarLeftBuffer:CGFloat = 0
     // Top side buffer for side bar
-    var sideBarTopBuffer:CGFloat = 0
-    
-    // The actual view being displayed, all other views are subview of this mainview
-    private var mainView:UIView!
-    // The scale of the latest pinch event
-    private var lastTouchScale = CGFloat(0)
-    
-    // Customization variables
+    private var sideBarTopBuffer:CGFloat = 0
     
     // Height of top bar
-    private var topBarHeight = LayoutDefaults.topBarHeight
+    var topBarHeight = LayoutDefaults.topBarHeight
     // Width of side bar
-    private var sideBarWidth = LayoutDefaults.sideBarWidth
+    var sideBarWidth = LayoutDefaults.sideBarWidth
+    
+    // The actual view being displayed, all other views are subview of this mainview
+    var mainView:UIView!
+    // The scale of the latest pinch event
+    private var lastTouchScale = CGFloat(0)
     
     // MARK - CONSTRUCTORS/OVERRIDES -
     
@@ -82,106 +80,6 @@ public class WeekView : UIView {
     }
     
     // MARK: - PUBLIC FUNCTIONS -
-    
-    public func setDirectionalLock(to value:Bool){
-        dayScrollView.isDirectionalLockEnabled = value
-    }
-    
-    public func setVisibleDaysPortrait(numberOfDays days: Int){
-        if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
-            updateTopAndSideBarConstraints()
-        }
-    }
-    
-    public func setVisibleDaysLandscape(numberOfDays days: Int){
-        if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
-            updateTopAndSideBarConstraints()
-        }
-    }
-    
-    public func setBackgroundColor(to color: UIColor) {
-        mainView.backgroundColor = color
-    }
-    
-    public func setTopBarHeight(to height: CGFloat) {
-        topBarHeight = height
-        topBarHeightConstraint.constant = height
-        topLeftBufferHeightConstraint.constant = height
-    }
-    
-    public func setTopBarColor(to color: UIColor) {
-        topBarView.backgroundColor = color
-        topLeftBufferView.backgroundColor = color
-    }
-    
-    public func setDayLabelFont(to font: UIFont) {
-        // TODO: REIMPLEMENT
-    }
-    
-    public func setDayLabelTextColor(to color: UIColor) {
-        // TODO: REIMPLEMENT
-    }
-    
-    public func setSideBarColor(to color: UIColor) {
-        sideBarView.backgroundColor = color
-    }
-    
-    public func setSideBarWidth(to width: CGFloat){
-        sideBarWidthConstraint.constant = width
-        topLeftBufferWidthConstraint.constant = width
-        sideBarWidth = width
-    }
-    
-    public func setHourLabelFont(to font: UIFont) {
-        for sub in sideBarView.subviews {
-            if let hourSideBar = sub as? HourSideBarView {
-                for hourLabel in hourSideBar.hourLabels {
-                    hourLabel.font = font
-                }
-            }
-        }
-    }
-    
-    public func setHourLabelTextColor(to color: UIColor) {
-        for sub in sideBarView.subviews {
-            if let hourSideBar = sub as? HourSideBarView {
-                for hourLabel in hourSideBar.hourLabels {
-                    hourLabel.textColor = color
-                }
-            }
-        }
-    }
-    
-    public func setDayViewCellColor(to color: UIColor) {
-        // TODO: IMPLEMENT WITH COLLECTION VIEW
-    }
-    
-    public func setDayViewCellSeperatorColor(to color: UIColor) {
-        // TODO: IMPLEMENT WITH COLLECTION VIEW
-    }
-    
-    /**
-     For zoom scale 1.0
-     */
-    public func setDayViewCellHeight(to height: CGFloat) {
-        dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
-    }
-    
-    public func setDayViewSideSpacingPortrait(to width: CGFloat) {
-        if dayScrollView.setPortraitDayViewSideSpacing(to: width) {
-            updateTopAndSideBarConstraints()
-        }
-    }
-    
-    public func setDayViewSideSpacingLandscape(to width: CGFloat) {
-        if dayScrollView.setLandscapeDayViewSideSpacing(to: width) {
-            updateTopAndSideBarConstraints()
-        }
-    }
-    
-    public func setVelocityOffsetMultiplier(to multiplier:CGFloat) {
-        dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
-    }
     
     /**
      Updates the time displayed on the calendar
@@ -259,6 +157,13 @@ public class WeekView : UIView {
         }
     }
     
+    func setTopAndSideBarPositionConstraints() {
+        sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
+        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
+    }
+    
+    // MARK: - PRIVATE/HELPER FUNCTIONS -
+    
     private func updateTopAndSideBarConstraints() {
         
         // Height of total side bar
@@ -277,13 +182,6 @@ public class WeekView : UIView {
         
         setTopAndSideBarPositionConstraints()
     }
-    
-    func setTopAndSideBarPositionConstraints() {
-        sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
-        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
-    }
-    
-    // MARK: - PRIVATE/HELPER FUNCTIONS -
     
     private func trashExcessLabels() {
         
@@ -325,4 +223,237 @@ public class WeekView : UIView {
         }
         self.backgroundColor = UIColor.clear
     }
+}
+
+// MARK: - CUSTOMIZATION EXTENSION -
+
+public extension WeekView {
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setVisibleDaysPortrait(numberOfDays days: Int){
+        if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setVisibleDaysLandscape(numberOfDays days: Int){
+        if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+    
+    public func setBackgroundColor(to color: UIColor) {
+        mainView.backgroundColor = color
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setTopBarHeight(to height: CGFloat) {
+        topBarHeight = height
+        topBarHeightConstraint.constant = height
+        topLeftBufferHeightConstraint.constant = height
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setTopBarColor(to color: UIColor) {
+        topBarView.backgroundColor = color
+        topLeftBufferView.backgroundColor = color
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayLabelFont(to font: UIFont) {
+        // TODO: REIMPLEMENT
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayLabelTextColor(to color: UIColor) {
+        // TODO: REIMPLEMENT
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setSideBarColor(to color: UIColor) {
+        sideBarView.backgroundColor = color
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setSideBarWidth(to width: CGFloat){
+        sideBarWidthConstraint.constant = width
+        topLeftBufferWidthConstraint.constant = width
+        sideBarWidth = width
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setHourLabelFont(to font: UIFont) {
+        for sub in sideBarView.subviews {
+            if let hourSideBar = sub as? HourSideBarView {
+                for hourLabel in hourSideBar.hourLabels {
+                    hourLabel.font = font
+                }
+            }
+        }
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setHourLabelTextColor(to color: UIColor) {
+        for sub in sideBarView.subviews {
+            if let hourSideBar = sub as? HourSideBarView {
+                for hourLabel in hourSideBar.hourLabels {
+                    hourLabel.textColor = color
+                }
+            }
+        }
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewCellColor(to color: UIColor) {
+        // TODO: IMPLEMENT WITH COLLECTION VIEW
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewCellSeperatorColor(to color: UIColor) {
+        // TODO: IMPLEMENT WITH COLLECTION VIEW
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewCellHeight(to height: CGFloat) {
+        dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewSideSpacingPortrait(to width: CGFloat) {
+        if dayScrollView.setPortraitDayViewSideSpacing(to: width) {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewSideSpacingLandscape(to width: CGFloat) {
+        if dayScrollView.setLandscapeDayViewSideSpacing(to: width) {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewOverlayColor(to color: UIColor) {
+
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewHourIndicatorColor(to color: UIColor) {
+        
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewHourIndicatorThickness(to color: UIColor) {
+        
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewSeperator(to color: UIColor) {
+        
+    }
+
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewSeperatorLineThickness(to thickness: CGFloat) {
+        
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewDashedLineSeperatorPattern(to pattern: [CGFloat]) {
+        
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setVelocityOffsetMultiplier(to multiplier:CGFloat) {
+        dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
+    }
+    
 }

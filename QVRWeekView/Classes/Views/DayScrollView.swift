@@ -128,12 +128,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         return LayoutVariables.collectionViewCellCount
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let cell = dayCollectionView.cellForItem(at: indexPath) as! DayViewCell
-        print(cell.date)
-        print(cell.events)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as! DayViewCell
         dayViewCell.clearValues()
@@ -315,13 +309,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
 extension DayScrollView {
     
+    /**
+     Sets the height of the day view cells for zoom scale 1.
+     */
     func setInitialVisibleDayViewCellHeight(to height: CGFloat) {
         LayoutVariables.initialDayViewCellHeight = height
         updateLayout()
     }
     
     /**
-     Return true if content view was changed
+     Sets the number of days visible in the week view when in portrait mode.
      */
     func setVisiblePortraitDays(to days:CGFloat) -> Bool{
         
@@ -335,7 +332,7 @@ extension DayScrollView {
     }
     
     /**
-     Return true if content view was changed
+     Sets the number of days visible in the week view when in landscape mode.
      */
     func setVisibleLandscapeDays(to days:CGFloat) -> Bool{
         LayoutVariables.landscapeVisibleDays = days
@@ -346,6 +343,9 @@ extension DayScrollView {
         return false
     }
     
+    /**
+     Sets the spacing in between day view cells for portrait mode.
+     */
     func setPortraitDayViewSideSpacing(to width:CGFloat) -> Bool{
         LayoutVariables.portraitDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isPortrait {
@@ -355,6 +355,9 @@ extension DayScrollView {
         return false
     }
     
+    /**
+     Sets the spacing in between day view cells for landscape mode.
+     */
     func setLandscapeDayViewSideSpacing(to width:CGFloat) -> Bool{
         LayoutVariables.landscapeDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isLandscape {
@@ -364,6 +367,9 @@ extension DayScrollView {
         return false
     }
     
+    /**
+     Sets the sensitivity of horizontal scrolling.
+     */
     func setVelocityOffsetMultiplier(to multiplier:CGFloat) {
         LayoutVariables.velocityOffsetMultiplier = multiplier
     }
@@ -375,7 +381,7 @@ extension DayScrollView {
 
 struct LayoutVariables {
     
-    // MARK: - FILEPRIVATE VARIABLES -
+    // MARK: - SPACING VARIABLES -
     
     fileprivate(set) static var orientation:UIInterfaceOrientation = .portrait {
         didSet {
@@ -428,7 +434,7 @@ struct LayoutVariables {
         }
     }
     // Height of the current day columns
-    fileprivate(set) static var dayViewCellHeight = LayoutDefaults.dayViewCellHeight {
+    private(set) static var dayViewCellHeight = LayoutDefaults.dayViewCellHeight {
         didSet {
             updateTotalContentHeight()
         }
@@ -493,19 +499,7 @@ struct LayoutVariables {
     
     // Height of all scrollable content
     private(set) static var totalContentWidth = CGFloat(collectionViewCellCount)*totalDayViewCellWidth+dayViewHorizontalSpacing
-    
-    // Velocity multiplier for pagin
-    fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
-    
-    // Min x-axis values that repeating starts at
-    private(set) static var minOffsetX = CGFloat(0)
-    // Max x-axis values that repeating starts at
-    private(set) static var maxOffsetX = CGFloat(daysInActiveYear)*totalDayViewCellWidth
-    // Min y-axis values that can be scrolled to
-    private(set) static var minOffsetY = CGFloat(0)
-    // Max y-axis values that can be scrolled to
-    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight
-    
+
     // Width of spacing between day columns in portrait mode
     fileprivate(set) static var portraitDayViewHorizontalSpacing = LayoutDefaults.portraitDayViewHorizontalSpacing {
         didSet {
@@ -539,6 +533,31 @@ struct LayoutVariables {
             }
         }
     }
+    
+    // Min x-axis values that repeating starts at
+    private(set) static var minOffsetX = CGFloat(0)
+    // Max x-axis values that repeating starts at
+    private(set) static var maxOffsetX = CGFloat(daysInActiveYear)*totalDayViewCellWidth
+    // Min y-axis values that can be scrolled to
+    private(set) static var minOffsetY = CGFloat(0)
+    // Max y-axis values that can be scrolled to
+    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight
+    // Velocity multiplier for pagin
+    fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
+    
+    // MARK: - FONT & COLOUR VARIABLES -
+    
+    
+    fileprivate(set) static var overlayColor = LayoutDefaults.overlayColor
+    
+    fileprivate(set) static var hourIndicatorColor = LayoutDefaults.overlayIndicatorColor
+    
+    fileprivate(set) static var seperatorColor = LayoutDefaults.backgroundGray
+    
+    fileprivate(set) static var defaultDayViewColor = LayoutDefaults.defaultDayViewColor
+    
+    fileprivate(set) static var weekendDayViewColor = LayoutDefaults.weekendDayViewColor
+    
     
     // MARK: - UPDATE FUNCTIONS -
     

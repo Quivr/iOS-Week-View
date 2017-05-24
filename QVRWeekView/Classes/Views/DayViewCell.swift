@@ -25,10 +25,17 @@ class DayViewCell : UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        initialize()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        initialize()
+    }
+    
+    private func initialize() {
+        self.clipsToBounds = true
+        self.backgroundColor = LayoutDefaults.defaultDayViewColor
     }
     
     override func layoutSubviews() {
@@ -42,8 +49,6 @@ class DayViewCell : UICollectionViewCell {
         return layoutAttributes
     }
     
-    
-    
     func clearValues() {
         for view in self.subviews {
             view.removeFromSuperview()
@@ -53,7 +58,6 @@ class DayViewCell : UICollectionViewCell {
         eventViews = nil
         overlayView = nil
         hourIndicatorView = nil
-        
     }
     
     func setDate(`as` date:Date) {
@@ -105,23 +109,26 @@ class DayViewCell : UICollectionViewCell {
     
     private func generateOverlay() {
         
-        overlayView = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height))
-        overlayView.backgroundColor = LayoutDefaults.overlayColor
-        
-        hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height, width: self.bounds.width, height: 4))
-        hourIndicatorView.backgroundColor = UIColor.black
-        hourIndicatorView.layer.cornerRadius = 2.5
-        overlayView.addSubview(hourIndicatorView)
-        
-        self.addSubview(overlayView)
+        if !isOverlayHidden {
+            
+            overlayView = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height))
+            overlayView.backgroundColor = LayoutDefaults.overlayColor
+            
+            if !isHourIndicatorHidden {
+                hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-1.5, width: self.bounds.width, height: 3))
+                hourIndicatorView.backgroundColor = LayoutDefaults.overlayIndicatorColor
+                hourIndicatorView.layer.cornerRadius = 1
+                overlayView.addSubview(hourIndicatorView)
+            }
+            self.addSubview(overlayView)
+        }
     }
     
     private func updateOverlay() {
-        
         if !isOverlayHidden {
             overlayView.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height)
+            self.bringSubview(toFront: overlayView)
         }
-        
     }
     
     private func updateEventFrames() {
