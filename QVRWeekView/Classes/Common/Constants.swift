@@ -74,3 +74,10 @@ struct NibNames {
 struct CellKeys {
     static let dayViewCell = "DayViewCell"
 }
+
+struct EventKeys {
+    static let id = "id"
+    static let title = "title"
+    static let time = "time"
+    static let duration = "duration"
+}

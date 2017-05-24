@@ -62,7 +62,7 @@ extension Date {
         let hour = Double(cal.component(.hour, from: self))
         let minutes = Double(cal.component(.minute, from: self))
         
-        return CGFloat(1 - ((hour/24) + (minutes/(60*24))))
+        return CGFloat((hour/24) + (minutes/(60*24)))
             
     }
     

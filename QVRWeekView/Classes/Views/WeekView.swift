@@ -187,7 +187,13 @@ public class WeekView : UIView {
      Updates the time displayed on the calendar
      */
     public func updateTimeDisplayed() {
-        // TODO: IMPLEMENT WITH COLLECTION VIEW
+        let dayCollectionView = dayScrollView.dayCollectionView!
+        for cell in dayCollectionView.visibleCells {
+            let indexPath = dayCollectionView.indexPath(for: cell)!
+            if let dayViewCell = cell as? DayViewCell {
+                dayViewCell.setDate(as: dayScrollView.getDate(forIndexPath: indexPath))
+            }
+        }
     }
     
     public func showToday() {
@@ -241,11 +247,14 @@ public class WeekView : UIView {
     
     func updateVisibleLabelsAndMainConstraints() {
         updateTopAndSideBarConstraints()
+
         for cell in dayScrollView.dayCollectionView.visibleCells {
             let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
             if let dayViewCell = cell as? DayViewCell {
                 let date = dayViewCell.date!
-                visibleDayLabels[date]!.frame = generateDayLabelFrame(forIndex: indexPath)
+                if let label = visibleDayLabels[date] {
+                    label.frame = generateDayLabelFrame(forIndex: indexPath)
+                }
             }
         }
     }
