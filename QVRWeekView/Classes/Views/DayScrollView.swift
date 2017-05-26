@@ -97,31 +97,29 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        // Handle side bar animations
+        // Handle side and top bar animations
         if let weekView = self.superview?.superview as? WeekView {
             weekView.updateTopAndSideBarPositions()
         }
         
         if let collectionView = scrollView as? DayCollectionView {
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
-                resetView(ofScrollView: collectionView, withYearOffsetChange: -1)
+                resetView(withYearOffsetChange: -1)
             }
             else if collectionView.contentOffset.x > LayoutVariables.maxOffsetX {
-                resetView(ofScrollView: collectionView, withYearOffsetChange: 1)
+                resetView(withYearOffsetChange: 1)
             }
         }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if let collectionView = scrollView as? DayCollectionView, !decelerate {
-            scrollToNearestPage(withScrollView: collectionView)
+        if !decelerate {
+            scrollToNearestPage(withScrollView: self.dayCollectionView)
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if let collectionView = scrollView as? DayCollectionView {
-            scrollToNearestPage(withScrollView: collectionView)
-        }
+        scrollToNearestPage(withScrollView: self.dayCollectionView)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -129,6 +127,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as! DayViewCell
         dayViewCell.clearValues()
         let dateForCell = getDate(forIndexPath: indexPath)
@@ -144,12 +143,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date!)
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.discardLabel(withDate: dayViewCell.date!)
         }
@@ -159,7 +160,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
     func showToday() {
         yearOffset = 0
-        dayCollectionView.contentOffset = CGPoint(x: CGFloat(dayOfYearToday)*LayoutVariables.totalDayViewCellWidth, y: 0)
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayOfYearToday)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter:CGPoint?, andState state:UIGestureRecognizerState) {
@@ -269,15 +270,15 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     // MARK: - HELPER/PRIVATE FUNCTIONS -
     
     
-    private func resetView(ofScrollView scrollView:UIScrollView, withYearOffsetChange change:Int){
+    private func resetView(withYearOffsetChange change:Int){
         didJustResetView = true
         yearOffset += change
         LayoutVariables.daysInActiveYear = Date().getDaysInYear(withYearOffset: yearOffset)
         if change < 0 {
-            scrollView.contentOffset.x = LayoutVariables.maxOffsetX
+            dayCollectionView.contentOffset.x = LayoutVariables.maxOffsetX
         }
         else if change > 0 {
-            scrollView.contentOffset.x = LayoutVariables.minOffsetX
+            dayCollectionView.contentOffset.x = LayoutVariables.minOffsetX
         }
     }
     
@@ -310,14 +311,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 extension DayScrollView {
     
     /**
-     Sets the height of the day view cells for zoom scale 1.
-     */
-    func setInitialVisibleDayViewCellHeight(to height: CGFloat) {
-        LayoutVariables.initialDayViewCellHeight = height
-        updateLayout()
-    }
-    
-    /**
      Sets the number of days visible in the week view when in portrait mode.
      */
     func setVisiblePortraitDays(to days: CGFloat) -> Bool {
@@ -344,9 +337,121 @@ extension DayScrollView {
     }
     
     /**
+     Sets the font for event labels.
+     */
+    func setEventLabelFont(to font: UIFont) {
+        LayoutVariables.eventLabelFont = font
+        updateLayout()
+    }
+    
+    /**
+     Sets the text color for event labels.
+     */
+    func setEventLabelTextColor(to color: UIColor) {
+        LayoutVariables.eventLabelTextColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the minimum scale for day labels.
+     */
+    func setEventLabelMinimumScale(to scale: CGFloat) {
+        LayoutVariables.eventLabelMinimumScale = scale
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of default day view color.
+     */
+    func setDefaultDayViewColor(to color: UIColor) {
+        LayoutVariables.defaultDayViewColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of weekend day view color.
+     */
+    func setWeekendDayViewColor(to color: UIColor) {
+        LayoutVariables.weekendDayViewColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of day view overlays.
+     */
+    func setDayViewOverlayColor(to color: UIColor) {
+        LayoutVariables.overlayColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of day view hour indicators.
+     */
+    func setDayViewHourIndicatorColor(to color: UIColor) {
+        LayoutVariables.hourIndicatorColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the thickness of day view hour indicators.
+     */
+    func setDayViewHourIndicatorThickness(to thickness: CGFloat) {
+        LayoutVariables.hourIndiactorThickness = thickness
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of the main day view seperators.
+     */
+    func setDayViewMainSeperatorColor(to color: UIColor) {
+        LayoutVariables.mainSeperatorColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the thickness of the main day view seperators.
+     */
+    func setDayViewMainSeperatorThickness(to thickness: CGFloat) {
+        LayoutVariables.mainSeperatorThickness = thickness
+        updateLayout()
+    }
+    
+    /**
+     Sets the color of the dashed day view seperators.
+     */
+    func setDayViewDashedSeperatorColor(to color: UIColor) {
+        LayoutVariables.dashedSeperatorColor = color
+        updateLayout()
+    }
+    
+    /**
+     Sets the thickness of the dashed day view seperators.
+     */
+    func setDayViewDashedSeperatorThickness(to thickness: CGFloat) {
+        LayoutVariables.dashedSeperatorThickness = thickness
+        updateLayout()
+    }
+    
+    /**
+     Sets the thickness of the dashed day view seperators.
+     */
+    func setDayViewDashedSeperatorPattern(to pattern: [NSNumber]) {
+        LayoutVariables.dashedSeperatorPattern = pattern
+        updateLayout()
+    }
+    
+    /**
+     Sets the height of the day view cells for zoom scale 1.
+     */
+    func setInitialVisibleDayViewCellHeight(to height: CGFloat) {
+        LayoutVariables.initialDayViewCellHeight = height
+        updateLayout()
+    }
+    
+    /**
      Sets the spacing in between day view cells for portrait mode.
      */
-    func setPortraitDayViewSideSpacing(to width: CGFloat) -> Bool {
+    func setPortraitDayViewHorizontalSpacing(to width: CGFloat) -> Bool {
         LayoutVariables.portraitDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isPortrait {
             updateLayout()
@@ -358,7 +463,7 @@ extension DayScrollView {
     /**
      Sets the spacing in between day view cells for landscape mode.
      */
-    func setLandscapeDayViewSideSpacing(to width: CGFloat) -> Bool {
+    func setLandscapeDayViewHorizontalSpacing(to width: CGFloat) -> Bool {
         LayoutVariables.landscapeDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isLandscape {
             updateLayout()
@@ -368,123 +473,27 @@ extension DayScrollView {
     }
     
     /**
-     Sets the height of the top bar.
+     Sets the spacing in between day view cells for portrait mode.
      */
-    func setTopBarHeight(to height: CGFloat) {
-        LayoutVariables.topBarHeight = height
+    func setPortraitDayViewVerticalSpacing(to width: CGFloat) -> Bool {
+        LayoutVariables.portraitDayViewVerticalSpacing = width
+        if LayoutVariables.orientation.isPortrait {
+            updateLayout()
+            return true
+        }
+        return false
     }
     
     /**
-     Sets the color of the top bar.
+     Sets the spacing in between day view cells for landscape mode.
      */
-    func setTopBarColor(to color: UIColor) {
-        LayoutVariables.topBarColor = color
-    }
-    
-    /**
-     Sets the width of the side bar.
-     */
-    func setSideBarWidth(to width: CGFloat) {
-        LayoutVariables.sideBarWidth = width
-    }
-    
-    /**
-     Sets the color of the side bar.
-     */
-    func setSideBarColor(to color: UIColor) {
-        LayoutVariables.sideBarColor = color
-    }
-    
-    /**
-     Sets the font for day labels.
-     */
-    func setDayLabelFont(to font: UIFont) {
-        LayoutVariables.dayLabelFont = font
-    }
-    
-    /**
-     Sets the text color for day labels.
-     */
-    func setDayLabelTextColor(to color: UIColor) {
-        LayoutVariables.dayLabelTextColor = color
-    }
-    
-    /**
-     Sets the font for hour labels.
-     */
-    func setHourLabelFont(to font: UIFont) {
-        LayoutVariables.hourLabelFont = font
-    }
-    
-    /**
-     Sets the text color for hour labels.
-     */
-    func setHourLabelTextColor(to color: UIColor) {
-        LayoutVariables.hourLabelTextColor = color
-    }
-    
-    /**
-     Sets the font for event labels.
-     */
-    func setEventLabelFont(to font: UIFont) {
-        LayoutVariables.eventLabelFont = font
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the text color for event labels.
-     */
-    func setEventLabelTextColor(to color: UIColor) {
-        LayoutVariables.eventLabelTextColor = color
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the minimum scale for day labels.
-     */
-    func setEventLabelMinimumScale(to scale: CGFloat) {
-        LayoutVariables.eventLabelMinimumScale = scale
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the color of default day view color.
-     */
-    func setDefaultDayViewColor(to color: UIColor) {
-        LayoutVariables.defaultDayViewColor = color
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the color of weekend day view color.
-     */
-    func setWeekendDayViewColor(to color: UIColor) {
-        LayoutVariables.weekendDayViewColor = color
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the color of day view overlays.
-     */
-    func setDayViewOverlayColor(to color: UIColor) {
-        LayoutVariables.overlayColor = color
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the color of day view hour indicators.
-     */
-    func setDayViewHourIndicatorColor(to color: UIColor) {
-        LayoutVariables.hourIndicatorColor = color
-        layoutIfNeeded()
-    }
-    
-    /**
-     Sets the color of day view seperators.
-     */
-    func setDayViewMainSeperatorColor(to color: UIColor) {
-        LayoutVariables.mainSeperatorColor = color
-        layoutIfNeeded()
+    func setLandscapeDayViewVerticalSpacing(to width: CGFloat) -> Bool {
+        LayoutVariables.landscapeDayViewVerticalSpacing = width
+        if LayoutVariables.orientation.isLandscape {
+            updateLayout()
+            return true
+        }
+        return false
     }
     
     /**
@@ -497,7 +506,7 @@ extension DayScrollView {
     
 }
 
-// MARK: - LAYOUT VARIABLES -
+// MARK: - SCROLLVIEW LAYOUT VARIABLES -
 
 struct LayoutVariables {
     
@@ -596,15 +605,15 @@ struct LayoutVariables {
         }
     }
     
-    // Maximum number of days visisble
-    private(set) static var maximumVisibleDays = Int(max(portraitVisibleDays, landscapeVisibleDays)) {
+    // Collection view cell count buffer, number of cells to de added to the "right" side of the colelction view. This is equal to maximum number of days visisble plus one. This allows for smooth scrolling when crossing the year mark.
+    private(set) static var collectionViewCellCountBuffer = Int(max(portraitVisibleDays, landscapeVisibleDays))+1 {
         didSet {
             updateCollectionViewCellCount()
         }
     }
     
     // Number of cells in the collection view
-    private(set) static var collectionViewCellCount = daysInActiveYear + maximumVisibleDays {
+    private(set) static var collectionViewCellCount = daysInActiveYear + collectionViewCellCountBuffer {
         didSet {
             updateTotalContentWidth()
         }
@@ -653,33 +662,17 @@ struct LayoutVariables {
     // Min y-axis values that can be scrolled to
     private(set) static var minOffsetY = CGFloat(0)
     // Max y-axis values that can be scrolled to
-    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight
+    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight {
+        didSet {
+            if maxOffsetY < minOffsetY {
+                maxOffsetY = minOffsetY
+            }
+        }
+    }
     // Velocity multiplier for pagin
     fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
     
-    // MARK: - WEEKVIEW LAYOUT & SPACING VARIABLES -
-    
-    // Height of the top bar
-    fileprivate(set) static var topBarHeight = LayoutDefaults.topBarHeight
-    // Color of the top bar
-    fileprivate(set) static var topBarColor = LayoutDefaults.topBarColor
-    // Width of the side bar
-    fileprivate(set) static var sideBarWidth = LayoutDefaults.sideBarWidth
-    // Color of the top bar
-    fileprivate(set) static var sideBarColor = LayoutDefaults.backgroundColor
-    
-    
     // MARK: - FONT & COLOUR VARIABLES -
-    
-    // Font for all day labels
-    fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
-    // Text color for all day labels
-    fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
-    
-    // Font for all hour labels
-    fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont
-    // Text color for all hour labels
-    fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
     
     // Font for all event labels
     fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
@@ -706,12 +699,12 @@ struct LayoutVariables {
     // Thickness for day view main seperators
     fileprivate(set) static var mainSeperatorThickness = LayoutDefaults.mainSeperatorThickness
     
-    // Pattern for day view dashed seperators
-    fileprivate(set) static var dashedSeperatorPattern = LayoutDefaults.dashedSeperatorPattern
     // Color for day view dahshed seperators
     fileprivate(set) static var dashedSeperatorColor = LayoutDefaults.backgroundColor
     // Thickness for day view dashed seperators
     fileprivate(set) static var dashedSeperatorThickness = LayoutDefaults.dashedSeperatorThickness
+    // Pattern for day view dashed seperators
+    fileprivate(set) static var dashedSeperatorPattern = LayoutDefaults.dashedSeperatorPattern
     
     // MARK: - UPDATE FUNCTIONS -
     
@@ -749,11 +742,11 @@ struct LayoutVariables {
     }
     
     private static func updateMaximumVisibleDays() {
-        maximumVisibleDays = Int(max(portraitVisibleDays, landscapeVisibleDays))
+        collectionViewCellCountBuffer = Int(max(portraitVisibleDays, landscapeVisibleDays))
     }
     
     private static func updateCollectionViewCellCount() {
-        collectionViewCellCount = maximumVisibleDays + daysInActiveYear
+        collectionViewCellCount = collectionViewCellCountBuffer + daysInActiveYear
     }
     
     private static func updateMaxOffsetX() {

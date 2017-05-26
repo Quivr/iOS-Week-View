@@ -36,10 +36,9 @@ extension Date {
     }
     
     func isSameDayAs(_ day:Date) -> Bool {
-        let cal = Calendar.current
-        let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
-        let todayComponents = cal.dateComponents(dayComponenets, from: day)
-        let selfComponents = cal.dateComponents(dayComponenets, from: self)
+
+        let todayComponents = day.getDayComponents()
+        let selfComponents = self.getDayComponents()
         
         if todayComponents == selfComponents {
             return true
@@ -96,12 +95,19 @@ extension Date {
         let firstJanuaryNextYear = cal.date(from: dateComps)!
         return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
     }
+    
+    private func getDayComponents() -> DateComponents {
+        let cal = Calendar.current
+        let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
+        return cal.dateComponents(dayComponenets, from: self)
+    }
 }
 
 extension CGFloat {
     
-    func roundedUpToNearestHalf() -> CGFloat{
+    func roundedUpToNearestHalf() -> CGFloat {
         return ceil(self*2)/2
     }
     
 }
+

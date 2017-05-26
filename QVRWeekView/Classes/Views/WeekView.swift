@@ -84,7 +84,14 @@ public class WeekView : UIView {
         for cell in dayCollectionView.visibleCells {
             let indexPath = dayCollectionView.indexPath(for: cell)!
             if let dayViewCell = cell as? DayViewCell {
-                dayViewCell.setDate(as: dayScrollView.getDate(forIndexPath: indexPath))
+                let oldDate = dayViewCell.date!
+                let possibleLabel = visibleDayLabels[oldDate]
+                let newDate = dayScrollView.getDate(forIndexPath: indexPath)
+                dayViewCell.setDate(as: newDate)
+                if let label = possibleLabel {
+                    visibleDayLabels.removeValue(forKey: oldDate)
+                    visibleDayLabels[newDate] = label
+                }
             }
         }
     }
@@ -140,18 +147,21 @@ public class WeekView : UIView {
     
     func updateVisibleLabelsAndMainConstraints() {
         updateTopAndSideBarConstraints()
-
+        
         for cell in dayScrollView.dayCollectionView.visibleCells {
             let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
             if let dayViewCell = cell as? DayViewCell {
-                let date = dayViewCell.date!
-                if let label = visibleDayLabels[date] {
+                let dateId = dayViewCell.date!
+                
+                if let label = visibleDayLabels[dateId] {
                     label.frame = generateDayLabelFrame(forIndex: indexPath)
                     label.font = LayoutVariables.dayLabelFont
                     label.textColor = LayoutVariables.dayLabelTextColor
                 }
             }
         }
+        trashExcessDayLabels()
+        
     }
     
     func updateTopAndSideBarPositions() {
@@ -161,6 +171,7 @@ public class WeekView : UIView {
     
     func updateColors() {
         self.backgroundColor = UIColor.clear
+        self.mainView.backgroundColor = LayoutVariables.backgroundColor
         self.sideBarView.backgroundColor = LayoutVariables.sideBarColor
         self.topLeftBufferView.backgroundColor = LayoutVariables.topBarColor
         self.topBarView.backgroundColor = LayoutVariables.topBarColor
@@ -218,7 +229,7 @@ public class WeekView : UIView {
     
     private func generateDayLabelFrame(forIndex indexPath:IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarView.frame.height)
+        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.topBarHeight)
     }
     
     private func setView() {
@@ -240,11 +251,125 @@ public class WeekView : UIView {
 // MARK: - CUSTOMIZATION EXTENSION -
 
 public extension WeekView {
+
+    // MARK: - WEEKVIEW CUSTOMIZATION -
+    
+    /**
+     Sets background color of main scrollview.
+     - parameters:
+       - color: New background color.
+     */
+    public func setBackgroundColor(to color: UIColor) {
+        LayoutVariables.backgroundColor = color
+        updateColors()
+    }
+    
+    /**
+     Sets height of top bar.
+     - parameters:
+       - height: New height for top bar.
+     */
+    public func setTopBarHeight(to height: CGFloat) {
+        LayoutVariables.topBarHeight = height
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    /**
+     Sets background color of top bar.
+     - parameters:
+       - color: New color for top bar.
+     */
+    public func setTopBarColor(to color: UIColor) {
+        LayoutVariables.topBarColor = color
+        updateColors()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setSideBarColor(to color: UIColor) {
+        LayoutVariables.sideBarColor = color
+        updateColors()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setSideBarWidth(to width: CGFloat) {
+        LayoutVariables.sideBarWidth = width
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    /**
+     Sets font used for day labels.
+     - parameters:
+     - font: New font for all day labels.
+     */
+    public func setDayLabelFont(to font: UIFont) {
+        LayoutVariables.dayLabelFont = font
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayLabelTextColor(to color: UIColor) {
+        LayoutVariables.dayLabelTextColor = color
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayLabelMinimumScale(to scale: CGFloat) {
+        LayoutVariables.dayLabelMinimumScale = scale
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setHourLabelFont(to font: UIFont) {
+        LayoutVariables.hourLabelFont = font
+        updateHourSideBarView()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setHourLabelTextColor(to color: UIColor) {
+        LayoutVariables.hourLabelTextColor = color
+        updateHourSideBarView()
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setHourLabelMinimumScale(to scale: CGFloat) {
+        LayoutVariables.hourLabelMinimumScale = scale
+        updateVisibleLabelsAndMainConstraints()
+    }
+    
+    // MARK: - DAYSCROLLVIEW CUSTOMIZATION -
     
     /**
      Sets number of visible days when in portait mode.
      - parameters:
-       - days: New number of days.
+     - days: New number of days.
      */
     public func setVisibleDaysPortrait(numberOfDays days: Int){
         if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
@@ -255,7 +380,7 @@ public extension WeekView {
     /**
      Sets number of visible days when in landscape mode.
      - parameters:
-       - days: New number of days.
+     - days: New number of days.
      */
     public func setVisibleDaysLandscape(numberOfDays days: Int){
         if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
@@ -264,42 +389,12 @@ public extension WeekView {
     }
     
     /**
-     Sets background color of main scrollview.
+     Sets
      - parameters:
-       - color: New background color.
+     -
      */
-    public func setBackgroundColor(to color: UIColor) {
-        mainView.backgroundColor = color
-    }
-    
-    /**
-     Sets height of top bar.
-     - parameters:
-       - height: New height for top bar.
-     */
-    public func setTopBarHeight(to height: CGFloat) {
-        dayScrollView.setTopBarHeight(to: height)
-        updateVisibleLabelsAndMainConstraints()
-    }
-    
-    /**
-     Sets background color of top bar.
-     - parameters:
-       - color: New color for top bar.
-     */
-    public func setTopBarColor(to color: UIColor) {
-        topBarView.backgroundColor = color
-        topLeftBufferView.backgroundColor = color
-    }
-    
-    /**
-     Sets font used for day labels.
-     - parameters:
-       - font: New font for all day labels.
-     */
-    public func setDayLabelFont(to font: UIFont) {
-        dayScrollView.setDayLabelFont(to: font)
-        updateVisibleLabelsAndMainConstraints()
+    public func setEventLabelFont(to font: UIFont) {
+        dayScrollView.setEventLabelFont(to: font)
     }
     
     /**
@@ -307,9 +402,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayLabelTextColor(to color: UIColor) {
-        dayScrollView.setDayLabelTextColor(to: color)
-        updateVisibleLabelsAndMainConstraints()
+    public func setEventLabelTextColor(to color: UIColor) {
+        dayScrollView.setEventLabelTextColor(to: color)
     }
     
     /**
@@ -317,8 +411,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setSideBarColor(to color: UIColor) {
-        sideBarView.backgroundColor = color
+    public func setEventLabelMinimumScale(to scale: CGFloat) {
+        dayScrollView.setEventLabelMinimumScale(to: scale)
     }
     
     /**
@@ -326,9 +420,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setSideBarWidth(to width: CGFloat) {
-        dayScrollView.setSideBarWidth(to: width)
-        updateVisibleLabelsAndMainConstraints()
+    public func setDefaultDayViewColor(to color: UIColor) {
+        dayScrollView.setDefaultDayViewColor(to: color)
     }
     
     /**
@@ -336,9 +429,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setHourLabelFont(to font: UIFont) {
-        dayScrollView.setHourLabelFont(to: font)
-        updateHourSideBarView()
+    public func setWeekendDayViewColor(to color: UIColor) {
+        dayScrollView.setWeekendDayViewColor(to: color)
     }
     
     /**
@@ -346,9 +438,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setHourLabelTextColor(to color: UIColor) {
-        dayScrollView.setHourLabelTextColor(to: color)
-        updateHourSideBarView()
+    public func setDayViewOverlayColor(to color: UIColor) {
+        dayScrollView.setDayViewOverlayColor(to: color)
     }
     
     /**
@@ -356,8 +447,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewCellColor(to color: UIColor) {
-        // TODO: IMPLEMENT WITH COLLECTION VIEW
+    public func setDayViewHourIndicatorColor(to color: UIColor) {
+        dayScrollView.setDayViewHourIndicatorColor(to: color)
     }
     
     /**
@@ -365,8 +456,53 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewCellSeperatorColor(to color: UIColor) {
-        // TODO: IMPLEMENT WITH COLLECTION VIEW
+    public func setDayViewHourIndicatorThickness(to thickness: CGFloat) {
+        dayScrollView.setDayViewHourIndicatorThickness(to: thickness)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewMainSeperatorColor(to color: UIColor) {
+        dayScrollView.setDayViewMainSeperatorColor(to: color)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewMainSeperatorThickness(to thickness: CGFloat) {
+        dayScrollView.setDayViewMainSeperatorThickness(to: thickness)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewDashedSeperatorColor(to color: UIColor) {
+        dayScrollView.setDayViewDashedSeperatorColor(to: color)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewDashedSeperatorThickness(to thickness: CGFloat) {
+        dayScrollView.setDayViewDashedSeperatorThickness(to: thickness)
+    }
+    
+    /**
+     Sets
+     - parameters:
+     -
+     */
+    public func setDayViewDashedSeperatorPattern(to pattern: [NSNumber]) {
+        dayScrollView.setDayViewDashedSeperatorPattern(to: pattern)
     }
     
     /**
@@ -383,8 +519,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewSideSpacingPortrait(to width: CGFloat) {
-        if dayScrollView.setPortraitDayViewSideSpacing(to: width) {
+    public func setPortraitDayViewSideSpacing(to width: CGFloat) {
+        if dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -394,8 +530,8 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewSideSpacingLandscape(to width: CGFloat) {
-        if dayScrollView.setLandscapeDayViewSideSpacing(to: width) {
+    public func setLandscapeDayViewSideSpacing(to width: CGFloat) {
+        if dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -405,8 +541,10 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewOverlayColor(to color: UIColor) {
-
+    public func setPortraitDayViewVerticalSpacing(to width: CGFloat) {
+        if dayScrollView.setPortraitDayViewVerticalSpacing(to: width) {
+            updateVisibleLabelsAndMainConstraints()
+        }
     }
     
     /**
@@ -414,44 +552,10 @@ public extension WeekView {
      - parameters:
      -
      */
-    public func setDayViewHourIndicatorColor(to color: UIColor) {
-        
-    }
-    
-    /**
-     Sets
-     - parameters:
-     -
-     */
-    public func setDayViewHourIndicatorThickness(to color: UIColor) {
-        
-    }
-    
-    /**
-     Sets
-     - parameters:
-     -
-     */
-    public func setDayViewSeperatorColor(to color: UIColor) {
-        
-    }
-
-    /**
-     Sets
-     - parameters:
-     -
-     */
-    public func setDayViewSeperatorLineThickness(to thickness: CGFloat) {
-        
-    }
-    
-    /**
-     Sets
-     - parameters:
-     -
-     */
-    public func setDayViewDashedLineSeperatorPattern(to pattern: [CGFloat]) {
-        
+    public func setLandscapeDayViewVerticalSpacing(to width: CGFloat) {
+        if dayScrollView.setLandscapeDayViewVerticalSpacing(to: width) {
+            updateVisibleLabelsAndMainConstraints()
+        }
     }
     
     /**
@@ -463,6 +567,8 @@ public extension WeekView {
         dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
     }
     
+    
+    
     private func updateHourSideBarView() {
         for view in sideBarView.subviews{
             if let hourSideBarView = view as? HourSideBarView {
@@ -470,4 +576,34 @@ public extension WeekView {
             }
         }
     }
+}
+
+// MARK: - WEEKVIEW LAYOUT VARIABLES -
+
+extension LayoutVariables {
+    
+    // Main background color
+    fileprivate(set) static var backgroundColor = LayoutDefaults.backgroundColor
+    // Height of the top bar
+    fileprivate(set) static var topBarHeight = LayoutDefaults.topBarHeight
+    // Color of the top bar
+    fileprivate(set) static var topBarColor = LayoutDefaults.topBarColor
+    // Width of the side bar
+    fileprivate(set) static var sideBarWidth = LayoutDefaults.sideBarWidth
+    // Color of the top bar
+    fileprivate(set) static var sideBarColor = LayoutDefaults.backgroundColor
+    
+    // Font for all day labels
+    fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
+    // Text color for all day labels
+    fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
+    // Minimum scale for all day labels
+    fileprivate(set) static var dayLabelMinimumScale = LayoutDefaults.dayLabelMinimumScale
+    
+    // Font for all hour labels
+    fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont
+    // Text color for all hour labels
+    fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
+    // Minimum scale for all hour labels
+    fileprivate(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumScale
 }

@@ -17,11 +17,15 @@ struct LayoutDefaults {
     static let dayLabelFont = UIFont.boldSystemFont(ofSize: 14)
     // Default text color of day labels
     static let dayLabelTextColor = UIColor.black
+    // Default minimum event label scaling
+    static let dayLabelMinimumScale = CGFloat(0.4)
     
     // Default font of hour labels
     static let hourLabelFont = UIFont.systemFont(ofSize: 12)
     // Default text color of hour labels
     static let hourLabelTextColor = UIColor.black
+    // Default minimum event label scaling
+    static let hourLabelMinimumScale = CGFloat(0.5)
     
     // Default font of events labels
     static let eventLabelFont = UIFont.boldSystemFont(ofSize: 12)
@@ -68,8 +72,8 @@ struct LayoutDefaults {
     
     // MARK: - COLOURS -
     
-    static let backgroundColor = UIColor(red: 190/255, green: 190/255, blue: 190/255, alpha: 1.0)
-    static let topBarColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
+    static let backgroundColor = UIColor(red: 202/255, green: 202/255, blue: 202/255, alpha: 1.0)
+    static let topBarColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
     
     static let overlayColor = UIColor(red: 225/255, green: 225/255, blue: 225/255, alpha: 0.8)
     static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 0.9)

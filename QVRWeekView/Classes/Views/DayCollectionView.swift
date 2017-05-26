@@ -32,7 +32,6 @@ class DayCollectionView: UICollectionView {
         self.showsHorizontalScrollIndicator = false
         self.decelerationRate = UIScrollViewDecelerationRateFast
     }
-    
 }
 
 // MARK: - DAY COLLECTION VIEW FLOW LAYOUT -
