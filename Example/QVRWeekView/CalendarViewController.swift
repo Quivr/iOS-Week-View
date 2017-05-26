@@ -11,10 +11,10 @@ import QVRWeekView
 
 class CalendarViewController: UIViewController {
 
-    @IBOutlet var calendarView: WeekView!
+    @IBOutlet var weekView: WeekView!
     
     @IBAction func todayButtonPress(_ sender: Any) {
-        calendarView.showToday()
+        weekView.showToday()
     }
     
     override func viewDidLoad() {
