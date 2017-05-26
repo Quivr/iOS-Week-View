@@ -305,7 +305,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
 }
 
-// MARK: - CUSTOMIZATION SETTERS -
+// MARK: - CUSTOMIZATION EXTENSION -
 
 extension DayScrollView {
     

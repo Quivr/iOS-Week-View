@@ -193,7 +193,6 @@ public class WeekView : UIView {
                 discardedDayLabels.remove(at: i)
             }
         }
-        
     }
     
     private func makeDayLabel(withIndexPath indexPath:IndexPath) -> UILabel{

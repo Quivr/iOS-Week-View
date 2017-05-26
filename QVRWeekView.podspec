@@ -32,11 +32,6 @@ s.source_files = 'QVRWeekView/Classes/**/*'
 
 s.frameworks = 'UIKit'
 
-# s.resource_bundles = {
-#   'QVRWeekView' => ['QVRWeekView/Assets/*.png']
-# }
 
-# s.public_header_files = 'Pod/Classes/**/*.h'
 
-# s.dependency 'AFNetworking', '~> 2.3'
 end
