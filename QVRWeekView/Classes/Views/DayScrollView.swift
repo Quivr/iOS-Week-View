@@ -6,14 +6,6 @@ import UIKit
 
  Class of the scroll view contained within the WeekView.
  
- Some variable name clarification. An INDEX refers to the position of an item in relation to all drawn objects. And OFFSET is a number which refers to an objet position in relation to something else such as period count or period size.
- 
- All INDICES go from: 0 -> totalDayCount
- OFFSETS can go from: 
-        * 0 -> periodSize (pageOffsets)
-        * -infinity -> +infinity (periodOffsets)
-        * 0 -> totalContentWidth (x-coordinate offsets)
-        * 0 -> totalContentHeight
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -66,7 +58,10 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         dayCollectionView.dataSource = self
         self.addSubview(dayCollectionView)
         
+        // Set content size for vertical scrolling
         self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
+        
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
         
         // Set scroll view properties
         self.isDirectionalLockEnabled = true
@@ -93,16 +88,25 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    // MARK: - DELEGATE & DATA SOURCE FUNCTIONS -
+    // MARK: - GESTURE, SCROLL & DATA SOURCE FUNCTIONS -
+    
+    func tap(_ sender: UITapGestureRecognizer) {
+        
+        if !self.dayCollectionView.isDragging && !self.dayCollectionView.isDecelerating {
+            scrollToNearestPage()
+        }
+        
+    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
+
         // Handle side and top bar animations
         if let weekView = self.superview?.superview as? WeekView {
             weekView.updateTopAndSideBarPositions()
         }
         
         if let collectionView = scrollView as? DayCollectionView {
+            
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
                 resetView(withYearOffsetChange: -1)
             }
@@ -110,16 +114,17 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                 resetView(withYearOffsetChange: 1)
             }
         }
+        
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            scrollToNearestPage(withScrollView: self.dayCollectionView)
+            scrollToNearestPage()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        scrollToNearestPage(withScrollView: self.dayCollectionView)
+        scrollToNearestPage()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -224,7 +229,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         
         if state == .cancelled || state == .ended || state == .failed {
             self.previousZoomTouch = nil
-            scrollToNearestPage(withScrollView: dayCollectionView)
+            scrollToNearestPage()
         }
     }
     
@@ -282,9 +287,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    private func scrollToNearestPage(withScrollView scrollView:UIScrollView) {
-        let xOffset = scrollView.contentOffset.x
-        let yOffset = scrollView.contentOffset.y
+    private func scrollToNearestPage() {
+        let xOffset = dayCollectionView.contentOffset.x
+        let yOffset = dayCollectionView.contentOffset.y
         
         let totalDayViewWidth = LayoutVariables.totalDayViewCellWidth
         let truncatedToPagingWidth = xOffset.truncatingRemainder(dividingBy: totalDayViewWidth)
@@ -292,7 +297,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if (truncatedToPagingWidth >= 0.5 && yOffset >= LayoutVariables.minOffsetY && yOffset <= LayoutVariables.maxOffsetY){
             
             let targetXOffset = round(xOffset / totalDayViewWidth)*totalDayViewWidth
-            scrollView.setContentOffset(CGPoint(x: targetXOffset, y: scrollView.contentOffset.y), animated: true)
+            dayCollectionView.setContentOffset(CGPoint(x: targetXOffset, y: dayCollectionView.contentOffset.y), animated: true)
         }
         didJustResetView = false
     }
