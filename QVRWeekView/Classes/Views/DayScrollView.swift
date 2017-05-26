@@ -99,7 +99,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         
         // Handle side bar animations
         if let weekView = self.superview?.superview as? WeekView {
-            weekView.setTopAndSideBarPositionConstraints()
+            weekView.updateTopAndSideBarPositions()
         }
         
         if let collectionView = scrollView as? DayCollectionView {
@@ -320,7 +320,7 @@ extension DayScrollView {
     /**
      Sets the number of days visible in the week view when in portrait mode.
      */
-    func setVisiblePortraitDays(to days:CGFloat) -> Bool{
+    func setVisiblePortraitDays(to days: CGFloat) -> Bool {
         
         // Set portrait visisble days variable
         LayoutVariables.portraitVisibleDays = days
@@ -334,7 +334,7 @@ extension DayScrollView {
     /**
      Sets the number of days visible in the week view when in landscape mode.
      */
-    func setVisibleLandscapeDays(to days:CGFloat) -> Bool{
+    func setVisibleLandscapeDays(to days: CGFloat) -> Bool {
         LayoutVariables.landscapeVisibleDays = days
         if LayoutVariables.orientation.isLandscape {
             updateLayout()
@@ -346,7 +346,7 @@ extension DayScrollView {
     /**
      Sets the spacing in between day view cells for portrait mode.
      */
-    func setPortraitDayViewSideSpacing(to width:CGFloat) -> Bool{
+    func setPortraitDayViewSideSpacing(to width: CGFloat) -> Bool {
         LayoutVariables.portraitDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isPortrait {
             updateLayout()
@@ -358,7 +358,7 @@ extension DayScrollView {
     /**
      Sets the spacing in between day view cells for landscape mode.
      */
-    func setLandscapeDayViewSideSpacing(to width:CGFloat) -> Bool{
+    func setLandscapeDayViewSideSpacing(to width: CGFloat) -> Bool {
         LayoutVariables.landscapeDayViewHorizontalSpacing = width
         if LayoutVariables.orientation.isLandscape {
             updateLayout()
@@ -368,9 +368,129 @@ extension DayScrollView {
     }
     
     /**
+     Sets the height of the top bar.
+     */
+    func setTopBarHeight(to height: CGFloat) {
+        LayoutVariables.topBarHeight = height
+    }
+    
+    /**
+     Sets the color of the top bar.
+     */
+    func setTopBarColor(to color: UIColor) {
+        LayoutVariables.topBarColor = color
+    }
+    
+    /**
+     Sets the width of the side bar.
+     */
+    func setSideBarWidth(to width: CGFloat) {
+        LayoutVariables.sideBarWidth = width
+    }
+    
+    /**
+     Sets the color of the side bar.
+     */
+    func setSideBarColor(to color: UIColor) {
+        LayoutVariables.sideBarColor = color
+    }
+    
+    /**
+     Sets the font for day labels.
+     */
+    func setDayLabelFont(to font: UIFont) {
+        LayoutVariables.dayLabelFont = font
+    }
+    
+    /**
+     Sets the text color for day labels.
+     */
+    func setDayLabelTextColor(to color: UIColor) {
+        LayoutVariables.dayLabelTextColor = color
+    }
+    
+    /**
+     Sets the font for hour labels.
+     */
+    func setHourLabelFont(to font: UIFont) {
+        LayoutVariables.hourLabelFont = font
+    }
+    
+    /**
+     Sets the text color for hour labels.
+     */
+    func setHourLabelTextColor(to color: UIColor) {
+        LayoutVariables.hourLabelTextColor = color
+    }
+    
+    /**
+     Sets the font for event labels.
+     */
+    func setEventLabelFont(to font: UIFont) {
+        LayoutVariables.eventLabelFont = font
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the text color for event labels.
+     */
+    func setEventLabelTextColor(to color: UIColor) {
+        LayoutVariables.eventLabelTextColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the minimum scale for day labels.
+     */
+    func setEventLabelMinimumScale(to scale: CGFloat) {
+        LayoutVariables.eventLabelMinimumScale = scale
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the color of default day view color.
+     */
+    func setDefaultDayViewColor(to color: UIColor) {
+        LayoutVariables.defaultDayViewColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the color of weekend day view color.
+     */
+    func setWeekendDayViewColor(to color: UIColor) {
+        LayoutVariables.weekendDayViewColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the color of day view overlays.
+     */
+    func setDayViewOverlayColor(to color: UIColor) {
+        LayoutVariables.overlayColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the color of day view hour indicators.
+     */
+    func setDayViewHourIndicatorColor(to color: UIColor) {
+        LayoutVariables.hourIndicatorColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
+     Sets the color of day view seperators.
+     */
+    func setDayViewMainSeperatorColor(to color: UIColor) {
+        LayoutVariables.mainSeperatorColor = color
+        layoutIfNeeded()
+    }
+    
+    /**
      Sets the sensitivity of horizontal scrolling.
      */
-    func setVelocityOffsetMultiplier(to multiplier:CGFloat) {
+    func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
         LayoutVariables.velocityOffsetMultiplier = multiplier
     }
     
@@ -381,7 +501,7 @@ extension DayScrollView {
 
 struct LayoutVariables {
     
-    // MARK: - SPACING VARIABLES -
+    // MARK: - SCROLLVIEW LAYOUT & SPACING VARIABLES -
     
     fileprivate(set) static var orientation:UIInterfaceOrientation = .portrait {
         didSet {
@@ -489,6 +609,32 @@ struct LayoutVariables {
             updateTotalContentWidth()
         }
     }
+
+    // Width of spacing between day columns in portrait mode
+    fileprivate(set) static var portraitDayViewHorizontalSpacing = LayoutDefaults.portraitDayViewHorizontalSpacing {
+        didSet {
+            updateOrientationValues()
+        }
+    }
+    // Width of spacing between day columns in landscape mode
+    fileprivate(set) static var landscapeDayViewHorizontalSpacing = LayoutDefaults.landscapeDayViewHorizontalSpacing {
+        didSet {
+            updateOrientationValues()
+        }
+    }
+    
+    // Width of spacing between day columns in portrait mode
+    fileprivate(set) static var portraitDayViewVerticalSpacing = LayoutDefaults.portraitDayViewVerticalSpacing {
+        didSet {
+            updateOrientationValues()
+        }
+    }
+    // Width of spacing between day columns in landscape mode
+    fileprivate(set) static var landscapeDayViewVerticalSpacing = LayoutDefaults.landscapeDayViewVerticalSpacing {
+        didSet {
+            updateOrientationValues()
+        }
+    }
     
     // Height of all scrollable content
     private(set) static var totalContentHeight = dayViewVerticalSpacing*2 + dayViewCellHeight {
@@ -499,40 +645,6 @@ struct LayoutVariables {
     
     // Height of all scrollable content
     private(set) static var totalContentWidth = CGFloat(collectionViewCellCount)*totalDayViewCellWidth+dayViewHorizontalSpacing
-
-    // Width of spacing between day columns in portrait mode
-    fileprivate(set) static var portraitDayViewHorizontalSpacing = LayoutDefaults.portraitDayViewHorizontalSpacing {
-        didSet {
-            if orientation.isPortrait {
-                dayViewHorizontalSpacing = portraitDayViewHorizontalSpacing
-            }
-        }
-    }
-    // Width of spacing between day columns in landscape mode
-    fileprivate(set) static var landscapeDayViewHorizontalSpacing = LayoutDefaults.landscapeDayViewHorizontalSpacing {
-        didSet {
-            if orientation.isLandscape {
-                dayViewHorizontalSpacing = landscapeDayViewHorizontalSpacing
-            }
-        }
-    }
-    
-    // Width of spacing between day columns in portrait mode
-    fileprivate(set) static var portraitDayViewVerticalSpacing = LayoutDefaults.portraitDayViewVerticalSpacing {
-        didSet {
-            if orientation.isPortrait {
-                dayViewVerticalSpacing = portraitDayViewVerticalSpacing
-            }
-        }
-    }
-    // Width of spacing between day columns in landscape mode
-    fileprivate(set) static var landscapeDayViewVerticalSpacing = LayoutDefaults.landscapeDayViewVerticalSpacing {
-        didSet {
-            if orientation.isLandscape {
-                dayViewVerticalSpacing = landscapeDayViewHorizontalSpacing
-            }
-        }
-    }
     
     // Min x-axis values that repeating starts at
     private(set) static var minOffsetX = CGFloat(0)
@@ -545,19 +657,61 @@ struct LayoutVariables {
     // Velocity multiplier for pagin
     fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
     
+    // MARK: - WEEKVIEW LAYOUT & SPACING VARIABLES -
+    
+    // Height of the top bar
+    fileprivate(set) static var topBarHeight = LayoutDefaults.topBarHeight
+    // Color of the top bar
+    fileprivate(set) static var topBarColor = LayoutDefaults.topBarColor
+    // Width of the side bar
+    fileprivate(set) static var sideBarWidth = LayoutDefaults.sideBarWidth
+    // Color of the top bar
+    fileprivate(set) static var sideBarColor = LayoutDefaults.backgroundColor
+    
+    
     // MARK: - FONT & COLOUR VARIABLES -
     
+    // Font for all day labels
+    fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
+    // Text color for all day labels
+    fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
     
-    fileprivate(set) static var overlayColor = LayoutDefaults.overlayColor
+    // Font for all hour labels
+    fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont
+    // Text color for all hour labels
+    fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
     
-    fileprivate(set) static var hourIndicatorColor = LayoutDefaults.overlayIndicatorColor
+    // Font for all event labels
+    fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
+    // Text color for all event labels
+    fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
+    // Minimum scaling for all event labels
+    fileprivate(set) static var eventLabelMinimumScale = LayoutDefaults.eventLabelMinimumScale
     
-    fileprivate(set) static var seperatorColor = LayoutDefaults.backgroundGray
-    
+    // Color for day view default color
     fileprivate(set) static var defaultDayViewColor = LayoutDefaults.defaultDayViewColor
-    
+    // Color for day view weekend color
     fileprivate(set) static var weekendDayViewColor = LayoutDefaults.weekendDayViewColor
     
+    // Color for day view overlays
+    fileprivate(set) static var overlayColor = LayoutDefaults.overlayColor
+    
+    // Color for day view hour indicator
+    fileprivate(set) static var hourIndicatorColor = LayoutDefaults.hourIndicatorColor
+    // Thickness for day view hour indicator
+    fileprivate(set) static var hourIndiactorThickness = LayoutDefaults.hourIndicatorThickness
+    
+    // Color for day view main seperators
+    fileprivate(set) static var mainSeperatorColor = LayoutDefaults.backgroundColor
+    // Thickness for day view main seperators
+    fileprivate(set) static var mainSeperatorThickness = LayoutDefaults.mainSeperatorThickness
+    
+    // Pattern for day view dashed seperators
+    fileprivate(set) static var dashedSeperatorPattern = LayoutDefaults.dashedSeperatorPattern
+    // Color for day view dahshed seperators
+    fileprivate(set) static var dashedSeperatorColor = LayoutDefaults.backgroundColor
+    // Thickness for day view dashed seperators
+    fileprivate(set) static var dashedSeperatorThickness = LayoutDefaults.dashedSeperatorThickness
     
     // MARK: - UPDATE FUNCTIONS -
     

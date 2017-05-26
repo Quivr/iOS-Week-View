@@ -26,6 +26,19 @@ class HourSideBarView : UIView {
         view!.prepareForInterfaceBuilder()
     }
     
+    override func layoutSubviews() {
+        if hourLabels[0].font != LayoutVariables.hourLabelFont {
+            for label in hourLabels {
+                label.font = LayoutVariables.hourLabelFont
+            }
+        }
+        if hourLabels[0].textColor != LayoutVariables.hourLabelTextColor {
+            for label in hourLabels {
+                label.textColor = LayoutVariables.hourLabelTextColor
+            }
+        }
+    }
+    
     private func setView() {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)

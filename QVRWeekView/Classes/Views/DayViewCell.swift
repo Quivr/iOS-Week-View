@@ -115,8 +115,9 @@ class DayViewCell : UICollectionViewCell {
             overlayView.backgroundColor = LayoutDefaults.overlayColor
             
             if !isHourIndicatorHidden {
-                hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-1.5, width: self.bounds.width, height: 3))
-                hourIndicatorView.backgroundColor = LayoutDefaults.overlayIndicatorColor
+                let thickness = LayoutVariables.hourIndiactorThickness
+                hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-thickness/2, width: self.bounds.width, height: thickness))
+                hourIndicatorView.backgroundColor = LayoutVariables.hourIndicatorColor
                 hourIndicatorView.layer.cornerRadius = 1
                 overlayView.addSubview(hourIndicatorView)
             }
@@ -154,12 +155,12 @@ class DayViewCell : UICollectionViewCell {
         }
         shapeLayers = []
         
-        let hourHeight = self.bounds.height/24
+        let hourHeight = self.bounds.height/DateSupport.hoursInDay
         let dottedPathCombine = CGMutablePath()
         let linePathCombine = CGMutablePath()
         
         // Generate dotted line seperators
-        for i in 0...DateSupport.hoursInDay-1 {
+        for i in 0...Int(DateSupport.hoursInDay)-1 {
             
             let dottedPath = UIBezierPath()
             let linePath = UIBezierPath()
@@ -176,20 +177,20 @@ class DayViewCell : UICollectionViewCell {
             dottedPathCombine.addPath(dottedPath.cgPath)
         }
         
-        let dottedLineLayer = CAShapeLayer()
-        dottedLineLayer.path=dottedPathCombine
-        dottedLineLayer.lineDashPattern = [3,1]
-        dottedLineLayer.lineWidth = 1
-        dottedLineLayer.fillColor = UIColor.clear.cgColor
-        dottedLineLayer.opacity = 1.0
-        dottedLineLayer.strokeColor = LayoutDefaults.backgroundGray.cgColor
-        
         let lineLayer = CAShapeLayer()
         lineLayer.path=linePathCombine
-        lineLayer.lineWidth = 1
+        lineLayer.lineWidth = LayoutVariables.mainSeperatorThickness
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.opacity = 1.0
-        lineLayer.strokeColor = LayoutDefaults.backgroundGray.cgColor
+        lineLayer.strokeColor = LayoutVariables.mainSeperatorColor.cgColor
+        
+        let dottedLineLayer = CAShapeLayer()
+        dottedLineLayer.path=dottedPathCombine
+        dottedLineLayer.lineDashPattern = LayoutVariables.dashedSeperatorPattern
+        dottedLineLayer.lineWidth = LayoutVariables.dashedSeperatorThickness
+        dottedLineLayer.fillColor = UIColor.clear.cgColor
+        dottedLineLayer.opacity = 1.0
+        dottedLineLayer.strokeColor = LayoutVariables.dashedSeperatorColor.cgColor
         
         shapeLayers.append(dottedLineLayer)
         shapeLayers.append(lineLayer)
@@ -198,7 +199,7 @@ class DayViewCell : UICollectionViewCell {
     }
     
     private func getFrame(withStartingTime time:Int,andDuration duration:Int) -> CGRect{
-        let hourHeight = self.bounds.height/24
+        let hourHeight = self.bounds.height/DateSupport.hoursInDay
         return CGRect(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration))
     }
 

@@ -8,7 +8,6 @@
 
 import UIKit
 
-// MARK: - LAYOUT VARIABLES -
 
 // MARK: - DAY COLLECTION VIEW -
 
@@ -36,7 +35,7 @@ class DayCollectionView: UICollectionView {
     
 }
 
-// MARK: - DAY COLLECTION VIEW
+// MARK: - DAY COLLECTION VIEW FLOW LAYOUT -
 
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
     

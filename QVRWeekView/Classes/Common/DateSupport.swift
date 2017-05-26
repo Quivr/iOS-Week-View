@@ -13,8 +13,7 @@ import Foundation
 class DateSupport {
     
     static let secondsInADay:Int = 60*60*24
-    static let hoursInDay:Int = 24
-    
+    static let hoursInDay:CGFloat = 24
     
     static func getDayDate(forDaysInFuture days:Int) -> Date {
         
