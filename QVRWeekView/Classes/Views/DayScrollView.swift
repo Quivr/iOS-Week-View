@@ -54,6 +54,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         // Make day collection view and add it to frame
         dayCollectionView = DayCollectionView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: LayoutVariables.totalContentHeight), collectionViewLayout: DayCollectionViewFlowLayout())
         dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayOfYearToday), y: 0)
+        dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
         self.addSubview(dayCollectionView)
@@ -250,7 +251,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: LayoutVariables.activeFrameWidth, height: LayoutVariables.totalContentHeight)
         
-        if oldWidth != 0 && oldWidth != LayoutVariables.totalContentWidth{
+        if oldWidth != LayoutVariables.totalContentWidth{
             let newXOffset = CGFloat(CGFloat(oldIndexPath.row)*LayoutVariables.totalDayViewCellWidth).roundUpAdditionalHalf()
             dayCollectionView.contentOffset = CGPoint(x: newXOffset, y: 0)
         }
@@ -272,7 +273,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     
     // MARK: - HELPER/PRIVATE FUNCTIONS -
-    
     
     private func resetView(withYearOffsetChange change: Int){
         didJustResetView = true
