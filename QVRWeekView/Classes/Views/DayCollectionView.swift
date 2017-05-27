@@ -63,7 +63,7 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let velocityOffset = round(xVelocity * LayoutVariables.velocityOffsetMultiplier)
         
         if velocityOffset != 0 {
-            let targetXOffset = (cellOffset + velocityOffset)*totalDayViewWidth
+            let targetXOffset = ((cellOffset + velocityOffset)*totalDayViewWidth).roundUpAdditionalHalf()
             return CGPoint(x: targetXOffset, y: proposedContentOffset.y)
         }
         else {

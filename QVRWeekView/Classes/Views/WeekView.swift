@@ -35,17 +35,16 @@ public class WeekView : UIView {
     
     // MARK: - PRIVATE VARIABLES -
     
-    // Array of all daylabels
-    private var visibleDayLabels:[Date:UILabel] = [:]
-    // Array of labels not being displayed
-    private var discardedDayLabels:[UILabel] = []
-    // Left side buffer for top bar
-    private var topBarLeftBuffer:CGFloat = 0
-    // Top side buffer for side bar
-    private var sideBarTopBuffer:CGFloat = 0
-    
     // The actual view being displayed, all other views are subview of this mainview
-    var mainView:UIView!
+    var mainView: UIView!
+    // Array of all daylabels
+    private var visibleDayLabels: [Date:UILabel] = [:]
+    // Array of labels not being displayed
+    private var discardedDayLabels: [UILabel] = []
+    // Left side buffer for top bar
+    private var topBarLeftBuffer: CGFloat = 0
+    // Top side buffer for side bar
+    private var sideBarTopBuffer: CGFloat = 0
     // The scale of the latest pinch event
     private var lastTouchScale = CGFloat(0)
     
@@ -86,7 +85,7 @@ public class WeekView : UIView {
             if let dayViewCell = cell as? DayViewCell {
                 let oldDate = dayViewCell.date!
                 let possibleLabel = visibleDayLabels[oldDate]
-                let newDate = dayScrollView.getDate(forIndexPath: indexPath)
+                let newDate = dayScrollView.generateNewDate(forIndexPath: indexPath)
                 dayViewCell.setDate(as: newDate)
                 if let label = possibleLabel {
                     visibleDayLabels.removeValue(forKey: oldDate)
@@ -102,7 +101,7 @@ public class WeekView : UIView {
     
     // MARK: - INTERNAL FUNCTIONS -
 
-    func zoomView(_ sender:UIPinchGestureRecognizer) {
+    func zoomView(_ sender: UIPinchGestureRecognizer) {
         
         let currentScale = sender.scale
         var touchCenter:CGPoint! = nil
@@ -117,7 +116,7 @@ public class WeekView : UIView {
         updateTopAndSideBarConstraints()
     }
     
-    func addLabel(forIndexPath indexPath:IndexPath, withDate date:Date) {
+    func addLabel(forIndexPath indexPath: IndexPath, withDate date: Date) {
         
         var label:UILabel!
         if discardedDayLabels.count != 0 {
@@ -134,7 +133,7 @@ public class WeekView : UIView {
         self.topBarView.addSubview(label)
     }
     
-    func discardLabel(withDate date:Date) {
+    func discardLabel(withDate date: Date) {
         
         if let label = visibleDayLabels[date]{
             label.removeFromSuperview()
@@ -216,7 +215,7 @@ public class WeekView : UIView {
         }
     }
     
-    private func makeDayLabel(withIndexPath indexPath:IndexPath) -> UILabel {
+    private func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
     
         // Make as daylabel
         let labelFrame = generateDayLabelFrame(forIndex: indexPath)
@@ -227,7 +226,7 @@ public class WeekView : UIView {
         return dayLabel
     }
     
-    private func generateDayLabelFrame(forIndex indexPath:IndexPath) -> CGRect {
+    private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
         return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.topBarHeight)
     }

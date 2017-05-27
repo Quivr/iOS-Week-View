@@ -11,7 +11,7 @@ import UIKit
 
 extension String {
     
-    func getFirstNCharacters(n count:Int) -> String {
+    func getFirstNCharacters(n count: Int) -> String {
         return self.substring(to: self.index(self.startIndex, offsetBy: count))
     }
 }
@@ -35,7 +35,7 @@ extension Date {
         return isSameDayAs(Date())
     }
     
-    func isSameDayAs(_ day:Date) -> Bool {
+    func isSameDayAs(_ day: Date) -> Bool {
 
         let todayComponents = day.getDayComponents()
         let selfComponents = self.getDayComponents()
@@ -79,7 +79,7 @@ extension Date {
         return "\(dayOfWeek) \(day) \(monthStr)"
     }
     
-    func getDaysInYear(withYearOffset offset:Int) -> Int {
+    func getDaysInYear(withYearOffset offset: Int) -> Int {
         
         let cal = Calendar.current
         let year = cal.component(.year, from: self)
@@ -105,9 +105,16 @@ extension Date {
 
 extension CGFloat {
     
-    func roundedUpToNearestHalf() -> CGFloat {
-        return ceil(self*2)/2
+    func roundUpAdditionalHalf() -> CGFloat {
+        return (self+0.5).roundedToNearestHalf()
+    }
+    
+    func roundDownSubtractedHalf() -> CGFloat {
+        return (self-0.5).roundedToNearestHalf()
+    }
+    
+    private func roundedToNearestHalf() -> CGFloat {
+        return ((self*2).rounded())/2
     }
     
 }
-

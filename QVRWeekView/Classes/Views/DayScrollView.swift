@@ -61,7 +61,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         // Set content size for vertical scrolling
         self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
         
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap)))
+        // Add tap gesture recognizer
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
         
         // Set scroll view properties
         self.isDirectionalLockEnabled = true
@@ -93,20 +94,18 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func tap(_ sender: UITapGestureRecognizer) {
         
         if !self.dayCollectionView.isDragging && !self.dayCollectionView.isDecelerating {
-            scrollToNearestPage()
+            scrollToNearestCell()
         }
-        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
+        
         // Handle side and top bar animations
         if let weekView = self.superview?.superview as? WeekView {
             weekView.updateTopAndSideBarPositions()
         }
         
         if let collectionView = scrollView as? DayCollectionView {
-            
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
                 resetView(withYearOffsetChange: -1)
             }
@@ -114,17 +113,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                 resetView(withYearOffsetChange: 1)
             }
         }
-        
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            scrollToNearestPage()
+            scrollToNearestCell()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        scrollToNearestPage()
+        scrollToNearestCell()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -135,7 +133,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         
         let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as! DayViewCell
         dayViewCell.clearValues()
-        let dateForCell = getDate(forIndexPath: indexPath)
+        let dateForCell = generateNewDate(forIndexPath: indexPath)
         dayViewCell.setDate(as: dateForCell)
         
         for events in allEvents {
@@ -229,7 +227,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         
         if state == .cancelled || state == .ended || state == .failed {
             self.previousZoomTouch = nil
-            scrollToNearestPage()
+            scrollToNearestCell()
         }
     }
     
@@ -251,23 +249,24 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         updateDayViewCellSizeAndSpacing()
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: LayoutVariables.activeFrameWidth, height: LayoutVariables.totalContentHeight)
-        // Update content size and maintain offset position
-        dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
-
-        if oldWidth != 0 && oldWidth != dayCollectionView.contentSize.width{
-            let newXOffset = CGFloat(CGFloat(oldIndexPath.row)*LayoutVariables.totalDayViewCellWidth).roundedUpToNearestHalf()
+        
+        if oldWidth != 0 && oldWidth != LayoutVariables.totalContentWidth{
+            let newXOffset = CGFloat(CGFloat(oldIndexPath.row)*LayoutVariables.totalDayViewCellWidth).roundUpAdditionalHalf()
             dayCollectionView.contentOffset = CGPoint(x: newXOffset, y: 0)
         }
         else {
             dayCollectionView.contentOffset = CGPoint(x: oldXOffset, y: 0)
         }
         
+        // Update content size
+        dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
+        
         if let weekView = self.superview?.superview as? WeekView {
             weekView.updateVisibleLabelsAndMainConstraints()
         }
     }
     
-    func getDate(forIndexPath indexPath:IndexPath) -> Date{
+    func generateNewDate(forIndexPath indexPath: IndexPath) -> Date{
         let dayCount = indexPath.row - dayOfYearToday + LayoutVariables.daysInActiveYear*yearOffset
         return DateSupport.getDayDate(forDaysInFuture: dayCount)
     }
@@ -275,19 +274,21 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     // MARK: - HELPER/PRIVATE FUNCTIONS -
     
     
-    private func resetView(withYearOffsetChange change:Int){
+    private func resetView(withYearOffsetChange change: Int){
         didJustResetView = true
         yearOffset += change
+
         LayoutVariables.daysInActiveYear = Date().getDaysInYear(withYearOffset: yearOffset)
+
         if change < 0 {
-            dayCollectionView.contentOffset.x = LayoutVariables.maxOffsetX
+            dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
         }
         else if change > 0 {
-            dayCollectionView.contentOffset.x = LayoutVariables.minOffsetX
+            dayCollectionView.contentOffset.x = (LayoutVariables.minOffsetX).roundUpAdditionalHalf()
         }
     }
     
-    private func scrollToNearestPage() {
+    private func scrollToNearestCell() {
         let xOffset = dayCollectionView.contentOffset.x
         let yOffset = dayCollectionView.contentOffset.y
         
@@ -295,8 +296,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         let truncatedToPagingWidth = xOffset.truncatingRemainder(dividingBy: totalDayViewWidth)
         
         if (truncatedToPagingWidth >= 0.5 && yOffset >= LayoutVariables.minOffsetY && yOffset <= LayoutVariables.maxOffsetY){
-            
-            let targetXOffset = round(xOffset / totalDayViewWidth)*totalDayViewWidth
+            let targetXOffset = (round(xOffset / totalDayViewWidth)*totalDayViewWidth).roundUpAdditionalHalf()
             dayCollectionView.setContentOffset(CGPoint(x: targetXOffset, y: dayCollectionView.contentOffset.y), animated: true)
         }
         didJustResetView = false

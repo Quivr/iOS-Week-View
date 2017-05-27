@@ -60,7 +60,7 @@ class DayViewCell : UICollectionViewCell {
         hourIndicatorView = nil
     }
     
-    func setDate(`as` date:Date) {
+    func setDate(`as` date: Date) {
         
         if overlayView != nil {
             overlayView.removeFromSuperview()
@@ -101,7 +101,7 @@ class DayViewCell : UICollectionViewCell {
         }
     }
     
-    func setEventViews(_ events:[[String:String]]) {
+    func setEventViews(_ events: [[String:String]]) {
         
         self.events = [:]
         self.eventViews = [:]
