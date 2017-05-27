@@ -6,11 +6,8 @@ import UIKit
 
 /**
  Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
- and all customization can be done with public functions. No delegates required.
- 
- WeekView can be used in either landscape or portrait mode but for it to work WeekView is required to be given
- updated width and height whenever device orientation changes. This works and has only been tested with constraints but as 
- long as frame is updated before new device orientation notifications are sent it should work fine.
+ and all customization can be done with public functions. No delegates have been implemented yet. WeekView can be used in both landscape and portrait
+ mode.
  */
 public class WeekView : UIView {
     
@@ -95,6 +92,9 @@ public class WeekView : UIView {
         }
     }
     
+    /**
+     Shows the day view cell corresponding to today.
+     */
     public func showToday() {
         dayScrollView.showToday()
     }
@@ -274,7 +274,7 @@ public extension WeekView {
     }
     
     /**
-     Sets background color of top bar.
+     Sets background color of top bar containing day labels.
      - parameters:
        - color: New color for top bar.
      */
@@ -284,9 +284,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets background color of the side bar containing hour labels.
      - parameters:
-     -
+       - color: New color for side bar.
      */
     public func setSideBarColor(to color: UIColor) {
         LayoutVariables.sideBarColor = color
@@ -294,9 +294,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the width of the side bar containing hour labels.
      - parameters:
-     -
+       - width: New width for the side bar.
      */
     public func setSideBarWidth(to width: CGFloat) {
         LayoutVariables.sideBarWidth = width
@@ -304,9 +304,9 @@ public extension WeekView {
     }
     
     /**
-     Sets font used for day labels.
+     Sets font used by all day labels contained in the top bar.
      - parameters:
-     - font: New font for all day labels.
+       - font: New font for all day labels.
      */
     public func setDayLabelFont(to font: UIFont) {
         LayoutVariables.dayLabelFont = font
@@ -314,9 +314,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the text color for all day labels contained in the top bar.
      - parameters:
-     -
+       - color: New color of text.
      */
     public func setDayLabelTextColor(to color: UIColor) {
         LayoutVariables.dayLabelTextColor = color
@@ -324,9 +324,10 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the minimum percentage that day label text will be resized to if label is too small.
+     (CURRENTLY NOT IMPLEMENTED)
      - parameters:
-     -
+       - scale: New scale for the day label.
      */
     public func setDayLabelMinimumScale(to scale: CGFloat) {
         LayoutVariables.dayLabelMinimumScale = scale
@@ -334,9 +335,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets font used by all hour labels contained in the side bar.
      - parameters:
-     -
+       - font: New font for all hour labels.
      */
     public func setHourLabelFont(to font: UIFont) {
         LayoutVariables.hourLabelFont = font
@@ -344,9 +345,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the text color for all hour labels contained in the side bar.
      - parameters:
-     -
+       - color: New color of text.
      */
     public func setHourLabelTextColor(to color: UIColor) {
         LayoutVariables.hourLabelTextColor = color
@@ -354,9 +355,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the minimum percentage that hour label text will be resized to if label is too small.
      - parameters:
-     -
+       - scale: New scale for the hour labels.
      */
     public func setHourLabelMinimumScale(to scale: CGFloat) {
         LayoutVariables.hourLabelMinimumScale = scale
@@ -368,7 +369,7 @@ public extension WeekView {
     /**
      Sets number of visible days when in portait mode.
      - parameters:
-     - days: New number of days.
+       - days: New number of days visible.
      */
     public func setVisibleDaysPortrait(numberOfDays days: Int){
         if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
@@ -379,7 +380,7 @@ public extension WeekView {
     /**
      Sets number of visible days when in landscape mode.
      - parameters:
-     - days: New number of days.
+       - days: New number of days visible.
      */
     public func setVisibleDaysLandscape(numberOfDays days: Int){
         if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
@@ -388,135 +389,139 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets font used for all event labels contained in the day view cells.
      - parameters:
-     -
+       - font: New font for all event labels.
      */
     public func setEventLabelFont(to font: UIFont) {
         dayScrollView.setEventLabelFont(to: font)
     }
     
     /**
-     Sets
+     Sets the text color for all event labels contained in the day view cells.
      - parameters:
-     -
+       - color: New color of text.
      */
     public func setEventLabelTextColor(to color: UIColor) {
         dayScrollView.setEventLabelTextColor(to: color)
     }
     
     /**
-     Sets
+     Sets the minimum percentage that event label text will be resized to if label is too small.
      - parameters:
-     -
+       - scale: New scale for the event labels.
      */
     public func setEventLabelMinimumScale(to scale: CGFloat) {
         dayScrollView.setEventLabelMinimumScale(to: scale)
     }
     
     /**
-     Sets
+     Sets default color of the day view cells. These are all days that are not weekends.
      - parameters:
-     -
+       - color: New color for all standard day view cells.
      */
     public func setDefaultDayViewColor(to color: UIColor) {
         dayScrollView.setDefaultDayViewColor(to: color)
     }
     
     /**
-     Sets
+     Sets color for all day view cells that are weekends.
      - parameters:
-     -
+       - color: New color for all weekend day view cells.
      */
     public func setWeekendDayViewColor(to color: UIColor) {
         dayScrollView.setWeekendDayViewColor(to: color)
     }
     
     /**
-     Sets
+     Sets color for the overlay displayed ontop of the day view cells. Overlay will indicate which days have passed and how much time of today has passed. Overlay view itself is opaque, and thus will require a UIColor with alpha less than 1 to become transluscent.
      - parameters:
-     -
+       - color: New color for the overlay.
      */
     public func setDayViewOverlayColor(to color: UIColor) {
         dayScrollView.setDayViewOverlayColor(to: color)
     }
     
     /**
-     Sets
+     Sets the color for the hour indicator.
      - parameters:
-     -
+       - color: New color for hour indicator.
      */
     public func setDayViewHourIndicatorColor(to color: UIColor) {
         dayScrollView.setDayViewHourIndicatorColor(to: color)
     }
     
     /**
-     Sets
+     Sets thickness (aka height) of the hour indicator.
      - parameters:
-     -
+       - thickness: New thickness for hour indicator.
      */
     public func setDayViewHourIndicatorThickness(to thickness: CGFloat) {
         dayScrollView.setDayViewHourIndicatorThickness(to: thickness)
     }
     
     /**
-     Sets
+     Sets the color of the main seperators in the day view cells. Main seperators are full lines and not dashed.
      - parameters:
-     -
+       - color: New color for main seperators.
      */
     public func setDayViewMainSeperatorColor(to color: UIColor) {
         dayScrollView.setDayViewMainSeperatorColor(to: color)
     }
     
     /**
-     Sets
+     Sets the thickness of the main seperators in the day view cells. Main seperators are full lines and not dashed.
      - parameters:
-     -
+       - thickness: New thickness for main seperators.
      */
     public func setDayViewMainSeperatorThickness(to thickness: CGFloat) {
         dayScrollView.setDayViewMainSeperatorThickness(to: thickness)
     }
     
     /**
-     Sets
+     Sets the color of the dashed/dotted seperators in the day view cells.
      - parameters:
-     -
+       - color: New color for dashed/dotted seperators.
      */
     public func setDayViewDashedSeperatorColor(to color: UIColor) {
         dayScrollView.setDayViewDashedSeperatorColor(to: color)
     }
     
     /**
-     Sets
+     Sets the thickness of the dashed/dotted seperators in the day view cells.
      - parameters:
-     -
+       - thickness: New thickness for dashed/dotted seperators.
      */
     public func setDayViewDashedSeperatorThickness(to thickness: CGFloat) {
         dayScrollView.setDayViewDashedSeperatorThickness(to: thickness)
     }
     
     /**
-     Sets
+     Sets the pattern for the dashed/dotted seperators. Requires an array of NSNumbers.
+     Example 1: [10, 5] will provide a pattern of 10 points drawn, 5 points empty, repeated.
+     Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty.
+     
+     See Apple API for additional information on pattern drawing.
      - parameters:
-     -
+       - pattern: New pattern for dashed/dotted seperators.
      */
     public func setDayViewDashedSeperatorPattern(to pattern: [NSNumber]) {
         dayScrollView.setDayViewDashedSeperatorPattern(to: pattern)
     }
     
     /**
-     Sets
+     Sets the height for the day view cells. This is the initial height for zoom scale = 1.0.
      - parameters:
-     -
+       - height: New height for day view cells.
      */
     public func setDayViewCellHeight(to height: CGFloat) {
         dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
     }
     
     /**
-     Sets
+     Sets the amount of spacing in between day view cells when in portrait mode.
      - parameters:
-     -
+       - width: New width of spacing gap.
      */
     public func setPortraitDayViewSideSpacing(to width: CGFloat) {
         if dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
@@ -525,9 +530,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the amount of spacing in between day view cells when in landscape mode.
      - parameters:
-     -
+       - width: New width of spacing gap.
      */
     public func setLandscapeDayViewSideSpacing(to width: CGFloat) {
         if dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
@@ -536,9 +541,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the amount of spacing above and below day view cells when in portrait mode.
      - parameters:
-     -
+       - height: New height of spacing gap.
      */
     public func setPortraitDayViewVerticalSpacing(to width: CGFloat) {
         if dayScrollView.setPortraitDayViewVerticalSpacing(to: width) {
@@ -547,9 +552,9 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the amount of spacing above and below day view cells when in landscape mode.
      - parameters:
-     -
+       - height: New height of spacing gap.
      */
     public func setLandscapeDayViewVerticalSpacing(to width: CGFloat) {
         if dayScrollView.setLandscapeDayViewVerticalSpacing(to: width) {
@@ -558,15 +563,13 @@ public extension WeekView {
     }
     
     /**
-     Sets
+     Sets the sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling.
      - parameters:
-     -
+       - multiplier: New velocity multiplier.
      */
-    public func setVelocityOffsetMultiplier(to multiplier:CGFloat) {
+    public func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
         dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
     }
-    
-    
     
     private func updateHourSideBarView() {
         for view in sideBarView.subviews{
