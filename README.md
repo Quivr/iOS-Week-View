@@ -7,7 +7,7 @@
 
 ## About
 
-[WIP] QVRWeekView is a framework which contains a WeekView which allows you to display a calendar.
+[WIP] QVRWeekView is a framework that contains a week/day view that will soon also allow you to display, add and remove events.
 
 ## Features
 
@@ -52,7 +52,7 @@ into either your viewDidLoad or viewWillAppear method.
 
 #### 2. Via the storyboard
 
-To add the WeekView via the storyboard, simple add a View onto your View Controller and resize it or add constraints. Then go to the identity inspector of your view and select the Class to be `WeekView` and the module to be `QVRWeekView` (See image).
+To add the WeekView via the storyboard, simply add a View onto your View Controller and resize it or add constraints. Then go to the identity inspector of your view and select the Class to be `WeekView` and the module to be `QVRWeekView` (See image).
 
 ![image](http://i.imgur.com/5ymQ8iE.png "Identity Inspector - WeekView")
 
@@ -71,8 +71,8 @@ WeekView handles top level operations such as pinch gestures and orientation cha
 ## Upcoming features
 
 * Ability to add and remove events
-* Event color choosing
-* More customization features
+* Event color customization
+* Extra customization features
 
 ## Author
 
