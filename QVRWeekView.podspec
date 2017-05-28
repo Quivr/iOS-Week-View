@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 s.name             = 'QVRWeekView'
-s.version          = '0.1.0'
+s.version          = '0.2.0'
 s.summary          = 'QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.'
 
 # This description is used to generate tags and improve search results.
@@ -32,11 +32,6 @@ s.source_files = 'QVRWeekView/Classes/**/*'
 
 s.frameworks = 'UIKit'
 
-# s.resource_bundles = {
-#   'QVRWeekView' => ['QVRWeekView/Assets/*.png']
-# }
 
-# s.public_header_files = 'Pod/Classes/**/*.h'
 
-# s.dependency 'AFNetworking', '~> 2.3'
 end

@@ -1,10 +1,4 @@
-//
-//  EventView.swift
-//  ProjectCalendar
-//
-//  Created by Reinert Lemmens on 5/14/17.
-//  Copyright © 2017 lemonrainn. All rights reserved.
-//
+
 
 import UIKit
 
@@ -23,17 +17,18 @@ class EventView: UIView {
         super.init(frame: frame)
         setView()
     }
-    
-    override func prepareForInterfaceBuilder() {
-        super.prepareForInterfaceBuilder()
-        setView()
-        view!.prepareForInterfaceBuilder()
-    }
 
     override func layoutSubviews() {
-        textLabel.font = UIFont.boldSystemFont(ofSize: LayoutDefaults.eventLabelFontSize)
-        textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
-        textLabel.adjustsFontSizeToFitWidth = true
+        
+        if textLabel.font != LayoutVariables.eventLabelFont {
+            textLabel.font = LayoutVariables.eventLabelFont
+        }
+        if textLabel.textColor != LayoutVariables.eventLabelTextColor {
+            textLabel.textColor = LayoutVariables.eventLabelTextColor
+        }
+        if textLabel.minimumScaleFactor != LayoutVariables.eventLabelMinimumScale {
+            textLabel.minimumScaleFactor = LayoutVariables.eventLabelMinimumScale
+        }
     }
     
     private func setView() {
@@ -48,6 +43,9 @@ class EventView: UIView {
         }
         self.backgroundColor = UIColor.clear
         
+        textLabel.font = LayoutVariables.eventLabelFont
+        textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
+        textLabel.adjustsFontSizeToFitWidth = true
     }
 
 }

@@ -11,23 +11,34 @@ import UIKit
 
 extension String {
     
-    func getFirstNCharacters(n count:Int) -> String {
+    func getFirstNCharacters(n count: Int) -> String {
         return self.substring(to: self.index(self.startIndex, offsetBy: count))
     }
 }
 
 extension Date {
-        
+    
+    func getDayOfYear() -> Int {
+        return (Calendar.current.ordinality(of: .day, in: .year, for: self)!-1)
+    }
+    
+    func getDayOfWeek() -> Int {
+        return (Calendar.current.component(.weekday, from: self)-1)
+    }
+    
     func hasPassed() -> Bool {
         return (self.compare(Date()).rawValue == -1)
     }
     
     func isToday() -> Bool {
         
-        let cal = Calendar.current
-        let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
-        let todayComponents = cal.dateComponents(dayComponenets, from: Date())
-        let selfComponents = cal.dateComponents(dayComponenets, from: self)
+        return isSameDayAs(Date())
+    }
+    
+    func isSameDayAs(_ day: Date) -> Bool {
+
+        let todayComponents = day.getDayComponents()
+        let selfComponents = self.getDayComponents()
         
         if todayComponents == selfComponents {
             return true
@@ -50,7 +61,7 @@ extension Date {
         let hour = Double(cal.component(.hour, from: self))
         let minutes = Double(cal.component(.minute, from: self))
         
-        return CGFloat(1 - ((hour/24) + (minutes/(60*24))))
+        return CGFloat((hour/24) + (minutes/(60*24)))
             
     }
     
@@ -67,12 +78,43 @@ extension Date {
         
         return "\(dayOfWeek) \(day) \(monthStr)"
     }
+    
+    func getDaysInYear(withYearOffset offset: Int) -> Int {
+        
+        let cal = Calendar.current
+        let year = cal.component(.year, from: self)
+        var dateComps = DateComponents()
+        dateComps.day = 1
+        dateComps.month = 1
+        dateComps.year = year + offset
+        
+        let firstJanuaryThisYear = cal.date(from: dateComps)!
+        
+        dateComps.year = year + 1 + offset
+        
+        let firstJanuaryNextYear = cal.date(from: dateComps)!
+        return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
+    }
+    
+    private func getDayComponents() -> DateComponents {
+        let cal = Calendar.current
+        let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
+        return cal.dateComponents(dayComponenets, from: self)
+    }
 }
 
 extension CGFloat {
     
-    func roundedUpToNearestHalf() -> CGFloat{
-        return ceil(self*2)/2
+    func roundUpAdditionalHalf() -> CGFloat {
+        return (self+0.5).roundedToNearestHalf()
+    }
+    
+    func roundDownSubtractedHalf() -> CGFloat {
+        return (self-0.5).roundedToNearestHalf()
+    }
+    
+    private func roundedToNearestHalf() -> CGFloat {
+        return ((self*2).rounded())/2
     }
     
 }

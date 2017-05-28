@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 /**
- Class of the side bar hour label view contained within the CalendarView
+ Class of the side bar hour label view contained within the WeekView
  */
 @IBDesignable
 class HourSideBarView : UIView {
@@ -26,6 +26,24 @@ class HourSideBarView : UIView {
         view!.prepareForInterfaceBuilder()
     }
     
+    override func layoutSubviews() {
+        if hourLabels[0].font != LayoutVariables.hourLabelFont {
+            for label in hourLabels {
+                label.font = LayoutVariables.hourLabelFont
+            }
+        }
+        if hourLabels[0].textColor != LayoutVariables.hourLabelTextColor {
+            for label in hourLabels {
+                label.textColor = LayoutVariables.hourLabelTextColor
+            }
+        }
+        if hourLabels[0].minimumScaleFactor != LayoutVariables.hourLabelMinimumScale {
+            for label in hourLabels {
+                label.minimumScaleFactor = LayoutVariables.hourLabelMinimumScale
+            }
+        }
+    }
+    
     private func setView() {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)
@@ -37,6 +55,13 @@ class HourSideBarView : UIView {
             self.addSubview(self.view!)
         }
         self.backgroundColor = UIColor.clear
+        
+        for label in hourLabels {
+            label.font = LayoutVariables.hourLabelFont
+            label.textColor = LayoutVariables.hourLabelTextColor
+            label.minimumScaleFactor = LayoutVariables.hourLabelMinimumScale
+            label.adjustsFontSizeToFitWidth = true
+        }
     }
 
 }
