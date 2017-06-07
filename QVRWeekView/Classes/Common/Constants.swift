@@ -86,6 +86,7 @@ struct NibNames {
     static let dayViewCell = "DayViewCell"
     static let eventView = "EventView"
     static let hourSideBarView = "HourSideBarView"
+    static let constrainedHourSideBarView = "HourSideBarViewC"
     static let weekView = "WeekView"
 }
 

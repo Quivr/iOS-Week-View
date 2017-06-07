@@ -46,7 +46,15 @@ class HourSideBarView : UIView {
     
     private func setView() {
         let bundle = Bundle(for: type(of: self))
-        let nib = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)
+        
+        var nib: UINib!
+        if #available(iOS 9.0, *){
+            nib = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)
+        }
+        else {
+            nib = UINib(nibName: NibNames.constrainedHourSideBarView, bundle: bundle)
+        }
+        
         self.view = nib.instantiate(withOwner: self, options: nil).first as? UIView
         
         if view != nil {

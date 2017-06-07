@@ -53,6 +53,7 @@
 		8653DBF587241D12833CDDCC9384D94A /* Pods-QVRWeekView_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-QVRWeekView_Example-frameworks.sh"; sourceTree = "<group>"; };
 		8E2448678F1AD8009E13B7156AC94A92 /* Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayCollectionView.swift; sourceTree = "<group>"; };
+		913917491EE8B0F300581FD6 /* HourSideBarViewC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HourSideBarViewC.xib; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		955FFDC1095EBEC1F6BB4B14BC950856 /* Pods-QVRWeekView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-QVRWeekView_Example.modulemap"; sourceTree = "<group>"; };
 		A6D65A7B7C73F2DEEAC33F7B7B6BE27D /* QVRWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QVRWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +102,7 @@
 				3C3A1D9F8547CB90A39B0ABFB4E48391 /* WeekView.xib */,
 				F8F1B64AB90195F11DFD15D3E7D1FD8A /* EventView.xib */,
 				1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */,
+				913917491EE8B0F300581FD6 /* HourSideBarViewC.xib */,
 			);
 			path = Xibs;
 			sourceTree = "<group>";
@@ -384,7 +386,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-QVRWeekView_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.modulemap";
@@ -445,7 +447,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -489,7 +491,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SYMROOT = "${SRCROOT}/../build";
@@ -515,7 +517,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Target Support Files/Pods-QVRWeekView_Example/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.modulemap";
@@ -554,7 +556,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/QVRWeekView/QVRWeekView-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/QVRWeekView/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/QVRWeekView/QVRWeekView.modulemap";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -588,7 +590,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/QVRWeekView/QVRWeekView-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/QVRWeekView/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/QVRWeekView/QVRWeekView.modulemap";
 				MTL_ENABLE_DEBUG_INFO = YES;
