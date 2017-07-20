@@ -232,7 +232,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    func updateLayout() {
+    func generateNewDate(forIndexPath indexPath: IndexPath) -> Date{
+        let dayCount = indexPath.row - dayOfYearToday + LayoutVariables.daysInActiveYear*yearOffset
+        return DateSupport.getDayDate(forDaysInFuture: dayCount)
+    }
+    
+    // MARK: - HELPER/PRIVATE FUNCTIONS -
+    
+    fileprivate func updateLayout() {
         
         // Get old offset ratio before resizing cells
         let oldXOffset = dayCollectionView.contentOffset.x
@@ -266,13 +273,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             weekView.updateVisibleLabelsAndMainConstraints()
         }
     }
-    
-    func generateNewDate(forIndexPath indexPath: IndexPath) -> Date{
-        let dayCount = indexPath.row - dayOfYearToday + LayoutVariables.daysInActiveYear*yearOffset
-        return DateSupport.getDayDate(forDaysInFuture: dayCount)
-    }
-    
-    // MARK: - HELPER/PRIVATE FUNCTIONS -
     
     private func resetView(withYearOffsetChange change: Int){
         didJustResetView = true
@@ -345,7 +345,7 @@ extension DayScrollView {
      Sets the font for event labels.
      */
     func setEventLabelFont(to font: UIFont) {
-        LayoutVariables.eventLabelFont = font
+        FontVariables.eventLabelFont = font
         updateLayout()
     }
     
@@ -353,7 +353,7 @@ extension DayScrollView {
      Sets the text color for event labels.
      */
     func setEventLabelTextColor(to color: UIColor) {
-        LayoutVariables.eventLabelTextColor = color
+        FontVariables.eventLabelTextColor = color
         updateLayout()
     }
     
@@ -361,7 +361,7 @@ extension DayScrollView {
      Sets the minimum scale for day labels.
      */
     func setEventLabelMinimumScale(to scale: CGFloat) {
-        LayoutVariables.eventLabelMinimumScale = scale
+        FontVariables.eventLabelMinimumScale = scale
         updateLayout()
     }
     
@@ -401,7 +401,7 @@ extension DayScrollView {
      Sets the thickness of day view hour indicators.
      */
     func setDayViewHourIndicatorThickness(to thickness: CGFloat) {
-        LayoutVariables.hourIndiactorThickness = thickness
+        LayoutVariables.hourIndicatorThickness = thickness
         updateLayout()
     }
     
@@ -679,13 +679,6 @@ struct LayoutVariables {
     
     // MARK: - FONT & COLOUR VARIABLES -
     
-    // Font for all event labels
-    fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
-    // Text color for all event labels
-    fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
-    // Minimum scaling for all event labels
-    fileprivate(set) static var eventLabelMinimumScale = LayoutDefaults.eventLabelMinimumScale
-    
     // Color for day view default color
     fileprivate(set) static var defaultDayViewColor = LayoutDefaults.defaultDayViewColor
     // Color for day view weekend color
@@ -697,7 +690,7 @@ struct LayoutVariables {
     // Color for day view hour indicator
     fileprivate(set) static var hourIndicatorColor = LayoutDefaults.hourIndicatorColor
     // Thickness for day view hour indicator
-    fileprivate(set) static var hourIndiactorThickness = LayoutDefaults.hourIndicatorThickness
+    fileprivate(set) static var hourIndicatorThickness = LayoutDefaults.hourIndicatorThickness
     
     // Color for day view main seperators
     fileprivate(set) static var mainSeperatorColor = LayoutDefaults.backgroundColor
@@ -761,4 +754,15 @@ struct LayoutVariables {
     private static func updateMaxOffsetY() {
         maxOffsetY = totalContentHeight - activeFrameHeight
     }
+}
+
+extension FontVariables {
+    
+    // Font for all event labels
+    fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
+    // Text color for all event labels
+    fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
+    // Minimum scaling for all event labels
+    fileprivate(set) static var eventLabelMinimumScale = LayoutDefaults.eventLabelMinimumScale
+    
 }
