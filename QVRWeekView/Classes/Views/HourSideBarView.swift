@@ -27,19 +27,19 @@ class HourSideBarView : UIView {
     }
     
     override func layoutSubviews() {
-        if hourLabels[0].font != LayoutVariables.hourLabelFont {
+        if hourLabels[0].font != FontVariables.hourLabelFont {
             for label in hourLabels {
-                label.font = LayoutVariables.hourLabelFont
+                label.font = FontVariables.hourLabelFont
             }
         }
-        if hourLabels[0].textColor != LayoutVariables.hourLabelTextColor {
+        if hourLabels[0].textColor != FontVariables.hourLabelTextColor {
             for label in hourLabels {
-                label.textColor = LayoutVariables.hourLabelTextColor
+                label.textColor = FontVariables.hourLabelTextColor
             }
         }
-        if hourLabels[0].minimumScaleFactor != LayoutVariables.hourLabelMinimumScale {
+        if hourLabels[0].minimumScaleFactor != FontVariables.hourLabelMinimumScale {
             for label in hourLabels {
-                label.minimumScaleFactor = LayoutVariables.hourLabelMinimumScale
+                label.minimumScaleFactor = FontVariables.hourLabelMinimumScale
             }
         }
     }
@@ -65,9 +65,9 @@ class HourSideBarView : UIView {
         self.backgroundColor = UIColor.clear
         
         for label in hourLabels {
-            label.font = LayoutVariables.hourLabelFont
-            label.textColor = LayoutVariables.hourLabelTextColor
-            label.minimumScaleFactor = LayoutVariables.hourLabelMinimumScale
+            label.font = FontVariables.hourLabelFont
+            label.textColor = FontVariables.hourLabelTextColor
+            label.minimumScaleFactor = FontVariables.hourLabelMinimumScale
             label.adjustsFontSizeToFitWidth = true
         }
     }

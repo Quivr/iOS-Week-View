@@ -82,7 +82,7 @@ public class WeekView : UIView {
         }
         
         updateVisibleLabelsAndMainConstraints()
-        updateColors()
+        self.backgroundColor = UIColor.clear
     }
     
     // MARK: - PUBLIC FUNCTIONS -
@@ -169,8 +169,8 @@ public class WeekView : UIView {
                 
                 if let label = visibleDayLabels[dateId] {
                     label.frame = generateDayLabelFrame(forIndex: indexPath)
-                    label.font = LayoutVariables.dayLabelFont
-                    label.textColor = LayoutVariables.dayLabelTextColor
+                    label.font = FontVariables.dayLabelFont
+                    label.textColor = FontVariables.dayLabelTextColor
                 }
             }
         }
@@ -181,14 +181,6 @@ public class WeekView : UIView {
     func updateTopAndSideBarPositions() {
         sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
         topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
-    }
-    
-    func updateColors() {
-        self.backgroundColor = UIColor.clear
-        self.mainView.backgroundColor = LayoutVariables.backgroundColor
-        self.sideBarView.backgroundColor = LayoutVariables.sideBarColor
-        self.topLeftBufferView.backgroundColor = LayoutVariables.topBarColor
-        self.topBarView.backgroundColor = LayoutVariables.topBarColor
     }
     
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -202,18 +194,16 @@ public class WeekView : UIView {
         
         // Set position and size constraints for side bar and hour view
         hourSideBarBottomConstraint.constant = dayViewCellHourHeight
-        sideBarWidthConstraint.constant = LayoutVariables.sideBarWidth
+        
         sideBarHeightConstraint.constant = sideBarHeight
         sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
         
         // Set correct size and constraints of top bar view
-        topBarHeightConstraint.constant = LayoutVariables.topBarHeight
         topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width
         topBarLeftBuffer = sideBarView.frame.width
         
         // Set size contraits of top left buffer view
-        topLeftBufferWidthConstraint.constant = LayoutVariables.sideBarWidth
-        topLeftBufferHeightConstraint.constant = LayoutVariables.topBarHeight
+        
         
         updateTopAndSideBarPositions()
     }
@@ -235,15 +225,15 @@ public class WeekView : UIView {
         // Make as daylabel
         let labelFrame = generateDayLabelFrame(forIndex: indexPath)
         let dayLabel = UILabel(frame: labelFrame)
-        dayLabel.font = LayoutVariables.dayLabelFont
-        dayLabel.textColor = LayoutVariables.dayLabelTextColor
+        dayLabel.font = FontVariables.dayLabelFont
+        dayLabel.textColor = FontVariables.dayLabelTextColor
         dayLabel.textAlignment = .center
         return dayLabel
     }
     
     private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.topBarHeight)
+        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarHeight)
     }
 }
 
@@ -256,252 +246,329 @@ public extension WeekView {
     /**
      Background color of main scrollview.
      */
-    public var mainBackgroundColor:UIColor {
+    public var mainBackgroundColor: UIColor {
         get {
             return self.mainView.backgroundColor!
         }
-        set(newColor) {
-            self.mainView.backgroundColor = newColor
+        set(color) {
+            self.mainView.backgroundColor = color
+        }
+    }
+    
+    /**
+     Height of top bar.
+     */
+    public var topBarHeight: CGFloat {
+        get {
+            return self.topBarView.frame.height
+        }
+        set(height) {
+            self.topBarHeightConstraint.constant = height
+            self.topLeftBufferHeightConstraint.constant = height
+        }
+    }
+    
+    /**
+     Background color of top bar containing day labels.
+     */
+    public var topBarColor: UIColor {
+        get {
+            return self.topBarView.backgroundColor!
+        }
+        set(color) {
+            self.topLeftBufferView.backgroundColor = color
+            self.topBarView.backgroundColor = color
+        }
+    }
+    
+    /**
+     Background color of the side bar containing hour labels.
+     */
+    public var sideBarColor: UIColor {
+        get {
+            return self.sideBarView.backgroundColor!
+        }
+        set(color) {
+            self.sideBarView.backgroundColor = color
         }
     }
     
     
-    public func setBackgroundColor(to color: UIColor) {
-        LayoutVariables.backgroundColor = color
-        updateColors()
-    }
-    
     /**
-     Sets height of top bar.
-     - parameters:
-       - height: New height for top bar.
+     Width of the side bar containing hour labels.
      */
-    public func setTopBarHeight(to height: CGFloat) {
-        LayoutVariables.topBarHeight = height
-        updateVisibleLabelsAndMainConstraints()
+    public var sideBarWidth: CGFloat {
+        get {
+            return self.sideBarView.frame.width
+        }
+        set(width) {
+            self.sideBarWidthConstraint.constant = width
+            self.topLeftBufferWidthConstraint.constant = width
+        }
     }
     
     /**
-     Sets background color of top bar containing day labels.
-     - parameters:
-       - color: New color for top bar.
+     Font for all day labels contained in the top bar.
      */
-    public func setTopBarColor(to color: UIColor) {
-        LayoutVariables.topBarColor = color
-        updateColors()
+    public var dayLabelFont: UIFont {
+        get {
+            return FontVariables.dayLabelFont
+        }
+        set(font) {
+            FontVariables.dayLabelFont = font
+            updateVisibleLabelsAndMainConstraints()
+        }
     }
     
     /**
-     Sets background color of the side bar containing hour labels.
-     - parameters:
-       - color: New color for side bar.
+     Text color for all day labels contained in the top bar.
      */
-    public func setSideBarColor(to color: UIColor) {
-        LayoutVariables.sideBarColor = color
-        updateColors()
+    public var dayLabelTextColor: UIColor {
+        get {
+            return FontVariables.dayLabelTextColor
+        }
+        set(color) {
+            FontVariables.dayLabelTextColor = color
+            updateVisibleLabelsAndMainConstraints()
+        }
     }
     
     /**
-     Sets the width of the side bar containing hour labels.
-     - parameters:
-       - width: New width for the side bar.
-     */
-    public func setSideBarWidth(to width: CGFloat) {
-        LayoutVariables.sideBarWidth = width
-        updateVisibleLabelsAndMainConstraints()
-    }
-    
-    /**
-     Sets font used by all day labels contained in the top bar.
-     - parameters:
-       - font: New font for all day labels.
-     */
-    public func setDayLabelFont(to font: UIFont) {
-        LayoutVariables.dayLabelFont = font
-        updateVisibleLabelsAndMainConstraints()
-    }
-    
-    /**
-     Sets the text color for all day labels contained in the top bar.
-     - parameters:
-       - color: New color of text.
-     */
-    public func setDayLabelTextColor(to color: UIColor) {
-        LayoutVariables.dayLabelTextColor = color
-        updateVisibleLabelsAndMainConstraints()
-    }
-    
-    /**
-     Sets the minimum percentage that day label text will be resized to if label is too small.
+     Minimum percentage that day label text will be resized to if label is too small.
      (CURRENTLY NOT IMPLEMENTED)
-     - parameters:
-       - scale: New scale for the day label.
      */
-    public func setDayLabelMinimumScale(to scale: CGFloat) {
-        LayoutVariables.dayLabelMinimumScale = scale
-        updateVisibleLabelsAndMainConstraints()
+    public var dayLabelMinimumScale: CGFloat {
+        get {
+            return FontVariables.dayLabelMinimumScale
+        }
+        set(scale) {
+            FontVariables.dayLabelMinimumScale = scale
+            updateVisibleLabelsAndMainConstraints()
+        }
     }
     
     /**
-     Sets font used by all hour labels contained in the side bar.
-     - parameters:
-       - font: New font for all hour labels.
+     Font for all hour labels contained in the side bar.
      */
-    public func setHourLabelFont(to font: UIFont) {
-        LayoutVariables.hourLabelFont = font
-        updateHourSideBarView()
+    public var hourLabelFont: UIFont {
+        get {
+            return FontVariables.hourLabelFont
+        }
+        set(font) {
+            FontVariables.hourLabelFont = font
+            updateHourSideBarView()
+        }
     }
     
     /**
-     Sets the text color for all hour labels contained in the side bar.
-     - parameters:
-       - color: New color of text.
+     Text color for all hour labels contained in the side bar.
      */
-    public func setHourLabelTextColor(to color: UIColor) {
-        LayoutVariables.hourLabelTextColor = color
-        updateHourSideBarView()
+    public var hourLabelTextColor: UIColor {
+        get {
+            return FontVariables.hourLabelTextColor
+        }
+        set(color) {
+            FontVariables.hourLabelTextColor = color
+            updateHourSideBarView()
+        }
     }
     
     /**
-     Sets the minimum percentage that hour label text will be resized to if label is too small.
-     - parameters:
-       - scale: New scale for the hour labels.
+     Minimum percentage that hour label text will be resized to if label is too small.
      */
-    public func setHourLabelMinimumScale(to scale: CGFloat) {
-        LayoutVariables.hourLabelMinimumScale = scale
-        updateVisibleLabelsAndMainConstraints()
+    public var hourLabelMinimumScale: CGFloat {
+        get {
+            return FontVariables.hourLabelMinimumScale
+        }
+        set(scale) {
+            FontVariables.hourLabelMinimumScale = scale
+            updateHourSideBarView()
+        }
+    }
+    
+    /**
+     Helper function for hour label customization.
+     */
+    private func updateHourSideBarView() {
+        for view in self.sideBarView.subviews{
+            if let hourSideBarView = view as? HourSideBarView {
+                hourSideBarView.layoutIfNeeded()
+            }
+        }
     }
     
     // MARK: - DAYSCROLLVIEW CUSTOMIZATION -
     
     /**
-     Sets number of visible days when in portait mode.
-     - parameters:
-       - days: New number of days visible.
+     Number of visible days when in portait mode.
      */
-    public func setVisibleDaysPortrait(numberOfDays days: Int){
-        if dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
-            updateVisibleLabelsAndMainConstraints()
+    public var visibleDaysInPortraitMode: Int {
+        get {
+            return Int(LayoutVariables.portraitVisibleDays)
+        }
+        set(days) {
+            if self.dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
+                updateVisibleLabelsAndMainConstraints()
+            }
         }
     }
     
     /**
-     Sets number of visible days when in landscape mode.
-     - parameters:
-       - days: New number of days visible.
+     Number of visible days when in landscape mode.
      */
-    public func setVisibleDaysLandscape(numberOfDays days: Int){
-        if dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
-            updateVisibleLabelsAndMainConstraints()
+    public var visibleDaysInLandscapeMode: Int {
+        get {
+            return Int(LayoutVariables.landscapeVisibleDays)
+        }
+        set(days) {
+            if self.dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
+                updateVisibleLabelsAndMainConstraints()
+            }
         }
     }
     
     /**
-     Sets font used for all event labels contained in the day view cells.
-     - parameters:
-       - font: New font for all event labels.
+     Font used for all event labels contained in the day view cells.
      */
-    public func setEventLabelFont(to font: UIFont) {
-        dayScrollView.setEventLabelFont(to: font)
+    public var eventLabelFont: UIFont {
+        get {
+            return FontVariables.eventLabelFont
+        }
+        set(font) {
+            self.dayScrollView.setEventLabelFont(to: font)
+        }
     }
     
     /**
-     Sets the text color for all event labels contained in the day view cells.
-     - parameters:
-       - color: New color of text.
+     Text color for all event labels contained in the day view cells.
      */
-    public func setEventLabelTextColor(to color: UIColor) {
-        dayScrollView.setEventLabelTextColor(to: color)
+    public var eventLabelTextColor: UIColor {
+        get {
+            return FontVariables.eventLabelTextColor
+        }
+        set(color) {
+            self.dayScrollView.setEventLabelTextColor(to: color)
+        }
     }
     
     /**
-     Sets the minimum percentage that event label text will be resized to if label is too small.
-     - parameters:
-       - scale: New scale for the event labels.
+     Minimum percentage that event label text will be resized to if label is too small.
      */
-    public func setEventLabelMinimumScale(to scale: CGFloat) {
-        dayScrollView.setEventLabelMinimumScale(to: scale)
+    public var eventLabelMinimumScale: CGFloat {
+        get {
+            return FontVariables.eventLabelMinimumScale
+        }
+        set(scale) {
+            self.dayScrollView.setEventLabelMinimumScale(to: scale)
+        }
     }
     
     /**
-     Sets default color of the day view cells. These are all days that are not weekends.
-     - parameters:
-       - color: New color for all standard day view cells.
+     Default color of the day view cells. These are all days that are not weekends.
      */
-    public func setDefaultDayViewColor(to color: UIColor) {
-        dayScrollView.setDefaultDayViewColor(to: color)
+    public var defaultDayViewColor: UIColor {
+        get {
+            return LayoutVariables.defaultDayViewColor
+        }
+        set(color) {
+            self.dayScrollView.setDefaultDayViewColor(to: color)
+        }
     }
     
     /**
-     Sets color for all day view cells that are weekends.
-     - parameters:
-       - color: New color for all weekend day view cells.
+     Color for all day view cells that are weekend days.
      */
-    public func setWeekendDayViewColor(to color: UIColor) {
-        dayScrollView.setWeekendDayViewColor(to: color)
+    public var weekendDayViewColor: UIColor {
+        get {
+            return LayoutVariables.weekendDayViewColor
+        }
+        set(color) {
+            self.dayScrollView.setWeekendDayViewColor(to: color)
+        }
     }
     
     /**
-     Sets color for the overlay displayed ontop of the day view cells. Overlay will indicate which days have passed and how much time of today has passed. Overlay view itself is opaque, and thus will require a UIColor with alpha less than 1 to become transluscent.
-     - parameters:
-       - color: New color for the overlay.
+     Color for the overlay displayed ontop of the day view cells. Overlay will indicate which days have passed and how much time of today has passed. Overlay view itself is not transluscent, and requires a background color UIColor with alpha less than 1 for a transluscent effect.
      */
-    public func setDayViewOverlayColor(to color: UIColor) {
-        dayScrollView.setDayViewOverlayColor(to: color)
+    public var dayViewOverlayColor: UIColor {
+        get {
+            return LayoutVariables.overlayColor
+        }
+        set(color) {
+            self.dayScrollView.setDayViewOverlayColor(to: color)
+        }
     }
     
     /**
-     Sets the color for the hour indicator.
-     - parameters:
-       - color: New color for hour indicator.
+     Color of the hour indicator.
      */
-    public func setDayViewHourIndicatorColor(to color: UIColor) {
-        dayScrollView.setDayViewHourIndicatorColor(to: color)
+    public var dayViewHourIndicatorColor: UIColor {
+        get {
+            return LayoutVariables.hourIndicatorColor
+        }
+        set(color) {
+            self.dayScrollView.setDayViewHourIndicatorColor(to: color)
+        }
     }
     
     /**
-     Sets thickness (aka height) of the hour indicator.
-     - parameters:
-       - thickness: New thickness for hour indicator.
+     Thickness (or height) of the hour indicator.
      */
-    public func setDayViewHourIndicatorThickness(to thickness: CGFloat) {
-        dayScrollView.setDayViewHourIndicatorThickness(to: thickness)
+    public var dayViewHourIndicatorThickness: CGFloat {
+        get {
+            return LayoutVariables.hourIndicatorThickness
+        }
+        set(thickness) {
+            self.dayScrollView.setDayViewHourIndicatorThickness(to: thickness)
+        }
     }
     
     /**
-     Sets the color of the main seperators in the day view cells. Main seperators are full lines and not dashed.
-     - parameters:
-       - color: New color for main seperators.
+     Color of the main seperators in the day view cells. Main seperators are full lines and not dashed.
      */
-    public func setDayViewMainSeperatorColor(to color: UIColor) {
-        dayScrollView.setDayViewMainSeperatorColor(to: color)
+    public var dayViewMainSeperatorColor: UIColor {
+        get {
+            return LayoutVariables.mainSeperatorColor
+        }
+        set(color) {
+            self.dayScrollView.setDayViewMainSeperatorColor(to: color)
+        }
     }
     
     /**
-     Sets the thickness of the main seperators in the day view cells. Main seperators are full lines and not dashed.
-     - parameters:
-       - thickness: New thickness for main seperators.
+     Thickness of the main seperators in the day view cells. Main seperators are full lines and not dashed.
      */
-    public func setDayViewMainSeperatorThickness(to thickness: CGFloat) {
-        dayScrollView.setDayViewMainSeperatorThickness(to: thickness)
+    public var dayViewMainSeperatorThickness: CGFloat {
+        get {
+            return LayoutVariables.mainSeperatorThickness
+        }
+        set(thickness) {
+            self.dayScrollView.setDayViewMainSeperatorThickness(to: thickness)
+        }
     }
     
     /**
-     Sets the color of the dashed/dotted seperators in the day view cells.
-     - parameters:
-       - color: New color for dashed/dotted seperators.
+     Color of the dashed/dotted seperators in the day view cells.
      */
-    public func setDayViewDashedSeperatorColor(to color: UIColor) {
-        dayScrollView.setDayViewDashedSeperatorColor(to: color)
+    public var dayViewDashedSeperatorColor: UIColor {
+        get {
+            return LayoutVariables.dashedSeperatorColor
+        }
+        set(color) {
+            self.dayScrollView.setDayViewDashedSeperatorColor(to: color)
+        }
     }
     
     /**
-     Sets the thickness of the dashed/dotted seperators in the day view cells.
-     - parameters:
-       - thickness: New thickness for dashed/dotted seperators.
+     Thickness of the dashed/dotted seperators in the day view cells.
      */
-    public func setDayViewDashedSeperatorThickness(to thickness: CGFloat) {
-        dayScrollView.setDayViewDashedSeperatorThickness(to: thickness)
+    public var dayViewDashedSeperatorThickness: CGFloat {
+        get {
+            return LayoutVariables.dashedSeperatorThickness
+        }
+        set(thickness) {
+            self.dayScrollView.setDayViewDashedSeperatorThickness(to: thickness)
+        }
     }
     
     /**
@@ -510,99 +577,103 @@ public extension WeekView {
      Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty.
      
      See Apple API for additional information on pattern drawing.
-     - parameters:
-       - pattern: New pattern for dashed/dotted seperators.
+     https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern
      */
-    public func setDayViewDashedSeperatorPattern(to pattern: [NSNumber]) {
-        dayScrollView.setDayViewDashedSeperatorPattern(to: pattern)
-    }
-    
-    /**
-     Sets the height for the day view cells. This is the initial height for zoom scale = 1.0.
-     - parameters:
-       - height: New height for day view cells.
-     */
-    public func setDayViewCellHeight(to height: CGFloat) {
-        dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
-    }
-    
-    /**
-     Sets the amount of spacing in between day view cells when in portrait mode.
-     - parameters:
-       - width: New width of spacing gap.
-     */
-    public func setPortraitDayViewSideSpacing(to width: CGFloat) {
-        if dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
-            updateVisibleLabelsAndMainConstraints()
+    public var dayViewDashedSeperatorPattern: [NSNumber] {
+        get {
+            return LayoutVariables.dashedSeperatorPattern
+        }
+        set(pattern) {
+            self.dayScrollView.setDayViewDashedSeperatorPattern(to: pattern)
         }
     }
     
     /**
-     Sets the amount of spacing in between day view cells when in landscape mode.
-     - parameters:
-       - width: New width of spacing gap.
+     Height for the day view cells. This is the initial height for zoom scale = 1.0.
      */
-    public func setLandscapeDayViewSideSpacing(to width: CGFloat) {
-        if dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
-            updateVisibleLabelsAndMainConstraints()
+    public var dayViewCellHeight: CGFloat {
+        get {
+            return LayoutVariables.dayViewCellHeight
+        }
+        set(height) {
+            self.dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
         }
     }
-    
+
     /**
-     Sets the amount of spacing above and below day view cells when in portrait mode.
-     - parameters:
-       - height: New height of spacing gap.
+     Amount of spacing in between day view cells when in portrait mode.
      */
-    public func setPortraitDayViewVerticalSpacing(to width: CGFloat) {
-        if dayScrollView.setPortraitDayViewVerticalSpacing(to: width) {
-            updateVisibleLabelsAndMainConstraints()
+    public var portraitDayViewSideSpacing: CGFloat {
+        get {
+            return LayoutVariables.portraitDayViewHorizontalSpacing
         }
-    }
-    
-    /**
-     Sets the amount of spacing above and below day view cells when in landscape mode.
-     - parameters:
-       - height: New height of spacing gap.
-     */
-    public func setLandscapeDayViewVerticalSpacing(to width: CGFloat) {
-        if dayScrollView.setLandscapeDayViewVerticalSpacing(to: width) {
-            updateVisibleLabelsAndMainConstraints()
-        }
-    }
-    
-    /**
-     Sets the sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling.
-     - parameters:
-       - multiplier: New velocity multiplier.
-     */
-    public func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
-        dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
-    }
-    
-    private func updateHourSideBarView() {
-        for view in sideBarView.subviews{
-            if let hourSideBarView = view as? HourSideBarView {
-                hourSideBarView.layoutIfNeeded()
+        set(width) {
+            if self.dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
+                updateVisibleLabelsAndMainConstraints()
             }
         }
     }
+    
+    /**
+     Amount of spacing in between day view cells when in landscape mode.
+     */
+    public var landscapeDayViewSideSpacing: CGFloat {
+        get {
+            return LayoutVariables.landscapeDayViewHorizontalSpacing
+        }
+        set(width) {
+            if self.dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
+                updateVisibleLabelsAndMainConstraints()
+            }
+        }
+    }
+    
+    /**
+     Amount of spacing above and below day view cells when in portrait mode.
+     */
+    public var portraitDayViewVerticalSpacing: CGFloat {
+        get {
+            return LayoutVariables.portraitDayViewVerticalSpacing
+        }
+        set(height) {
+            if self.dayScrollView.setPortraitDayViewVerticalSpacing(to: height) {
+                updateVisibleLabelsAndMainConstraints()
+            }
+        }
+    }
+    
+    /**
+     Amount of spacing above and below day view cells when in landscape mode.
+     */
+    public var landscapeDayViewVerticalSpacing: CGFloat {
+        get {
+            return LayoutVariables.landscapeDayViewVerticalSpacing
+        }
+        set(height) {
+            if self.dayScrollView.setLandscapeDayViewVerticalSpacing(to: height) {
+                updateVisibleLabelsAndMainConstraints()
+            }
+        }
+    }
+    
+    /**
+     Sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling.
+     */
+    public var velocityOffsetMultiplier: CGFloat {
+        get {
+            return LayoutVariables.velocityOffsetMultiplier
+        }
+        set(multiplier) {
+            self.dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
+        }
+    }
+    
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
-extension LayoutVariables {
-    
-    // Main background color
-    fileprivate(set) static var backgroundColor = LayoutDefaults.backgroundColor
-    // Height of the top bar
-    fileprivate(set) static var topBarHeight = LayoutDefaults.topBarHeight
-    // Color of the top bar
-    fileprivate(set) static var topBarColor = LayoutDefaults.topBarColor
-    // Width of the side bar
-    fileprivate(set) static var sideBarWidth = LayoutDefaults.sideBarWidth
-    // Color of the top bar
-    fileprivate(set) static var sideBarColor = LayoutDefaults.backgroundColor
-    
+public struct FontVariables {
+
     // Font for all day labels
     fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
     // Text color for all day labels

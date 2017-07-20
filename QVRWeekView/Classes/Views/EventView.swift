@@ -20,14 +20,14 @@ class EventView: UIView {
 
     override func layoutSubviews() {
         
-        if textLabel.font != LayoutVariables.eventLabelFont {
-            textLabel.font = LayoutVariables.eventLabelFont
+        if textLabel.font != FontVariables.eventLabelFont {
+            textLabel.font = FontVariables.eventLabelFont
         }
-        if textLabel.textColor != LayoutVariables.eventLabelTextColor {
-            textLabel.textColor = LayoutVariables.eventLabelTextColor
+        if textLabel.textColor != FontVariables.eventLabelTextColor {
+            textLabel.textColor = FontVariables.eventLabelTextColor
         }
-        if textLabel.minimumScaleFactor != LayoutVariables.eventLabelMinimumScale {
-            textLabel.minimumScaleFactor = LayoutVariables.eventLabelMinimumScale
+        if textLabel.minimumScaleFactor != FontVariables.eventLabelMinimumScale {
+            textLabel.minimumScaleFactor = FontVariables.eventLabelMinimumScale
         }
     }
     
@@ -43,7 +43,7 @@ class EventView: UIView {
         }
         self.backgroundColor = UIColor.clear
         
-        textLabel.font = LayoutVariables.eventLabelFont
+        textLabel.font = FontVariables.eventLabelFont
         textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
         textLabel.adjustsFontSizeToFitWidth = true
     }
