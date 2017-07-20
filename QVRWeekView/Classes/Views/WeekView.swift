@@ -57,6 +57,10 @@ public class WeekView : UIView {
         initWeekView()
     }
     
+    override public func willMove(toWindow newWindow: UIWindow?) {
+        updateTimeDisplayed()
+    }
+    
     private func initWeekView() {
         // Get the view layout from the nib
         setView()
@@ -66,8 +70,19 @@ public class WeekView : UIView {
         self.clipsToBounds = true
     }
     
-    override public func willMove(toWindow newWindow: UIWindow?) {
-        updateTimeDisplayed()
+    private func setView() {
+        let bundle = Bundle(for: type(of: self))
+        let nib = UINib(nibName: NibNames.weekView, bundle: bundle)
+        self.mainView = nib.instantiate(withOwner: self, options: nil).first as? UIView
+        
+        if mainView != nil {
+            self.mainView!.frame = self.bounds
+            self.mainView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            self.addSubview(self.mainView!)
+        }
+        
+        updateVisibleLabelsAndMainConstraints()
+        updateColors()
     }
     
     // MARK: - PUBLIC FUNCTIONS -
@@ -229,21 +244,6 @@ public class WeekView : UIView {
     private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
         return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.topBarHeight)
-    }
-    
-    private func setView() {
-        let bundle = Bundle(for: type(of: self))
-        let nib = UINib(nibName: NibNames.weekView, bundle: bundle)
-        self.mainView = nib.instantiate(withOwner: self, options: nil).first as? UIView
-        
-        if mainView != nil {
-            self.mainView!.frame = self.bounds
-            self.mainView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            self.addSubview(self.mainView!)
-        }
-        
-        updateVisibleLabelsAndMainConstraints()
-        updateColors()
     }
 }
 
