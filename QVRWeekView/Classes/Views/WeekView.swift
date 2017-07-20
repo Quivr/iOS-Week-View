@@ -254,10 +254,18 @@ public extension WeekView {
     // MARK: - WEEKVIEW CUSTOMIZATION -
     
     /**
-     Sets background color of main scrollview.
-     - parameters:
-       - color: New background color.
+     Background color of main scrollview.
      */
+    public var mainBackgroundColor:UIColor {
+        get {
+            return self.mainView.backgroundColor!
+        }
+        set(newColor) {
+            self.mainView.backgroundColor = newColor
+        }
+    }
+    
+    
     public func setBackgroundColor(to color: UIColor) {
         LayoutVariables.backgroundColor = color
         updateColors()
