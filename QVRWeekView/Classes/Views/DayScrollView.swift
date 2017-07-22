@@ -95,9 +95,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
     // TODO: DEPRECATED
     func tap(_ sender: UITapGestureRecognizer) {
-        
-        print(sender.view!)
-        print(sender.location(in: self))
+
         if !self.dayCollectionView.isDragging && !self.dayCollectionView.isDecelerating {
             scrollToNearestCell()
         }
@@ -166,12 +164,10 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     
     func eventViewWasTapped(_ eventView: EventView) {
-        print(eventView)
         self.parentWeekView?.eventViewWasTapped(eventView)
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        print(dayViewCell)
         self.parentWeekView?.dayViewCellWasLongPressed(dayViewCell)
     }
     
