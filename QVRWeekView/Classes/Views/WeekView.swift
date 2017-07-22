@@ -9,7 +9,7 @@ import UIKit
  and all customization can be done with public functions. No delegates have been implemented yet. WeekView can be used in both landscape and portrait
  mode.
  */
-public class WeekView : UIView {
+open class WeekView : UIView {
     
     // MARK: - OUTLETS -
     
@@ -59,7 +59,7 @@ public class WeekView : UIView {
         initWeekView()
     }
     
-    override public func willMove(toWindow newWindow: UIWindow?) {
+    override open func willMove(toWindow newWindow: UIWindow?) {
         updateTimeDisplayed()
     }
     
