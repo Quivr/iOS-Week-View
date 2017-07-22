@@ -12,7 +12,6 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
-		91300BEB1F22577A004A7FF9 /* QVRWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91300BEA1F22577A004A7FF9 /* QVRWeekView.framework */; };
 		91412EF41ED34BF5006EC716 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91412EF31ED34BF5006EC716 /* TestViewController.swift */; };
 		916093741ECF3526004E62E3 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916093731ECF3526004E62E3 /* StartViewController.swift */; };
 		D373495F948282220F0D1913 /* Pods_QVRWeekView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */; };
@@ -30,7 +29,6 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6A346FEA39F63FCFB086D222 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		8A7E091BF618C864BC18215D /* QVRWeekView.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = QVRWeekView.podspec; path = ../QVRWeekView.podspec; sourceTree = "<group>"; };
-		91300BEA1F22577A004A7FF9 /* QVRWeekView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = QVRWeekView.framework; sourceTree = "<group>"; };
 		91412EF31ED34BF5006EC716 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		916093731ECF3526004E62E3 /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		A778E5177EE518E5FF85E4C3 /* Pods-QVRWeekView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QVRWeekView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -42,7 +40,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91300BEB1F22577A004A7FF9 /* QVRWeekView.framework in Frameworks */,
 				D373495F948282220F0D1913 /* Pods_QVRWeekView_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,7 +50,6 @@
 		03389EBEE9792EAA7212ABA6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				91300BEA1F22577A004A7FF9 /* QVRWeekView.framework */,
 				CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */,
 			);
 			name = Frameworks;
