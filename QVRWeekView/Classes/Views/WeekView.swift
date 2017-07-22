@@ -189,15 +189,15 @@ open class WeekView : UIView {
     }
     
     func eventViewWasTapped(_ eventView: EventView) {
-        self.delegate?.didTapEvent(sender: self, eventId: 0)
+        self.delegate?.didTapEvent(self, eventId: 0)
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.delegate?.didLongPressDayViewCell(sender: self, pressedTime: Date())
+        self.delegate?.didLongPressDayViewCell(self, pressedTime: Date())
     }
     
     func loadMoreEvents() {
-        self.delegate?.loadNewEvents(sender: self)
+        self.delegate?.loadNewEvents(self)
     }
     
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -690,11 +690,11 @@ public extension WeekView {
 // MARK: - WEEKVIEW DELEGATE -
 
 @objc public protocol WeekViewDelegate: class {
-    func didLongPressDayViewCell(sender: WeekView, pressedTime: Date)
+    func didLongPressDayViewCell(_ weekView: WeekView, pressedTime: Date)
     
-    func didTapEvent(sender: WeekView, eventId: Int)
+    func didTapEvent(_ weekView: WeekView, eventId: Int)
     
-    func loadNewEvents(sender: WeekView)
+    func loadNewEvents(_ weekView: WeekView)
     
 }
 

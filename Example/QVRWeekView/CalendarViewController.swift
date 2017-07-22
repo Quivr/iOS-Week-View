@@ -27,19 +27,19 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func didLongPressDayViewCell(sender: WeekView, pressedTime: Date) {
+    func didLongPressDayViewCell(_ weekView: WeekView, pressedTime: Date) {
         let alert = UIAlertController(title: "Long pressed", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
-    func didTapEvent(sender: WeekView, eventId: Int) {
+    func didTapEvent(_ weekView: WeekView, eventId: Int) {
         let alert = UIAlertController(title: "Tapped event", message: String(eventId), preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
-    func loadNewEvents(sender: WeekView) {
+    func loadNewEvents(_ weekView: WeekView) {
         
     }
     
