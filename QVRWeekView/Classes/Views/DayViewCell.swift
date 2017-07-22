@@ -21,6 +21,9 @@ class DayViewCell : UICollectionViewCell {
     // Seperator drawing variables
     private var shapeLayers:[CAShapeLayer] = []
     
+    // Delegate variable
+    weak var delegate: DayViewCellDelegate?
+    
     // MARK: - INITIALIZERS & OVERRIDES -
     
     required init?(coder aDecoder: NSCoder) {
@@ -36,6 +39,7 @@ class DayViewCell : UICollectionViewCell {
     private func initialize() {
         self.clipsToBounds = true
         self.backgroundColor = LayoutDefaults.defaultDayViewColor
+        self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
     }
     
     override func layoutSubviews() {
@@ -101,7 +105,7 @@ class DayViewCell : UICollectionViewCell {
         }
     }
     
-    func setEventViews(_ events: [[String:String]]) {
+    func setEventViews(_ events: [[String:String]], withDayScrollView dayScrollView: DayScrollView) {
         
         self.events = [:]
         self.eventViews = [:]
@@ -112,8 +116,16 @@ class DayViewCell : UICollectionViewCell {
             let time = Int(event[EventKeys.time]!)!
             let eventView = EventView(frame: getFrame(withStartingTime: time, andDuration: duration))
             eventView.textLabel.text = event[EventKeys.title]
+            eventView.delegate = dayScrollView
             self.addSubview(eventView)
             eventViews[event[EventKeys.id]!] = eventView
+        }
+    }
+    
+    func longPressAction(_ sender: UILongPressGestureRecognizer) {
+        
+        if (sender.state == .began) {
+            delegate?.dayViewCellWasLongPressed(self)
         }
     }
     
@@ -217,4 +229,10 @@ class DayViewCell : UICollectionViewCell {
         return CGRect(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration))
     }
 
+}
+
+protocol DayViewCellDelegate: class {
+    
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell)
+    
 }

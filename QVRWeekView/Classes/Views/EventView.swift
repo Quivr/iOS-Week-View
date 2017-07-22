@@ -6,6 +6,7 @@ class EventView: UIView {
 
     @IBOutlet var textLabel: UILabel!
     
+    weak var delegate: EventViewDelegate?
     var view:UIView?
     
     required init?(coder aDecoder: NSCoder) {
@@ -31,6 +32,10 @@ class EventView: UIView {
         }
     }
     
+    func tapAction(_ sender: UITapGestureRecognizer) {
+        delegate?.eventViewWasTapped(self)
+    }
+    
     private func setView() {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: NibNames.eventView, bundle: bundle)
@@ -46,6 +51,14 @@ class EventView: UIView {
         textLabel.font = FontVariables.eventLabelFont
         textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
         textLabel.adjustsFontSizeToFitWidth = true
+        
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
     }
+
+}
+
+protocol EventViewDelegate: class {
+    
+    func eventViewWasTapped(_ eventView: EventView)
 
 }

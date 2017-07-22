@@ -30,8 +30,10 @@ public class WeekView : UIView {
     @IBOutlet var topLeftBufferWidthConstraint: NSLayoutConstraint!
     @IBOutlet var topLeftBufferHeightConstraint: NSLayoutConstraint!
     
-    // MARK: - PRIVATE VARIABLES -
+    // MARK: - VARIABLES -
     
+    // WeekView Delegate
+    public weak var delegate: WeekViewDelegate?
     // The actual view being displayed, all other views are subview of this mainview
     var mainView: UIView!
     // Array of all daylabels
@@ -68,6 +70,8 @@ public class WeekView : UIView {
         self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView)))
         // Set clipping to bounds (prevents side bar and other sub view protrusion)
         self.clipsToBounds = true
+        // Set dayScrollView parent to self
+        self.dayScrollView.parentWeekView = self
     }
     
     private func setView() {
@@ -84,6 +88,7 @@ public class WeekView : UIView {
         updateVisibleLabelsAndMainConstraints()
         self.backgroundColor = UIColor.clear
     }
+
     
     // MARK: - PUBLIC FUNCTIONS -
     
@@ -181,6 +186,18 @@ public class WeekView : UIView {
     func updateTopAndSideBarPositions() {
         sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
         topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
+    }
+    
+    func eventViewWasTapped(_ eventView: EventView) {
+        self.delegate?.didTapEvent(sender: self, eventId: 0)
+    }
+    
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
+        self.delegate?.didLongPressDayViewCell(sender: self, pressedTime: Date())
+    }
+    
+    func loadMoreEvents() {
+        self.delegate?.loadNewEvents(sender: self)
     }
     
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -667,6 +684,17 @@ public extension WeekView {
             self.dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
         }
     }
+    
+}
+
+// MARK: - WEEKVIEW DELEGATE -
+
+public protocol WeekViewDelegate: class {
+    func didLongPressDayViewCell(sender: WeekView, pressedTime: Date)
+    
+    func didTapEvent(sender: WeekView, eventId: Int)
+    
+    func loadNewEvents(sender: WeekView)
     
 }
 

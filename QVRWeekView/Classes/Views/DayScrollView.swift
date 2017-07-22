@@ -7,11 +7,12 @@ import UIKit
  Class of the scroll view contained within the WeekView.
  
  */
-class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
-
-
+class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, EventViewDelegate, DayViewCellDelegate {
+    
     // All events
     var allEvents:[Date:[[String:String]]] = [:]
+    // Parent WeekView
+    var parentWeekView: WeekView?
     
     // MARK: - PRIVATE VARIABLES -
     
@@ -92,8 +93,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
     // MARK: - GESTURE, SCROLL & DATA SOURCE FUNCTIONS -
     
+    // TODO: DEPRECATED
     func tap(_ sender: UITapGestureRecognizer) {
         
+        print(sender.view!)
+        print(sender.location(in: self))
         if !self.dayCollectionView.isDragging && !self.dayCollectionView.isDecelerating {
             scrollToNearestCell()
         }
@@ -136,10 +140,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         dayViewCell.clearValues()
         let dateForCell = generateNewDate(forIndexPath: indexPath)
         dayViewCell.setDate(as: dateForCell)
+        dayViewCell.delegate = self
         
         for events in allEvents {
             if events.key.isSameDayAs(dateForCell) {
-                dayViewCell.setEventViews(events.value)
+                dayViewCell.setEventViews(events.value, withDayScrollView: self)
             }
         }
         
@@ -158,6 +163,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.discardLabel(withDate: dayViewCell.date!)
         }
+    }
+    
+    func eventViewWasTapped(_ eventView: EventView) {
+        print(eventView)
+        self.parentWeekView?.eventViewWasTapped(eventView)
+    }
+    
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
+        print(dayViewCell)
+        self.parentWeekView?.dayViewCellWasLongPressed(dayViewCell)
     }
     
     // MARK: - INTERNAL FUNCTIONS -
@@ -508,6 +523,16 @@ extension DayScrollView {
         LayoutVariables.velocityOffsetMultiplier = multiplier
     }
     
+    
+}
+
+// MARK: - DAYSCROLLVIEW DELEGATE -
+
+protocol DayScrollViewDelegate: class {
+    
+    func dayCellWasLongPressed(sender: DayScrollView, dayCell: DayViewCell)
+    
+    func eventWasTapped(sender: DayScrollView, event: EventView)
     
 }
 

@@ -9,7 +9,7 @@
 import UIKit
 import QVRWeekView
 
-class CalendarViewController: UIViewController {
+class CalendarViewController: UIViewController, WeekViewDelegate {
 
     @IBOutlet var weekView: WeekView!
     
@@ -19,6 +19,7 @@ class CalendarViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        weekView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,5 +27,21 @@ class CalendarViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    func didLongPressDayViewCell(sender: WeekView, pressedTime: Date) {
+        let alert = UIAlertController(title: "Long pressed", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func didTapEvent(sender: WeekView, eventId: Int) {
+        let alert = UIAlertController(title: "Tapped event", message: String(eventId), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func loadNewEvents(sender: WeekView) {
+        
+    }
+    
 }
 
