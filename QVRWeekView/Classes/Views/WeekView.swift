@@ -689,7 +689,7 @@ public extension WeekView {
 
 // MARK: - WEEKVIEW DELEGATE -
 
-public protocol WeekViewDelegate: class {
+@objc public protocol WeekViewDelegate: class {
     func didLongPressDayViewCell(sender: WeekView, pressedTime: Date)
     
     func didTapEvent(sender: WeekView, eventId: Int)
