@@ -75,7 +75,7 @@ open class WeekView : UIView {
     }
     
     private func setView() {
-        let bundle = Bundle(for: type(of: self))
+        let bundle = Bundle(for: WeekView.self)
         let nib = UINib(nibName: NibNames.weekView, bundle: bundle)
         self.mainView = nib.instantiate(withOwner: self, options: nil).first as? UIView
         
