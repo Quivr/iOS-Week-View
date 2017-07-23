@@ -88,7 +88,7 @@ open class WeekView : UIView {
         updateVisibleLabelsAndMainConstraints()
         self.backgroundColor = UIColor.clear
     }
-
+    
     
     // MARK: - PUBLIC FUNCTIONS -
     
@@ -120,7 +120,7 @@ open class WeekView : UIView {
     }
     
     // MARK: - INTERNAL FUNCTIONS -
-
+    
     func zoomView(_ sender: UIPinchGestureRecognizer) {
         
         let currentScale = sender.scale
@@ -189,11 +189,11 @@ open class WeekView : UIView {
     }
     
     func eventViewWasTapped(_ eventView: EventView) {
-        self.delegate?.didTapEvent(self, eventId: 0)
+        self.delegate?.didTapEvent(self, eventId: 563)
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.delegate?.didLongPressDayViewCell(self, pressedTime: Date())
+        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.getDayLabelString())
     }
     
     func loadMoreEvents() {
@@ -238,7 +238,7 @@ open class WeekView : UIView {
     }
     
     private func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
-    
+        
         // Make as daylabel
         let labelFrame = generateDayLabelFrame(forIndex: indexPath)
         let dayLabel = UILabel(frame: labelFrame)
@@ -257,7 +257,7 @@ open class WeekView : UIView {
 // MARK: - CUSTOMIZATION EXTENSION -
 
 public extension WeekView {
-
+    
     // MARK: - WEEKVIEW CUSTOMIZATION -
     
     /**
@@ -616,7 +616,7 @@ public extension WeekView {
             self.dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
         }
     }
-
+    
     /**
      Amount of spacing in between day view cells when in portrait mode.
      */
@@ -690,7 +690,7 @@ public extension WeekView {
 // MARK: - WEEKVIEW DELEGATE -
 
 @objc public protocol WeekViewDelegate: class {
-    func didLongPressDayViewCell(_ weekView: WeekView, pressedTime: Date)
+    func didLongPressDayViewCell(_ weekView: WeekView, pressedDay: String)
     
     func didTapEvent(_ weekView: WeekView, eventId: Int)
     
@@ -701,7 +701,7 @@ public extension WeekView {
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
 public struct FontVariables {
-
+    
     // Font for all day labels
     fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
     // Text color for all day labels
