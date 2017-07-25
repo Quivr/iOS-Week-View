@@ -16,7 +16,7 @@ extension String {
     }
 }
 
-extension Date {
+public extension Date {
     
     func getDayOfYear() -> Int {
         return (Calendar.current.ordinality(of: .day, in: .year, for: self)!-1)

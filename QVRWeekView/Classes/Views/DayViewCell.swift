@@ -45,8 +45,8 @@ class DayViewCell : UICollectionViewCell {
     override func layoutSubviews() {
         
         generateSeperators()
-        updateOverlay()
         updateEventFrames()
+        updateOverlay()
     }
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -108,17 +108,16 @@ class DayViewCell : UICollectionViewCell {
         updateOverlay()
     }
     
-    func loadAndRenderEventData(_ eventsData: [EventData]) {
+    func addEventViews(_ views: [EventView]) {
         
-        for data in eventsData {
-            
-            let frame = getFrame(withStart: data.startDate, andEnd: data.endDate)
-            let newEventView = EventView(withData: data, andFrame: frame)
-            newEventView.delegate = (delegate as? DayScrollView)
-            self.eventViews[data.id] = newEventView
-            self.addSubview(newEventView)
+        for view in views {
+            let id = view.eventData.id
+            if let otherView = eventViews[id] {
+                otherView.removeFromSuperview()
+            }
+            self.eventViews[id] = view
+            self.addSubview(view)
         }
-        
     }
     
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -164,7 +163,7 @@ class DayViewCell : UICollectionViewCell {
         }
         for (_, eventView) in eventViews {
             let eventData = eventView.eventData!
-            eventView.frame = getFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
+            eventView.frame = getEventViewFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
             self.bringSubview(toFront: eventView)
         }
     }
@@ -220,7 +219,7 @@ class DayViewCell : UICollectionViewCell {
         self.layer.addSublayer(dottedLineLayer)
     }
     
-    private func getFrame(withStart start: Date, andEnd end:Date) -> CGRect{
+    func getEventViewFrame(withStart start: Date, andEnd end:Date) -> CGRect{
         let time = start.getHMSTime()
         let duration = end.getHMSTime() - start.getHMSTime()
         let hourHeight = self.bounds.height/DateSupport.hoursInDay

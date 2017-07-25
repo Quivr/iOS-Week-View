@@ -40,9 +40,42 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
     
     func loadNewEvents(_ weekView: WeekView) {
-        let event1 = EventData()
-        let newEvents = [event1]
-        weekView.addAndLoadEvents(withData: newEvents)
+        var events: [EventData] = []
+        var startTimes: [Date] = []
+        var endTimes: [Date] = []
+        let startToday = Date().getStartOfDay()
+        let n = 30
+        for i in 0...n {
+            let I = Double(i)
+            let eventDuration = 24/(Double(n)+1)
+            let eventStartOffset = Int(eventDuration*I*60.0*60.0)
+            let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+            startTimes.append(dateWithInterval(eventStartOffset, fromDate: startToday))
+            endTimes.append(dateWithInterval(eventEndOffset, fromDate: startToday))
+        }
+        var a = -5
+        while a <= 5 {
+            for b in 0...n {
+                let start = dateWithInterval(a*60*60*24, fromDate: startTimes[b])
+                let end = dateWithInterval(a*60*60*24, fromDate: endTimes[b])
+                let title = "Test\(a)+\(b)"
+                let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
+                
+                let data = EventData(id: (a+5)+b, title: title, startDate: start, endDate: end, color: color)
+                events.append(data)
+            }
+            a += 1
+        }
+        
+        weekView.addAndLoadEvents(withData: events)
+    }
+    
+    private func dateWithIntervalFromNow(_ interval:Int) -> Date {
+        return Date.init(timeIntervalSinceNow: TimeInterval(exactly: interval)!)
+    }
+    
+    private func dateWithInterval(_ interval:Int, fromDate date: Date) -> Date {
+        return date.addingTimeInterval(TimeInterval(exactly: interval)! )
     }
     
 }

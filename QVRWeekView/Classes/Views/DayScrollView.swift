@@ -9,8 +9,10 @@ import UIKit
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, EventViewDelegate, DayViewCellDelegate {
     
-    // All events
+    // All eventData objects
     var allEventsData:[Date:[EventData]] = [:]
+    // All event views
+    var allEventViews: [Date:[EventView]] = [:]
     // Parent WeekView
     var parentWeekView: WeekView?
     
@@ -130,12 +132,24 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
         dayViewCell.setDate(as: dayDateForCell)
         
+        print(dayDateForCell)
         
-        if let eventDataForCell = allEventsData[dayDateForCell] {
-            print(eventDataForCell)
-            dayViewCell.loadAndRenderEventData(eventDataForCell)
+        if let eventViews = allEventViews[dayDateForCell] {
+            dayViewCell.addEventViews(eventViews)
         }
-        
+        else {
+            if let eventDataForCell = allEventsData[dayDateForCell] {
+                var eventViews: [EventView] = []
+                for eventData in eventDataForCell {
+                    let frame = dayViewCell.getEventViewFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
+                    let eventView = EventView(withData: eventData, andFrame: frame)
+                    eventView.delegate = self
+                    eventViews.append(eventView)
+                }
+                allEventViews[dayDateForCell] = eventViews
+                dayViewCell.addEventViews(eventViews)
+            }
+        }
         return dayViewCell
     }
     
