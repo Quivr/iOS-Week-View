@@ -4,19 +4,23 @@ import UIKit
 
 class EventView: UIView {
 
+    // Main text displaying label
     @IBOutlet var textLabel: UILabel!
-    
+    // Delegate handling tap events
     weak var delegate: EventViewDelegate?
+    // The actual view being rendered
     var view:UIView?
+    // EventView's event data
+    var eventData: EventData!
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    init(withData data:EventData, andFrame frame:CGRect) {
+        eventData = data
+        super.init(frame: frame)
         setView()
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setView()
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 
     override func layoutSubviews() {
@@ -47,7 +51,9 @@ class EventView: UIView {
             self.addSubview(self.view!)
         }
         self.backgroundColor = UIColor.clear
+        self.view?.backgroundColor = eventData.color
         
+        textLabel.text = eventData.title
         textLabel.font = FontVariables.eventLabelFont
         textLabel.minimumScaleFactor = LayoutDefaults.eventLabelMinimumScale
         textLabel.adjustsFontSizeToFitWidth = true

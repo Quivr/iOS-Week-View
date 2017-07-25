@@ -17,6 +17,7 @@
 		84CFEDC3399056583BAD7312BC4E57D7 /* QVRWeekView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 502610CEC743BE99B06E13D499E4151C /* QVRWeekView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88124DAA5C9569FC63F7A35102EB7B6E /* DayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C07F8773196E4490E6BE841E4CA592 /* DayViewCell.swift */; };
 		9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */; };
+		918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918FFFF51F27792A00BE1D5C /* EventData.swift */; };
 		9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */; };
 		9BD2DDE25252CC369CA6CA00DBB0E82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
 		B7C192B79647FCC471050141264C082C /* Pods-QVRWeekView_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D8EDB947530E206C08028C5FB635F39 /* Pods-QVRWeekView_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -54,6 +55,7 @@
 		8E2448678F1AD8009E13B7156AC94A92 /* Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayCollectionView.swift; sourceTree = "<group>"; };
 		913917491EE8B0F300581FD6 /* HourSideBarViewC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HourSideBarViewC.xib; sourceTree = "<group>"; };
+		918FFFF51F27792A00BE1D5C /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		955FFDC1095EBEC1F6BB4B14BC950856 /* Pods-QVRWeekView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-QVRWeekView_Example.modulemap"; sourceTree = "<group>"; };
 		A6D65A7B7C73F2DEEAC33F7B7B6BE27D /* QVRWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QVRWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,6 +195,7 @@
 				9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */,
 				F0C07F8773196E4490E6BE841E4CA592 /* DayViewCell.swift */,
 				EFC1848EA24D2AF284A79BDC21DC7159 /* EventView.swift */,
+				918FFFF51F27792A00BE1D5C /* EventData.swift */,
 				F52337A84E5D171A641028554AB7C865 /* HourSideBarView.swift */,
 			);
 			path = Views;
@@ -339,6 +342,7 @@
 			files = (
 				7FE98922A7A5136FB969A606F1B6F921 /* WeekView.swift in Sources */,
 				6CB1D1803080CA5AB6EF7993BB40BA70 /* WeekView.xib in Sources */,
+				918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */,
 				F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */,
 				9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */,
 				475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */,

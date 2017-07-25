@@ -26,33 +26,9 @@ extension Date {
         return (Calendar.current.component(.weekday, from: self)-1)
     }
     
-    func hasPassed() -> Bool {
-        return (self.compare(Date()).rawValue == -1)
-    }
-    
-    func isToday() -> Bool {
-        
-        return isSameDayAs(Date())
-    }
-    
-    func isSameDayAs(_ day: Date) -> Bool {
-
-        let todayComponents = day.getDayComponents()
-        let selfComponents = self.getDayComponents()
-        
-        if todayComponents == selfComponents {
-            return true
-        }
-        else {
-            return false
-        }
-    }
-    
-    func isWeekend() -> Bool {
-        
-        let cal = Calendar.current
-        let weekDay = cal.component(.weekday, from: self)
-        return (weekDay == 1 || weekDay == 7)
+    func getDayValue() -> Date {
+        let todayComponents = self.getDayComponents()
+        return Calendar.current.date(from: todayComponents)!
     }
     
     func getPercentDayPassed() -> CGFloat {
@@ -62,7 +38,6 @@ extension Date {
         let minutes = Double(cal.component(.minute, from: self))
         
         return CGFloat((hour/24) + (minutes/(60*24)))
-            
     }
     
     func getDayLabelString() -> String {
@@ -96,6 +71,58 @@ extension Date {
         return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
     }
     
+    func getNextDay() -> Date{
+        return Calendar.current.date(byAdding: .day, value: 1, to: self)!
+    }
+    
+    func getStartOfDay() -> Date {
+        return Calendar.current.startOfDay(for: self)
+    }
+    
+    func getEndOfDay() -> Date {
+        var comps = DateComponents()
+        comps.day = 1
+        comps.second = -1
+        return Calendar.current.date(byAdding: comps, to: self.getStartOfDay())!
+    }
+    
+    func getHMSTime() -> Double {
+        let comps = Calendar.current.dateComponents([.hour,.minute,.second], from: self)
+        let hours = Double(comps.hour!)
+        let minutes = Double(comps.minute!)
+        let seconds = Double(comps.second!)
+        
+        return hours + (minutes/60) + (seconds/60/60)
+    }
+    
+    func hasPassed() -> Bool {
+        return (self.compare(Date()).rawValue == -1)
+    }
+    
+    func isToday() -> Bool {
+        return isSameDayAs(Date())
+    }
+    
+    func isSameDayAs(_ day: Date) -> Bool {
+        
+        let todayComponents = day.getDayComponents()
+        let selfComponents = self.getDayComponents()
+        
+        if todayComponents == selfComponents {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func isWeekend() -> Bool {
+        
+        let cal = Calendar.current
+        let weekDay = cal.component(.weekday, from: self)
+        return (weekDay == 1 || weekDay == 7)
+    }
+    
     private func getDayComponents() -> DateComponents {
         let cal = Calendar.current
         let dayComponenets:Set<Calendar.Component> = [.day, .month, .year, .era]
@@ -116,5 +143,4 @@ extension CGFloat {
     private func roundedToNearestHalf() -> CGFloat {
         return ((self*2).rounded())/2
     }
-    
 }

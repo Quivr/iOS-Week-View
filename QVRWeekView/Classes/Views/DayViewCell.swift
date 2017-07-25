@@ -8,8 +8,8 @@ class DayViewCell : UICollectionViewCell {
     
     // Date and event variables
     private(set) var date:Date!
-    private(set) var events:[String:[String:String]]!
-    private var eventViews:[String:EventView]!
+    
+    private var eventViews:[Int:EventView] = [:]
     
     // Overlay variables
     private var isOverlayHidden:Bool = true
@@ -58,13 +58,26 @@ class DayViewCell : UICollectionViewCell {
             view.removeFromSuperview()
         }
         date = nil
-        events = nil
-        eventViews = nil
         overlayView = nil
         hourIndicatorView = nil
+        eventViews.removeAll()
     }
     
     func setDate(`as` date: Date) {
+        
+        self.date = date
+        
+        updateTimeView()
+        
+        if date.isWeekend() {
+            self.backgroundColor = LayoutVariables.weekendDayViewColor
+        }
+        else {
+            self.backgroundColor = LayoutVariables.defaultDayViewColor
+        }
+    }
+    
+    func updateTimeView() {
         
         if overlayView != nil {
             overlayView.removeFromSuperview()
@@ -75,14 +88,12 @@ class DayViewCell : UICollectionViewCell {
             hourIndicatorView = nil
         }
         
-        self.date = date
-        
         if date.hasPassed() {
             isOverlayHidden = false
             
             // If is today
             if date.isToday() {
-                bottomDistancePercent = date.getPercentDayPassed()
+                bottomDistancePercent = DateSupport.getPercentTodayPassed()
                 isHourIndicatorHidden = false
             }
             else {
@@ -94,32 +105,20 @@ class DayViewCell : UICollectionViewCell {
         else {
             isOverlayHidden = true
         }
-        
         updateOverlay()
-        
-        if date.isWeekend() {
-            self.backgroundColor = LayoutVariables.weekendDayViewColor
-        }
-        else {
-            self.backgroundColor = LayoutVariables.defaultDayViewColor
-        }
     }
     
-    func setEventViews(_ events: [[String:String]], withDayScrollView dayScrollView: DayScrollView) {
+    func loadAndRenderEventData(_ eventsData: [EventData]) {
         
-        self.events = [:]
-        self.eventViews = [:]
-        for event in events {
-            let id = event[EventKeys.id]!
-            self.events[id] = event
-            let duration = Int(event[EventKeys.duration]!)!
-            let time = Int(event[EventKeys.time]!)!
-            let eventView = EventView(frame: getFrame(withStartingTime: time, andDuration: duration))
-            eventView.textLabel.text = event[EventKeys.title]
-            eventView.delegate = dayScrollView
-            self.addSubview(eventView)
-            eventViews[event[EventKeys.id]!] = eventView
+        for data in eventsData {
+            
+            let frame = getFrame(withStart: data.startDate, andEnd: data.endDate)
+            let newEventView = EventView(withData: data, andFrame: frame)
+            newEventView.delegate = (delegate as? DayScrollView)
+            self.eventViews[data.id] = newEventView
+            self.addSubview(newEventView)
         }
+        
     }
     
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -160,16 +159,13 @@ class DayViewCell : UICollectionViewCell {
     
     private func updateEventFrames() {
     
-        guard eventViews != nil else {
+        guard eventViews.count != 0 else {
             return
         }
-        for eventView in eventViews {
-            let id = eventView.key
-            let eventData = events[id]!
-            let time = Int(eventData[EventKeys.time]!)!
-            let duration = Int(eventData[EventKeys.duration]!)!
-            eventView.value.frame = getFrame(withStartingTime: time, andDuration: duration)
-            self.bringSubview(toFront: eventView.value)
+        for (_, eventView) in eventViews {
+            let eventData = eventView.eventData!
+            eventView.frame = getFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
+            self.bringSubview(toFront: eventView)
         }
     }
 
@@ -224,7 +220,9 @@ class DayViewCell : UICollectionViewCell {
         self.layer.addSublayer(dottedLineLayer)
     }
     
-    private func getFrame(withStartingTime time:Int,andDuration duration:Int) -> CGRect{
+    private func getFrame(withStart start: Date, andEnd end:Date) -> CGRect{
+        let time = start.getHMSTime()
+        let duration = end.getHMSTime() - start.getHMSTime()
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
         return CGRect(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration))
     }

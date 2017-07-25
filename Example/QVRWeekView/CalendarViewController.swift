@@ -27,7 +27,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    func didLongPressDayViewCell(_ weekView: WeekView, pressedTime: Date) {
+    func didLongPressDayViewCell(_ weekView: WeekView, pressedDay: String) {
         let alert = UIAlertController(title: "Long pressed", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -40,7 +40,9 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
     
     func loadNewEvents(_ weekView: WeekView) {
-        
+        let event1 = EventData()
+        let newEvents = [event1]
+        weekView.addAndLoadEvents(withData: newEvents)
     }
     
 }

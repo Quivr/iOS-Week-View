@@ -10,7 +10,7 @@ import UIKit
 class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, EventViewDelegate, DayViewCellDelegate {
     
     // All events
-    var allEvents:[Date:[[String:String]]] = [:]
+    var allEventsData:[Date:[EventData]] = [:]
     // Parent WeekView
     var parentWeekView: WeekView?
     
@@ -72,16 +72,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         self.showsHorizontalScrollIndicator = false
         self.decelerationRate = UIScrollViewDecelerationRateFast
         self.delegate = self
-        
-        // Make test event
-        // TODO: REPLACE WITH REAL EVENTS
-        let testEvents:[[String:String]] = [
-            [EventKeys.id: "01", EventKeys.title: "Event number two", EventKeys.time: "8", EventKeys.duration: "2"],
-            [EventKeys.id: "02", EventKeys.title: "Event number three", EventKeys.time: "13", EventKeys.duration: "3"],
-            [EventKeys.id: "03", EventKeys.title: "Event number four", EventKeys.time: "20", EventKeys.duration: "1"],
-            [EventKeys.id: "04", EventKeys.title: "Event number one", EventKeys.time: "00", EventKeys.duration: "4"],
-        ]
-        allEvents[Date()] = testEvents
     }
     
     override func layoutSubviews() {
@@ -136,14 +126,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         
         let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as! DayViewCell
         dayViewCell.clearValues()
-        let dateForCell = generateNewDate(forIndexPath: indexPath)
-        dayViewCell.setDate(as: dateForCell)
         dayViewCell.delegate = self
+        let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
+        dayViewCell.setDate(as: dayDateForCell)
         
-        for events in allEvents {
-            if events.key.isSameDayAs(dateForCell) {
-                dayViewCell.setEventViews(events.value, withDayScrollView: self)
-            }
+        
+        if let eventDataForCell = allEventsData[dayDateForCell] {
+            print(eventDataForCell)
+            dayViewCell.loadAndRenderEventData(eventDataForCell)
         }
         
         return dayViewCell
@@ -243,9 +233,29 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    func generateNewDate(forIndexPath indexPath: IndexPath) -> Date{
+    func generateNewDayDate(forIndexPath indexPath: IndexPath) -> Date{
         let dayCount = indexPath.row - dayOfYearToday + LayoutVariables.daysInActiveYear*yearOffset
-        return DateSupport.getDayDate(forDaysInFuture: dayCount)
+        return DateSupport.getDate(forDaysInFuture: dayCount).getDayValue()
+    }
+    
+    func setAndProcessEvents(_ eventsData: [EventData]) {
+        
+        for eventData in eventsData {
+            
+            let start = eventData.startDate
+            let end = eventData.endDate
+            
+            if start.isSameDayAs(end) {
+                addDataToAllEvents(eventData, onDay: start.getDayValue())
+            }
+            else {
+                let allDays = DateSupport.getAllDaysBetween(start, and: end)
+                let splitEvent = eventData.split(across: allDays)
+                for (date, event) in splitEvent {
+                    addDataToAllEvents(event, onDay: date)
+                }
+            }
+        }
     }
     
     // MARK: - HELPER/PRIVATE FUNCTIONS -
@@ -317,6 +327,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if let flowLayout = dayCollectionView.collectionViewLayout as? DayCollectionViewFlowLayout {
             flowLayout.itemSize = CGSize(width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.dayViewCellHeight)
             flowLayout.minimumLineSpacing = LayoutVariables.dayViewHorizontalSpacing
+        }
+    }
+    
+    private func addDataToAllEvents(_ eventData: EventData, onDay day: Date) {
+        if allEventsData[day] == nil {
+            let newEventList = [eventData]
+            allEventsData[day] = newEventList
+        }
+        else {
+            allEventsData[day]!.append(eventData)
         }
     }
     

@@ -33,7 +33,11 @@ open class WeekView : UIView {
     // MARK: - VARIABLES -
     
     // WeekView Delegate
-    public weak var delegate: WeekViewDelegate?
+    public weak var delegate: WeekViewDelegate? {
+        didSet {
+            delegate?.loadNewEvents(self)
+        }
+    }
     // The actual view being displayed, all other views are subview of this mainview
     var mainView: UIView!
     // Array of all daylabels
@@ -96,20 +100,20 @@ open class WeekView : UIView {
      Updates the time displayed on the calendar
      */
     public func updateTimeDisplayed() {
-        let dayCollectionView = dayScrollView.dayCollectionView!
-        for cell in dayCollectionView.visibleCells {
-            let indexPath = dayCollectionView.indexPath(for: cell)!
-            if let dayViewCell = cell as? DayViewCell {
-                let oldDate = dayViewCell.date!
-                let possibleLabel = visibleDayLabels[oldDate]
-                let newDate = dayScrollView.generateNewDate(forIndexPath: indexPath)
-                dayViewCell.setDate(as: newDate)
-                if let label = possibleLabel {
-                    visibleDayLabels.removeValue(forKey: oldDate)
-                    visibleDayLabels[newDate] = label
-                }
-            }
-        }
+//        let dayCollectionView = dayScrollView.dayCollectionView!
+//        for cell in dayCollectionView.visibleCells {
+//            let indexPath = dayCollectionView.indexPath(for: cell)!
+//            if let dayViewCell = cell as? DayViewCell {
+//                let oldDate = dayViewCell.date!
+//                let possibleLabel = visibleDayLabels[oldDate]
+//                let newDate = dayScrollView.generateNewDate(forIndexPath: indexPath)
+//                dayViewCell.setDate(as: newDate)
+//                if let label = possibleLabel {
+//                    visibleDayLabels.removeValue(forKey: oldDate)
+//                    visibleDayLabels[newDate] = label
+//                }
+//            }
+//        }
     }
     
     /**
@@ -117,6 +121,20 @@ open class WeekView : UIView {
      */
     public func showToday() {
         dayScrollView.showToday()
+    }
+    
+    /**
+     Adds and loads in events. Events is an array of EventData objects.
+        
+     DEPRECATED COMMENTS
+        scheduleItemID: id of the event (Int)
+        title: title of the event (String)
+        startDate: start date of the event. ex: "2015-09-22T10:30:00+02:00" (String)
+        endDate: end date of the event. ex: "2015-09-22T13:30:00+02:00" (String)
+        color: color object {"colorID": 2,"name": "groen-licht","hexcode": "2ecc71"} ([String:String])
+     */
+    public func addAndLoadEvents(withData eventsData:[EventData]) {
+        dayScrollView.setAndProcessEvents(eventsData)
     }
     
     // MARK: - INTERNAL FUNCTIONS -
