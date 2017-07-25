@@ -7,19 +7,22 @@ import UIKit
 class DayViewCell : UICollectionViewCell {
     
     // Date and event variables
-    private(set) var date:Date!
-    
-    private var eventViews:[Int:EventView] = [:]
+    private(set) var date: Date!
+    private var eventsData: [Int: EventData] = [:]
+    private var eventRectangles: [Int: CGRect] = [:]
     
     // Overlay variables
-    private var isOverlayHidden:Bool = true
-    private var isHourIndicatorHidden:Bool = true
+    private var isOverlayHidden: Bool = true
+    private var isHourIndicatorHidden: Bool = true
     private var bottomDistancePercent = CGFloat(0)
     private var overlayView: UIView!
     private var hourIndicatorView: UIView!
 
-    // Seperator drawing variables
-    private var shapeLayers:[CAShapeLayer] = []
+    // Seperator shape layers
+    private var seperatorLayers: [CAShapeLayer] = []
+    // Event rectangle shape layers
+    private var eventLayers: [CALayer] = []
+    
     
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
@@ -40,12 +43,12 @@ class DayViewCell : UICollectionViewCell {
         self.clipsToBounds = true
         self.backgroundColor = LayoutDefaults.defaultDayViewColor
         self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
     }
     
     override func layoutSubviews() {
-        
-        generateSeperators()
-        updateEventFrames()
+        generateSeperatorLayers()
+        generateEventLayers()
         updateOverlay()
     }
     
@@ -57,10 +60,12 @@ class DayViewCell : UICollectionViewCell {
         for view in self.subviews {
             view.removeFromSuperview()
         }
-        date = nil
-        overlayView = nil
-        hourIndicatorView = nil
-        eventViews.removeAll()
+        self.date = nil
+        self.overlayView = nil
+        self.hourIndicatorView = nil
+        self.eventsData.removeAll()
+        
+        clearEventLayers()
     }
     
     func setDate(`as` date: Date) {
@@ -80,25 +85,25 @@ class DayViewCell : UICollectionViewCell {
     func updateTimeView() {
         
         if overlayView != nil {
-            overlayView.removeFromSuperview()
-            overlayView = nil
+            self.overlayView.removeFromSuperview()
+            self.overlayView = nil
         }
         if hourIndicatorView != nil {
-            hourIndicatorView.removeFromSuperview()
-            hourIndicatorView = nil
+            self.hourIndicatorView.removeFromSuperview()
+            self.hourIndicatorView = nil
         }
         
-        if date.hasPassed() {
-            isOverlayHidden = false
+        if self.date.hasPassed() {
+            self.isOverlayHidden = false
             
             // If is today
             if date.isToday() {
-                bottomDistancePercent = DateSupport.getPercentTodayPassed()
-                isHourIndicatorHidden = false
+                self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
+                self.isHourIndicatorHidden = false
             }
             else {
-                bottomDistancePercent = 1.0
-                isHourIndicatorHidden = true
+                self.bottomDistancePercent = 1.0
+                self.isHourIndicatorHidden = true
             }
             generateOverlay()
         }
@@ -108,22 +113,27 @@ class DayViewCell : UICollectionViewCell {
         updateOverlay()
     }
     
-    func addEventViews(_ views: [EventView]) {
-        
-        for view in views {
-            let id = view.eventData.id
-            if let otherView = eventViews[id] {
-                otherView.removeFromSuperview()
-            }
-            self.eventViews[id] = view
-            self.addSubview(view)
-        }
+    func setEventsData(_ eventsData: [Int:EventData]) {
+        self.eventsData = eventsData
+        generateEventLayers()
     }
     
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
         
         if (sender.state == .began) {
-            delegate?.dayViewCellWasLongPressed(self)
+            self.delegate?.dayViewCellWasLongPressed(self)
+        }
+    }
+    
+    func tapAction(_ sender: UITapGestureRecognizer) {
+        
+        let tapPoint = sender.location(in: self)
+        
+        for (id, rect) in eventRectangles {
+            if rect.contains(tapPoint){
+                print(eventsData[id]!)
+                self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
+            }
         }
     }
     
@@ -131,13 +141,13 @@ class DayViewCell : UICollectionViewCell {
         
         if !isOverlayHidden {
             
-            overlayView = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height))
+            self.overlayView = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height))
 
             if !isHourIndicatorHidden {
                 let thickness = LayoutVariables.hourIndicatorThickness
-                hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-thickness/2, width: self.bounds.width, height: thickness))
-                hourIndicatorView.layer.cornerRadius = 1
-                overlayView.addSubview(hourIndicatorView)
+                self.hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-thickness/2, width: self.bounds.width, height: thickness))
+                self.hourIndicatorView.layer.cornerRadius = 1
+                self.overlayView.addSubview(hourIndicatorView)
             }
             self.addSubview(overlayView)
         }
@@ -156,31 +166,18 @@ class DayViewCell : UICollectionViewCell {
         }
     }
     
-    private func updateEventFrames() {
-    
-        guard eventViews.count != 0 else {
-            return
-        }
-        for (_, eventView) in eventViews {
-            let eventData = eventView.eventData!
-            eventView.frame = getEventViewFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
-            self.bringSubview(toFront: eventView)
-        }
-    }
-
-    
-    private func generateSeperators() {
+    private func generateSeperatorLayers() {
         // Clear old seperators
-        for layer in shapeLayers {
+        for layer in self.seperatorLayers {
             layer.removeFromSuperlayer()
         }
-        shapeLayers = []
+        self.seperatorLayers.removeAll()
         
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
         let dottedPathCombine = CGMutablePath()
         let linePathCombine = CGMutablePath()
         
-        // Generate dotted line seperators
+        // Generate line seperator paths
         for i in 0...Int(DateSupport.hoursInDay)-1 {
             
             let dottedPath = UIBezierPath()
@@ -198,6 +195,7 @@ class DayViewCell : UICollectionViewCell {
             dottedPathCombine.addPath(dottedPath.cgPath)
         }
         
+        // Generate line seperator shape layers
         let lineLayer = CAShapeLayer()
         lineLayer.path=linePathCombine
         lineLayer.lineWidth = LayoutVariables.mainSeperatorThickness
@@ -213,13 +211,56 @@ class DayViewCell : UICollectionViewCell {
         dottedLineLayer.opacity = 1.0
         dottedLineLayer.strokeColor = LayoutVariables.dashedSeperatorColor.cgColor
         
-        shapeLayers.append(dottedLineLayer)
-        shapeLayers.append(lineLayer)
+        // Add seperator layers as sublayers
+        self.seperatorLayers.append(dottedLineLayer)
+        self.seperatorLayers.append(lineLayer)
         self.layer.addSublayer(lineLayer)
         self.layer.addSublayer(dottedLineLayer)
     }
     
-    func getEventViewFrame(withStart start: Date, andEnd end:Date) -> CGRect{
+    private func generateEventLayers() {
+        
+        // Clear all rectangles
+        clearEventLayers()
+        
+        // Generate event rectangle shape layers and text layers
+        for (_, data) in self.eventsData {
+            
+            let frame = getEventFrame(withStart: data.startDate, andEnd: data.endDate)
+            self.eventRectangles[data.id] = frame
+            
+            let eventRectLayer = CAShapeLayer()
+            eventRectLayer.path = CGPath(rect: frame, transform: nil)
+            eventRectLayer.fillColor = data.color.cgColor
+            
+            let eventTextLayer = CATextLayer()
+            eventTextLayer.frame = frame
+            eventTextLayer.string = data.title
+            let font = FontVariables.eventLabelFont
+            let ctFont:CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
+            print(CTFontGetSize(ctFont))
+            eventTextLayer.font = ctFont
+            eventTextLayer.fontSize = font.pointSize
+            eventTextLayer.isWrapped = true
+            eventTextLayer.contentsScale = UIScreen.main.scale
+            
+            self.eventLayers.append(eventRectLayer)
+            self.eventLayers.append(eventTextLayer)
+            self.layer.addSublayer(eventRectLayer)
+            self.layer.addSublayer(eventTextLayer)
+        }
+    }
+    
+    private func clearEventLayers() {
+        // Remove all rectangles from superlayer
+        for layer in self.eventLayers {
+            layer.removeFromSuperlayer()
+        }
+        self.eventLayers.removeAll()
+        self.eventRectangles.removeAll()
+    }
+    
+    private func getEventFrame(withStart start: Date, andEnd end:Date) -> CGRect{
         let time = start.getHMSTime()
         let duration = end.getHMSTime() - start.getHMSTime()
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
@@ -231,5 +272,7 @@ class DayViewCell : UICollectionViewCell {
 protocol DayViewCellDelegate: class {
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell)
+    
+    func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
     
 }

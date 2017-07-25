@@ -7,12 +7,10 @@ import UIKit
  Class of the scroll view contained within the WeekView.
  
  */
-class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, EventViewDelegate, DayViewCellDelegate {
+class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate {
     
     // All eventData objects
-    var allEventsData:[Date:[EventData]] = [:]
-    // All event views
-    var allEventViews: [Date:[EventView]] = [:]
+    var allEventsData:[Date:[Int:EventData]] = [:]
     // Parent WeekView
     var parentWeekView: WeekView?
     
@@ -131,25 +129,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         dayViewCell.delegate = self
         let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
         dayViewCell.setDate(as: dayDateForCell)
-        
-        print(dayDateForCell)
-        
-        if let eventViews = allEventViews[dayDateForCell] {
-            dayViewCell.addEventViews(eventViews)
+
+        if let eventDataForCell = allEventsData[dayDateForCell] {
+            dayViewCell.setEventsData(eventDataForCell)
         }
-        else {
-            if let eventDataForCell = allEventsData[dayDateForCell] {
-                var eventViews: [EventView] = []
-                for eventData in eventDataForCell {
-                    let frame = dayViewCell.getEventViewFrame(withStart: eventData.startDate, andEnd: eventData.endDate)
-                    let eventView = EventView(withData: eventData, andFrame: frame)
-                    eventView.delegate = self
-                    eventViews.append(eventView)
-                }
-                allEventViews[dayDateForCell] = eventViews
-                dayViewCell.addEventViews(eventViews)
-            }
-        }
+        
         return dayViewCell
     }
     
@@ -167,8 +151,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    func eventViewWasTapped(_ eventView: EventView) {
-        self.parentWeekView?.eventViewWasTapped(eventView)
+    func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
+        
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
@@ -344,13 +328,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
     
-    private func addDataToAllEvents(_ eventData: EventData, onDay day: Date) {
+    private func addDataToAllEvents(_ data: EventData, onDay day: Date) {
+        
         if allEventsData[day] == nil {
-            let newEventList = [eventData]
-            allEventsData[day] = newEventList
+            let newEventDict = [data.id: data]
+            allEventsData[day] = newEventDict
         }
         else {
-            allEventsData[day]!.append(eventData)
+            allEventsData[day]![data.id] = data
         }
     }
     
@@ -562,7 +547,7 @@ protocol DayScrollViewDelegate: class {
     
     func dayCellWasLongPressed(sender: DayScrollView, dayCell: DayViewCell)
     
-    func eventWasTapped(sender: DayScrollView, event: EventView)
+    func eventWasTapped(sender: DayScrollView, event: EventData)
     
 }
 

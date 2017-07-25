@@ -206,8 +206,8 @@ open class WeekView : UIView {
         topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
     }
     
-    func eventViewWasTapped(_ eventView: EventView) {
-        self.delegate?.didTapEvent(self, eventId: 563)
+    func eventViewWasTapped(_ eventData: EventData) {
+        self.delegate?.didTapEvent(self, eventId: eventData.id)
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
