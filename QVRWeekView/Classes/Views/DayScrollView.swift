@@ -11,8 +11,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     
     // All eventData objects
     var allEventsData:[Date:[Int:EventData]] = [:]
-    // Parent WeekView
-    var parentWeekView: WeekView?
     
     // MARK: - PRIVATE VARIABLES -
     
@@ -107,34 +105,36 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             }
         }
     }
-    
+
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             scrollToNearestCell()
         }
     }
-    
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         scrollToNearestCell()
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return LayoutVariables.collectionViewCellCount
     }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as! DayViewCell
-        dayViewCell.clearValues()
-        dayViewCell.delegate = self
-        let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
-        dayViewCell.setDate(as: dayDateForCell)
 
-        if let eventDataForCell = allEventsData[dayDateForCell] {
-            dayViewCell.setEventsData(eventDataForCell)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
+            dayViewCell.clearValues()
+            dayViewCell.delegate = self
+            let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
+            dayViewCell.setDate(as: dayDateForCell)
+
+            if let eventDataForCell = allEventsData[dayDateForCell] {
+                dayViewCell.setEventsData(eventDataForCell)
+            }
+
+            return dayViewCell
         }
-        
-        return dayViewCell
+        return UICollectionViewCell(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -156,7 +156,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.parentWeekView?.dayViewCellWasLongPressed(dayViewCell)
+        if let weekView = self.superview?.superview as? WeekView {
+            weekView.dayViewCellWasLongPressed(dayViewCell)
+        }
     }
     
     // MARK: - INTERNAL FUNCTIONS -

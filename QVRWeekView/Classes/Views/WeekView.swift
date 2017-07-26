@@ -74,8 +74,6 @@ open class WeekView : UIView {
         self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView)))
         // Set clipping to bounds (prevents side bar and other sub view protrusion)
         self.clipsToBounds = true
-        // Set dayScrollView parent to self
-        self.dayScrollView.parentWeekView = self
     }
     
     private func setView() {
