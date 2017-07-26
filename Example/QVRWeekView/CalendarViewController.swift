@@ -39,32 +39,57 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         self.present(alert, animated: true, completion: nil)
     }
 
-    func loadNewEvents(_ weekView: WeekView) {
-        var events: [EventData] = []
-        var startTimes: [Date] = []
-        var endTimes: [Date] = []
-        let startToday = Date().getStartOfDay()
-        let n = 100
-        for i in 0...n {
-            let I = Double(i)
-            let eventDuration = 24/(Double(n)+1)
-            let eventStartOffset = Int(eventDuration*I*60.0*60.0)
-            let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
-            startTimes.append(dateWithInterval(eventStartOffset, fromDate: startToday))
-            endTimes.append(dateWithInterval(eventEndOffset, fromDate: startToday))
-        }
-        var a = -5
-        while a <= 5 {
-            for b in 0...n {
-                let start = dateWithInterval(a*60*60*24, fromDate: startTimes[b])
-                let end = dateWithInterval(a*60*60*24, fromDate: endTimes[b])
-                let title = "Test\(a)+\(b):TextTest TextTest TextTest TextTest TextTest"
-                let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+    func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-                let data = EventData(id: ((a+5)*(n+1))+b, title: title, startDate: start, endDate: end, color: color)
-                events.append(data)
+        let STRESS_TEST = false
+        let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
+        var events: [EventData] = []
+
+        if STRESS_TEST {
+            let n = 100
+            var a = 0
+            for date in dates {
+                let startOfDate = date.getStartOfDay()
+                for i in 0...n {
+                    let I = Double(i)
+                    let eventDuration = 24/(Double(n)+1)
+                    let eventStartOffset = Int(eventDuration*I*60.0*60.0)
+                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+
+                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+
+                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
+                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+
+                    let data = EventData(id: ((dates.count)*(n+1))+i, title: title, startDate: start, endDate: end, color: color)
+                    events.append(data)
+                }
+                a += 1
             }
-            a += 1
+        }
+        else {
+            var a = 0
+            for date in dates {
+                let n = Int(drand48()*20)
+                let startOfDate = date.getStartOfDay()
+                for i in 0...n {
+                    let I = Double(i)
+                    let eventDuration = 24/(Double(n)+1)
+                    let eventStartOffset = Int(eventDuration*I*60.0*60.0)
+                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+
+                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+
+                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
+                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+
+                    let data = EventData(id: ((dates.count)*(n+1))+i, title: title, startDate: start, endDate: end, color: color)
+                    events.append(data)
+                }
+                a += 1
+            }
         }
 
         weekView.addAndLoadEvents(withData: events)

@@ -11,14 +11,10 @@ import UIKit
 
 struct DayDate: Hashable, Comparable, CustomStringConvertible {
 
-    var hashValue: Int
-    var day: Int
-    var month: Int
-    var year: Int
-    var era: Int
-    public var description: String {
-        return "\(day)-\(month)-\(year)-\(era)"
-    }
+    let day: Int
+    let month: Int
+    let year: Int
+    let era: Int
     var dateObj: Date {
         var dateComps: DateComponents = DateComponents()
         dateComps.day = self.day
@@ -32,8 +28,52 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
             return Date()
         }
     }
+    var hashValue: Int {
+        return "\(day)-\(month)-\(year)-\(era)".hashValue
+    }
+
+    var simpleString: String {
+        return "\(dayOfWeek) \(day) \(monthStr)"
+    }
+
+    var dayOfWeek: String {
+        let df = DateFormatter()
+        df.dateFormat = "EEEE"
+        return df.string(from: dateObj).capitalized.getFirstNCharacters(n: 3)
+    }
+
+    var monthStr: String {
+        return DateFormatter().monthSymbols[month-1].getFirstNCharacters(n: 3)
+    }
+
+    public var description: String {
+        return "\(day)-\(month)-\(year)-\(era)"
+    }
+
     static var today: DayDate {
         return DayDate(date: Date())
+    }
+
+    init(day: Int, month: Int, year: Int, era: Int) {
+        self.day = day
+        self.month = month
+        self.year = year
+        self.era = era
+    }
+
+    init(date: Date) {
+        let cal = Calendar.current
+        self.day = cal.component(.day, from: date)
+        self.month = cal.component(.month, from: date)
+        self.year = cal.component(.year, from: date)
+        self.era = cal.component(.era, from: date)
+    }
+
+    init() {
+        self.day = -1
+        self.month = -1
+        self.year = -1
+        self.era = -1
     }
 
     static func == (lhs: DayDate, rhs: DayDate) -> Bool {
@@ -46,51 +86,14 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
                 if lhs.month == rhs.month {
                     if lhs.day == rhs.day {
                         return false
-                    }
-                    else {
-                        return lhs.day < rhs.day
-                    }
-                }
-                else {
-                    return lhs.month < rhs.month
-                }
-            }
-            else {
-                return lhs.year < rhs.year
-            }
-        }
-        else {
-            return lhs.era < rhs.era
-        }
-    }
-
-    init(day: Int, month: Int, year: Int, era: Int) {
-        self.day = day
-        self.month = month
-        self.year = year
-        self.era = era
-        self.hashValue = "\(day)-\(month)-\(year)-\(era)".hashValue
-    }
-
-    init(date: Date) {
-        let cal = Calendar.current
-        self.day = cal.component(.day, from: date)
-        self.month = cal.component(.month, from: date)
-        self.year = cal.component(.year, from: date)
-        self.era = cal.component(.era, from: date)
-        self.hashValue = "\(day)-\(month)-\(year)-\(era)".hashValue
-    }
-
-    init() {
-        self.day = -1
-        self.month = -1
-        self.year = -1
-        self.era = -1
-        self.hashValue = "\(day)-\(month)-\(year)-\(era)".hashValue
+                    } else { return lhs.day < rhs.day }
+                } else { return lhs.month < rhs.month }
+            } else { return lhs.year < rhs.year }
+        } else { return lhs.era < rhs.era }
     }
 
     func hasPassed() -> Bool {
-        return self < DayDate.today
+        return self <= DayDate.today
     }
 
     func isToday() -> Bool {
@@ -103,13 +106,12 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         return (weekDay == 1 || weekDay == 7)
     }
 
-    func toSimpleString() -> String {
-
-        let df = DateFormatter()
-        df.dateFormat = "EEEE"
-        let dayOfWeek = df.string(from: dateObj).capitalized.getFirstNCharacters(n: 3)
-        let monthStr = df.monthSymbols[month-1].getFirstNCharacters(n: 3)
-        return "\(dayOfWeek) \(day) \(monthStr)"
+    func getFirstDayOfWeek() -> DayDate {
+        let comps = Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dateObj)
+        return DayDate(date: Calendar.current.date(from: comps)!)
     }
 
+    func getDayDateWith(daysAdded days: Int) -> DayDate {
+        return DayDate(date: Calendar.current.date(byAdding: .day, value: days, to: self.dateObj)!)
+    }
 }

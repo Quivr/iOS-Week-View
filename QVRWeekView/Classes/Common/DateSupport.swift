@@ -1,22 +1,22 @@
 import Foundation
 
-class DateSupport {
+public class DateSupport {
 
-    static let secondsInADay: Int = 60*60*24
-    static let hoursInDay: CGFloat = 24
+    public static let secondsInADay: Int = 60*60*24
+    public static let hoursInDay: CGFloat = 24
 
-    static func getPercentTodayPassed() -> CGFloat {
+    public static func getPercentTodayPassed() -> CGFloat {
         return Date().getPercentDayPassed()
     }
 
-    static func getDate(forDaysInFuture days: Int) -> Date {
+    public static func getDate(forDaysInFuture days: Int) -> Date {
 
         let cal = Calendar.current
         let date = cal.date(byAdding: .day, value: days, to: Date())!
         return date
     }
 
-    static func getAllDaysBetween(_ startDay: Date, and endDay: Date) -> [Date] {
+    public static func getAllDaysBetween(_ startDay: Date, and endDay: Date) -> [Date] {
         var cursorDay = startDay
         var allDays: [Date] = []
         while !cursorDay.isSameDayAs(endDay.getNextDay()) {
@@ -27,7 +27,7 @@ class DateSupport {
         return allDays
     }
 
-    static func getDaysInYear(_ year: Int) -> Int {
+    public static func getDaysInYear(_ year: Int) -> Int {
 
         let cal = Calendar.current
         var dateComps = DateComponents()

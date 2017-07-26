@@ -35,7 +35,7 @@ open class WeekView: UIView {
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate? {
         didSet {
-            delegate?.loadNewEvents(self)
+            dayScrollView.requestEventsAllPeriods()
         }
     }
     // The actual view being displayed, all other views are subview of this mainview
@@ -163,7 +163,7 @@ open class WeekView: UIView {
             label = makeDayLabel(withIndexPath: indexPath)
         }
 
-        label.text = date.toSimpleString()
+        label.text = date.simpleString
         visibleDayLabels[date] = label
         self.topBarView.addSubview(label)
     }
@@ -208,11 +208,11 @@ open class WeekView: UIView {
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.toSimpleString())
+        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.description)
     }
 
-    func loadMoreEvents() {
-        self.delegate?.loadNewEvents(self)
+    func requestEvents(forPeriod period: Period) {
+        self.delegate?.loadNewEvents(self, between: period.startDate.dateObj, and: period.endDate.dateObj)
     }
 
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -705,7 +705,7 @@ public extension WeekView {
 
     func didTapEvent(_ weekView: WeekView, eventId: Int)
 
-    func loadNewEvents(_ weekView: WeekView)
+    func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date)
 
 }
 

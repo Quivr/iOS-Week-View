@@ -20,6 +20,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     private var yearActive: Int = DayDate.today.year
     // Year todauy
     private var yearToday: Int = DayDate.today.year
+    // A day in current period
+    private var currentPeriod: Period = Period(ofDate: DayDate.today)
     // Day of today in year
     private var dayCountTodayInCurrentYear: Int = Date().getDayOfYear()
     // Bool stores if the collection view just reset
@@ -80,6 +82,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
+    func requestEventsAllPeriods() {
+        if let weekView = self.superview?.superview as? WeekView {
+            weekView.requestEvents(forPeriod: currentPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+        }
+    }
+
     // MARK: - GESTURE, SCROLL & DATA SOURCE FUNCTIONS -
 
     func tap(_ sender: UITapGestureRecognizer) {
@@ -102,6 +112,36 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             }
             else if collectionView.contentOffset.x > LayoutVariables.maxOffsetX {
                 resetView(withYearOffsetChange: 1)
+            }
+
+            let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
+
+            if  let path = collectionView.indexPathForItem(at: cvLeft),
+                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
+                let weekView = self.superview?.superview as? WeekView {
+
+                let date = dayViewCell.date
+                if date > currentPeriod.endDate {
+                    // Remove redundant events
+                    for day in currentPeriod.previousPeriod.allDaysInPeriod() {
+                        allEventsData.removeValue(forKey: day)
+                    }
+                    // Set current period to next period
+                    currentPeriod = currentPeriod.nextPeriod
+                    // Load new events for new period
+                    weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+                }
+                else if date < currentPeriod.startDate {
+                    // Remove redundant events
+                    for day in currentPeriod.nextPeriod.allDaysInPeriod() {
+                        allEventsData.removeValue(forKey: day)
+                    }
+                    // Set current period to previous period
+                    currentPeriod = currentPeriod.previousPeriod
+                    // Load new events for new period
+                    weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+                }
+
             }
         }
     }
@@ -155,7 +195,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        print(dayViewCell.date)
         if let weekView = self.superview?.superview as? WeekView {
             weekView.dayViewCellWasLongPressed(dayViewCell)
         }
@@ -166,6 +205,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func showToday() {
         yearActive = yearToday
         dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
+        currentPeriod = Period(ofDate: DayDate.today)
+        requestEventsAllPeriods()
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {

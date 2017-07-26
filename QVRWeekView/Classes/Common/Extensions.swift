@@ -40,20 +40,6 @@ public extension Date {
         return CGFloat((hour/24) + (minutes/(60*24)))
     }
 
-    func getDayLabelString() -> String {
-
-        let cal = Calendar.current
-        let month: Int = cal.component(.month, from: self)
-        let day: Int = cal.component(.day, from: self)
-
-        let df = DateFormatter()
-        df.dateFormat = "EEEE"
-        let dayOfWeek = df.string(from: self).capitalized.getFirstNCharacters(n: 3)
-        let monthStr = df.monthSymbols[month-1].getFirstNCharacters(n: 3)
-
-        return "\(dayOfWeek) \(day) \(monthStr)"
-    }
-
     func getNextDay() -> Date {
         return Calendar.current.date(byAdding: .day, value: 1, to: self)!
     }
@@ -76,6 +62,10 @@ public extension Date {
         let seconds = Double(comps.second!)
 
         return hours + (minutes/60) + (seconds/60/60)
+    }
+
+    func date(withDayAdded days: Int) -> Date {
+        return Calendar.current.date(byAdding: .day, value: days, to: self)!
     }
 
     func hasPassed() -> Bool {
