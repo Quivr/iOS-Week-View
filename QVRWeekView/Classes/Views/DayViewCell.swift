@@ -131,7 +131,6 @@ class DayViewCell : UICollectionViewCell {
         
         for (id, rect) in eventRectangles {
             if rect.contains(tapPoint){
-                print(eventsData[id]!)
                 self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
             }
         }
@@ -238,7 +237,6 @@ class DayViewCell : UICollectionViewCell {
             eventTextLayer.string = data.title
             let font = FontVariables.eventLabelFont
             let ctFont:CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
-            print(CTFontGetSize(ctFont))
             eventTextLayer.font = ctFont
             eventTextLayer.fontSize = font.pointSize
             eventTextLayer.isWrapped = true
@@ -252,7 +250,7 @@ class DayViewCell : UICollectionViewCell {
     }
     
     private func clearEventLayers() {
-        // Remove all rectangles from superlayer
+        // Remove all shape and text layers from superlayer
         for layer in self.eventLayers {
             layer.removeFromSuperlayer()
         }

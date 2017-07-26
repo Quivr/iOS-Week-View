@@ -236,7 +236,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         return DateSupport.getDate(forDaysInFuture: dayCount).getDayValue()
     }
     
-    func setAndProcessEvents(_ eventsData: [EventData]) {
+    func loadAndProcessEvents(_ eventsData: [EventData]) {
         
         for eventData in eventsData {
             

@@ -134,7 +134,7 @@ open class WeekView : UIView {
         color: color object {"colorID": 2,"name": "groen-licht","hexcode": "2ecc71"} ([String:String])
      */
     public func addAndLoadEvents(withData eventsData:[EventData]) {
-        dayScrollView.setAndProcessEvents(eventsData)
+        dayScrollView.loadAndProcessEvents(eventsData)
     }
     
     // MARK: - INTERNAL FUNCTIONS -

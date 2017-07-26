@@ -12,11 +12,11 @@ import QVRWeekView
 class CalendarViewController: UIViewController, WeekViewDelegate {
 
     @IBOutlet var weekView: WeekView!
-    
+
     @IBAction func todayButtonPress(_ sender: Any) {
         weekView.showToday()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         weekView.delegate = self
@@ -32,13 +32,13 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
+
     func didTapEvent(_ weekView: WeekView, eventId: Int) {
         let alert = UIAlertController(title: "Tapped event", message: String(eventId), preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
+
     func loadNewEvents(_ weekView: WeekView) {
         var events: [EventData] = []
         var startTimes: [Date] = []
@@ -60,23 +60,22 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 let end = dateWithInterval(a*60*60*24, fromDate: endTimes[b])
                 let title = "Test\(a)+\(b):TextTest TextTest TextTest TextTest TextTest"
                 let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-                
+
                 let data = EventData(id: ((a+5)*(n+1))+b, title: title, startDate: start, endDate: end, color: color)
                 events.append(data)
             }
             a += 1
         }
-        
+
         weekView.addAndLoadEvents(withData: events)
     }
-    
-    private func dateWithIntervalFromNow(_ interval:Int) -> Date {
+
+    private func dateWithIntervalFromNow(_ interval: Int) -> Date {
         return Date.init(timeIntervalSinceNow: TimeInterval(exactly: interval)!)
     }
-    
-    private func dateWithInterval(_ interval:Int, fromDate date: Date) -> Date {
+
+    private func dateWithInterval(_ interval: Int, fromDate date: Date) -> Date {
         return date.addingTimeInterval(TimeInterval(exactly: interval)! )
     }
-    
-}
 
+}
