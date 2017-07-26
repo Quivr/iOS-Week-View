@@ -54,23 +54,6 @@ public extension Date {
         return "\(dayOfWeek) \(day) \(monthStr)"
     }
 
-    func getDaysInYear(withYearOffset offset: Int) -> Int {
-
-        let cal = Calendar.current
-        let year = cal.component(.year, from: self)
-        var dateComps = DateComponents()
-        dateComps.day = 1
-        dateComps.month = 1
-        dateComps.year = year + offset
-
-        let firstJanuaryThisYear = cal.date(from: dateComps)!
-
-        dateComps.year = year + 1 + offset
-
-        let firstJanuaryNextYear = cal.date(from: dateComps)!
-        return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
-    }
-
     func getNextDay() -> Date {
         return Calendar.current.date(byAdding: .day, value: 1, to: self)!
     }

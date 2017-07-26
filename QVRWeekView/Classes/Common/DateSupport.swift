@@ -27,4 +27,19 @@ class DateSupport {
         return allDays
     }
 
+    static func getDaysInYear(_ year: Int) -> Int {
+
+        let cal = Calendar.current
+        var dateComps = DateComponents()
+        dateComps.day = 1
+        dateComps.month = 1
+        dateComps.year = year
+        let firstJanuaryThisYear = cal.date(from: dateComps)!
+
+        dateComps.year = year + 1
+        let firstJanuaryNextYear = cal.date(from: dateComps)!
+
+        return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
+    }
+
 }

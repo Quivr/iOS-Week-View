@@ -16,10 +16,12 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     private(set) var dayCollectionView: DayCollectionView!
 
-    // Offset of current year
-    private var yearOffset: Int = 0
+    // Active year on view
+    private var yearActive: Int = DayDate.today.year
+    // Year todauy
+    private var yearToday: Int = DayDate.today.year
     // Day of today in year
-    private var dayCountOfTodayInCurrentYear: Int = Date().getDayOfYear()
+    private var dayCountTodayInCurrentYear: Int = Date().getDayOfYear()
     // Bool stores if the collection view just reset
     private var didJustResetView: Bool = false
     // Previous zoom scale of content
@@ -51,7 +53,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
         // Make day collection view and add it to frame
         dayCollectionView = DayCollectionView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: LayoutVariables.totalContentHeight), collectionViewLayout: DayCollectionViewFlowLayout())
-        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayCountOfTodayInCurrentYear), y: 0)
+        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayCountTodayInCurrentYear), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
@@ -96,37 +98,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
         if let collectionView = scrollView as? DayCollectionView {
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
-//                resetView(withYearOffsetChange: -1)
+                resetView(withYearOffsetChange: -1)
             }
             else if collectionView.contentOffset.x > LayoutVariables.maxOffsetX {
-//                resetView(withYearOffsetChange: 1)
+                resetView(withYearOffsetChange: 1)
             }
-
-//            print(collectionView.contentOffset.x)
-//            print(yearOffset)
-//            print(LayoutVariables.maxOffsetX)
-//            print("")
-//            let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
-//            let cvCenter = CGPoint(x: collectionView.contentOffset.x+collectionView.center.x, y: collectionView.center.y + collectionView.contentOffset.y)
-//            print(cvCenter)
-//
-//            let testPath = UIBezierPath()
-//            testPath.move(to: cvLeft)
-//            testPath.addLine(to: cvCenter)
-//            let line = CAShapeLayer()
-//            line.path=testPath.cgPath
-//            line.lineWidth = 1
-//            line.opacity = 1.0
-//            line.strokeColor = UIColor.red.cgColor
-//            collectionView.layer.addSublayer(line)
-//
-//            if  let path = collectionView.indexPathForItem(at: cvCenter),
-//                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell {
-//                print(path)
-//                print(dayViewCell.date)
-//                print(yearOffset)
-//            }
-//            print("")
         }
     }
 
@@ -188,8 +164,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     // MARK: - INTERNAL FUNCTIONS -
 
     func showToday() {
-        yearOffset = 0
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountOfTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
+        yearActive = yearToday
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {
@@ -259,9 +235,18 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func generateNewDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
 
-        let dayCount = (indexPath.row - dayCountOfTodayInCurrentYear) + LayoutVariables.daysInActiveYear*yearOffset
+        var dayCount = (indexPath.row - dayCountTodayInCurrentYear)
+        let yearOffset = yearActive - yearToday
+        if yearOffset != 0 {
+            let delta = (yearOffset / abs(yearOffset))
+            var yearCursor = yearActive
+            while yearCursor != yearToday {
+                let days = DateSupport.getDaysInYear(yearCursor)
+                dayCount += delta*days
+                yearCursor -= delta
+            }
+        }
         let date = DateSupport.getDate(forDaysInFuture: dayCount)
-        print("Generate day date with ip: \(indexPath) makes: \(DayDate(date: date))")
         return DayDate(date: date)
     }
 
@@ -324,14 +309,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     private func resetView(withYearOffsetChange change: Int) {
         didJustResetView = true
-        yearOffset += change
+        yearActive += change
 
-        LayoutVariables.daysInActiveYear = Date().getDaysInYear(withYearOffset: yearOffset)
-        print(yearOffset)
-        print(LayoutVariables.daysInActiveYear)
-        print(LayoutVariables.minOffsetY)
-        print(LayoutVariables.maxOffsetX)
-        print("")
+        LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(yearActive)
         if change < 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
         }
@@ -676,7 +656,7 @@ struct LayoutVariables {
     }
 
     // Number of days in current year being displayed
-    fileprivate(set) static var daysInActiveYear = Date().getDaysInYear(withYearOffset: 0) {
+    fileprivate(set) static var daysInActiveYear = DateSupport.getDaysInYear(DayDate.today.year) {
         didSet {
             updateCollectionViewCellCount()
             updateMaxOffsetX()
