@@ -10,74 +10,74 @@ import Foundation
 import UIKit
 
 struct LayoutDefaults {
-    
+
     // MARK: - FONTS, LABEL AND TEXT COLOUR VALUES -
-    
+
     // Default font of day labels
     static let dayLabelFont = UIFont.boldSystemFont(ofSize: 14)
     // Default text color of day labels
     static let dayLabelTextColor = UIColor.black
     // Default minimum event label scaling
     static let dayLabelMinimumScale = CGFloat(0.4)
-    
+
     // Default font of hour labels
     static let hourLabelFont = UIFont.systemFont(ofSize: 12)
     // Default text color of hour labels
     static let hourLabelTextColor = UIColor.black
     // Default minimum event label scaling
     static let hourLabelMinimumScale = CGFloat(0.5)
-    
+
     // Default font of events labels
     static let eventLabelFont = UIFont.boldSystemFont(ofSize: 12)
     // Default text color of event labels
     static let eventLabelTextColor = UIColor.white
     // Default minimum event label scaling
     static let eventLabelMinimumScale = CGFloat(0.85)
-    
+
     // MARK: - SIZES, BUFFERS AND LAYOUT -
-    
+
     // Sizes of weekview elements
     static let topBarHeight = CGFloat(35)
     static let sideBarWidth = CGFloat(25)
-    
+
     // Horizontal spacing of day view cells
     static let portraitDayViewHorizontalSpacing = CGFloat(5)
     static let landscapeDayViewHorizontalSpacing = CGFloat(1)
-    
+
     // Vertical spacing of day view cells
     static let portraitDayViewVerticalSpacing = CGFloat(15)
     static let landscapeDayViewVerticalSpacing = CGFloat(10)
-    
+
     // Height of day view cells
     static let dayViewCellHeight = CGFloat(1400)
     // Pattern of dashed seperators in the day view cells
     static let mainSeperatorThickness = CGFloat(1)
     // Pattern of dashed seperators in the day view cells
-    static let dashedSeperatorPattern:[NSNumber] = [3,1]
+    static let dashedSeperatorPattern: [NSNumber] = [3, 1]
     // Pattern of dashed seperators in the day view cells
     static let dashedSeperatorThickness = CGFloat(1)
     // Thickness of hour indicator in the day view cells
     static let hourIndicatorThickness = CGFloat(3)
-    
+
     // Number of visible days
     static let visibleDaysPortrait = CGFloat(2)
     static let visibleDaysLandscape = CGFloat(7)
-    
+
     // Multiplier for scrolling sensitivity
     static let velocityOffsetMultiplier = CGFloat(0.75)
-    
+
     // Minimum and maximum zoom of scroll view
     static let minimumZoom = CGFloat(0.75)
     static let maximumZoom = CGFloat(3.0)
-    
+
     // MARK: - COLOURS -
-    
+
     static let backgroundColor = UIColor(red: 202/255, green: 202/255, blue: 202/255, alpha: 1.0)
     static let topBarColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
-    
+
     static let overlayColor = UIColor(red: 225/255, green: 225/255, blue: 225/255, alpha: 0.8)
     static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 0.9)
-            
+
     static let defaultDayViewColor = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1.0)
     static let weekendDayViewColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1.0)
 }
@@ -93,4 +93,3 @@ struct NibNames {
 struct CellKeys {
     static let dayViewCell = "DayViewCell"
 }
-

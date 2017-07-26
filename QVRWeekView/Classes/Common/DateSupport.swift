@@ -16,8 +16,7 @@ class DateSupport {
         return date
     }
 
-    static func getAllDaysBetween (_ startDay: Date, and endDay: Date) -> [Date]{
-
+    static func getAllDaysBetween(_ startDay: Date, and endDay: Date) -> [Date] {
         var cursorDay = startDay
         var allDays: [Date] = []
         while !cursorDay.isSameDayAs(endDay.getNextDay()) {

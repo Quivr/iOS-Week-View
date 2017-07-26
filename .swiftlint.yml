@@ -1,2 +1,10 @@
 disabled_rules:
   - line_length
+  - statement_position
+
+file_length:
+  warning: 1000
+  error: 2000
+
+identifier_name:
+  min_length: 2
