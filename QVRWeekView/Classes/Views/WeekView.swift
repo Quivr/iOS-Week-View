@@ -41,7 +41,7 @@ open class WeekView: UIView {
     // The actual view being displayed, all other views are subview of this mainview
     var mainView: UIView!
     // Array of all daylabels
-    private var visibleDayLabels: [Date:UILabel] = [:]
+    private var visibleDayLabels: [DayDate:UILabel] = [:]
     // Array of labels not being displayed
     private var discardedDayLabels: [UILabel] = []
     // Left side buffer for top bar
@@ -151,10 +151,10 @@ open class WeekView: UIView {
         updateTopAndSideBarConstraints()
     }
 
-    func addLabel(forIndexPath indexPath: IndexPath, withDate date: Date) {
+    func addLabel(forIndexPath indexPath: IndexPath, withDate date: DayDate) {
 
         var label: UILabel!
-        if discardedDayLabels.count != 0 {
+        if !discardedDayLabels.isEmpty {
             label = discardedDayLabels[0]
             label.frame = generateDayLabelFrame(forIndex: indexPath)
             discardedDayLabels.remove(at: 0)
@@ -163,12 +163,12 @@ open class WeekView: UIView {
             label = makeDayLabel(withIndexPath: indexPath)
         }
 
-        label.text = date.getDayLabelString()
+        label.text = date.toSimpleString()
         visibleDayLabels[date] = label
         self.topBarView.addSubview(label)
     }
 
-    func discardLabel(withDate date: Date) {
+    func discardLabel(withDate date: DayDate) {
 
         if let label = visibleDayLabels[date] {
             label.removeFromSuperview()
@@ -185,7 +185,7 @@ open class WeekView: UIView {
         for cell in dayScrollView.dayCollectionView.visibleCells {
             let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
             if let dayViewCell = cell as? DayViewCell {
-                let dateId = dayViewCell.date!
+                let dateId = dayViewCell.date
 
                 if let label = visibleDayLabels[dateId] {
                     label.frame = generateDayLabelFrame(forIndex: indexPath)
@@ -208,7 +208,7 @@ open class WeekView: UIView {
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.getDayLabelString())
+        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.toSimpleString())
     }
 
     func loadMoreEvents() {

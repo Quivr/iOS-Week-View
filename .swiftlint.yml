@@ -1,3 +1,19 @@
+opt_in_rules:
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - conditional_returns_on_newline
+  - empty_count
+  - explicit_init
+  - fatal_error_message
+  - first_where
+  - implicity_unwrapped_optionals
+  - multiline_parameters
+  - overidden_super_call
+  - sorted_imports
+  - vertical_parameter_alignment
+  - vertical_parameter_alignment_on_call
+
 disabled_rules:
   - line_length
   - statement_position

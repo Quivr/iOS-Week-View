@@ -7,7 +7,7 @@ import UIKit
 class DayViewCell: UICollectionViewCell {
 
     // Date and event variables
-    private(set) var date: Date!
+    private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
     private var eventRectangles: [Int: CGRect] = [:]
 
@@ -59,7 +59,7 @@ class DayViewCell: UICollectionViewCell {
         for view in self.subviews {
             view.removeFromSuperview()
         }
-        self.date = nil
+        self.date = DayDate()
         self.overlayView = nil
         self.hourIndicatorView = nil
         self.eventsData.removeAll()
@@ -67,7 +67,7 @@ class DayViewCell: UICollectionViewCell {
         clearEventLayers()
     }
 
-    func setDate(`as` date: Date) {
+    func setDate(`as` date: DayDate) {
 
         self.date = date
 

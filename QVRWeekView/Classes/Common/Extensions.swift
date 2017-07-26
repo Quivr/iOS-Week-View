@@ -99,10 +99,6 @@ public extension Date {
         return (self.compare(Date()).rawValue == -1)
     }
 
-    func isToday() -> Bool {
-        return isSameDayAs(Date())
-    }
-
     func isSameDayAs(_ day: Date) -> Bool {
 
         let todayComponents = day.getDayComponents()
@@ -116,14 +112,7 @@ public extension Date {
         }
     }
 
-    func isWeekend() -> Bool {
-
-        let cal = Calendar.current
-        let weekDay = cal.component(.weekday, from: self)
-        return (weekDay == 1 || weekDay == 7)
-    }
-
-    private func getDayComponents() -> DateComponents {
+    func getDayComponents() -> DateComponents {
         let cal = Calendar.current
         let dayComponenets: Set<Calendar.Component> = [.day, .month, .year, .era]
         return cal.dateComponents(dayComponenets, from: self)

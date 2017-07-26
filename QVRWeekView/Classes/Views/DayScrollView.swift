@@ -10,7 +10,7 @@ import UIKit
 class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate {
 
     // All eventData objects
-    var allEventsData: [Date: [Int: EventData]] = [:]
+    var allEventsData: [DayDate: [Int: EventData]] = [:]
 
     // MARK: - PRIVATE VARIABLES -
 
@@ -19,7 +19,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     // Offset of current year
     private var yearOffset: Int = 0
     // Day of today in year
-    private var dayOfYearToday: Int = Date().getDayOfYear()
+    private var dayCountOfTodayInCurrentYear: Int = Date().getDayOfYear()
     // Bool stores if the collection view just reset
     private var didJustResetView: Bool = false
     // Previous zoom scale of content
@@ -51,7 +51,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
         // Make day collection view and add it to frame
         dayCollectionView = DayCollectionView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: LayoutVariables.totalContentHeight), collectionViewLayout: DayCollectionViewFlowLayout())
-        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayOfYearToday), y: 0)
+        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayCountOfTodayInCurrentYear), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
@@ -96,11 +96,37 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
         if let collectionView = scrollView as? DayCollectionView {
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
-                resetView(withYearOffsetChange: -1)
+//                resetView(withYearOffsetChange: -1)
             }
             else if collectionView.contentOffset.x > LayoutVariables.maxOffsetX {
-                resetView(withYearOffsetChange: 1)
+//                resetView(withYearOffsetChange: 1)
             }
+
+//            print(collectionView.contentOffset.x)
+//            print(yearOffset)
+//            print(LayoutVariables.maxOffsetX)
+//            print("")
+//            let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
+//            let cvCenter = CGPoint(x: collectionView.contentOffset.x+collectionView.center.x, y: collectionView.center.y + collectionView.contentOffset.y)
+//            print(cvCenter)
+//
+//            let testPath = UIBezierPath()
+//            testPath.move(to: cvLeft)
+//            testPath.addLine(to: cvCenter)
+//            let line = CAShapeLayer()
+//            line.path=testPath.cgPath
+//            line.lineWidth = 1
+//            line.opacity = 1.0
+//            line.strokeColor = UIColor.red.cgColor
+//            collectionView.layer.addSublayer(line)
+//
+//            if  let path = collectionView.indexPathForItem(at: cvCenter),
+//                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell {
+//                print(path)
+//                print(dayViewCell.date)
+//                print(yearOffset)
+//            }
+//            print("")
         }
     }
 
@@ -123,7 +149,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
-            let dayDateForCell = generateNewDayDate(forIndexPath: indexPath).getDayValue()
+            let dayDateForCell = generateNewDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)
 
             if let eventDataForCell = allEventsData[dayDateForCell] {
@@ -138,22 +164,22 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
-            weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date!)
+            weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
-            weekView.discardLabel(withDate: dayViewCell.date!)
+            weekView.discardLabel(withDate: dayViewCell.date)
         }
     }
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
-
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
+        print(dayViewCell.date)
         if let weekView = self.superview?.superview as? WeekView {
             weekView.dayViewCellWasLongPressed(dayViewCell)
         }
@@ -163,7 +189,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func showToday() {
         yearOffset = 0
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayOfYearToday)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountOfTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {
@@ -231,9 +257,12 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func generateNewDayDate(forIndexPath indexPath: IndexPath) -> Date {
-        let dayCount = indexPath.row - dayOfYearToday + LayoutVariables.daysInActiveYear*yearOffset
-        return DateSupport.getDate(forDaysInFuture: dayCount).getDayValue()
+    func generateNewDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
+
+        let dayCount = (indexPath.row - dayCountOfTodayInCurrentYear) + LayoutVariables.daysInActiveYear*yearOffset
+        let date = DateSupport.getDate(forDaysInFuture: dayCount)
+        print("Generate day date with ip: \(indexPath) makes: \(DayDate(date: date))")
+        return DayDate(date: date)
     }
 
     func loadAndProcessEvents(_ eventsData: [EventData]) {
@@ -244,13 +273,13 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             let end = eventData.endDate
 
             if start.isSameDayAs(end) {
-                addDataToAllEvents(eventData, onDay: start.getDayValue())
+                addDataToAllEvents(eventData, onDay: DayDate(date: start))
             }
             else {
                 let allDays = DateSupport.getAllDaysBetween(start, and: end)
                 let splitEvent = eventData.split(across: allDays)
                 for (date, event) in splitEvent {
-                    addDataToAllEvents(event, onDay: date)
+                    addDataToAllEvents(event, onDay: DayDate(date: date))
                 }
             }
         }
@@ -298,13 +327,18 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         yearOffset += change
 
         LayoutVariables.daysInActiveYear = Date().getDaysInYear(withYearOffset: yearOffset)
-
+        print(yearOffset)
+        print(LayoutVariables.daysInActiveYear)
+        print(LayoutVariables.minOffsetY)
+        print(LayoutVariables.maxOffsetX)
+        print("")
         if change < 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
         }
         else if change > 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.minOffsetX).roundUpAdditionalHalf()
         }
+
     }
 
     private func scrollToNearestCell() {
@@ -328,7 +362,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    private func addDataToAllEvents(_ data: EventData, onDay day: Date) {
+    private func addDataToAllEvents(_ data: EventData, onDay day: DayDate) {
 
         if allEventsData[day] == nil {
             let newEventDict = [data.id: data]

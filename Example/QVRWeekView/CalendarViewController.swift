@@ -6,8 +6,8 @@
 //  Copyright (c) 2017 reilem. All rights reserved.
 //
 
-import UIKit
 import QVRWeekView
+import UIKit
 
 class CalendarViewController: UIViewController, WeekViewDelegate {
 
@@ -71,7 +71,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     private func dateWithIntervalFromNow(_ interval: Int) -> Date {
-        return Date.init(timeIntervalSinceNow: TimeInterval(exactly: interval)!)
+        return Date(timeIntervalSinceNow: TimeInterval(exactly: interval)!)
     }
 
     private func dateWithInterval(_ interval: Int, fromDate date: Date) -> Date {
