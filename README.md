@@ -64,15 +64,15 @@ For now the only methods publicly available are some customization functions, an
 
 ## How it works
 
-The main WeekView view is a subclass of UIView. The view layout is retrieved from the WeekView xib file. WeekView contains a top and side bar sub view. The side bar contains an HourSideBarView which displays the hours. WeekView also contains a DayScrollView (UIScrollView subclass) which controls vertical scrolling and also delegates and contans a DayCollectionView (UICollectionView subclass) which controls the horizontal scrolling. DayCollectionView cells are DayViewCells, whose view is generated programtically (due to inefficiencies caused by auto-layout).
+The main WeekView view is a subclass of UIView. The view layout is retrieved from the WeekView xib file. WeekView contains a top and side bar sub view. The side bar contains an HourSideBarView which displays the hours. WeekView also contains a DayScrollView (UIScrollView subclass) which controls vertical scrolling and also delegates and contains a DayCollectionView (UICollectionView subclass) which controls the horizontal scrolling. DayCollectionView cells are DayViewCells, whose view is generated programtically (due to inefficiencies caused by auto-layout).
 
-WeekView handles top level operations such as pinch gestures and orientation change. Scrolling of the top and side bar is also handled by a function inside of WeekView which is called by the DayScrollView when scrolling. Top bar day labels are generated, displayed and discarded simulaneously with DayCollectionView cells.
+WeekView handles all top level operations such as pinch gestures and orientation change. Scrolling of the top and side bar is handled by a function inside of WeekView which is called by the DayScrollView when scrolling. Top bar day labels are generated, displayed and discarded simulaneously with DayCollectionView cells by the WeekView.
 
 ## Upcoming features
 
-* Ability to add and remove events
-* Event color customization
-* Extra customization features
+[x] Ability to add and remove events
+[ ] Event color customization
+[ ] Extra customization features
 
 ## Author
 

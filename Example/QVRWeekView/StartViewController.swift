@@ -57,7 +57,6 @@ class StartViewController: UIViewController {
 
             weekView.topBarColor = UIColor.green
             weekView.topBarHeight = 50
-            weekView.sideBarColor = UIColor.orange
             weekView.sideBarWidth = 10
             weekView.mainBackgroundColor = UIColor.blue
 

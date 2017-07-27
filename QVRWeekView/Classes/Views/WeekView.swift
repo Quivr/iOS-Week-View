@@ -86,9 +86,8 @@ open class WeekView: UIView {
             self.mainView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             self.addSubview(self.mainView!)
         }
-
-        updateVisibleLabelsAndMainConstraints()
         self.backgroundColor = UIColor.clear
+        updateVisibleLabelsAndMainConstraints()
     }
 
     // MARK: - PUBLIC FUNCTIONS -
@@ -97,20 +96,12 @@ open class WeekView: UIView {
      Updates the time displayed on the calendar
      */
     public func updateTimeDisplayed() {
-//        let dayCollectionView = dayScrollView.dayCollectionView!
-//        for cell in dayCollectionView.visibleCells {
-//            let indexPath = dayCollectionView.indexPath(for: cell)!
-//            if let dayViewCell = cell as? DayViewCell {
-//                let oldDate = dayViewCell.date!
-//                let possibleLabel = visibleDayLabels[oldDate]
-//                let newDate = dayScrollView.generateNewDate(forIndexPath: indexPath)
-//                dayViewCell.setDate(as: newDate)
-//                if let label = possibleLabel {
-//                    visibleDayLabels.removeValue(forKey: oldDate)
-//                    visibleDayLabels[newDate] = label
-//                }
-//            }
-//        }
+        let dayCollectionView = dayScrollView.dayCollectionView!
+        for cell in dayCollectionView.visibleCells {
+            if let dayViewCell = cell as? DayViewCell {
+                dayViewCell.updateTimeView()
+            }
+        }
     }
 
     /**
@@ -122,13 +113,6 @@ open class WeekView: UIView {
 
     /**
      Adds and loads in events. Events is an array of EventData objects.
-        
-     DEPRECATED COMMENTS
-        scheduleItemID: id of the event (Int)
-        title: title of the event (String)
-        startDate: start date of the event. ex: "2015-09-22T10:30:00+02:00" (String)
-        endDate: end date of the event. ex: "2015-09-22T13:30:00+02:00" (String)
-        color: color object {"colorID": 2,"name": "groen-licht","hexcode": "2ecc71"} ([String:String])
      */
     public func addAndLoadEvents(withData eventsData: [EventData]) {
         dayScrollView.loadAndProcessEvents(eventsData)
@@ -175,7 +159,6 @@ open class WeekView: UIView {
             visibleDayLabels.removeValue(forKey: date)
             discardedDayLabels.append(label)
         }
-
         trashExcessDayLabels()
     }
 
@@ -195,7 +178,6 @@ open class WeekView: UIView {
             }
         }
         trashExcessDayLabels()
-
     }
 
     func updateTopAndSideBarPositions() {
@@ -226,7 +208,6 @@ open class WeekView: UIView {
 
         // Set position and size constraints for side bar and hour view
         hourSideBarBottomConstraint.constant = dayViewCellHourHeight
-
         sideBarHeightConstraint.constant = sideBarHeight
         sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
 
@@ -281,6 +262,7 @@ public extension WeekView {
         }
         set(color) {
             self.mainView.backgroundColor = color
+            self.sideBarView.backgroundColor = color
         }
     }
 
@@ -307,18 +289,6 @@ public extension WeekView {
         set(color) {
             self.topLeftBufferView.backgroundColor = color
             self.topBarView.backgroundColor = color
-        }
-    }
-
-    /**
-     Background color of the side bar containing hour labels.
-     */
-    public var sideBarColor: UIColor {
-        get {
-            return self.sideBarView.backgroundColor!
-        }
-        set(color) {
-            self.sideBarView.backgroundColor = color
         }
     }
 
