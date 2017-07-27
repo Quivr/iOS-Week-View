@@ -55,12 +55,11 @@ public extension Date {
         return Calendar.current.date(byAdding: comps, to: self.getStartOfDay())!
     }
 
-    func getHMSTime() -> Double {
+    func getTimeInSeconds() -> Double {
         let comps = Calendar.current.dateComponents([.hour, .minute, .second], from: self)
         let hours = Double(comps.hour!)
         let minutes = Double(comps.minute!)
         let seconds = Double(comps.second!)
-
         return hours + (minutes/60) + (seconds/60/60)
     }
 
@@ -88,6 +87,10 @@ public extension Date {
         let dayComponenets: Set<Calendar.Component> = [.day, .month, .year, .era]
         return cal.dateComponents(dayComponenets, from: self)
     }
+
+    mutating func advanceBy(seconds sec: Int) {
+        self = self.addingTimeInterval(TimeInterval(exactly: sec)!)
+    }
 }
 
 extension CGFloat {
@@ -98,6 +101,11 @@ extension CGFloat {
 
     func roundDownSubtractedHalf() -> CGFloat {
         return (self-0.5).roundedToNearestHalf()
+    }
+
+    func isEqual(to f: CGFloat, decimalPlaces dec: Int) -> Bool {
+        let delta = CGFloat(1 / pow(10.0, Double(dec)))
+        return abs(self - f) < delta
     }
 
     private func roundedToNearestHalf() -> CGFloat {

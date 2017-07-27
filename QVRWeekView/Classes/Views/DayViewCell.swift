@@ -229,7 +229,7 @@ class DayViewCell: UICollectionViewCell {
             eventRectLayer.fillColor = data.color.cgColor
 
             let eventTextLayer = CATextLayer()
-            eventTextLayer.frame = frame
+            eventTextLayer.frame = eventFrames[id]!
             eventTextLayer.string = data.title
             let font = FontVariables.eventLabelFont
             let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
@@ -261,13 +261,14 @@ class DayViewCell: UICollectionViewCell {
         var sweepState: [Int: EventFrame] = [:]
 
         for (id, data) in eventsData {
+            print(id)
             let frame = getEventFrame(withData: data)
             endPoints.append(EndPoint(y: frame.y, id: id, frame: frame, isStart: true))
             endPoints.append(EndPoint(y: frame.y2, id: id, frame: frame, isStart: false))
         }
 
         endPoints.sort(by: {(e1, e2) -> Bool in
-            if e1.y == e2.y {
+            if e1.y.isEqual(to: e2.y, decimalPlaces: 12) {
                 if e1.isEnd && e2.isStart {
                     return true
                 }
@@ -314,19 +315,22 @@ class DayViewCell: UICollectionViewCell {
     }
 
     private func getEventFrame(withData data: EventData) -> EventFrame {
-        let time = data.startDate.getHMSTime()
-        let duration = data.endDate.getHMSTime() - data.startDate.getHMSTime()
+        let time = data.startDate.getTimeInSeconds()
+        let duration = data.endDate.getTimeInSeconds() - time
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
         return EventFrame(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration), id: data.id)
     }
 
-    private struct EndPoint {
+    private struct EndPoint: CustomStringConvertible {
         var y: CGFloat
         var id: Int
         var frame: EventFrame
         var isStart: Bool
         var isEnd: Bool {
             return !isStart
+        }
+        var description: String {
+            return "{y: \(y), id: \(id), isStart: \(isStart)}\n"
         }
     }
 

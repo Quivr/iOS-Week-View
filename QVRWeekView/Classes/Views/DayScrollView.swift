@@ -183,6 +183,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
+        print("Event tapped \(eventData)")
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
@@ -284,6 +285,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func loadAndProcessEvents(_ eventsData: [EventData]) {
 
+        print(eventsData)
+
         for eventData in eventsData {
 
             let start = eventData.startDate
@@ -291,6 +294,10 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
             if start.isSameDayAs(end) {
                 addDataToAllEvents(eventData, onDay: DayDate(date: start))
+            }
+            else if !start.isSameDayAs(end) && end.isMidnight() {
+                let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
+                addDataToAllEvents(newData, onDay: DayDate(date: start))
             }
             else if !end.isMidnight() {
                 let allDays = DateSupport.getAllDaysBetween(start, and: end)
