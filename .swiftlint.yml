@@ -17,6 +17,8 @@ opt_in_rules:
 disabled_rules:
   - line_length
   - statement_position
+  - identifier_name
+  - cyclomatic_complexity
 
 file_length:
   warning: 1000
@@ -26,5 +28,6 @@ type_body_length:
   warning: 300
   error: 400
 
-identifier_name:
-  min_length: 2
+function_body_length:
+  warning: 100
+  error: 200
