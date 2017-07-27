@@ -9,7 +9,7 @@ class DayViewCell: UICollectionViewCell {
     // Date and event variables
     private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
-    private var eventRectangles: [Int: CGRect] = [:]
+    private var eventFrames: [Int: CGRect] = [:]
 
     // Overlay variables
     private var isOverlayHidden: Bool = true
@@ -127,8 +127,8 @@ class DayViewCell: UICollectionViewCell {
 
         let tapPoint = sender.location(in: self)
 
-        for (id, rect) in eventRectangles {
-            if rect.contains(tapPoint) {
+        for (id, frame) in eventFrames {
+            if frame.contains(tapPoint) {
                 self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
             }
         }
@@ -218,15 +218,14 @@ class DayViewCell: UICollectionViewCell {
 
         // Clear all rectangles
         clearEventLayers()
+        // Calculate frames for events
+        calculateEventFrames()
 
         // Generate event rectangle shape layers and text layers
-        for (_, data) in self.eventsData {
-
-            let frame = getEventFrame(withStart: data.startDate, andEnd: data.endDate)
-            self.eventRectangles[data.id] = frame
+        for (id, data) in self.eventsData {
 
             let eventRectLayer = CAShapeLayer()
-            eventRectLayer.path = CGPath(rect: frame, transform: nil)
+            eventRectLayer.path = CGPath(rect: eventFrames[id]!, transform: nil)
             eventRectLayer.fillColor = data.color.cgColor
 
             let eventTextLayer = CATextLayer()
@@ -252,16 +251,134 @@ class DayViewCell: UICollectionViewCell {
             layer.removeFromSuperlayer()
         }
         self.eventLayers.removeAll()
-        self.eventRectangles.removeAll()
+        self.eventFrames.removeAll()
     }
 
-    private func getEventFrame(withStart start: Date, andEnd end: Date) -> CGRect {
-        let time = start.getHMSTime()
-        let duration = end.getHMSTime() - start.getHMSTime()
+    private func calculateEventFrames() {
+
+        var endPoints: [EndPoint] = []
+        var finalFrameState: [EventFrame] = []
+        var sweepState: [Int: EventFrame] = [:]
+
+        for (id, data) in eventsData {
+            let frame = getEventFrame(withData: data)
+            endPoints.append(EndPoint(y: frame.y, id: id, frame: frame, isStart: true))
+            endPoints.append(EndPoint(y: frame.y2, id: id, frame: frame, isStart: false))
+        }
+
+        endPoints.sort(by: {(e1, e2) -> Bool in
+            if e1.y == e2.y {
+                if e1.isEnd && e2.isStart {
+                    return true
+                }
+                else if e1.isStart && e2.isEnd {
+                    return false
+                }
+            }
+            return e1.y < e2.y
+        })
+
+        for point in endPoints {
+            if point.isStart {
+                // If collisions, resize and reposition the frames.
+                if !sweepState.isEmpty {
+                    var frames = Array(sweepState.values)
+                    frames.append(point.frame)
+                    frames.sort(by: {(f1, f2) -> Bool in
+                        return f1.x < f2.x
+                    })
+                    var i = CGFloat(0)
+                    let newWidth = self.frame.width/CGFloat(frames.count)
+                    for frame in frames {
+                        frame.x = newWidth*i
+                        frame.width = newWidth
+                        if frame.intersects(withFrameFrom: finalFrameState) {
+                            frame.swapPositions(withFrame: point.frame)
+                        }
+                        i += 1
+                    }
+                }
+                // Add to sweepingline
+                sweepState[point.id] = point.frame
+            }
+            else {
+                // Remove from sweepingline and add to eventFrames
+                sweepState[point.id] = nil
+                finalFrameState.append(point.frame)
+                finalFrameState.sort(by: {(f1, f2) -> Bool in
+                     return f1.x < f2.x
+                })
+                eventFrames[point.id] = point.frame.cgRect
+            }
+        }
+    }
+
+    private func getEventFrame(withData data: EventData) -> EventFrame {
+        let time = data.startDate.getHMSTime()
+        let duration = data.endDate.getHMSTime() - data.startDate.getHMSTime()
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
-        return CGRect(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration))
+        return EventFrame(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration), id: data.id)
     }
 
+    private struct EndPoint {
+        var y: CGFloat
+        var id: Int
+        var frame: EventFrame
+        var isStart: Bool
+        var isEnd: Bool {
+            return !isStart
+        }
+    }
+
+    private class EventFrame: CustomStringConvertible {
+
+        init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: Int) {
+            self.x = x
+            self.y = y
+            self.width = width
+            self.height = height
+            self.id = id
+        }
+
+        let id: Int
+        var x: CGFloat
+        var y: CGFloat
+        var width: CGFloat
+        var height: CGFloat
+        var leftLimit: CGFloat?
+        var rightLimit: CGFloat?
+
+        var y2: CGFloat {
+            return self.y + self.height
+        }
+
+        var x2: CGFloat {
+            return self.x + self.width
+        }
+
+        var description: String {
+            return "{x: \(x), y: \(y), width: \(width), height: \(height)}\n"
+        }
+
+        var cgRect: CGRect {
+            return CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
+        }
+
+        func intersects(withFrameFrom eventFrames: [EventFrame]) -> Bool {
+            for frame in eventFrames {
+                if self.cgRect.intersects(frame.cgRect) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        func swapPositions(withFrame eventFrame: EventFrame) {
+            let oldX = self.x
+            self.x = eventFrame.x
+            eventFrame.x = oldX
+        }
+    }
 }
 
 protocol DayViewCellDelegate: class {

@@ -82,14 +82,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func requestEventsAllPeriods() {
-        if let weekView = self.superview?.superview as? WeekView {
-            weekView.requestEvents(forPeriod: currentPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
-        }
-    }
-
     // MARK: - GESTURE, SCROLL & DATA SOURCE FUNCTIONS -
 
     func tap(_ sender: UITapGestureRecognizer) {
@@ -141,7 +133,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                     // Load new events for new period
                     weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
                 }
-
             }
         }
     }
@@ -308,6 +299,14 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                     addDataToAllEvents(event, onDay: DayDate(date: date))
                 }
             }
+        }
+    }
+
+    func requestEventsAllPeriods() {
+        if let weekView = self.superview?.superview as? WeekView {
+            weekView.requestEvents(forPeriod: currentPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
         }
     }
 

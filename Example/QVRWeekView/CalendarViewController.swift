@@ -41,12 +41,13 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-        let STRESS_TEST = false
+        let STRESS_TEST = true
         let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
+//        let dates = [DateSupport.getDate(forDaysInFuture: 1)]
         var events: [EventData] = []
 
         if STRESS_TEST {
-            let n = 100
+            let n = 50
             var a = 0
             for date in dates {
                 let startOfDate = date.getStartOfDay()
@@ -76,7 +77,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 for i in 0...n {
                     let I = Double(i)
                     let eventDuration = 24/(Double(n)+1)
-                    let eventStartOffset = Int(eventDuration*I*60.0*60.0)
+                    let eventStartOffset = Int((eventDuration/2)*I*60.0*60.0)
                     let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
 
                     let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
@@ -91,7 +92,6 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 a += 1
             }
         }
-
         weekView.addAndLoadEvents(withData: events)
     }
 

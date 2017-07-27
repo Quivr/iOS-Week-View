@@ -10,11 +10,11 @@ import Foundation
 
 public struct EventData {
 
-    var id: Int
-    var title: String
-    var startDate: Date
-    var endDate: Date
-    var color: UIColor
+    let id: Int
+    let title: String
+    let startDate: Date
+    let endDate: Date
+    let color: UIColor
 
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.id = id
