@@ -301,7 +301,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             if start.isSameDayAs(end) {
                 addDataToAllEvents(eventData, onDay: DayDate(date: start))
             }
-            else {
+            else if !end.isMidnight() {
                 let allDays = DateSupport.getAllDaysBetween(start, and: end)
                 let splitEvent = eventData.split(across: allDays)
                 for (date, event) in splitEvent {

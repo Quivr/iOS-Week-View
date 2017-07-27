@@ -72,17 +72,15 @@ public extension Date {
         return (self.compare(Date()).rawValue == -1)
     }
 
-    func isSameDayAs(_ day: Date) -> Bool {
+    func isMidnight() -> Bool {
+        let comps = Calendar.current.dateComponents([.hour, .minute, .second], from: self)
+        return comps.hour == 0 && comps.minute == 0 && comps.second == 0
+    }
 
+    func isSameDayAs(_ day: Date) -> Bool {
         let todayComponents = day.getDayComponents()
         let selfComponents = self.getDayComponents()
-
-        if todayComponents == selfComponents {
-            return true
-        }
-        else {
-            return false
-        }
+        return todayComponents == selfComponents
     }
 
     func getDayComponents() -> DateComponents {
