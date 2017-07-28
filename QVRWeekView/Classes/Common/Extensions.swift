@@ -55,7 +55,7 @@ public extension Date {
         return Calendar.current.date(byAdding: comps, to: self.getStartOfDay())!
     }
 
-    func getTimeInSeconds() -> Double {
+    func getTimeInHours() -> Double {
         let comps = Calendar.current.dateComponents([.hour, .minute, .second], from: self)
         let hours = Double(comps.hour!)
         let minutes = Double(comps.minute!)

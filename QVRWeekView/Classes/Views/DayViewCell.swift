@@ -261,7 +261,6 @@ class DayViewCell: UICollectionViewCell {
         var sweepState: [Int: EventFrame] = [:]
 
         for (id, data) in eventsData {
-            print(id)
             let frame = getEventFrame(withData: data)
             endPoints.append(EndPoint(y: frame.y, id: id, frame: frame, isStart: true))
             endPoints.append(EndPoint(y: frame.y2, id: id, frame: frame, isStart: false))
@@ -315,8 +314,8 @@ class DayViewCell: UICollectionViewCell {
     }
 
     private func getEventFrame(withData data: EventData) -> EventFrame {
-        let time = data.startDate.getTimeInSeconds()
-        let duration = data.endDate.getTimeInSeconds() - time
+        let time = data.startDate.getTimeInHours()
+        let duration = data.endDate.getTimeInHours() - time
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
         return EventFrame(x: 0, y: hourHeight*CGFloat(time), width: self.bounds.width, height: hourHeight*CGFloat(duration), id: data.id)
     }

@@ -183,7 +183,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
-        print("Event tapped \(eventData)")
+        if let weekView = self.superview?.superview as? WeekView {
+            weekView.eventViewWasTapped(eventData)
+        }
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
@@ -284,8 +286,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
 
     func loadAndProcessEvents(_ eventsData: [EventData]) {
-
-        print(eventsData)
 
         for eventData in eventsData {
 
