@@ -19,10 +19,10 @@
 		9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */; };
 		9118F5351F28B64D0055371E /* DayDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118F5331F28B5430055371E /* DayDate.swift */; };
 		912E8F561F2B6A4F00249B43 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F1D1F2B6A4F00249B43 /* Heap.swift */; };
-		912E8F571F2B6A4F00249B43 /* README.markdown in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F3B1F2B6A4F00249B43 /* README.markdown */; };
 		912E8F5B1F2B6A4F00249B43 /* Backtrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F501F2B6A4F00249B43 /* Backtrack.swift */; };
 		912E8F5C1F2B6A4F00249B43 /* Constraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F511F2B6A4F00249B43 /* Constraint.swift */; };
 		912E8F5D1F2B6A4F00249B43 /* CSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F521F2B6A4F00249B43 /* CSP.swift */; };
+		912E8F5F1F2B6B1F00249B43 /* FrameCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */; };
 		914BF61B1F29402E00520603 /* Period.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BF61A1F29402E00520603 /* Period.swift */; };
 		918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918FFFF51F27792A00BE1D5C /* EventData.swift */; };
 		9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */; };
@@ -63,10 +63,10 @@
 		9112D1AD1ED2464B0001F8CB /* DayCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayCollectionView.swift; sourceTree = "<group>"; };
 		9118F5331F28B5430055371E /* DayDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayDate.swift; sourceTree = "<group>"; };
 		912E8F1D1F2B6A4F00249B43 /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
-		912E8F3B1F2B6A4F00249B43 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
 		912E8F501F2B6A4F00249B43 /* Backtrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backtrack.swift; sourceTree = "<group>"; };
 		912E8F511F2B6A4F00249B43 /* Constraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constraint.swift; sourceTree = "<group>"; };
 		912E8F521F2B6A4F00249B43 /* CSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSP.swift; sourceTree = "<group>"; };
+		912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameCalculator.swift; sourceTree = "<group>"; };
 		913917491EE8B0F300581FD6 /* HourSideBarViewC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HourSideBarViewC.xib; sourceTree = "<group>"; };
 		914BF61A1F29402E00520603 /* Period.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		918FFFF51F27792A00BE1D5C /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventData.swift; path = ../Views/EventData.swift; sourceTree = "<group>"; };
@@ -212,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				912E8F1D1F2B6A4F00249B43 /* Heap.swift */,
-				912E8F3B1F2B6A4F00249B43 /* README.markdown */,
 			);
 			path = Heap;
 			sourceTree = "<group>";
@@ -278,6 +277,7 @@
 				918FFFF51F27792A00BE1D5C /* EventData.swift */,
 				9118F5331F28B5430055371E /* DayDate.swift */,
 				914BF61A1F29402E00520603 /* Period.swift */,
+				912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -400,6 +400,7 @@
 				912E8F5C1F2B6A4F00249B43 /* Constraint.swift in Sources */,
 				912E8F5D1F2B6A4F00249B43 /* CSP.swift in Sources */,
 				7FE98922A7A5136FB969A606F1B6F921 /* WeekView.swift in Sources */,
+				912E8F5F1F2B6B1F00249B43 /* FrameCalculator.swift in Sources */,
 				6CB1D1803080CA5AB6EF7993BB40BA70 /* WeekView.xib in Sources */,
 				918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */,
 				F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */,
@@ -413,7 +414,6 @@
 				6EAFB2C9ED36B283A50C27081AC5F73A /* EventView.xib in Sources */,
 				912E8F561F2B6A4F00249B43 /* Heap.swift in Sources */,
 				F562BC88485077A6246163BD7FF71DB2 /* Extensions.swift in Sources */,
-				912E8F571F2B6A4F00249B43 /* README.markdown in Sources */,
 				5D1B3835B1EA8995F83A44814A395C2B /* HourSideBarView.swift in Sources */,
 				9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */,
 				FB96B635A0BF4DC268CADB07708259D4 /* QVRWeekView-dummy.m in Sources */,

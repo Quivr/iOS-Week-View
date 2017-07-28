@@ -72,7 +72,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         else {
             var a = 0
             for date in dates {
-                let n = Int(drand48()*20)
+                let n = 10
                 let startOfDate = date.getStartOfDay()
                 for i in 0...n {
                     let I = Double(i)

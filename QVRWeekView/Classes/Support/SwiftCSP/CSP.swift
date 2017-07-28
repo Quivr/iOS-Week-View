@@ -32,7 +32,7 @@ public struct CSP <V: Hashable, D> {
     let domains: [V: [D]]
     /// The constraints on the variables.
     var constraints = Dictionary<V, [Constraint<V, D>]>()
-    
+
     /// You should create the variables and domains before initializing the CSP.
     public init (variables: [V], domains:[V: [D]]) {
         self.variables = variables

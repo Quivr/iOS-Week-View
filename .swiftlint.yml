@@ -31,3 +31,6 @@ type_body_length:
 function_body_length:
   warning: 100
   error: 200
+
+excluded:
+  - QVRWeekView/Classes/Support
