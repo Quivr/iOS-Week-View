@@ -11,6 +11,9 @@ import UIKit
 
 class CalendarViewController: UIViewController, WeekViewDelegate {
 
+    var allEvents: [Int: EventData] = [:]
+    var id = 0
+
     @IBOutlet var weekView: WeekView!
 
     @IBAction func todayButtonPress(_ sender: Any) {
@@ -34,20 +37,20 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     func didTapEvent(_ weekView: WeekView, eventId: Int) {
-        let alert = UIAlertController(title: "Tapped event", message: String(eventId), preferredStyle: .alert)
+        let alert = UIAlertController(title: "Tapped event", message: allEvents[eventId]!.description, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 
     func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-        let STRESS_TEST = false
+        let STRESS_TEST = true
         let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
-//        let dates = [DateSupport.getDate(forDaysInFuture: 1)]
+//        let dates = [Date(), DateSupport.getDate(forDaysInFuture: 1)]
         var events: [EventData] = []
 
         if STRESS_TEST {
-            let n = 50
+            let n = 100
             var a = 0
             for date in dates {
                 let startOfDate = date.getStartOfDay()
@@ -62,9 +65,10 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
                     let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
                     let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-
-                    let data = EventData(id: ((dates.count)*(n+1))+i, title: title, startDate: start, endDate: end, color: color)
+                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+                    allEvents[id] = data
                     events.append(data)
+                    id += 1
                 }
                 a += 1
             }
@@ -86,8 +90,10 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                     let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
                     let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
 
-                    let data = EventData(id: ((dates.count)*(n+1))+i, title: title, startDate: start, endDate: end, color: color)
+                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+                    allEvents[id] = data
                     events.append(data)
+                    id += 1
                 }
                 a += 1
             }

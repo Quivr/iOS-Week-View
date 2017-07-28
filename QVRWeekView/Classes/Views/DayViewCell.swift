@@ -6,6 +6,8 @@ import UIKit
  */
 class DayViewCell: UICollectionViewCell {
 
+    private let dequeCellId = Int(drand48()*10000)
+
     // Date and event variables
     private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
@@ -47,7 +49,7 @@ class DayViewCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         generateSeperatorLayers()
-//        generateEventLayers()
+        generateEventLayers()
         updateOverlay()
     }
 
@@ -59,12 +61,15 @@ class DayViewCell: UICollectionViewCell {
         for view in self.subviews {
             view.removeFromSuperview()
         }
+        for eventLayer in self.eventLayers {
+            eventLayer.removeFromSuperlayer()
+        }
         self.date = DayDate()
         self.overlayView = nil
         self.hourIndicatorView = nil
         self.eventsData.removeAll()
-
-        clearEventLayers()
+        self.eventFrames.removeAll()
+        self.eventLayers.removeAll()
     }
 
     func setDate(`as` date: DayDate) {
@@ -114,9 +119,16 @@ class DayViewCell: UICollectionViewCell {
     func setEventsData(_ eventsData: [Int:EventData]) {
         self.eventsData = eventsData
         let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
-        eventFrames = frameCalc.calculateEventFrames(withData: eventsData)
-
-        generateEventLayers()
+//        print("Queued for calc \(date) on cell \(dequeCellId)")
+        DispatchQueue.global(qos: .userInitiated).async {
+//            print("Performing calc \(self.date) on cell \(self.dequeCellId)")
+            self.eventFrames = frameCalc.calculateEventFrames(withData: eventsData)
+            DispatchQueue.main.async {
+                self.setNeedsLayout()
+                self.layoutIfNeeded()
+            }
+//            print("Finished calc \(self.date) on cell \(self.dequeCellId)")
+        }
     }
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -150,7 +162,6 @@ class DayViewCell: UICollectionViewCell {
             }
             self.addSubview(overlayView)
         }
-        updateOverlay()
     }
 
     private func updateOverlay() {
@@ -224,6 +235,10 @@ class DayViewCell: UICollectionViewCell {
 
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
+
+            guard eventsData[id] != nil else {
+                return
+            }
 
             let eventRectLayer = CAShapeLayer()
             eventRectLayer.path = CGPath(rect: frame, transform: nil)

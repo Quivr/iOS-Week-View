@@ -8,13 +8,17 @@
 
 import Foundation
 
-public struct EventData {
+public struct EventData: CustomStringConvertible {
 
     let id: Int
     let title: String
     let startDate: Date
     let endDate: Date
     let color: UIColor
+
+    public var description: String {
+        return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]"
+    }
 
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.id = id
