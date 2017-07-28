@@ -169,14 +169,12 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.discardLabel(withDate: dayViewCell.date)
         }

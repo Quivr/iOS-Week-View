@@ -114,7 +114,8 @@ class DayViewCell: UICollectionViewCell {
     func setEventsData(_ eventsData: [Int:EventData]) {
         self.eventsData = eventsData
         let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
-        eventFrames = frameCalc.calculateEventFrames(withData: eventsData, andAlgorithm: .constraintAlgorithm)
+        eventFrames = frameCalc.calculateEventFrames(withData: eventsData)
+
         generateEventLayers()
     }
 

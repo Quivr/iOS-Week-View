@@ -9,10 +9,6 @@ import Foundation
 
 typealias WidthPosTuple = (width: CGFloat, x: CGFloat)
 
-public enum FCAlgorithm {
-    case constraintAlgorithm
-}
-
 class FrameCalculator {
 
     init(withWidth width: CGFloat, andHeight height: CGFloat) {
@@ -23,13 +19,21 @@ class FrameCalculator {
     let width: CGFloat
     let height: CGFloat
 
-    func calculateEventFrames(withData eventsData: [Int: EventData], andAlgorithm algorithm: FCAlgorithm) -> [Int: CGRect] {
+    func calculateEventFrames(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
+        let eventFrames = calculateStarterEventFrames(forData: Array(eventsData.values))
+        let domains = calculateDomains(with: eventFrames)
 
-        if algorithm == .constraintAlgorithm {
-            return calclulateFramesWithConstraintOptimization(withData: eventsData)
+        var totalDom = 0
+        for (_, domain) in domains {
+            totalDom += domain.count
+        }
+        let averageDomCount = totalDom/domains.count
+
+        if averageDomCount + eventFrames.count <= 18 {
+            return calclulateFramesWithConstraintOptimization(forFrames: eventFrames, withDomains: domains)
         }
         else {
-            return [:]
+            return calculateWithSweepingLine(forFrames: eventFrames)
         }
     }
 
@@ -95,11 +99,49 @@ class FrameCalculator {
         return endPoints
     }
 
-    fileprivate static func heap(_ heap: Heap<SweepNode>, containsValueBetween val1: CGFloat, and val2: CGFloat) -> SweepNode? {
+    fileprivate func calculateDomains(with eventFrames: [EventFrame]) -> [EventFrame: [WidthPosTuple]] {
+        var domains: [EventFrame: [WidthPosTuple]] = [:]
+        var sweepState: [Int:EventFrame] = [:]
+
+        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
+
+        for point in endPoints {
+            if point.isStart {
+                sweepState[point.id] = point.frame
+                if !sweepState.isEmpty {
+                    let domain = calculateDomain(withMax: sweepState.count)
+                    for (_, frame) in sweepState {
+                        domains[frame] = domain
+                    }
+                }
+            }
+            else {
+                sweepState.removeValue(forKey: point.id)
+            }
+        }
+        return domains
+    }
+
+    private static func heap(_ heap: Heap<SweepNode>, containsValueBetween val1: CGFloat, and val2: CGFloat) -> SweepNode? {
         for node in heap.elements where val1 <= node.x && node.x <= val2 {
             return node
         }
         return nil
+    }
+
+    private func calculateDomain(withMax max: Int) -> [WidthPosTuple] {
+        var i = 1
+        var domain: [WidthPosTuple] = []
+        while i <= max {
+            let domW = self.width/CGFloat(i)
+            var c = 0
+            while c < i {
+                domain.append((width: domW, x: domW*CGFloat(c)))
+                c += 1
+            }
+            i += 1
+        }
+        return domain
     }
 
     private func getEventFrame(withData data: EventData) -> EventFrame {
@@ -195,21 +237,68 @@ class FrameCalculator {
     }
 }
 
-// Constraint Optimization
+// MARK: - Sweeping Line -
 
 extension FrameCalculator {
 
-    fileprivate func calclulateFramesWithConstraintOptimization(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
-        let eventFrames = calculateStarterEventFrames(forData: Array(eventsData.values))
+    fileprivate func calculateWithSweepingLine(forFrames eventFrames: [EventFrame]) -> [Int: CGRect] {
+
+        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
+        var finalFrameState: [EventFrame] = []
+        var sweepState: [Int: EventFrame] = [:]
         var frames: [Int: CGRect] = [:]
+
+        for point in endPoints {
+            if point.isStart {
+                // If collisions, resize and reposition the frames.
+                if !sweepState.isEmpty {
+                    var frames = Array(sweepState.values)
+                    frames.append(point.frame)
+                    frames.sort(by: {(f1, f2) -> Bool in
+                        return f1.x < f2.x
+                    })
+                    var i = CGFloat(0)
+                    let newWidth = self.width/CGFloat(frames.count)
+                    for frame in frames {
+                        frame.x = newWidth*i
+                        frame.width = newWidth
+                        if frame.intersects(withFrameFrom: finalFrameState) {
+                            frame.swapPositions(withFrame: point.frame)
+                        }
+                        i += 1
+                    }
+                }
+                // Add to sweepingline
+                sweepState[point.id] = point.frame
+            }
+            else {
+                // Remove from sweepingline and add to eventFrames
+                sweepState[point.id] = nil
+                finalFrameState.append(point.frame)
+                finalFrameState.sort(by: {(f1, f2) -> Bool in
+                    return f1.x < f2.x
+                })
+                frames[point.id] = point.frame.cgRect
+            }
+        }
+        return frames
+    }
+
+}
+
+// MARK: - Constraint Optimization -
+
+extension FrameCalculator {
+
+    fileprivate func calclulateFramesWithConstraintOptimization(forFrames eventFrames: [EventFrame], withDomains domains: [EventFrame: [WidthPosTuple]]) -> [Int: CGRect] {
+
+        var frames: [Int: CGRect] = [:]
+
         // Variables - of type : EventFrame
         // Domain - of type: WidthPodTuple
         // Constraint - of type: EventFrameConstraint: ListConstraint<EventFrame, WidthPosTuple>
-        let variables = eventFrames
-        let domains = calculateDomains(with: eventFrames)
-
-        var constrainSatisfactionProblemSolver = CSP<EventFrame, WidthPosTuple>(variables: variables, domains: domains)
-        let constraint = EventFrameConstraint(variables: variables)
+        var constrainSatisfactionProblemSolver = CSP<EventFrame, WidthPosTuple>(variables: eventFrames, domains: domains)
+        let constraint = EventFrameConstraint(variables: eventFrames)
         constrainSatisfactionProblemSolver.addConstraint(constraint: constraint)
 
         if let result = backtrackingSearch(csp: constrainSatisfactionProblemSolver) {
@@ -235,47 +324,9 @@ extension FrameCalculator {
             return !FrameCalculator.detectCollisions(in: eventFrames)
         }
     }
-
-    private func calculateDomains(with eventFrames: [EventFrame]) -> [EventFrame: [WidthPosTuple]] {
-        var domains: [EventFrame: [WidthPosTuple]] = [:]
-        var sweepState: [Int:EventFrame] = [:]
-
-        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
-
-        for point in endPoints {
-            if point.isStart {
-                sweepState[point.id] = point.frame
-                if !sweepState.isEmpty {
-                    let domain = calculateDomain(withMax: sweepState.count)
-                    for (_, frame) in sweepState {
-                        domains[frame] = domain
-                    }
-                }
-            }
-            else {
-                sweepState.removeValue(forKey: point.id)
-            }
-        }
-        return domains
-    }
-
-    private func calculateDomain(withMax max: Int) -> [WidthPosTuple] {
-        var i = 1
-        var domain: [WidthPosTuple] = []
-        while i <= max {
-            let domW = self.width/CGFloat(i)
-            var c = 0
-            while c < i {
-                domain.append((width: domW, x: domW*CGFloat(c)))
-                c += 1
-            }
-            i += 1
-        }
-        return domain
-    }
 }
 
-// TESTS
+// MARK: - TESTS -
 
 extension FrameCalculator {
 
