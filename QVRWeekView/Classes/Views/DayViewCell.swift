@@ -24,6 +24,8 @@ class DayViewCell: UICollectionViewCell {
     private var seperatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
     private var eventLayers: [CALayer] = []
+    // PRevious height
+    private var prevHeight: CGFloat?
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
@@ -230,8 +232,20 @@ class DayViewCell: UICollectionViewCell {
 
     private func generateEventLayers() {
 
-        // Clear all rectangles
-        clearEventLayers()
+        // Remove all shape and text layers from superlayer
+        for layer in self.eventLayers {
+            layer.removeFromSuperlayer()
+        }
+        self.eventLayers.removeAll()
+
+        var factorChange = CGFloat(1)
+        let newHeight = self.frame.height
+        if prevHeight == nil {
+            prevHeight = newHeight
+        }
+        else {
+            factorChange = newHeight / prevHeight!
+        }
 
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
@@ -241,11 +255,12 @@ class DayViewCell: UICollectionViewCell {
             }
 
             let eventRectLayer = CAShapeLayer()
-            eventRectLayer.path = CGPath(rect: frame, transform: nil)
+            var transform = CGAffineTransform(scaleX: 1.0, y: factorChange)
+            eventRectLayer.path = CGPath(rect: frame, transform: &transform)
             eventRectLayer.fillColor = eventsData[id]!.color.cgColor
 
             let eventTextLayer = CATextLayer()
-            eventTextLayer.frame = frame
+            eventTextLayer.frame = frame.applying(transform)
             eventTextLayer.string = eventsData[id]!.title
             let font = FontVariables.eventLabelFont
             let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
@@ -260,15 +275,6 @@ class DayViewCell: UICollectionViewCell {
             self.layer.addSublayer(eventTextLayer)
         }
     }
-
-    private func clearEventLayers() {
-        // Remove all shape and text layers from superlayer
-        for layer in self.eventLayers {
-            layer.removeFromSuperlayer()
-        }
-        self.eventLayers.removeAll()
-    }
-
 }
 
 protocol DayViewCellDelegate: class {

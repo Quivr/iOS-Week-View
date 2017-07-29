@@ -44,7 +44,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-        let STRESS_TEST = true
+        let STRESS_TEST = false
         let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
 //        let dates = [Date(), DateSupport.getDate(forDaysInFuture: 1)]
         var events: [EventData] = []
