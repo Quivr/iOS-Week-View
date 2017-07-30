@@ -7,7 +7,7 @@
 
 import Foundation
 
-typealias WidthPosTuple = (width: CGFloat, x: CGFloat)
+fileprivate typealias WidthPosTuple = (width: CGFloat, x: CGFloat)
 
 class FrameCalculator {
 
@@ -20,21 +20,48 @@ class FrameCalculator {
     let height: CGFloat
 
     func calculateEventFrames(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
-        let eventFrames = calculateStarterEventFrames(forData: Array(eventsData.values))
-        let domains = calculateDomains(with: eventFrames)
+        var eventFrames = calculateStarterEventFrames(forData: Array(eventsData.values))
+        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
+        eventFrames.removeAll()
 
-        var totalDom = 0
-        for (_, domain) in domains {
-            totalDom += domain.count
-        }
-        let averageDomCount = totalDom/domains.count
+        var sweepState: [Int: EventFrame] = [:]
+        var collisionConstraints = Set<ConstraintFlag>()
+        var domains: [EventFrame: [WidthPosTuple]] = [:]
 
-        if averageDomCount + eventFrames.count <= 18 {
-            return calclulateFramesWithConstraintOptimization(forFrames: eventFrames, withDomains: domains)
+        for point in endPoints {
+
+            if point.isStart {
+                // If collisions, resize and reposition the frames.
+                if !sweepState.isEmpty {
+                    // Calculate new width
+                    let newWidth = self.width/CGFloat(sweepState.count+1)
+                    for frame in Array(sweepState.values) {
+                        frame.width = newWidth
+                        let cFlag = ConstraintFlag(f1: point.frame, f2: frame)
+                        collisionConstraints.insert(cFlag)
+                    }
+                    point.frame.width = newWidth
+                }
+                sweepState[point.id] = point.frame
+            }
+            else {
+                // Remove from sweepingline and add to eventFrames
+                sweepState[point.id] = nil
+                eventFrames.append(point.frame)
+                domains[point.frame] = domain(forFrame: point.frame)
+            }
         }
-        else {
-            return calculateWithSweepingLine(forFrames: eventFrames)
-        }
+
+        print("eventFrames")
+        print(eventFrames)
+        print("domains")
+        print(domains)
+        print("constraints")
+        print(collisionConstraints)
+        print("")
+
+        let csp = ConstraintSolver(domains: domains, constraints: collisionConstraints, variables: eventFrames)
+        return csp.solveWithBacktracking()
     }
 
     fileprivate func calculateStarterEventFrames(forData eventData: [EventData]) -> [EventFrame] {
@@ -43,39 +70,6 @@ class FrameCalculator {
             eventFrames.append(getEventFrame(withData: data))
         }
         return eventFrames
-    }
-
-    fileprivate static func detectCollisions(`in` eventFrames: [EventFrame]) -> Bool {
-
-        var sweepState: Heap<SweepNode> = Heap(sort: {(s1, s2) -> Bool in
-            return s1.x < s2.x
-        })
-
-        let endPoints = calculateEndPoints(for: eventFrames)
-
-        for point in endPoints {
-            if !sweepState.isEmpty {
-                let nodes = sweepState.elements
-                var frames: [EventFrame] = []
-                for node in nodes where node.frame != point.frame {
-                    frames.append(node.frame)
-                }
-                if point.frame.intersects(withFrameFrom: frames) {
-                    return true
-                }
-            }
-
-            if point.isStart {
-                sweepState.insert(SweepNode(x: point.frame.x, frame: point.frame))
-                sweepState.insert(SweepNode(x: point.frame.x2, frame: point.frame))
-            }
-            else {
-                _ = sweepState.removeAt(sweepState.index(of: SweepNode(x: point.frame.x, frame: point.frame))!)
-                _ = sweepState.removeAt(sweepState.index(of: SweepNode(x: point.frame.x2, frame: point.frame))!)
-            }
-        }
-
-        return false
     }
 
     fileprivate static func calculateEndPoints(`for` eventFrames: [EventFrame]) -> [EndPoint] {
@@ -99,45 +93,14 @@ class FrameCalculator {
         return endPoints
     }
 
-    fileprivate func calculateDomains(with eventFrames: [EventFrame]) -> [EventFrame: [WidthPosTuple]] {
-        var domains: [EventFrame: [WidthPosTuple]] = [:]
-        var sweepState: [Int:EventFrame] = [:]
-
-        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
-
-        for point in endPoints {
-            if point.isStart {
-                sweepState[point.id] = point.frame
-                if !sweepState.isEmpty {
-                    let domain = calculateDomain(withMax: sweepState.count)
-                    for (_, frame) in sweepState {
-                        domains[frame] = domain
-                    }
-                }
-            }
-            else {
-                sweepState.removeValue(forKey: point.id)
-            }
-        }
-        return domains
-    }
-
-    private static func heap(_ heap: Heap<SweepNode>, containsValueBetween val1: CGFloat, and val2: CGFloat) -> SweepNode? {
-        for node in heap.elements where val1 <= node.x && node.x <= val2 {
-            return node
-        }
-        return nil
-    }
-
-    private func calculateDomain(withMax max: Int) -> [WidthPosTuple] {
-        var i = 1
+    fileprivate func domain(forFrame frame: EventFrame) -> [WidthPosTuple] {
         var domain: [WidthPosTuple] = []
-        while i <= max {
-            let domW = self.width/CGFloat(i)
-            var c = 0
-            while c < i {
-                domain.append((width: domW, x: domW*CGFloat(c)))
-                c += 1
+        let count = Int(self.width/frame.width)
+        var i = count == 1 ? 1 : count-1
+        while i <= count {
+            let width = self.width/CGFloat(i)
+            for a in 0...(i-1) {
+                domain.append((width: width, x: CGFloat(a)*width))
             }
             i += 1
         }
@@ -163,207 +126,201 @@ class FrameCalculator {
             return "{y: \(y), id: \(id), isStart: \(isStart)}\n"
         }
     }
-
-    fileprivate struct SweepNode: Equatable, CustomStringConvertible {
-
-        let x: CGFloat
-        let frame: EventFrame
-
-        var description: String {
-            return "{\(x) - \(frame)}"
-        }
-
-        static func == (lhs: FrameCalculator.SweepNode, rhs: FrameCalculator.SweepNode) -> Bool {
-            return lhs.frame.id == rhs.frame.id
-        }
-    }
-
-    fileprivate class EventFrame: CustomStringConvertible, Hashable {
-
-        init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: Int) {
-            self.x = x
-            self.y = y
-            self.width = width
-            self.height = height
-            self.id = id
-        }
-
-        let id: Int
-        var x: CGFloat
-        var y: CGFloat
-        var width: CGFloat
-        var height: CGFloat
-        var leftLimit: CGFloat?
-        var rightLimit: CGFloat?
-
-        var y2: CGFloat {
-            return self.y + self.height
-        }
-
-        var x2: CGFloat {
-            return self.x + self.width
-        }
-
-        var description: String {
-            return "{x: \(x), y: \(y), width: \(width), height: \(height)}\n"
-        }
-
-        var cgRect: CGRect {
-            return CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
-        }
-
-        var hashValue: Int {
-            return id
-        }
-
-        static func == (lhs: FrameCalculator.EventFrame, rhs: FrameCalculator.EventFrame) -> Bool {
-            return lhs.id == rhs.id
-        }
-
-        func intersects(withFrameFrom eventFrames: [EventFrame]) -> Bool {
-            for frame in eventFrames {
-                if self.cgRect.intersects(frame.cgRect) {
-                    return true
-                }
-            }
-            return false
-        }
-
-        func swapPositions(withFrame eventFrame: EventFrame) {
-            let oldX = self.x
-            self.x = eventFrame.x
-            eventFrame.x = oldX
-        }
-    }
-}
-
-// MARK: - Sweeping Line -
-
-extension FrameCalculator {
-
-    fileprivate func calculateWithSweepingLine(forFrames eventFrames: [EventFrame]) -> [Int: CGRect] {
-
-        let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
-        var finalFrameState: [EventFrame] = []
-        var sweepState: [Int: EventFrame] = [:]
-        var frames: [Int: CGRect] = [:]
-
-        for point in endPoints {
-            if point.isStart {
-                // If collisions, resize and reposition the frames.
-                if !sweepState.isEmpty {
-                    var frames = Array(sweepState.values)
-                    frames.append(point.frame)
-                    frames.sort(by: {(f1, f2) -> Bool in
-                        return f1.x < f2.x
-                    })
-                    var i = CGFloat(0)
-                    let newWidth = self.width/CGFloat(frames.count)
-                    for frame in frames {
-                        frame.x = newWidth*i
-                        frame.width = newWidth
-                        if frame.intersects(withFrameFrom: finalFrameState) {
-                            frame.swapPositions(withFrame: point.frame)
-                        }
-                        i += 1
-                    }
-                }
-                // Add to sweepingline
-                sweepState[point.id] = point.frame
-            }
-            else {
-                // Remove from sweepingline and add to eventFrames
-                sweepState[point.id] = nil
-                finalFrameState.append(point.frame)
-                finalFrameState.sort(by: {(f1, f2) -> Bool in
-                    return f1.x < f2.x
-                })
-                frames[point.id] = point.frame.cgRect
-            }
-        }
-        return frames
-    }
-
 }
 
 // MARK: - Constraint Optimization -
 
-extension FrameCalculator {
+fileprivate class ConstraintSolver {
 
-    fileprivate func calclulateFramesWithConstraintOptimization(forFrames eventFrames: [EventFrame], withDomains domains: [EventFrame: [WidthPosTuple]]) -> [Int: CGRect] {
+    let domains: [EventFrame: [WidthPosTuple]]
+    let constraints: Set<ConstraintFlag>
+    let variables: [EventFrame]
+    let n: Int
 
-        var frames: [Int: CGRect] = [:]
-
-        // Variables - of type : EventFrame
-        // Domain - of type: WidthPodTuple
-        // Constraint - of type: EventFrameConstraint: ListConstraint<EventFrame, WidthPosTuple>
-        var constrainSatisfactionProblemSolver = CSP<EventFrame, WidthPosTuple>(variables: eventFrames, domains: domains)
-        let constraint = EventFrameConstraint(variables: eventFrames)
-        constrainSatisfactionProblemSolver.addConstraint(constraint: constraint)
-
-        if let result = backtrackingSearch(csp: constrainSatisfactionProblemSolver) {
-            for (frame, _) in result {
-                frames[frame.id] = frame.cgRect
-            }
-        }
-        return frames
+    init (domains: [EventFrame: [WidthPosTuple]], constraints: Set<ConstraintFlag>, variables: [EventFrame]) {
+        self.variables = variables
+        self.constraints = constraints
+        self.domains = domains
+        self.n = variables.count
     }
 
-    private class EventFrameConstraint: ListConstraint<EventFrame, WidthPosTuple> {
-
-        override func isSatisfied(assignment: [FrameCalculator.EventFrame: WidthPosTuple]) -> Bool {
-
-            var eventFrames: [EventFrame] = []
-
-            for (frame, value) in assignment {
-                frame.x = value.x
-                frame.width = value.width
-                eventFrames.append(frame)
+    func solveWithBacktracking() -> [Int: CGRect] {
+        if backtrack(depth: 0) {
+            print("Solved with solution \(variables)")
+            var frames: [Int: CGRect] = [:]
+            for vari in variables {
+                frames[vari.id] = vari.cgRect
             }
-
-            return !FrameCalculator.detectCollisions(in: eventFrames)
+            return frames
         }
+        else {
+            return [:]
+        }
+    }
+
+    private func backtrack(depth: Int) -> Bool {
+
+        let nDepth = domains[variables[depth]]!.count
+
+        for i in 0...(nDepth-1) {
+            let activeFrame = variables[depth]
+            let value = domains[activeFrame]![i]
+            print("Value \(i) assigned at depth \(depth)")
+            activeFrame.applyValue(value)
+            var noFails = true
+            var a = 0
+            while a < depth {
+                print("Checking at depth \(depth) with upper level \(a)")
+                if !constraintIsSatsified(betweenDepth: a, and: depth) {
+                    print("Failed")
+                    noFails = false
+                    break
+                }
+                a += 1
+            }
+            print("No fails: \(noFails)")
+            if noFails {
+                if depth == (n-1) {
+                    print("Return true at depth: \(depth)")
+                    return true
+                }
+                else {
+                    let nextDepth = depth + 1
+                    print("Go next depth: \(nextDepth)")
+                    if backtrack(depth: nextDepth) {
+                        print("True return received at depth \(depth)")
+                        return true
+                    }
+                    print("False return, continue at level: \(depth)")
+                }
+            }
+        }
+        return false
+    }
+
+    private func constraintIsSatsified(betweenDepth d1: Int, and d2: Int) -> Bool {
+        let f1 = variables[d1]
+        let f2 = variables[d2]
+        let flag = ConstraintFlag(f1: f1, f2: f2)
+        print("\(f1) \(f2)")
+        if constraints.contains(flag) {
+            if f1.x.isEqual(to: f2.x, decimalPlaces: 12) && f1.width.isEqual(to: f2.width, decimalPlaces: 12) {
+                print("Constraint + same slot: false")
+                return false
+            }
+            else {
+                print("Constraint + check intersect: \(f1.cgRect.intersects(f2.cgRect))")
+                return !f1.cgRect.intersects(f2.cgRect)
+            }
+        }
+        else {
+            print("No constraint: true")
+            return true
+        }
+    }
+
+    func solveWithForwardCheckingBackjump() -> [Int: CGRect] {
+        return [:]
     }
 }
 
-// MARK: - TESTS -
+fileprivate class EventFrame: CustomStringConvertible, Hashable {
 
-extension FrameCalculator {
-
-    private func testCollisionAlgorithm() {
-        let frameTest1: [EventFrame] = [EventFrame(x: 0, y: 0, width: 100, height: 100, id: 0 ),
-                                        EventFrame(x: 100, y: 0, width: 100, height: 100, id: 1 ),
-                                        EventFrame(x: 0, y: 150, width: 100, height: 100, id: 2 ),
-                                        EventFrame(x: 100, y: 250, width: 100, height: 100, id: 3 ),
-                                        EventFrame(x: 0, y: 400, width: 100, height: 100, id: 4 ),
-                                        EventFrame(x: 0, y: 500, width: 100, height: 100, id: 5 )
-        ]
-
-        let frameTest2: [EventFrame] = [EventFrame(x: 0, y: 400, width: 100, height: 100, id: 6 ),
-                                        EventFrame(x: 0, y: 450, width: 100, height: 100, id: 7 )
-        ]
-
-        let frameTest3: [EventFrame] = [EventFrame(x: 0, y: 400, width: 100, height: 100, id: 4 ),
-                                        EventFrame(x: 50, y: 400, width: 100, height: 100, id: 5 )
-        ]
-
-        let frameTest4: [EventFrame] = [EventFrame(x: 0, y: 400, width: 100, height: 100, id: 0 ),
-                                        EventFrame(x: 50, y: 450, width: 100, height: 100, id: 1 )
-        ]
-
-        let frameTest5: [EventFrame] = [EventFrame(x: 0, y: 700, width: 150, height: 100, id: 0 ),
-                                        EventFrame(x: 0, y: 750, width: 100, height: 150, id: 1 )
-        ]
-        // false
-        print(FrameCalculator.detectCollisions(in: frameTest1))
-        // true
-        print(FrameCalculator.detectCollisions(in: frameTest2))
-        // true
-        print(FrameCalculator.detectCollisions(in: frameTest3))
-        // true
-        print(FrameCalculator.detectCollisions(in: frameTest4))
-        // true
-        print(FrameCalculator.detectCollisions(in: frameTest5))
+    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: Int) {
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.id = id
     }
 
+    let id: Int
+    var x: CGFloat
+    var y: CGFloat
+    var width: CGFloat
+    var height: CGFloat
+    var leftLimit: CGFloat?
+    var rightLimit: CGFloat?
+
+    var y2: CGFloat {
+        return self.y + self.height
+    }
+
+    var x2: CGFloat {
+        return self.x + self.width
+    }
+
+    var description: String {
+        return "\n{x: \(x), y: \(y), width: \(width), height: \(height), id: \(id)}"
+    }
+
+    var cgRect: CGRect {
+        return CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
+    }
+
+    var hashValue: Int {
+        return id
+    }
+
+    static func == (lhs: EventFrame, rhs: EventFrame) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func intersects(withFrameFrom eventFrames: [EventFrame]) -> Bool {
+        for frame in eventFrames {
+            if self.cgRect.intersects(frame.cgRect) {
+                return true
+            }
+        }
+        return false
+    }
+
+    func swapPositions(withFrame eventFrame: EventFrame) {
+        let oldX = self.x
+        self.x = eventFrame.x
+        eventFrame.x = oldX
+    }
+
+    func getCGReact(withValue value: WidthPosTuple) -> CGRect {
+        return CGRect(x: value.x, y: self.y, width: value.width, height: self.height)
+    }
+
+    func applyValue(_ value: WidthPosTuple) {
+        self.width = value.width
+        self.x = value.x
+    }
+}
+
+fileprivate struct ConstraintFlag: Hashable, CustomStringConvertible {
+
+    init(f1: EventFrame, f2: EventFrame) {
+        guard f1.id != f2.id else {
+            fatalError("Two frames with same id passed as constraint flag")
+        }
+        if f1.id < f2.id {
+            self.f1 = f1
+            self.f2 = f2
+        }
+        else {
+            self.f2 = f1
+            self.f1 = f2
+        }
+    }
+
+    var hashValue: Int {
+        let id1 = f1.id
+        let id2 = f2.id
+        let sub1 = (id1+id2)
+        let sub2 = (id1+id2+1)
+        return Int(0.5*Double(sub1)*Double(sub2))+id2
+    }
+    var description: String {
+        return "[\(f1),\(f2)]"
+    }
+    let f1: EventFrame
+    let f2: EventFrame
+
+    static func == (lhs: ConstraintFlag, rhs: ConstraintFlag) -> Bool {
+        return (lhs.f1 == rhs.f1 && lhs.f2 == rhs.f2) || (lhs.f1 == rhs.f2 && lhs.f2 == rhs.f1)
+    }
 }
