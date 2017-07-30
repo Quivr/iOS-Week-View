@@ -310,8 +310,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func requestEventsAllPeriods() {
         if let weekView = self.superview?.superview as? WeekView {
             weekView.requestEvents(forPeriod: currentPeriod)
-//            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
-//            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
         }
     }
 

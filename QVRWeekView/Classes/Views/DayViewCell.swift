@@ -124,7 +124,7 @@ class DayViewCell: UICollectionViewCell {
 //        print("Queued for calc \(date) on cell \(dequeCellId)")
         DispatchQueue.global(qos: .userInitiated).async {
 //            print("Performing calc \(self.date) on cell \(self.dequeCellId)")
-            self.eventFrames = frameCalc.calculateEventFrames(withData: eventsData)
+            self.eventFrames = frameCalc.calculate(withData: eventsData)
             DispatchQueue.main.async {
                 self.setNeedsLayout()
                 self.layoutIfNeeded()

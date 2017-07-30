@@ -11,6 +11,9 @@ fileprivate typealias WidthPosTuple = (width: CGFloat, x: CGFloat)
 
 class FrameCalculator {
 
+    static var totalCalcs = 0
+    static var totalCalcTime = 0.0
+
     init(withWidth width: CGFloat, andHeight height: CGFloat) {
         self.width = width
         self.height = height
@@ -19,7 +22,8 @@ class FrameCalculator {
     let width: CGFloat
     let height: CGFloat
 
-    func calculateEventFrames(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
+    func calculate(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
+        let time = Date.timeIntervalSinceReferenceDate
         var eventFrames = calculateStarterEventFrames(forData: Array(eventsData.values))
         let endPoints = FrameCalculator.calculateEndPoints(for: eventFrames)
         eventFrames.removeAll()
@@ -27,12 +31,14 @@ class FrameCalculator {
         var sweepState: [Int: EventFrame] = [:]
         var collisionConstraints = Set<ConstraintFlag>()
         var domains: [EventFrame: [WidthPosTuple]] = [:]
+        var areCollisions = false
 
         for point in endPoints {
 
             if point.isStart {
                 // If collisions, resize and reposition the frames.
                 if !sweepState.isEmpty {
+                    if !areCollisions { areCollisions = true }
                     // Calculate new width
                     let newWidth = self.width/CGFloat(sweepState.count+1)
                     for frame in Array(sweepState.values) {
@@ -52,16 +58,27 @@ class FrameCalculator {
             }
         }
 
-        print("eventFrames")
-        print(eventFrames)
-        print("domains")
-        print(domains)
-        print("constraints")
-        print(collisionConstraints)
-        print("")
-
         let csp = ConstraintSolver(domains: domains, constraints: collisionConstraints, variables: eventFrames)
-        return csp.solveWithBacktracking()
+//        csp.test()
+        if areCollisions {
+            let frames = csp.solveWithBacktracking()
+//            print("Calc time: \(Date.timeIntervalSinceReferenceDate - time)")
+            FrameCalculator.totalCalcs += 1
+            FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
+            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs))")
+            return frames
+        }
+        else {
+            var frames: [Int: CGRect] = [:]
+            for frame in eventFrames {
+                frames[frame.id] = frame.cgRect
+            }
+//            print("Calc time: \(Date.timeIntervalSinceReferenceDate - time)")
+            FrameCalculator.totalCalcs += 1
+            FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
+            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs))")
+            return frames
+        }
     }
 
     fileprivate func calculateStarterEventFrames(forData eventData: [EventData]) -> [EventFrame] {
@@ -96,7 +113,7 @@ class FrameCalculator {
     fileprivate func domain(forFrame frame: EventFrame) -> [WidthPosTuple] {
         var domain: [WidthPosTuple] = []
         let count = Int(self.width/frame.width)
-        var i = count == 1 ? 1 : count-1
+        var i = count <= 2 ? 1 : count-2
         while i <= count {
             let width = self.width/CGFloat(i)
             for a in 0...(i-1) {
@@ -137,6 +154,8 @@ fileprivate class ConstraintSolver {
     let variables: [EventFrame]
     let n: Int
 
+    var totalChecks = 0
+
     init (domains: [EventFrame: [WidthPosTuple]], constraints: Set<ConstraintFlag>, variables: [EventFrame]) {
         self.variables = variables
         self.constraints = constraints
@@ -144,9 +163,44 @@ fileprivate class ConstraintSolver {
         self.n = variables.count
     }
 
+//    func test() {
+//
+//        var totalTime = 0.0
+//        for i in 1...10 {
+//            totalChecks = 0
+//            let time = Date.timeIntervalSinceReferenceDate
+//            _ = backjump(depth: 0)
+//            if i == 1 { print(totalChecks) }
+//            totalTime += (Date.timeIntervalSinceReferenceDate-time)
+//        }
+//        print("Backjump average time: \(totalTime/10)")
+//
+//        totalTime = 0.0
+//        for i in 1...10 {
+//            totalChecks = 0
+//            let time = Date.timeIntervalSinceReferenceDate
+//            _ = backtrack(depth: 0)
+//            if i == 1 { print(totalChecks) }
+//            totalTime += (Date.timeIntervalSinceReferenceDate-time)
+//        }
+//        print("Backtrack average time: \(totalTime/10)")
+//    }
+
+//    func solveWithBackjumping() -> [Int: CGRect] {
+//        if backjump(depth: 0) == -1 {
+//            var frames: [Int: CGRect] = [:]
+//            for vari in variables {
+//                frames[vari.id] = vari.cgRect
+//            }
+//            return frames
+//        }
+//        else {
+//            return [:]
+//        }
+//    }
+
     func solveWithBacktracking() -> [Int: CGRect] {
         if backtrack(depth: 0) {
-            print("Solved with solution \(variables)")
             var frames: [Int: CGRect] = [:]
             for vari in variables {
                 frames[vari.id] = vari.cgRect
@@ -158,6 +212,52 @@ fileprivate class ConstraintSolver {
         }
     }
 
+//    private func backjump(depth: Int) -> Int {
+//
+//        let nDepth = domains[variables[depth]]!.count
+//        var maxCheckdepth = 0
+//
+//        for i in 0...(nDepth-1) {
+//            let activeFrame = variables[depth]
+//            let value = domains[activeFrame]![i]
+//            activeFrame.applyValue(value)
+////            print("Value \(i) assigned at depth \(depth): \(activeFrame)")
+//            var noFails = true
+//            var a = 0
+//            while a < depth {
+//                totalChecks += 1
+////                print("Checking at depth \(depth) with upper level \(a)")
+//                if !constraintIsSatsified(activeDepth: depth, checkDepth: a) {
+////                    print("Failed at \(a)")
+//                    noFails = false
+//                    if a > maxCheckdepth {
+//                        maxCheckdepth = a
+//                    }
+//                    break
+//                }
+//                a += 1
+//            }
+////            print("No fails: \(noFails)")
+//            if noFails {
+//                if depth == (n-1) {
+////                    print("Return true at depth: \(depth)")
+//                    return -1
+//                }
+//                else {
+//                    let nextDepth = depth + 1
+////                    print("Go next depth: \(nextDepth)")
+//                    let jbDepth = backjump(depth: nextDepth)
+//                    if  jbDepth < depth {
+////                        print("Backjump to \(jbDepth)")
+//                        return jbDepth
+//                    }
+////                    print("Depth \(jbDepth) reached, continue at level: \(depth)")
+//                }
+//            }
+//        }
+//        return maxCheckdepth
+//    }
+
     private func backtrack(depth: Int) -> Bool {
 
         let nDepth = domains[variables[depth]]!.count
@@ -165,62 +265,56 @@ fileprivate class ConstraintSolver {
         for i in 0...(nDepth-1) {
             let activeFrame = variables[depth]
             let value = domains[activeFrame]![i]
-            print("Value \(i) assigned at depth \(depth)")
             activeFrame.applyValue(value)
+//            print("Value \(i) assigned at depth \(depth): \(activeFrame)")
             var noFails = true
             var a = 0
             while a < depth {
-                print("Checking at depth \(depth) with upper level \(a)")
-                if !constraintIsSatsified(betweenDepth: a, and: depth) {
-                    print("Failed")
+                totalChecks += 1
+//                print("Checking at depth \(depth) with upper level \(a)")
+                if !constraintIsSatsified(activeDepth: depth, checkDepth: a) {
+//                    print("Failed")
                     noFails = false
                     break
                 }
                 a += 1
             }
-            print("No fails: \(noFails)")
+//            print("No fails: \(noFails)")
             if noFails {
                 if depth == (n-1) {
-                    print("Return true at depth: \(depth)")
+//                    print("Return true at depth: \(depth)")
                     return true
                 }
                 else {
                     let nextDepth = depth + 1
-                    print("Go next depth: \(nextDepth)")
+//                    print("Go next depth: \(nextDepth)")
                     if backtrack(depth: nextDepth) {
-                        print("True return received at depth \(depth)")
+//                        print("True return received at depth \(depth)")
                         return true
                     }
-                    print("False return, continue at level: \(depth)")
+//                    print("False return, continue at level: \(depth)")
                 }
             }
         }
         return false
     }
 
-    private func constraintIsSatsified(betweenDepth d1: Int, and d2: Int) -> Bool {
+    private func constraintIsSatsified(activeDepth d1: Int, checkDepth d2: Int) -> Bool {
         let f1 = variables[d1]
         let f2 = variables[d2]
         let flag = ConstraintFlag(f1: f1, f2: f2)
-        print("\(f1) \(f2)")
+//        print("\(f1) \(f2)")
         if constraints.contains(flag) {
-            if f1.x.isEqual(to: f2.x, decimalPlaces: 12) && f1.width.isEqual(to: f2.width, decimalPlaces: 12) {
-                print("Constraint + same slot: false")
+            if (f2.x <= f1.x && f1.x < f2.x2) || (f2.x < f1.x2 && f1.x2 <= f2.x2) {
                 return false
             }
             else {
-                print("Constraint + check intersect: \(f1.cgRect.intersects(f2.cgRect))")
-                return !f1.cgRect.intersects(f2.cgRect)
+                return true
             }
         }
         else {
-            print("No constraint: true")
             return true
         }
-    }
-
-    func solveWithForwardCheckingBackjump() -> [Int: CGRect] {
-        return [:]
     }
 }
 
@@ -251,7 +345,7 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
     }
 
     var description: String {
-        return "\n{x: \(x), y: \(y), width: \(width), height: \(height), id: \(id)}"
+        return "{x: \(x), y: \(y), width: \(width), height: \(height), id: \(id)}\n"
     }
 
     var cgRect: CGRect {
