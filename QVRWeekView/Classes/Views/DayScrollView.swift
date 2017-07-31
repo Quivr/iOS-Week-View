@@ -54,7 +54,11 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         LayoutVariables.activeFrameHeight = self.frame.height
 
         // Make day collection view and add it to frame
-        dayCollectionView = DayCollectionView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: LayoutVariables.totalContentHeight), collectionViewLayout: DayCollectionViewFlowLayout())
+        dayCollectionView = DayCollectionView(frame: CGRect(x: 0,
+                                                            y: 0,
+                                                            width: self.bounds.width,
+                                                            height: LayoutVariables.totalContentHeight),
+                                              collectionViewLayout: DayCollectionViewFlowLayout())
         dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayCountTodayInCurrentYear), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
@@ -196,7 +200,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func showToday() {
         yearActive = yearToday
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth, y: 0), animated: false)
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth,
+                                                   y: 0),
+                                           animated: false)
         currentPeriod = Period(ofDate: DayDate.today)
         requestEventsAllPeriods()
     }
@@ -310,8 +316,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func requestEventsAllPeriods() {
         if let weekView = self.superview?.superview as? WeekView {
             weekView.requestEvents(forPeriod: currentPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+//            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+//            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
         }
     }
 
@@ -708,7 +714,8 @@ struct LayoutVariables {
         }
     }
 
-    // Collection view cell count buffer, number of cells to de added to the "right" side of the colelction view. This is equal to maximum number of days visisble plus one. This allows for smooth scrolling when crossing the year mark.
+    // Collection view cell count buffer, number of cells to de added to the "right" side of the colelction view.
+    // This is equal to maximum number of days visisble plus one. This allows for smooth scrolling when crossing the year mark.
     private(set) static var collectionViewCellCountBuffer = Int(max(portraitVisibleDays, landscapeVisibleDays))+1 {
         didSet {
             updateCollectionViewCellCount()

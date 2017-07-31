@@ -15,7 +15,6 @@ opt_in_rules:
   - vertical_parameter_alignment_on_call
 
 disabled_rules:
-  - line_length
   - statement_position
   - identifier_name
   - cyclomatic_complexity
@@ -23,6 +22,10 @@ disabled_rules:
 file_length:
   warning: 1000
   error: 2000
+
+line_length:
+  warning: 140
+  error: 200
 
 type_body_length:
   warning: 300

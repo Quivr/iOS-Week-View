@@ -55,7 +55,8 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
     }
 
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    override
+    func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         return layoutAttributes
     }
 
@@ -123,13 +124,13 @@ class DayViewCell: UICollectionViewCell {
         let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
 //        print("Queued for calc \(date) on cell \(dequeCellId)")
         DispatchQueue.global(qos: .userInitiated).async {
-//            print("Performing calc \(self.date) on cell \(self.dequeCellId)")
+            print("Performing calc \(self.date) on cell \(self.dequeCellId)")
             self.eventFrames = frameCalc.calculate(withData: eventsData)
+            print("Finished calc \(self.date) on cell \(self.dequeCellId)")
             DispatchQueue.main.async {
                 self.setNeedsLayout()
                 self.layoutIfNeeded()
             }
-//            print("Finished calc \(self.date) on cell \(self.dequeCellId)")
         }
     }
 
@@ -158,7 +159,10 @@ class DayViewCell: UICollectionViewCell {
 
             if !isHourIndicatorHidden {
                 let thickness = LayoutVariables.hourIndicatorThickness
-                self.hourIndicatorView = UIView(frame: CGRect(x: 0, y: overlayView.frame.height-thickness/2, width: self.bounds.width, height: thickness))
+                self.hourIndicatorView = UIView(frame: CGRect(x: 0,
+                                                              y: overlayView.frame.height-thickness/2,
+                                                              width: self.bounds.width,
+                                                              height: thickness))
                 self.hourIndicatorView.layer.cornerRadius = 1
                 self.overlayView.addSubview(hourIndicatorView)
             }
@@ -168,10 +172,16 @@ class DayViewCell: UICollectionViewCell {
 
     private func updateOverlay() {
         if !isOverlayHidden {
-            overlayView.frame = CGRect(x: overlayView.frame.origin.x, y: overlayView.frame.origin.y, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height)
+            overlayView.frame = CGRect(x: overlayView.frame.origin.x,
+                                       y: overlayView.frame.origin.y,
+                                       width: self.bounds.width,
+                                       height: bottomDistancePercent*self.bounds.height)
             overlayView.backgroundColor = LayoutVariables.overlayColor
             if !isHourIndicatorHidden {
-                hourIndicatorView.frame = CGRect(x: hourIndicatorView.frame.origin.x, y: overlayView.frame.height-LayoutVariables.hourIndicatorThickness/2, width: self.bounds.width, height: hourIndicatorView.frame.height)
+                hourIndicatorView.frame = CGRect(x: hourIndicatorView.frame.origin.x,
+                                                 y: overlayView.frame.height-LayoutVariables.hourIndicatorThickness/2,
+                                                 width: self.bounds.width,
+                                                 height: hourIndicatorView.frame.height)
                 hourIndicatorView.backgroundColor = LayoutVariables.hourIndicatorColor
             }
             self.bringSubview(toFront: overlayView)

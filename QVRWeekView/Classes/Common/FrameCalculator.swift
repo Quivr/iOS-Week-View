@@ -22,7 +22,6 @@ class FrameCalculator {
 
     func calculate(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
         let time = Date.timeIntervalSinceReferenceDate
-
         let n = eventsData.count
         let endPoints = calculateEndPoints(for: eventsData)
         var constraints: [[Bool]] = Array(repeating: Array(repeating: false, count: n), count: n)
@@ -76,10 +75,10 @@ class FrameCalculator {
             }
             let csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
             let frames = csp.solveWithBacktracking()
-//            print("Calc time: \(Date.timeIntervalSinceReferenceDate - time)")
             FrameCalculator.totalCalcs += 1
             FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
-            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs))")
+            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs)),",
+                  "onDate: \(DayDate(date: eventsData[eventFrames[0].id]!.endDate))")
             return frames
         }
         else {
@@ -87,7 +86,6 @@ class FrameCalculator {
             for frame in eventFrames {
                 frames[frame.id] = frame.cgRect
             }
-//            print("Calc time: \(Date.timeIntervalSinceReferenceDate - time)")
             FrameCalculator.totalCalcs += 1
             FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
             print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs))")
@@ -135,7 +133,10 @@ class FrameCalculator {
         let time = data.startDate.getTimeInHours()
         let duration = data.endDate.getTimeInHours() - time
         let hourHeight = self.height/DateSupport.hoursInDay
-        return EventFrame(x: 0, y: hourHeight*CGFloat(time), width: self.width, height: hourHeight*CGFloat(duration), id: data.id)
+        return EventFrame(x: 0,
+                          y: hourHeight*CGFloat(time),
+                          width: self.width,
+                          height: hourHeight*CGFloat(duration), id: data.id)
     }
 
     fileprivate struct EndPoint: CustomStringConvertible {
@@ -172,14 +173,21 @@ fileprivate class ConstraintSolver {
 
     func solveWithBacktracking() -> [Int: CGRect] {
         var frames: [Int: CGRect] = [:]
-        if backtrack(depth: 0) == .success {
+        let res = backtrack(depth: 0)
+        if res == .success{
             for vari in variables {
                 frames[vari.id] = vari.cgRect
             }
         }
         else {
+            print(res)
+            for vari in variables {
+                frames[vari.id] = vari.cgRect
+            }
+            print(variables)
             // TODO: IMPLEMENT BACKUP ALGORITHM
         }
+
         return frames
     }
 
@@ -204,6 +212,7 @@ fileprivate class ConstraintSolver {
             if noFails {
                 if depth == (n-1) {
                     return .success
+//                    return true
                 }
                 else {
                     let nextDepth = depth + 1
@@ -211,9 +220,13 @@ fileprivate class ConstraintSolver {
                     if  res == .success || res == .error {
                         return res
                     }
+//                    if backtrack(depth: nextDepth) {
+//                        return true
+//                    }
                 }
             }
         }
+//        return false
         return .backtracking
     }
 
@@ -222,7 +235,8 @@ fileprivate class ConstraintSolver {
         if constraints[d1][d2] {
             let f1 = variables[d1]
             let f2 = variables[d2]
-            return (f2.x > f1.x || f1.x >= f2.x2) && (f2.x >= f1.x2 || f1.x2 > f2.x2)
+            return (f2.x > f1.x || (f1.x > f2.x2 || f1.x.isEqual(to: f2.x2, decimalPlaces: 12))) &&
+                   ((f2.x > f1.x2 || f2.x.isEqual(to: f1.x2, decimalPlaces: 12)) || f1.x2 > f2.x2)
         }
         else {
             return true

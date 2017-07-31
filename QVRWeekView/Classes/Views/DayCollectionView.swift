@@ -53,7 +53,8 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
         self.scrollDirection = .horizontal
     }
 
-    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
+    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint,
+                                      withScrollingVelocity velocity: CGPoint) -> CGPoint {
         let totalDayViewWidth = LayoutVariables.totalDayViewCellWidth
         let xOffset = proposedContentOffset.x
         let xVelocity = velocity.x

@@ -32,7 +32,11 @@ public struct EventData: CustomStringConvertible {
     }
 
     public init() {
-        self.init(id: 0, title: "null", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
+        self.init(id: 0,
+                  title: "null",
+                  startDate: Date(),
+                  endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!),
+                  color: UIColor.blue)
     }
 
     func split(across dateRange: [Date]) -> [Date:EventData] {

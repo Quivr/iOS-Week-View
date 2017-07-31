@@ -6,8 +6,8 @@ import UIKit
 
 /**
  Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
- and all customization can be done with public functions. No delegates have been implemented yet. WeekView can be used in both landscape and portrait
- mode.
+ and all customization can be done with public functions. No delegates have been implemented yet.
+ WeekView can be used in both landscape and portrait mode.
  */
 open class WeekView: UIView {
 
@@ -486,7 +486,9 @@ public extension WeekView {
     }
 
     /**
-     Color for the overlay displayed ontop of the day view cells. Overlay will indicate which days have passed and how much time of today has passed. Overlay view itself is not transluscent, and requires a background color UIColor with alpha less than 1 for a transluscent effect.
+     Color for the overlay displayed ontop of the day view cells. Overlay will indicate which
+     days have passed and how much time of today has passed. Overlay view itself is not
+     transluscent, and requires a background color UIColor with alpha less than 1 for a transluscent effect.
      */
     public var dayViewOverlayColor: UIColor {
         get {
@@ -572,7 +574,8 @@ public extension WeekView {
     /**
      Sets the pattern for the dashed/dotted seperators. Requires an array of NSNumbers.
      Example 1: [10, 5] will provide a pattern of 10 points drawn, 5 points empty, repeated.
-     Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty.
+     Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points
+     drawn, 2 points empty.
      
      See Apple API for additional information on pattern drawing.
      https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern
@@ -655,7 +658,8 @@ public extension WeekView {
     }
 
     /**
-     Sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling.
+     Sensitivity for horizontal scrolling. A higher number will multiply input velocity
+     more and thus result in more cells being skipped when scrolling.
      */
     public var velocityOffsetMultiplier: CGFloat {
         get {
