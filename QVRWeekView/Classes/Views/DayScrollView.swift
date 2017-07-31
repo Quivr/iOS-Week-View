@@ -13,6 +13,10 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
+    // All eventData objects
+    private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
+    // Recently added data objects
+    private var newEventsData: [DayDate: [Int: EventData]] = [:]
     // Active year on view
     private var yearActive: Int = DayDate.today.year {
         didSet {
@@ -31,10 +35,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
     private var lastTouchZoomScale = CGFloat(1)
-    // All eventData objects
-    private var allEventsData: [DayDate: [Int: EventData]] = [:]
-    // Recently added data objects
-    private var newEventsData: [DayDate: [Int: EventData]] = [:]
 
     // MARK: - CONSTRUCTORS/OVERRIDES -
 
