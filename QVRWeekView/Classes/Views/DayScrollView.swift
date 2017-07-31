@@ -9,27 +9,32 @@ import UIKit
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate {
 
-    // All eventData objects
-    var allEventsData: [DayDate: [Int: EventData]] = [:]
+    // MARK: - INSTANCE VARIABLES -
 
-    // MARK: - PRIVATE VARIABLES -
-
+    // Collection view
     private(set) var dayCollectionView: DayCollectionView!
-
     // Active year on view
-    private var yearActive: Int = DayDate.today.year
+    private var yearActive: Int = DayDate.today.year {
+        didSet {
+            LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(yearActive)
+        }
+    }
     // Year todauy
     private var yearToday: Int = DayDate.today.year
     // A day in current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
-    // Day of today in year
-    private var dayCountTodayInCurrentYear: Int = Date().getDayOfYear()
     // Bool stores if the collection view just reset
     private var didJustResetView: Bool = false
+    // Bool stores if events are needed
+    private var eventsNeeded: Bool = true
     // Previous zoom scale of content
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
     private var lastTouchZoomScale = CGFloat(1)
+    // All eventData objects
+    private var allEventsData: [DayDate: [Int: EventData]] = [:]
+    // Recently added data objects
+    private var newEventsData: [DayDate: [Int: EventData]] = [:]
 
     // MARK: - CONSTRUCTORS/OVERRIDES -
 
@@ -59,7 +64,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                                                             width: self.bounds.width,
                                                             height: LayoutVariables.totalContentHeight),
                                               collectionViewLayout: DayCollectionViewFlowLayout())
-        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(dayCountTodayInCurrentYear), y: 0)
+        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(DayDate.today.day), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
@@ -199,12 +204,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     // MARK: - INTERNAL FUNCTIONS -
 
     func showToday() {
-        yearActive = yearToday
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayCountTodayInCurrentYear)*LayoutVariables.totalDayViewCellWidth,
-                                                   y: 0),
-                                           animated: false)
-        currentPeriod = Period(ofDate: DayDate.today)
-        requestEventsAllPeriods()
+        goToAndShow(dayDate: DayDate.today)
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {
@@ -274,7 +274,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func generateNewDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
 
-        var dayCount = (indexPath.row - dayCountTodayInCurrentYear)
+        var dayCount = (indexPath.row - DayDate.today.day)
         let yearOffset = yearActive - yearToday
         if yearOffset != 0 {
             let delta = (yearOffset / abs(yearOffset))
@@ -291,8 +291,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
     func loadAndProcessEvents(_ eventsData: [EventData]) {
 
+        // Process raw event data and sort it into the allEventsData dictionary.
         for eventData in eventsData {
-
             let start = eventData.startDate
             let end = eventData.endDate
 
@@ -311,10 +311,20 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                 }
             }
         }
+
+        // This makes sure that any new data gets added to already visible cells
+        for cell in dayCollectionView.visibleCells {
+            if let dayViewCell = cell as? DayViewCell, let data = newEventsData[dayViewCell.date] {
+                dayViewCell.setEventsData(data)
+            }
+        }
+        newEventsData.removeAll()
     }
 
-    func requestEventsAllPeriods() {
-        if let weekView = self.superview?.superview as? WeekView {
+    func requestEventsIfNeeded() {
+
+        if eventsNeeded, let weekView = self.superview?.superview as? WeekView {
+            eventsNeeded = false
             weekView.requestEvents(forPeriod: currentPeriod)
             weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
             weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
@@ -362,7 +372,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         didJustResetView = true
         yearActive += change
 
-        LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(yearActive)
         if change < 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
         }
@@ -398,10 +407,23 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if allEventsData[day] == nil {
             let newEventDict = [data.id: data]
             allEventsData[day] = newEventDict
+            newEventsData[day] = newEventDict
         }
         else {
             allEventsData[day]![data.id] = data
+            newEventsData[day]![data.id] = data
         }
+    }
+
+    private func goToAndShow(dayDate: DayDate) {
+        yearActive = dayDate.year
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.day)*LayoutVariables.totalDayViewCellWidth,
+                                                   y: 0),
+                                           animated: false)
+        currentPeriod = Period(ofDate: dayDate)
+        eventsNeeded = true
+        allEventsData.removeAll()
+        requestEventsIfNeeded()
     }
 
 }

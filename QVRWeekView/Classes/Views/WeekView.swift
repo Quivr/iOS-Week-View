@@ -33,13 +33,9 @@ open class WeekView: UIView {
     // MARK: - VARIABLES -
 
     // WeekView Delegate
-    public weak var delegate: WeekViewDelegate? {
-        didSet {
-            dayScrollView.requestEventsAllPeriods()
-        }
-    }
+    public weak var delegate: WeekViewDelegate?
     // The actual view being displayed, all other views are subview of this mainview
-    var mainView: UIView!
+    private(set) var mainView: UIView!
     // Array of all daylabels
     private var visibleDayLabels: [DayDate:UILabel] = [:]
     // Array of labels not being displayed
@@ -63,8 +59,9 @@ open class WeekView: UIView {
         initWeekView()
     }
 
-    override open func willMove(toWindow newWindow: UIWindow?) {
+    open override func didMoveToWindow() {
         updateTimeDisplayed()
+        dayScrollView.requestEventsIfNeeded()
     }
 
     private func initWeekView() {
