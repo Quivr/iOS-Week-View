@@ -44,60 +44,81 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-        let STRESS_TEST = false
-//        let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
-        let dates = [DateSupport.getDate(forDaysInFuture: 1)]
+//        let STRESS_TEST = false
+        let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
         var events: [EventData] = []
+        var a = 0
+        for date in dates {
+            let n = Int(drand48()*25)
+            let startOfDate = date.getStartOfDay()
+            for i in 0...n {
+                let I = Double(i)
+                let eventDuration = 24/(Double(n)+1)
+                let eventStartOffset = Int((eventDuration/2)*I*60.0*60.0)
+                let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
 
-        if STRESS_TEST {
-            let n = 50
-            var a = 0
-            for date in dates {
-                let startOfDate = date.getStartOfDay()
-                for i in 0...n {
-                    let I = Double(i)
-                    let eventDuration = 24/(Double(n)+1)
-                    let eventStartOffset = Int(eventDuration*I*60.0*60.0)
-                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+                let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+                let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
 
-                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
-                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+                let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
+                let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
 
-                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
-                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
-                    allEvents[id] = data
-                    events.append(data)
-                    id += 1
-                }
-                a += 1
+                let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+                allEvents[id] = data
+                events.append(data)
+                id += 1
             }
+            a += 1
         }
-        else {
-            var a = 0
-            for date in dates {
-                let n = 40
-                let startOfDate = date.getStartOfDay()
-                for i in 0...n {
-                    let I = Double(i)
-                    let eventDuration = 24/(Double(n)+1)
-                    let eventStartOffset = Int((eventDuration/2)*I*60.0*60.0)
-                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
-
-                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
-                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
-
-                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
-                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-
-                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
-                    allEvents[id] = data
-                    events.append(data)
-                    id += 1
-                }
-                a += 1
-            }
-        }
+//        if STRESS_TEST {
+//            let n = 50
+//            var a = 0
+//            for date in dates {
+//                let startOfDate = date.getStartOfDay()
+//                for i in 0...n {
+//                    let I = Double(i)
+//                    let eventDuration = 24/(Double(n)+1)
+//                    let eventStartOffset = Int(eventDuration*I*60.0*60.0)
+//                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+//
+//                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+//                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+//
+//                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
+//                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+//                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+//                    allEvents[id] = data
+//                    events.append(data)
+//                    id += 1
+//                }
+//                a += 1
+//            }
+//        }
+//        else {
+//            var a = 0
+//            for date in dates {
+//                let n = Int(drand48()*25)
+//                let startOfDate = date.getStartOfDay()
+//                for i in 0...n {
+//                    let I = Double(i)
+//                    let eventDuration = 24/(Double(n)+1)
+//                    let eventStartOffset = Int((eventDuration/2)*I*60.0*60.0)
+//                    let eventEndOffset = Int(eventDuration*(I+1)*60.0*60.0)
+//
+//                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+//                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+//
+//                    let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
+//                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+//
+//                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+//                    allEvents[id] = data
+//                    events.append(data)
+//                    id += 1
+//                }
+//                a += 1
+//            }
+//        }
         weekView.addAndLoadEvents(withData: events)
     }
 

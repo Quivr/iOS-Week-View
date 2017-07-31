@@ -122,11 +122,8 @@ class DayViewCell: UICollectionViewCell {
     func setEventsData(_ eventsData: [Int:EventData]) {
         self.eventsData = eventsData
         let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
-//        print("Queued for calc \(date) on cell \(dequeCellId)")
         DispatchQueue.global(qos: .userInitiated).async {
-            print("Performing calc \(self.date) on cell \(self.dequeCellId)")
             self.eventFrames = frameCalc.calculate(withData: eventsData)
-            print("Finished calc \(self.date) on cell \(self.dequeCellId)")
             DispatchQueue.main.async {
                 self.setNeedsLayout()
                 self.layoutIfNeeded()
