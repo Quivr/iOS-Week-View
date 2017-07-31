@@ -116,7 +116,7 @@ class FrameCalculator {
         let count = Int(self.width/frame.width)
         var i = 0
         if choice == .optimal { i = 1 }
-        else if choice == .subOptimal { i = count <= 4 ? 1 : (count <= 6 ? count-3 : (count <= 9 ? count-1 : count)) }
+        else if choice == .subOptimal { i = count <= 4 ? 1 : (count <= 6 ? count-3 : (count <= 8 ? count-1 : count)) }
         else { i = count }
 
         while i <= count {
