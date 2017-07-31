@@ -26,7 +26,7 @@ struct Period: CustomStringConvertible {
     }
 
     init(ofDate date: DayDate) {
-        self.startDate = date.getFirstDayOfWeek()
+        self.startDate = date.getDayDateMonday()
         self.endDate = startDate.getDayDateWith(daysAdded: 6)
     }
 

@@ -21,6 +21,7 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         dateComps.month = self.month
         dateComps.year = self.year
         dateComps.era = self.era
+        dateComps.hour = 12
         if let date = Calendar.current.date(from: dateComps) {
             return date
         }
@@ -106,9 +107,11 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         return (weekDay == 1 || weekDay == 7)
     }
 
-    func getFirstDayOfWeek() -> DayDate {
-        let comps = Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dateObj)
-        return DayDate(date: Calendar.current.date(from: comps)!)
+    func getDayDateMonday() -> DayDate {
+        var cal = Calendar.current
+        cal.firstWeekday = 2
+        let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dateObj)
+        return DayDate(date: cal.date(from: comps)!)
     }
 
     func getDayDateWith(daysAdded days: Int) -> DayDate {
