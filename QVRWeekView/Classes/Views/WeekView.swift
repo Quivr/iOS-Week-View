@@ -30,10 +30,28 @@ open class WeekView: UIView {
     @IBOutlet var topLeftBufferWidthConstraint: NSLayoutConstraint!
     @IBOutlet var topLeftBufferHeightConstraint: NSLayoutConstraint!
 
-    // MARK: - VARIABLES -
+    // MARK: - PUBLIC PROPERTIES -
 
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
+    // Computed events property
+    public var events: [EventData] {
+        get {
+            var events: [EventData] = []
+            for (_, array) in self.dayScrollView.allEventsData {
+                for (_, data) in array {
+                    events.append(data)
+                }
+            }
+            return events
+        }
+        set(events) {
+            self.dayScrollView.loadAndProcessEvents(events)
+        }
+    }
+
+    // MARK: - PRIVATE VARIABLES -
+
     // The actual view being displayed, all other views are subview of this mainview
     private(set) var mainView: UIView!
     // Array of all daylabels
