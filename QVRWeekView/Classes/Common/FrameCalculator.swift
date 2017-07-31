@@ -9,9 +9,6 @@ import Foundation
 
 class FrameCalculator {
 
-    static var totalCalcs = 0
-    static var totalCalcTime = 0.0
-
     init(withWidth width: CGFloat, andHeight height: CGFloat) {
         self.width = width
         self.height = height
@@ -58,13 +55,12 @@ class FrameCalculator {
                 let frame = point.frame
                 sweepState.remove(frame)
                 eventFrames.append(frame)
-                domains.append(domain(forFrame: frame))
+                domains.append(domain(forFrame: frame, .subOptimal))
                 frameIndices[frame] = index
                 index += 1
             }
         }
 
-//        csp.test()
         if areCollisions {
             for (frame1, frameList) in possibleFrameCollisions {
                 let index1 = frameIndices[frame1]!
@@ -75,10 +71,6 @@ class FrameCalculator {
             }
             let csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
             let frames = csp.solveWithBacktracking()
-            FrameCalculator.totalCalcs += 1
-            FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
-            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs)),",
-                  "onDate: \(DayDate(date: eventsData[eventFrames[0].id]!.endDate))")
             return frames
         }
         else {
@@ -86,9 +78,6 @@ class FrameCalculator {
             for frame in eventFrames {
                 frames[frame.id] = frame.cgRect
             }
-            FrameCalculator.totalCalcs += 1
-            FrameCalculator.totalCalcTime += (Date.timeIntervalSinceReferenceDate - time)
-            print("Average time: \(FrameCalculator.totalCalcTime/Double(FrameCalculator.totalCalcs))")
             return frames
         }
     }
@@ -115,10 +104,14 @@ class FrameCalculator {
         return endPoints
     }
 
-    fileprivate func domain(forFrame frame: EventFrame) -> Set<WidthPosValue> {
+    private func domain(forFrame frame: EventFrame, _ choice: DomainChoice = .subOptimal) -> Set<WidthPosValue> {
         var domain = Set<WidthPosValue>()
         let count = Int(self.width/frame.width)
-        var i = count <= 4 ? 1 : (count <= 6 ? count-2 : (count <= 8 ? count-1 : count))
+        var i = 0
+        if choice == .optimal { i = 1 }
+        else if choice == .subOptimal { i = count <= 4 ? 1 : (count <= 6 ? count-3 : (count <= 9 ? count-1 : count)) }
+        else { i = count }
+
         while i <= count {
             let width = self.width/CGFloat(i)
             for a in 0...(i-1) {
@@ -127,6 +120,12 @@ class FrameCalculator {
             i += 1
         }
         return domain
+    }
+
+    private enum DomainChoice {
+        case optimal
+        case subOptimal
+        case singular
     }
 
     private func getEventFrame(withData data: EventData) -> EventFrame {
@@ -163,6 +162,8 @@ fileprivate class ConstraintSolver {
     let n: Int
     let startTime: TimeInterval
 
+    var solution: [Int: CGRect]?
+
     init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
         self.variables = variables
         self.constraints = constraints
@@ -172,31 +173,31 @@ fileprivate class ConstraintSolver {
     }
 
     func solveWithBacktracking() -> [Int: CGRect] {
-        var frames: [Int: CGRect] = [:]
-        let res = backtrack(depth: 0)
-        if res == .success{
-            for vari in variables {
-                frames[vari.id] = vari.cgRect
-            }
-        }
-        else {
-            print(res)
-            for vari in variables {
-                frames[vari.id] = vari.cgRect
-            }
-            print(variables)
-            // TODO: IMPLEMENT BACKUP ALGORITHM
-        }
-
-        return frames
+        return solution == nil ? backtrack() : solution!
     }
 
-    private func backtrack(depth: Int) -> BacktrackState {
+    private func backtrack() -> [Int: CGRect] {
+        if backtrack(depth: 0) {
+            solution = [:]
+            for vari in variables {
+                solution![vari.id] = vari.cgRect
+            }
+            return solution!
+        }
+        else {
+            fatalError("Backtrack failed to find solution for frames: \(variables)")
+        }
+    }
 
-        for value in domains[depth] {
+    private func backtrack(depth: Int) -> Bool {
+
+        for value in domains[depth].sorted(by: { (v1, v2) -> Bool in
+            if v1.width.isEqual(to: v2.width, decimalPlaces: 12) {
+                return v1.x < v2.x
+            } else { return v1.width > v2.width }
+        }) {
             if Date.timeIntervalSinceReferenceDate-startTime > 1.0 {
-                print("CANCELLING")
-                return .error
+                return true
             }
             let activeFrame = variables[depth]
             activeFrame.applyValue(value)
@@ -211,23 +212,17 @@ fileprivate class ConstraintSolver {
             }
             if noFails {
                 if depth == (n-1) {
-                    return .success
-//                    return true
+                    return true
                 }
                 else {
                     let nextDepth = depth + 1
-                    let res = backtrack(depth: nextDepth)
-                    if  res == .success || res == .error {
-                        return res
+                    if backtrack(depth: nextDepth) {
+                        return true
                     }
-//                    if backtrack(depth: nextDepth) {
-//                        return true
-//                    }
                 }
             }
         }
-//        return false
-        return .backtracking
+        return false
     }
 
     private func constraintIsSatsified(activeDepth d1: Int, checkDepth d2: Int) -> Bool {
@@ -241,12 +236,6 @@ fileprivate class ConstraintSolver {
         else {
             return true
         }
-    }
-
-    @objc
-    func abortSolver(_ sender: Timer) {
-        print("Canceling thread")
-//        Thread.current.cancel()
     }
 }
 
@@ -332,10 +321,4 @@ fileprivate struct WidthPosValue: Hashable, CustomStringConvertible {
     static func == (lhs: WidthPosValue, rhs: WidthPosValue) -> Bool {
         return lhs.x.isEqual(to: rhs.x, decimalPlaces: 12) && lhs.width.isEqual(to: rhs.width, decimalPlaces: 12)
     }
-}
-
-fileprivate enum BacktrackState {
-    case success
-    case error
-    case backtracking
 }
