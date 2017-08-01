@@ -42,7 +42,7 @@ class FrameCalculator {
                     // Calculate new width
                     let newWidth = self.width/CGFloat(sweepState.count+1)
                     for frame in sweepState {
-                        frame.width = newWidth
+                        frame.width = newWidth < frame.width ? newWidth : frame.width
                         if possibleFrameCollisions[point.frame] != nil { possibleFrameCollisions[point.frame]!.append(frame) }
                         else { possibleFrameCollisions[point.frame] = [frame] }
                         if possibleFrameCollisions[frame] != nil { possibleFrameCollisions[frame]!.append(point.frame) }
@@ -195,12 +195,8 @@ fileprivate class ConstraintSolver {
             return solution!
         }
         else {
-            solution = [:]
-            for vari in variables {
-                solution![vari.id] = vari.cgRect
-            }
-            return solution!
-//            fatalError("Backtrack failed to find solution for frames: \(variables)")
+            print("BACKTRACK FAIL ON VARIABLES: \(variables)")
+            fatalError("Backtrack failed to find solution")
         }
     }
 
