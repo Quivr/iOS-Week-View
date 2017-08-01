@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Period: CustomStringConvertible {
+class Period: CustomStringConvertible {
 
     let startDate: DayDate
     let endDate: DayDate
@@ -17,13 +17,17 @@ struct Period: CustomStringConvertible {
         return "[\(startDate) -> \(endDate)]"
     }
 
-    var nextPeriod: Period {
-        return Period(ofDate: endDate.getDayDateWith(daysAdded: 1))
-    }
+    lazy var nextPeriod: Period = {
+        return Period(ofDate: self.endDate.getDayDateWith(daysAdded: 1))
+    }()
 
-    var previousPeriod: Period {
-        return Period(ofDate: startDate.getDayDateWith(daysAdded: -1))
-    }
+    lazy var previousPeriod: Period = {
+        return Period(ofDate: self.startDate.getDayDateWith(daysAdded: -1))
+    }()
+
+    lazy var surroundingPeriods: [Period] = {
+        return [self.previousPeriod, self, self.nextPeriod]
+    }()
 
     init(ofDate date: DayDate) {
         self.startDate = date.getDayDateMonday()

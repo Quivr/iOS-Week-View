@@ -23,7 +23,7 @@ public struct EventData: CustomStringConvertible {
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.id = id
         self.title = title
-        if startDate.compare(endDate).rawValue == 1 {
+        if startDate.compare(endDate).rawValue >= 0 {
             fatalError("Invalid start and end date passed to EventData on initialisation. Start: \(startDate), End: \(endDate)")
         }
         self.startDate = startDate

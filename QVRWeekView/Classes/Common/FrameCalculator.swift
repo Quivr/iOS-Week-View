@@ -175,6 +175,11 @@ fileprivate class ConstraintSolver {
     var solution: [Int: CGRect]?
 
     init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
+        print(variables)
+        print("")
+        print(constraints)
+        print("")
+        print(domains)
         self.variables = variables
         self.constraints = constraints
         self.domains = domains
@@ -202,12 +207,14 @@ fileprivate class ConstraintSolver {
 
     private func backtrack(depth: Int) -> Bool {
 
-        for value in domains[depth].sorted(by: { (v1, v2) -> Bool in
+        let domain = domains[depth].sorted(by: { (v1, v2) -> Bool in
             if v1.width.isEqual(to: v2.width, decimalPlaces: 12) {
                 return v1.x < v2.x
             } else { return v1.width > v2.width }
-        }) {
-            if Date.timeIntervalSinceReferenceDate-startTime > 1.0 {
+        })
+
+        for value in domain {
+            if Date.timeIntervalSinceReferenceDate-startTime > 2.0 {
                 return true
             }
             let activeFrame = variables[depth]
@@ -241,8 +248,17 @@ fileprivate class ConstraintSolver {
         if constraints[d1][d2] {
             let f1 = variables[d1]
             let f2 = variables[d2]
-            return (f2.x > f1.x || (f1.x > f2.x2 || f1.x.isEqual(to: f2.x2, decimalPlaces: 12))) &&
-                   ((f2.x > f1.x2 || f2.x.isEqual(to: f1.x2, decimalPlaces: 12)) || f1.x2 > f2.x2)
+
+            // Left corner of f1 is inside f2
+            let lci1 = ((f2.x < f1.x || f1.x.isEqual(to: f2.x, decimalPlaces: 12)) && (f1.x < f2.x2))
+            // Right corner of f1 is inside f2
+            let rci1 = ((f2.x < f1.x2) && (f1.x2 < f2.x2 || f1.x2.isEqual(to: f2.x2, decimalPlaces: 12)))
+            // Left corner of f2 is inside f1
+            let lci2 = ((f1.x < f2.x || f2.x.isEqual(to: f1.x, decimalPlaces: 12)) && (f2.x < f1.x2))
+            // Right corner of f2 is inside f1
+            let rci2 = ((f1.x < f2.x2) && (f2.x2 < f1.x2 || f2.x2.isEqual(to: f1.x2, decimalPlaces: 12)))
+            // Left corner f1 is not inside f2 and right corner f1 is not inside f2
+            return (!lci1 && !rci1) && (!lci2 && !rci2)
         }
         else {
             return true
@@ -265,8 +281,6 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
     var y: CGFloat
     var width: CGFloat
     var height: CGFloat
-    var leftLimit: CGFloat?
-    var rightLimit: CGFloat?
 
     var y2: CGFloat {
         return self.y + self.height
@@ -326,7 +340,7 @@ fileprivate struct WidthPosValue: Hashable, CustomStringConvertible {
     }
 
     var description: String {
-        return "{x: \(x), width: \(width)}"
+        return "\n{x: \(x), width: \(width)}"
     }
 
     static func == (lhs: WidthPosValue, rhs: WidthPosValue) -> Bool {

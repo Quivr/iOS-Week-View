@@ -27,8 +27,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
     // Bool stores if the collection view just reset
     private var didJustResetView: Bool = false
-    // Bool stores if events are needed
-    private var eventsNeeded: Bool = true
     // Previous zoom scale of content
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
@@ -116,8 +114,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
 
             if  let path = collectionView.indexPathForItem(at: cvLeft),
-                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
-                let weekView = self.superview?.superview as? WeekView {
+                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell {
 
                 let date = dayViewCell.date
                 if date > currentPeriod.endDate {
@@ -128,7 +125,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                     // Set current period to next period
                     currentPeriod = currentPeriod.nextPeriod
                     // Load new events for new period
-                    weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+                    requestEvents()
                 }
                 else if date < currentPeriod.startDate {
                     // Remove redundant events
@@ -138,7 +135,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                     // Set current period to previous period
                     currentPeriod = currentPeriod.previousPeriod
                     // Load new events for new period
-                    weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
+                    requestEvents()
                 }
             }
         }
@@ -287,7 +284,12 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         return DayDate(date: date)
     }
 
-    func loadAndProcessEvents(_ eventsData: [EventData]) {
+    func overwriteAllEvents(withData eventsData: [EventData]) {
+        allEventsData.removeAll()
+        appendEvents(withData: eventsData)
+    }
+
+    func appendEvents(withData eventsData: [EventData]) {
 
         // Process raw event data and sort it into the allEventsData dictionary.
         for eventData in eventsData {
@@ -318,7 +320,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func processAndRemoveEvents(_ eventsToRemove: [Int]) {
+    func removeEvents(withIds eventsToRemove: [Int]) {
         // Remove all occurences of this event id from allEventsData
         for id in eventsToRemove {
             for (day, events) in allEventsData where events.keys.contains(id) {
@@ -334,13 +336,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func requestEventsIfNeeded() {
-
-        if eventsNeeded, let weekView = self.superview?.superview as? WeekView {
-            eventsNeeded = false
-            weekView.requestEvents(forPeriod: currentPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.previousPeriod)
-            weekView.requestEvents(forPeriod: currentPeriod.nextPeriod)
+    func requestEvents() {
+        if let weekView = self.superview?.superview as? WeekView {
+            weekView.requestEvents(forPeriods: [currentPeriod.previousPeriod, currentPeriod, currentPeriod.nextPeriod])
         }
     }
 
@@ -432,9 +430,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                                                    y: 0),
                                            animated: false)
         currentPeriod = Period(ofDate: dayDate)
-        eventsNeeded = true
-        allEventsData.removeAll()
-        requestEventsIfNeeded()
+        requestEvents()
     }
 
 }

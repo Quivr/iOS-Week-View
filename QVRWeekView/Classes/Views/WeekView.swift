@@ -64,7 +64,7 @@ open class WeekView: UIView {
 
     open override func didMoveToWindow() {
         updateTimeDisplayed()
-        dayScrollView.requestEventsIfNeeded()
+        dayScrollView.requestEvents()
     }
 
     private func initWeekView() {
@@ -112,17 +112,24 @@ open class WeekView: UIView {
     }
 
     /**
-     Adds and loads in events. eventsData is an array of EventData objects.
+     Overwrittes all events with new data.
      */
-    public func addAndLoadEvents(withData eventsData: [EventData]) {
-        dayScrollView.loadAndProcessEvents(eventsData)
+    public func overwriteAllEvents(withNewData eventsData: [EventData]) {
+        dayScrollView.overwriteAllEvents(withData: eventsData)
+    }
+
+    /**
+     Adds and loads in new events. This will not remove any events, events with same ids will be overwritten.
+     */
+    public func appendEvents(withData eventsData: [EventData]) {
+        dayScrollView.appendEvents(withData: eventsData)
     }
 
     /**
      Removes events. eventsData is an array of EventData objects.
      */
     public func removeEvents(withIds eventsToRemove: [Int]) {
-        dayScrollView.processAndRemoveEvents(eventsToRemove)
+        dayScrollView.removeEvents(withIds: eventsToRemove)
     }
 
     // MARK: - INTERNAL FUNCTIONS -
@@ -201,8 +208,8 @@ open class WeekView: UIView {
         self.delegate?.didLongPressDayView(in: self, atDate: date)
     }
 
-    func requestEvents(forPeriod period: Period) {
-        self.delegate?.loadNewEvents(in: self, between: period.startDate.dateObj, and: period.endDate.dateObj)
+    func requestEvents(forPeriods periods: [Period]) {
+        self.delegate?.loadNewEvents(in: self, between: periods.first!.startDate.dateObj, and: periods.last!.endDate.dateObj)
     }
 
     // MARK: - PRIVATE/HELPER FUNCTIONS -
