@@ -15,20 +15,17 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
     let month: Int
     let year: Int
     let era: Int
-    var dateObj: Date {
-        var dateComps: DateComponents = DateComponents()
-        dateComps.day = self.day
-        dateComps.month = self.month
-        dateComps.year = self.year
-        dateComps.era = self.era
-        dateComps.hour = 12
-        if let date = Calendar.current.date(from: dateComps) {
-            return date
-        }
-        else {
-            return Date()
-        }
+
+    public var description: String {
+        return "\(day)-\(month)-\(year)-\(era)"
     }
+
+    var dateObj: Date {
+        var dateComps = self.dateComponents
+        dateComps.hour = 12
+        return Calendar.current.date(from: dateComps)!
+    }
+
     var hashValue: Int {
         return "\(day)-\(month)-\(year)-\(era)".hashValue
     }
@@ -47,8 +44,13 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         return DateFormatter().monthSymbols[month-1].getFirstNCharacters(n: 3)
     }
 
-    public var description: String {
-        return "\(day)-\(month)-\(year)-\(era)"
+    private var dateComponents: DateComponents {
+        var dateComps: DateComponents = DateComponents()
+        dateComps.day = self.day
+        dateComps.month = self.month
+        dateComps.year = self.year
+        dateComps.era = self.era
+        return dateComps
     }
 
     static var today: DayDate {
@@ -105,6 +107,14 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         let cal = Calendar.current
         let weekDay = cal.component(.weekday, from: dateObj)
         return (weekDay == 1 || weekDay == 7)
+    }
+
+    func getDateWithTime(hours: Int, minutes: Int, seconds: Int) -> Date {
+        var comps = self.dateComponents
+        comps.hour = hours
+        comps.minute = minutes
+        comps.second = seconds
+        return Calendar.current.date(from: comps)!
     }
 
     func getDayDateMonday() -> DayDate {

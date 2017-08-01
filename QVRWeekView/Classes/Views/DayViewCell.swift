@@ -119,14 +119,32 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
     }
 
-    func setEventsData(_ eventsData: [Int:EventData]) {
-        self.eventsData = eventsData
-        let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.eventFrames = frameCalc.calculate(withData: eventsData)
-            DispatchQueue.main.async {
-                self.setNeedsLayout()
-                self.layoutIfNeeded()
+    func setEventsData(_ eventsData: [Int: EventData]) {
+
+        // Check if data has changed at all
+        var dataHasChanged = eventsData.count != self.eventsData.count
+        if !dataHasChanged {
+            for (key, _) in eventsData where !self.eventsData.keys.contains(key) {
+                dataHasChanged = true
+                break
+            }
+        }
+        if !dataHasChanged {
+            for (key, _) in self.eventsData where !eventsData.keys.contains(key) {
+                dataHasChanged = true
+                break
+            }
+        }
+
+        if dataHasChanged {
+            self.eventsData = eventsData
+            let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.eventFrames = frameCalc.calculate(withData: eventsData)
+                DispatchQueue.main.async {
+                    self.setNeedsLayout()
+                    self.layoutIfNeeded()
+                }
             }
         }
     }
@@ -134,7 +152,12 @@ class DayViewCell: UICollectionViewCell {
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
 
         if sender.state == .began {
-            self.delegate?.dayViewCellWasLongPressed(self)
+
+            let yTouch = sender.location(ofTouch: 0, in: self).y
+            let time = Double((yTouch/self.frame.height)*24).roundToNearestQuarter()
+            let hours = Int(time)
+            let minutes = Int((time-Double(hours))*60)
+            self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
     }
 
@@ -286,7 +309,7 @@ class DayViewCell: UICollectionViewCell {
 
 protocol DayViewCellDelegate: class {
 
-    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell)
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int)
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
 

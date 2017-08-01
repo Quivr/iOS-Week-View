@@ -63,6 +63,15 @@ public extension Date {
         return hours + (minutes/60) + (seconds/60/60)
     }
 
+    func withTimeSetTo(hour: Int, minutes: Int, seconds: Int) -> Date {
+        let cal = Calendar.current
+        var comps = DateComponents()
+        comps.hour = hour
+        comps.minute = minutes
+        comps.second = seconds
+        return cal.date(byAdding: comps, to: self)!
+    }
+
     func date(withDayAdded days: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: days, to: self)!
     }
@@ -110,5 +119,11 @@ extension CGFloat {
 
     private func roundedToNearestHalf() -> CGFloat {
         return ((self*2).rounded())/2
+    }
+}
+
+extension Double {
+    func roundToNearestQuarter() -> Double {
+        return ((self*4).rounded())/4.0
     }
 }

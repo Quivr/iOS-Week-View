@@ -195,7 +195,12 @@ fileprivate class ConstraintSolver {
             return solution!
         }
         else {
-            fatalError("Backtrack failed to find solution for frames: \(variables)")
+            solution = [:]
+            for vari in variables {
+                solution![vari.id] = vari.cgRect
+            }
+            return solution!
+//            fatalError("Backtrack failed to find solution for frames: \(variables)")
         }
     }
 

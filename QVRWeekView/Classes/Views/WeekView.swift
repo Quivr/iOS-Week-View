@@ -112,10 +112,17 @@ open class WeekView: UIView {
     }
 
     /**
-     Adds and loads in events. Events is an array of EventData objects.
+     Adds and loads in events. eventsData is an array of EventData objects.
      */
     public func addAndLoadEvents(withData eventsData: [EventData]) {
         dayScrollView.loadAndProcessEvents(eventsData)
+    }
+
+    /**
+     Removes events. eventsData is an array of EventData objects.
+     */
+    public func removeEvents(withIds eventsToRemove: [Int]) {
+        dayScrollView.processAndRemoveEvents(eventsToRemove)
     }
 
     // MARK: - INTERNAL FUNCTIONS -
@@ -186,15 +193,16 @@ open class WeekView: UIView {
     }
 
     func eventViewWasTapped(_ eventData: EventData) {
-        self.delegate?.didTapEvent(self, eventId: eventData.id)
+        self.delegate?.didTapEvent(in: self, eventId: eventData.id)
     }
 
-    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
-        self.delegate?.didLongPressDayViewCell(self, pressedDay: dayViewCell.date.description)
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, at hours: Int, and minutes: Int) {
+        let date = dayViewCell.date.getDateWithTime(hours: hours, minutes: minutes, seconds: 0)
+        self.delegate?.didLongPressDayView(in: self, atDate: date)
     }
 
     func requestEvents(forPeriod period: Period) {
-        self.delegate?.loadNewEvents(self, between: period.startDate.dateObj, and: period.endDate.dateObj)
+        self.delegate?.loadNewEvents(in: self, between: period.startDate.dateObj, and: period.endDate.dateObj)
     }
 
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -675,11 +683,11 @@ public extension WeekView {
 // MARK: - WEEKVIEW DELEGATE -
 
 @objc public protocol WeekViewDelegate: class {
-    func didLongPressDayViewCell(_ weekView: WeekView, pressedDay: String)
+    func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
-    func didTapEvent(_ weekView: WeekView, eventId: Int)
+    func didTapEvent(in weekView: WeekView, eventId: Int)
 
-    func loadNewEvents(_ weekView: WeekView, between startDate: Date, and endDate: Date)
+    func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date)
 
 }
 

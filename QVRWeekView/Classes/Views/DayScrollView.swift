@@ -15,8 +15,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     private(set) var dayCollectionView: DayCollectionView!
     // All eventData objects
     private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
-    // Recently added data objects
-    private var newEventsData: [DayDate: [Int: EventData]] = [:]
     // Active year on view
     private var yearActive: Int = DayDate.today.year {
         didSet {
@@ -195,9 +193,9 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell) {
+    func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int) {
         if let weekView = self.superview?.superview as? WeekView {
-            weekView.dayViewCellWasLongPressed(dayViewCell)
+            weekView.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
         }
     }
 
@@ -314,11 +312,26 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
 
         // This makes sure that any new data gets added to already visible cells
         for cell in dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell, let data = newEventsData[dayViewCell.date] {
+            if let dayViewCell = cell as? DayViewCell, let data = allEventsData[dayViewCell.date] {
                 dayViewCell.setEventsData(data)
             }
         }
-        newEventsData.removeAll()
+    }
+
+    func processAndRemoveEvents(_ eventsToRemove: [Int]) {
+        // Remove all occurences of this event id from allEventsData
+        for id in eventsToRemove {
+            for (day, events) in allEventsData where events.keys.contains(id) {
+                allEventsData[day]![id] = nil
+            }
+        }
+
+        // This makes sure that events get removed from already visible cells
+        for cell in dayCollectionView.visibleCells {
+            if let dayViewCell = cell as? DayViewCell, let data = allEventsData[dayViewCell.date] {
+                dayViewCell.setEventsData(data)
+            }
+        }
     }
 
     func requestEventsIfNeeded() {
@@ -410,14 +423,6 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
         else {
             allEventsData[day]![data.id] = data
-        }
-
-        if newEventsData[day] == nil {
-            let newEventDict = [data.id: data]
-            newEventsData[day] = newEventDict
-        }
-        else {
-            newEventsData[day]![data.id] = data
         }
     }
 
