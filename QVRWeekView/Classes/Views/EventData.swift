@@ -10,7 +10,7 @@ import Foundation
 
 public struct EventData: CustomStringConvertible {
 
-    let id: Int
+    public let id: Int
     let title: String
     let startDate: Date
     let endDate: Date

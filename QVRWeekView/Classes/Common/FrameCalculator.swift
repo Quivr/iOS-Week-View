@@ -116,7 +116,7 @@ class FrameCalculator {
         let count = Int(self.width/frame.width)
         var i = 0
         if choice == .optimal { i = 1 }
-        else if choice == .subOptimal { i = count <= 4 ? 1 : (count <= 6 ? count-3 : (count <= 8 ? count-1 : count)) }
+        else if choice == .subOptimal { i = count == 1 ? 1 : (count <= 4 ? 2 : (count <= 6 ? count-2 : (count <= 7 ? count-1 : count))) }
         else { i = count }
 
         while i <= count {
@@ -144,7 +144,8 @@ class FrameCalculator {
         return EventFrame(x: 0,
                           y: hourHeight*CGFloat(time),
                           width: self.width,
-                          height: hourHeight*CGFloat(duration), id: data.id)
+                          height: hourHeight*CGFloat(duration),
+                          id: data.id)
     }
 
     // Struct used for endpoints
@@ -175,11 +176,6 @@ fileprivate class ConstraintSolver {
     var solution: [Int: CGRect]?
 
     init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
-        print(variables)
-        print("")
-        print(constraints)
-        print("")
-        print(domains)
         self.variables = variables
         self.constraints = constraints
         self.domains = domains
@@ -214,7 +210,7 @@ fileprivate class ConstraintSolver {
         })
 
         for value in domain {
-            if Date.timeIntervalSinceReferenceDate-startTime > 2.0 {
+            if Date.timeIntervalSinceReferenceDate-startTime > 5.0 {
                 return true
             }
             let activeFrame = variables[depth]
