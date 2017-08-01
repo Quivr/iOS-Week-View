@@ -24,8 +24,8 @@ class DayViewCell: UICollectionViewCell {
     private var seperatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
     private var eventLayers: [CALayer] = []
-    // PRevious height
-    private var prevHeight: CGFloat?
+    // Previous height
+    private var prevHeight: CGFloat!
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
@@ -47,6 +47,7 @@ class DayViewCell: UICollectionViewCell {
         self.backgroundColor = LayoutDefaults.defaultDayViewColor
         self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
+        self.prevHeight = self.frame.height
     }
 
     override func layoutSubviews() {
@@ -268,14 +269,10 @@ class DayViewCell: UICollectionViewCell {
         }
         self.eventLayers.removeAll()
 
-        var factorChange = CGFloat(1)
-        let newHeight = self.frame.height
-        if prevHeight == nil {
-            prevHeight = newHeight
-        }
-        else {
-            factorChange = newHeight / prevHeight!
-        }
+        var scaleY = CGFloat(1)
+
+        scaleY = self.frame.height/prevHeight
+        prevHeight = self.frame.height
 
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
@@ -283,14 +280,19 @@ class DayViewCell: UICollectionViewCell {
             guard eventsData[id] != nil else {
                 return
             }
+            let transform = CGAffineTransform(scaleX: 1.0, y: scaleY)
+            var newFrame = frame
+            if scaleY != 1.0 {
+                self.eventFrames[id] = frame.applying(transform)
+                newFrame = self.eventFrames[id]!
+            }
 
             let eventRectLayer = CAShapeLayer()
-            var transform = CGAffineTransform(scaleX: 1.0, y: factorChange)
-            eventRectLayer.path = CGPath(rect: frame, transform: &transform)
+            eventRectLayer.path = CGPath(rect: newFrame, transform: nil)
             eventRectLayer.fillColor = eventsData[id]!.color.cgColor
 
             let eventTextLayer = CATextLayer()
-            eventTextLayer.frame = frame.applying(transform)
+            eventTextLayer.frame = newFrame
             eventTextLayer.string = eventsData[id]!.title
             let font = FontVariables.eventLabelFont
             let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
