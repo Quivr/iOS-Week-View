@@ -407,10 +407,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if allEventsData[day] == nil {
             let newEventDict = [data.id: data]
             allEventsData[day] = newEventDict
-            newEventsData[day] = newEventDict
         }
         else {
             allEventsData[day]![data.id] = data
+        }
+
+        if newEventsData[day] == nil {
+            let newEventDict = [data.id: data]
+            newEventsData[day] = newEventDict
+        }
+        else {
             newEventsData[day]![data.id] = data
         }
     }
