@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct DayDate: Hashable, Comparable, CustomStringConvertible {
+class DayDate: Hashable, Comparable, CustomStringConvertible {
 
     let day: Int
     let month: Int
@@ -20,11 +20,11 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         return "\(day)-\(month)-\(year)-\(era)"
     }
 
-    var dateObj: Date {
+    lazy var dateObj: Date = {
         var dateComps = self.dateComponents
         dateComps.hour = 12
         return Calendar.current.date(from: dateComps)!
-    }
+    }()
 
     var hashValue: Int {
         return "\(day)-\(month)-\(year)-\(era)".hashValue
@@ -44,14 +44,14 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible {
         return DateFormatter().monthSymbols[month-1].getFirstNCharacters(n: 3)
     }
 
-    private var dateComponents: DateComponents {
+    private lazy var dateComponents: DateComponents = {
         var dateComps: DateComponents = DateComponents()
         dateComps.day = self.day
         dateComps.month = self.month
         dateComps.year = self.year
         dateComps.era = self.era
         return dateComps
-    }
+    }()
 
     static var today: DayDate {
         return DayDate(date: Date())

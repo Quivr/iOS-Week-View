@@ -10,7 +10,6 @@ import QVRWeekView
 import UIKit
 
 public var autoFillEvents = true
-public var overwriteEvents = true
 
 class CalendarViewController: UIViewController, WeekViewDelegate {
 
@@ -48,14 +47,28 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                                  color: color)
         allEvents[id] = newEvent
         id += 1
-        weekView.appendEvents(withData: [newEvent])
+        weekView.loadEvents(withData: Array(self.allEvents.values))
     }
 
     func didTapEvent(in weekView: WeekView, eventId: Int) {
         let alert = UIAlertController(title: "Tapped event", message: "\(eventId)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (_) -> Void in
-            weekView.removeEvents(withIds: [eventId])
+
+            self.allEvents[eventId] = nil
+            self.eventsSortedByDay.removeAll()
+            for event in Array(self.allEvents.values) {
+                let date = event.startDate.getDayValue()
+                if self.eventsSortedByDay[date] == nil {
+                    self.eventsSortedByDay[date] = [event]
+                }
+                else {
+                    self.eventsSortedByDay[date]?.append(event)
+                }
+            }
+
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+
         }))
         self.present(alert, animated: true, completion: nil)
     }
@@ -63,96 +76,40 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date) {
 
         let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
-        if overwriteEvents {
-            loadNewEventsAsOverwrite(to: weekView, forDate: dates)
-        }
-        else {
-            loadNewEventsAsAppend(to: weekView, forDate: dates)
-        }
 
-    }
-
-    private func loadNewEventsAsAppend(to weekView: WeekView, forDate dates: [Date]) {
-
-        for (key, _) in eventsSortedByDay {
-            if !dates.contains(key) {
-                for event in eventsSortedByDay[key]! {
-                    allEvents[event.id] = nil
-                }
-                eventsSortedByDay[key] = nil
+        for (date, events) in eventsSortedByDay where !dates.contains(date) {
+            for event in events {
+                allEvents[event.id] = nil
             }
+            eventsSortedByDay[date] = nil
         }
 
-        var events: [EventData] = []
-        var a = 0
         if autoFillEvents {
-            for date in dates {
-                if eventsSortedByDay[date] == nil {
-                    var dateEvents: [EventData] = []
-                    let n = Int(drand48()*25)
-                    let startOfDate = date.getStartOfDay()
-                    for i in 0...n {
-                        let hourDuration = Double(Int(drand48()*4)+1)
-                        let hourStart = drand48()*21
-                        let eventStartOffset = Int((hourStart)*60.0*60.0)
-                        let eventEndOffset = eventStartOffset+Int(hourDuration*60.0*60.0)
+            for date in dates where eventsSortedByDay[date] == nil {
+                var dateEvents: [EventData] = []
+                let n = Int(drand48()*25)
+                let startOfDate = date.getStartOfDay()
+                for i in 0...n {
+                    let hourDuration = Double(Int(drand48()*4)+1)
+                    let hourStart = drand48()*21
+                    let eventStartOffset = Int((hourStart)*60.0*60.0)
+                    let eventEndOffset = eventStartOffset+Int(hourDuration*60.0*60.0)
 
-                        let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
-                        let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
+                    let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
+                    let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
 
-                        let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
-                        let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+                    let title = "Test+\(i):TextTest TextTest TextTest TextTest TextTest"
+                    let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
 
-                        let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
-                        allEvents[id] = data
-                        events.append(data)
-                        dateEvents.append(data)
-                        id += 1
-                    }
-                    eventsSortedByDay[date] = dateEvents
+                    let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+                    allEvents[id] = data
+                    dateEvents.append(data)
+                    id += 1
                 }
-                a += 1
+                eventsSortedByDay[date] = dateEvents
             }
         }
-        weekView.appendEvents(withData: events)
-    }
-
-    private func loadNewEventsAsOverwrite(to weekView: WeekView, forDate dates: [Date]) {
-        var events: [EventData] = []
-        var a = 0
-        if autoFillEvents {
-            for date in dates {
-                if eventsSortedByDay[date] == nil {
-                    var dateEvents: [EventData] = []
-                    let n = Int(drand48()*25)
-                    let startOfDate = date.getStartOfDay()
-                    for i in 0...n {
-                        let hourDuration = Double(Int(drand48()*4)+1)
-                        let hourStart = drand48()*21
-                        let eventStartOffset = Int((hourStart)*60.0*60.0)
-                        let eventEndOffset = eventStartOffset+Int(hourDuration*60.0*60.0)
-
-                        let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
-                        let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
-
-                        let title = "Test\(a)+\(i):TextTest TextTest TextTest TextTest TextTest"
-                        let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-
-                        let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)
-                        allEvents[id] = data
-                        events.append(data)
-                        dateEvents.append(data)
-                        id += 1
-                    }
-                    eventsSortedByDay[date] = dateEvents
-                }
-                else {
-                    events.append(contentsOf: eventsSortedByDay[date]!)
-                }
-                a += 1
-            }
-        }
-        weekView.overwriteAllEvents(withNewData: events)
+        weekView.loadEvents(withData: Array(allEvents.values))
     }
 
     private func dateWithIntervalFromNow(_ interval: Int) -> Date {

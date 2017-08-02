@@ -8,16 +8,16 @@
 
 import Foundation
 
-public struct EventData: CustomStringConvertible {
+public struct EventData: CustomStringConvertible, Equatable {
 
     public let id: Int
-    let title: String
-    let startDate: Date
-    let endDate: Date
-    let color: UIColor
+    public let title: String
+    public let startDate: Date
+    public let endDate: Date
+    public let color: UIColor
 
     public var description: String {
-        return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]"
+        return "\n[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]"
     }
 
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
@@ -37,6 +37,10 @@ public struct EventData: CustomStringConvertible {
                   startDate: Date(),
                   endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!),
                   color: UIColor.blue)
+    }
+
+    public static func == (lhs: EventData, rhs: EventData) -> Bool {
+        return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
     }
 
     func split(across dateRange: [Date]) -> [Date:EventData] {

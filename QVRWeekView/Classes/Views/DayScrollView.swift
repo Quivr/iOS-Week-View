@@ -7,7 +7,8 @@ import UIKit
  Class of the scroll view contained within the WeekView.
  
  */
-class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate {
+class DayScrollView: UIScrollView, UIScrollViewDelegate,
+UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, FrameCalculatorDelegate {
 
     // MARK: - INSTANCE VARIABLES -
 
@@ -15,6 +16,10 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     private(set) var dayCollectionView: DayCollectionView!
     // All eventData objects
     private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
+    // All event framesAll
+    private(set) var allEventFrames: [DayDate: [Int: CGRect]] = [:]
+    // All frame calculators
+    private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
     private var yearActive: Int = DayDate.today.year {
         didSet {
@@ -23,10 +28,18 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     }
     // Year todauy
     private var yearToday: Int = DayDate.today.year
-    // A day in current period
+    // Current active day
+    private var activeDay: DayDate = DayDate.today
+    // Current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
     // Bool stores if the collection view just reset
     private var didJustResetView: Bool = false
+    // Bool stores if event thread is running
+    private var eptRunning: Bool = false
+    // Bool stores if event thread should stop
+    private var eptSafeContinue: Bool = false
+    // Stores most recently assigned event data
+    private var eptTempData: [EventData]?
     // Previous zoom scale of content
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
@@ -116,8 +129,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
             if  let path = collectionView.indexPathForItem(at: cvLeft),
                 let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell {
 
-                let date = dayViewCell.date
-                if date > currentPeriod.endDate {
+                activeDay = dayViewCell.date
+                if activeDay > currentPeriod.endDate {
                     // Remove redundant events
                     for day in currentPeriod.previousPeriod.allDaysInPeriod() {
                         allEventsData.removeValue(forKey: day)
@@ -127,7 +140,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                     // Load new events for new period
                     requestEvents()
                 }
-                else if date < currentPeriod.startDate {
+                else if activeDay < currentPeriod.startDate {
                     // Remove redundant events
                     for day in currentPeriod.nextPeriod.allDaysInPeriod() {
                         allEventsData.removeValue(forKey: day)
@@ -160,13 +173,8 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
-            let dayDateForCell = generateNewDayDate(forIndexPath: indexPath)
+            let dayDateForCell = getDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)
-
-            if let eventDataForCell = allEventsData[dayDateForCell] {
-                dayViewCell.setEventsData(eventDataForCell)
-            }
-
             return dayViewCell
         }
         return UICollectionViewCell(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -175,6 +183,16 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
+            let dayDateForCell = getDayDate(forIndexPath: indexPath)
+            if let eventDataForCell = allEventsData[dayDateForCell], let eventFramesForCell = allEventFrames[dayDateForCell] {
+                print("Adding \(eventFramesForCell.count) frames to cell at date \(dayDateForCell), with data count \(eventDataForCell.count)")
+                dayViewCell.setEventsData(eventDataForCell, andFrames: eventFramesForCell)
+            }
+            else {
+                print("Not adding frames to cell at date \(dayDateForCell)")
+                print(allEventsData[dayDateForCell])
+                print(allEventFrames[dayDateForCell])
+            }
         }
     }
 
@@ -193,6 +211,21 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int) {
         if let weekView = self.superview?.superview as? WeekView {
             weekView.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
+        }
+    }
+
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int : CGRect]?) {
+        print("Solution passed from calculator \(calculator.date) \(solution?.count ?? -1)")
+        let date = calculator.date
+        allEventFrames[date] = solution
+        frameCalculators[date] = nil
+        print(allEventsData[date] == nil ? "Nil eventsdata" : "Eventsdata not nil")
+        for cell in dayCollectionView.visibleCells {
+            if let dayViewCell = cell as? DayViewCell, dayViewCell.date == date,
+                let eventsData = allEventsData[date], let eventFrames = allEventFrames[date] {
+                print("Added to visible")
+                dayViewCell.setEventsData(eventsData, andFrames: eventFrames)
+            }
         }
     }
 
@@ -267,7 +300,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    func generateNewDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
+    func getDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
 
         var dayCount = (indexPath.row - DayDate.today.day)
         let yearOffset = yearActive - yearToday
@@ -284,65 +317,171 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         return DayDate(date: date)
     }
 
-    func overwriteAllEvents(withData eventsData: [EventData]) {
-        allEventsData.removeAll()
-        appendEvents(withData: eventsData)
-    }
+    func overwriteAllEvents(withData eventsData: [EventData]!) {
 
-    func appendEvents(withData eventsData: [EventData]) {
+        guard eventsData != nil else {
+            return
+        }
 
-        // Process raw event data and sort it into the allEventsData dictionary.
-        for eventData in eventsData {
-            let start = eventData.startDate
-            let end = eventData.endDate
+        if eptRunning {
+            eptTempData = eventsData
+            eptSafeContinue = false
+            return
+        }
+        else {
+            eptRunning = true
+            eptSafeContinue = true
+        }
+        DispatchQueue.global(qos: .userInitiated).async {
+            print("START EVENT OVERWRITE")
 
-            if start.isSameDayAs(end) {
-                addDataToAllEvents(eventData, onDay: DayDate(date: start))
+            // New eventsdata
+            var newEventsData: [DayDate: [Int: EventData]] = [:]
+            // Stores the days which will be changed
+            var changedDayDates = Set<DayDate>()
+
+            guard self.eptSafeContinue else {
+                print("Cancelling event processing - before main loop - global thread")
+                self.safe_call_overwriteAllEvents()
+                return
             }
-            else if !start.isSameDayAs(end) && end.isMidnight() {
-                let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
-                addDataToAllEvents(newData, onDay: DayDate(date: start))
-            }
-            else if !end.isMidnight() {
-                let allDays = DateSupport.getAllDaysBetween(start, and: end)
-                let splitEvent = eventData.split(across: allDays)
-                for (date, event) in splitEvent {
-                    addDataToAllEvents(event, onDay: DayDate(date: date))
+
+            // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
+            // days have had any changes done to them to queue them up for processing.
+            for eventData in eventsData {
+                guard self.eptSafeContinue else {
+                    print("Cancelling event processing - in main proc loop - global thread")
+                    self.safe_call_overwriteAllEvents()
+                    return
+                }
+                let start = eventData.startDate
+                let end = eventData.endDate
+
+                if start.isSameDayAs(end) {
+                    let dayDate = DayDate(date: start)
+                    if !changedDayDates.contains(dayDate) &&
+                        self.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                        changedDayDates.insert(dayDate)
+                    }
+                    if newEventsData[dayDate] == nil {
+                        let newEventDict = [eventData.id: eventData]
+                        newEventsData[dayDate] = newEventDict
+                    }
+                    else {
+                        newEventsData[dayDate]![eventData.id] = eventData
+                    }
+                }
+                else if !start.isSameDayAs(end) && end.isMidnight() {
+                    let dayDate = DayDate(date: start)
+                    let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
+                    if !changedDayDates.contains(dayDate) &&
+                        self.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                        changedDayDates.insert(dayDate)
+                    }
+                    if newEventsData[dayDate] == nil {
+                        let newEventDict = [newData.id: newData]
+                        newEventsData[dayDate] = newEventDict
+                    }
+                    else {
+                        newEventsData[dayDate]![newData.id] = newData
+                    }
+                }
+                else if !end.isMidnight() {
+                    let allDays = DateSupport.getAllDaysBetween(start, and: end)
+                    let splitEvent = eventData.split(across: allDays)
+                    for (date, event) in splitEvent {
+                        let dayDate = DayDate(date: date)
+                        if !changedDayDates.contains(dayDate) &&
+                            self.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                            changedDayDates.insert(dayDate)
+                        }
+                        if newEventsData[dayDate] == nil {
+                            let newEventDict = [event.id: event]
+                            newEventsData[dayDate] = newEventDict
+                        }
+                        else {
+                            newEventsData[dayDate]![event.id] = event
+                        }
+                    }
                 }
             }
-        }
 
-        // This makes sure that any new data gets added to already visible cells
-        for cell in dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell, let data = allEventsData[dayViewCell.date] {
-                dayViewCell.setEventsData(data)
+            guard self.eptSafeContinue else {
+                print("Cancelling event processing - before removal checks - global thread")
+                self.safe_call_overwriteAllEvents()
+                return
+            }
+
+            // Get sequence of active days
+            let activeDates = newEventsData.keys
+            // Iterate through all old days that have not been checked yet to look for inactive days
+            for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
+                for (_, oldEvent) in oldEvents where self.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
+                    print("Adding \(dayDate) - removal detected")
+                    changedDayDates.insert(dayDate)
+                    break
+                }
+            }
+
+            guard self.eptSafeContinue else {
+                print("Cancelling event processing - before sorting - global thread")
+                self.safe_call_overwriteAllEvents()
+                return
+            }
+
+            let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
+                let diff1 = abs(smaller.day - self.activeDay.day)
+                let diff2 = abs(larger.day - self.activeDay.day)
+                return diff1 == diff2 ? smaller > larger : diff1 < diff2
+            }
+
+            print("Changed days: \(sortedChangedDays)")
+
+            // Safe exit
+            DispatchQueue.main.sync {
+                self.eptRunning = false
+                self.eptSafeContinue = false
+                self.allEventsData = newEventsData
+                for dayDate in sortedChangedDays {
+                    self.processEventsData(forDayDate: dayDate)
+                }
+                print("Safe cancel event processing - main thread\n")
             }
         }
     }
 
-    func removeEvents(withIds eventsToRemove: [Int]) {
-        // Remove all occurences of this event id from allEventsData
-        for id in eventsToRemove {
-            for (day, events) in allEventsData where events.keys.contains(id) {
-                allEventsData[day]![id] = nil
-            }
+    private func safe_call_overwriteAllEvents() {
+        DispatchQueue.main.sync {
+            print("Force cancel event processing - main thread\n")
+            eptRunning = false
+            overwriteAllEvents(withData: eptTempData)
         }
+    }
 
-        // This makes sure that events get removed from already visible cells
-        for cell in dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell, let data = allEventsData[dayViewCell.date] {
-                dayViewCell.setEventsData(data)
-            }
+    private func safe_call_processEventsData(forDayDate dayDate: DayDate) {
+        DispatchQueue.main.sync {
+            print("Starting process events for \(dayDate) - main thread")
+            self.processEventsData(forDayDate: dayDate)
         }
     }
 
     func requestEvents() {
         if let weekView = self.superview?.superview as? WeekView {
-            weekView.requestEvents(forPeriods: [currentPeriod.previousPeriod, currentPeriod, currentPeriod.nextPeriod])
+            let startDate = currentPeriod.previousPeriod.startDate
+            let endDate = currentPeriod.nextPeriod.endDate
+            for (date, calc) in frameCalculators where date < startDate || date > endDate {
+                print("Canceling calculator for \(date)")
+                calc.cancelCalculation()
+            }
+            weekView.requestEvents(between: startDate, and: endDate)
         }
     }
 
     // MARK: - HELPER/PRIVATE FUNCTIONS -
+
+    private func isEvent(_ event: EventData, fromDay dayDate: DayDate, notInOrHasChanged eventStore: [DayDate: [Int: EventData]]) -> Bool {
+        return (eventStore[dayDate] == nil) || (eventStore[dayDate]![event.id] == nil) || (eventStore[dayDate]![event.id]! != event)
+    }
 
     fileprivate func updateLayout() {
 
@@ -413,15 +552,13 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
         }
     }
 
-    private func addDataToAllEvents(_ data: EventData, onDay day: DayDate) {
+    private func processEventsData(forDayDate dayDate: DayDate) {
 
-        if allEventsData[day] == nil {
-            let newEventDict = [data.id: data]
-            allEventsData[day] = newEventDict
-        }
-        else {
-            allEventsData[day]![data.id] = data
-        }
+        let calc = FrameCalculator(date: dayDate)
+        calc.delegate = self
+        frameCalculators[dayDate]?.cancelCalculation()
+        frameCalculators[dayDate] = calc
+        calc.calculate(withData: allEventsData[dayDate]!)
     }
 
     private func goToAndShow(dayDate: DayDate) {
@@ -430,6 +567,7 @@ class DayScrollView: UIScrollView, UIScrollViewDelegate, UICollectionViewDelegat
                                                    y: 0),
                                            animated: false)
         currentPeriod = Period(ofDate: dayDate)
+        activeDay = dayDate
         requestEvents()
     }
 
@@ -631,7 +769,6 @@ extension DayScrollView {
     func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
         LayoutVariables.velocityOffsetMultiplier = multiplier
     }
-
 }
 
 // MARK: - DAYSCROLLVIEW DELEGATE -

@@ -9,86 +9,115 @@ import Foundation
 
 class FrameCalculator {
 
-    // Initialize FrameCalculator with frame width and height of day column
-    init(withWidth width: CGFloat, andHeight height: CGFloat) {
-        self.width = width
-        self.height = height
+    let date: DayDate
+    weak var delegate: FrameCalculatorDelegate?
+
+    private var csp: ConstraintSolver?
+    private var cancelFlag: Bool = false
+
+    var isCalculating: Bool {
+        return !cancelFlag
+    }
+    var width: CGFloat {
+        return LayoutVariables.dayViewCellWidth
+    }
+    var height: CGFloat {
+        return LayoutVariables.dayViewCellHeight
     }
 
-    let width: CGFloat
-    let height: CGFloat
+    init(date: DayDate) {
+        self.date = date
+    }
 
     // Calculate and return the solution
-    func calculate(withData eventsData: [Int: EventData]) -> [Int: CGRect] {
-        let n = eventsData.count
-        let endPoints = calculateEndPoints(for: eventsData)
-        var constraints: [[Bool]] = Array(repeating: Array(repeating: false, count: n), count: n)
-        var domains: [Set<WidthPosValue>] = []
+    func calculate(withData eventsData: [Int: EventData]) {
 
-        var eventFrames: [EventFrame] = []
-        var sweepState = Set<EventFrame>()
-        var possibleFrameCollisions: [EventFrame: [EventFrame]] = [:]
+        DispatchQueue.global(qos: .userInitiated).async {
+            let n = eventsData.count
+            let endPoints = self.calculateEndPoints(for: eventsData)
+            var constraints: [[Bool]] = Array(repeating: Array(repeating: false, count: n), count: n)
+            var domains: [Set<WidthPosValue>] = []
 
-        var frameIndices: [EventFrame: Int] = [:]
-        var areCollisions = false
-        var index = 0
+            var eventFrames: [EventFrame] = []
+            var sweepState = Set<EventFrame>()
+            var possibleFrameCollisions: [EventFrame: [EventFrame]] = [:]
 
-        // Sweep through all frames from top to bottom
-        for point in endPoints {
-            if point.isStart {
-                // If collisions, resize and reposition the frames.
-                if !sweepState.isEmpty {
-                    if !areCollisions { areCollisions = true }
-                    // Calculate new width
-                    let newWidth = self.width/CGFloat(sweepState.count+1)
-                    for frame in sweepState {
-                        frame.width = newWidth < frame.width ? newWidth : frame.width
-                        if possibleFrameCollisions[point.frame] != nil { possibleFrameCollisions[point.frame]!.append(frame) }
-                        else { possibleFrameCollisions[point.frame] = [frame] }
-                        if possibleFrameCollisions[frame] != nil { possibleFrameCollisions[frame]!.append(point.frame) }
-                        else { possibleFrameCollisions[frame] = [point.frame] }
+            var frameIndices: [EventFrame: Int] = [:]
+            var areCollisions = false
+            var index = 0
+
+            // Sweep through all frames from top to bottom
+            for point in endPoints {
+                if point.isStart {
+                    // If collisions, resize and reposition the frames.
+                    if !sweepState.isEmpty {
+                        if !areCollisions { areCollisions = true }
+                        // Calculate new width
+                        let newWidth = self.width/CGFloat(sweepState.count+1)
+                        for frame in sweepState {
+                            frame.width = newWidth < frame.width ? newWidth : frame.width
+                            if possibleFrameCollisions[point.frame] != nil { possibleFrameCollisions[point.frame]!.append(frame) }
+                            else { possibleFrameCollisions[point.frame] = [frame] }
+                            if possibleFrameCollisions[frame] != nil { possibleFrameCollisions[frame]!.append(point.frame) }
+                            else { possibleFrameCollisions[frame] = [point.frame] }
+                        }
+                        point.frame.width = newWidth
                     }
-                    point.frame.width = newWidth
+                    sweepState.insert(point.frame)
                 }
-                sweepState.insert(point.frame)
+                else {
+                    // Remove from sweepingline and add to eventFrames
+                    let frame = point.frame
+                    sweepState.remove(frame)
+                    eventFrames.append(frame)
+                    domains.append(self.domain(forFrame: frame, .subOptimal))
+                    frameIndices[frame] = index
+                    index += 1
+                }
+            }
+
+            var frames: [Int: CGRect]?
+            if areCollisions {
+                // Register possible collisions as constraints
+                for (frame1, frameList) in possibleFrameCollisions {
+                    let index1 = frameIndices[frame1]!
+                    for frame2 in frameList {
+                        let index2 = frameIndices[frame2]!
+                        constraints[index1][index2] = true
+                    }
+                }
+
+                // Create constraint solver and run backtracking algorithm
+                self.csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
+                if !self.cancelFlag {
+                    frames = self.csp?.solveWithBacktracking()
+                }
+                DispatchQueue.main.sync {
+                    self.delegate?.passSolution(fromCalculator: self, solution: frames)
+                }
             }
             else {
-                // Remove from sweepingline and add to eventFrames
-                let frame = point.frame
-                sweepState.remove(frame)
-                eventFrames.append(frame)
-                domains.append(domain(forFrame: frame, .subOptimal))
-                frameIndices[frame] = index
-                index += 1
-            }
-        }
-
-        if areCollisions {
-            // Register possible collisions as constraints
-            for (frame1, frameList) in possibleFrameCollisions {
-                let index1 = frameIndices[frame1]!
-                for frame2 in frameList {
-                    let index2 = frameIndices[frame2]!
-                    constraints[index1][index2] = true
+                // If no collisions found, return the frames as they are
+                if !self.cancelFlag {
+                    frames = [:]
+                    for frame in eventFrames {
+                        frames![frame.id] = frame.cgRect
+                    }
+                }
+                DispatchQueue.main.sync {
+                    self.delegate?.passSolution(fromCalculator: self, solution: frames)
                 }
             }
-            // Create constraint solver and run backtracking algorithm
-            let csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
-            let frames = csp.solveWithBacktracking()
-            return frames
         }
-        else {
-            // If no collisions found, return the frames as they are
-            var frames: [Int: CGRect] = [:]
-            for frame in eventFrames {
-                frames[frame.id] = frame.cgRect
-            }
-            return frames
-        }
+    }
+
+    func cancelCalculation() {
+        cancelFlag = true
+        csp?.cancel()
     }
 
     // Generate end points used during sweep phase
-    fileprivate func calculateEndPoints(`for` eventsData: [Int: EventData]) -> [EndPoint] {
+    private func calculateEndPoints(`for` eventsData: [Int: EventData]) -> [EndPoint] {
         var endPoints: [EndPoint] = []
         for (id, data) in eventsData {
             let frame = getEventFrame(withData: data)
@@ -149,7 +178,7 @@ class FrameCalculator {
     }
 
     // Struct used for endpoints
-    fileprivate struct EndPoint: CustomStringConvertible {
+    private struct EndPoint: CustomStringConvertible {
         var y: CGFloat
         var id: Int
         var frame: EventFrame
@@ -163,6 +192,14 @@ class FrameCalculator {
     }
 }
 
+// MARK: - FrameCalculator Delegate -
+
+protocol FrameCalculatorDelegate: class {
+
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int: CGRect]?)
+
+}
+
 // MARK: - Constraint Optimization -
 
 fileprivate class ConstraintSolver {
@@ -172,8 +209,7 @@ fileprivate class ConstraintSolver {
     let constraints: [[Bool]]
     let n: Int
     let startTime: TimeInterval
-
-    var solution: [Int: CGRect]?
+    private var cancelled: Bool = false
 
     init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
         self.variables = variables
@@ -183,21 +219,25 @@ fileprivate class ConstraintSolver {
         self.startTime = Date.timeIntervalSinceReferenceDate
     }
 
-    func solveWithBacktracking() -> [Int: CGRect] {
-        return solution == nil ? backtrack() : solution!
+    func solveWithBacktracking() -> [Int: CGRect]? {
+        return backtrack()
     }
 
-    private func backtrack() -> [Int: CGRect] {
-        if backtrack(depth: 0) {
-            solution = [:]
-            for vari in variables {
-                solution![vari.id] = vari.cgRect
-            }
-            return solution!
+    private func backtrack() -> [Int: CGRect]? {
+
+        if !backtrack(depth: 0) && !cancelled {
+            print("BACKTRACK FAILED ON VARIABLES: \(variables)")
+        }
+
+        if cancelled {
+            return nil
         }
         else {
-            print("BACKTRACK FAIL ON VARIABLES: \(variables)")
-            fatalError("Backtrack failed to find solution")
+            var solution: [Int: CGRect] = [:]
+            for vari in variables {
+                solution[vari.id] = vari.cgRect
+            }
+            return solution
         }
     }
 
@@ -210,7 +250,7 @@ fileprivate class ConstraintSolver {
         })
 
         for value in domain {
-            if Date.timeIntervalSinceReferenceDate-startTime > 5.0 {
+            if Date.timeIntervalSinceReferenceDate-startTime > 15.0 || cancelled {
                 return true
             }
             let activeFrame = variables[depth]
@@ -259,6 +299,10 @@ fileprivate class ConstraintSolver {
         else {
             return true
         }
+    }
+
+    fileprivate func cancel() {
+        self.cancelled = true
     }
 }
 

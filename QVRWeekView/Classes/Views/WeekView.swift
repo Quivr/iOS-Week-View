@@ -114,22 +114,8 @@ open class WeekView: UIView {
     /**
      Overwrittes all events with new data.
      */
-    public func overwriteAllEvents(withNewData eventsData: [EventData]) {
+    public func loadEvents(withData eventsData: [EventData]) {
         dayScrollView.overwriteAllEvents(withData: eventsData)
-    }
-
-    /**
-     Adds and loads in new events. This will not remove any events, events with same ids will be overwritten.
-     */
-    public func appendEvents(withData eventsData: [EventData]) {
-        dayScrollView.appendEvents(withData: eventsData)
-    }
-
-    /**
-     Removes events. eventsData is an array of EventData objects.
-     */
-    public func removeEvents(withIds eventsToRemove: [Int]) {
-        dayScrollView.removeEvents(withIds: eventsToRemove)
     }
 
     // MARK: - INTERNAL FUNCTIONS -
@@ -208,8 +194,8 @@ open class WeekView: UIView {
         self.delegate?.didLongPressDayView(in: self, atDate: date)
     }
 
-    func requestEvents(forPeriods periods: [Period]) {
-        self.delegate?.loadNewEvents(in: self, between: periods.first!.startDate.dateObj, and: periods.last!.endDate.dateObj)
+    func requestEvents(between startDate: DayDate, and endDate: DayDate) {
+        self.delegate?.loadNewEvents(in: self, between: startDate.dateObj, and: endDate.dateObj)
     }
 
     // MARK: - PRIVATE/HELPER FUNCTIONS -

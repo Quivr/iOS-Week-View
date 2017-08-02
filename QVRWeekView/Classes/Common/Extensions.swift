@@ -27,7 +27,8 @@ public extension Date {
     }
 
     func getDayValue() -> Date {
-        let todayComponents = self.getDayComponents()
+        var todayComponents = self.getDayComponents()
+        todayComponents.hour = 12
         return Calendar.current.date(from: todayComponents)!
     }
 

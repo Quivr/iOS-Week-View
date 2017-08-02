@@ -17,6 +17,7 @@ opt_in_rules:
 disabled_rules:
   - statement_position
   - identifier_name
+  - cyclomatic_complexity
 
 file_length:
   warning: 1000
@@ -27,15 +28,12 @@ line_length:
   error: 200
 
 type_body_length:
-  warning: 300
-  error: 400
+  warning: 500
+  error: 750
 
 function_body_length:
   warning: 100
   error: 200
-
-cyclomatic_complexity:
-  warning: 15
 
 excluded:
   - QVRWeekView/Classes/Support

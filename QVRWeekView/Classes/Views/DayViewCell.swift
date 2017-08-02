@@ -11,7 +11,14 @@ class DayViewCell: UICollectionViewCell {
     // Date and event variables
     private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
-    private var eventFrames: [Int: CGRect] = [:]
+    private var eventFrames: [Int: CGRect] = [:] {
+        didSet {
+            for (id, frame) in self.eventFrames {
+                let scaleY = self.frame.height / LayoutVariables.dayViewCellHeight
+                self.eventFrames[id] = frame.applying(CGAffineTransform(scaleX: 1.0, y: scaleY))
+            }
+        }
+    }
 
     // Overlay variables
     private var isOverlayHidden: Bool = true
@@ -29,6 +36,8 @@ class DayViewCell: UICollectionViewCell {
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
+    // Stores is events are needed
+    var needsEvents: Bool = true
 
     // MARK: - INITIALIZERS & OVERRIDES -
 
@@ -120,34 +129,20 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
     }
 
-    func setEventsData(_ eventsData: [Int: EventData]) {
+    func setEventsData(_ eventsData: [Int: EventData], andFrames eventFrames: [Int: CGRect]) {
+        self.needsEvents = false
+        self.eventsData = eventsData
+        self.eventFrames = eventFrames
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
+    }
 
-        // Check if data has changed at all
-        var dataHasChanged = eventsData.count != self.eventsData.count
-        if !dataHasChanged {
-            for (key, _) in eventsData where !self.eventsData.keys.contains(key) {
-                dataHasChanged = true
-                break
-            }
-        }
-        if !dataHasChanged {
-            for (key, _) in self.eventsData where !eventsData.keys.contains(key) {
-                dataHasChanged = true
-                break
-            }
-        }
-
-        if dataHasChanged {
-            self.eventsData = eventsData
-            let frameCalc = FrameCalculator(withWidth: self.frame.width, andHeight: self.frame.height)
-            DispatchQueue.global(qos: .userInitiated).async {
-                self.eventFrames = frameCalc.calculate(withData: eventsData)
-                DispatchQueue.main.async {
-                    self.setNeedsLayout()
-                    self.layoutIfNeeded()
-                }
-            }
-        }
+    func clearEventsData() {
+        self.needsEvents = true
+        self.eventsData.removeAll()
+        self.eventFrames.removeAll()
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
     }
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -274,10 +269,13 @@ class DayViewCell: UICollectionViewCell {
         scaleY = self.frame.height/prevHeight
         prevHeight = self.frame.height
 
+        print("Rendering \(self.eventFrames.count) frames at \(date)")
+
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
 
             guard eventsData[id] != nil else {
+                print("render cancelled")
                 return
             }
             let transform = CGAffineTransform(scaleX: 1.0, y: scaleY)
@@ -307,6 +305,7 @@ class DayViewCell: UICollectionViewCell {
             self.layer.addSublayer(eventTextLayer)
         }
     }
+
 }
 
 protocol DayViewCellDelegate: class {
