@@ -16,11 +16,22 @@ public class DateSupport {
         return date
     }
 
-    public static func getAllDaysBetween(_ startDay: Date, and endDay: Date) -> [Date] {
+    public static func getAllDates(between startDay: Date, and endDay: Date) -> [Date] {
         var cursorDay = startDay
         var allDays: [Date] = []
         while !cursorDay.isSameDayAs(endDay.getNextDay()) {
             allDays.append(cursorDay.getDayValue())
+            cursorDay = cursorDay.getNextDay()
+        }
+
+        return allDays
+    }
+
+    static func getAllDayDates(between startDay: DayDate, and endDay: DayDate) -> [DayDate] {
+        var cursorDay = startDay.dateObj
+        var allDays: [DayDate] = []
+        while !cursorDay.isSameDayAs(endDay.dateObj.getNextDay()) {
+            allDays.append(DayDate(date: cursorDay))
             cursorDay = cursorDay.getNextDay()
         }
 

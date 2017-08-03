@@ -30,11 +30,16 @@ class FrameCalculator {
     }
 
     // Calculate and return the solution
-    func calculate(withData eventsData: [Int: EventData]) {
+    func calculate(withData eventsData: [Int: EventData]?) {
+
+        guard eventsData != nil else {
+            self.delegate?.passSolution(fromCalculator: self, solution: [:])
+            return
+        }
 
         DispatchQueue.global(qos: .userInitiated).async {
-            let n = eventsData.count
-            let endPoints = self.calculateEndPoints(for: eventsData)
+            let n = eventsData!.count
+            let endPoints = self.calculateEndPoints(for: eventsData!)
             var constraints: [[Bool]] = Array(repeating: Array(repeating: false, count: n), count: n)
             var domains: [Set<WidthPosValue>] = []
 
@@ -283,7 +288,7 @@ fileprivate class ConstraintSolver {
     }
 
     private func constraintIsSatsified(activeDepth d1: Int, checkDepth d2: Int) -> Bool {
-        
+
         if constraints[d1][d2] {
             let f1 = variables[d1]
             let f2 = variables[d2]

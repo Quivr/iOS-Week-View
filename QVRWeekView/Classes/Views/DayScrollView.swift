@@ -210,6 +210,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
+    // solution == nil => do not render events. solution.isEmpty => render empty
     func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int : CGRect]?) {
         let date = calculator.date
         allEventFrames[date] = solution
@@ -217,6 +218,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         for (_, dayViewCell) in dayViewCells where dayViewCell.date == date {
             if let eventsData = allEventsData[date], let eventFrames = allEventFrames[date] {
                 dayViewCell.setEventsData(eventsData, andFrames: eventFrames)
+            }
+            else if solution != nil {
+                dayViewCell.setEventsData([:], andFrames: [:])
             }
         }
     }
@@ -376,7 +380,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                     }
                 }
                 else if !end.isMidnight() {
-                    let allDays = DateSupport.getAllDaysBetween(start, and: end)
+                    let allDays = DateSupport.getAllDates(between: start, and: end)
                     let splitEvent = eventData.split(across: allDays)
                     for (date, event) in splitEvent {
                         let dayDate = DayDate(date: date)
@@ -400,9 +404,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 return
             }
 
-            // TODO: REPLACE ACTIVE DATES WITH ACTUAL ACTIVE DATES NOT DERIVED ONES (CALCULATE FROM CURRENT PERIOD)
             // Get sequence of active days
-            let activeDates = newEventsData.keys
+            let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.previousPeriod.startDate,
+                                                         and: self.currentPeriod.nextPeriod.endDate)
             // Iterate through all old days that have not been checked yet to look for inactive days
             for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
                 for (_, oldEvent) in oldEvents where self.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
@@ -422,6 +426,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 return diff1 == diff2 ? smaller > larger : diff1 < diff2
             }
 
+            print(sortedChangedDays)
+
             // Safe exit
             DispatchQueue.main.sync {
                 self.eptRunning = false
@@ -438,12 +444,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         DispatchQueue.main.sync {
             eptRunning = false
             overwriteAllEvents(withData: eptTempData)
-        }
-    }
-
-    private func safe_call_processEventsData(forDayDate dayDate: DayDate) {
-        DispatchQueue.main.sync {
-            self.processEventsData(forDayDate: dayDate)
         }
     }
 
@@ -535,11 +535,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     private func processEventsData(forDayDate dayDate: DayDate) {
 
+        frameCalculators[dayDate]?.cancelCalculation()
         let calc = FrameCalculator(date: dayDate)
         calc.delegate = self
         frameCalculators[dayDate]?.cancelCalculation()
         frameCalculators[dayDate] = calc
-        calc.calculate(withData: allEventsData[dayDate]!)
+        calc.calculate(withData: allEventsData[dayDate])
     }
 
     private func goToAndShow(dayDate: DayDate) {

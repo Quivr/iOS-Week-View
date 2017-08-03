@@ -40,7 +40,7 @@ class Period: CustomStringConvertible {
     }
 
     func allDaysInPeriod() -> [DayDate] {
-        let dates = DateSupport.getAllDaysBetween(startDate.dateObj, and: endDate.dateObj)
+        let dates = DateSupport.getAllDates(between: startDate.dateObj, and: endDate.dateObj)
         var dayDates: [DayDate] = []
         for date in dates {
             dayDates.append(DayDate(date: date))

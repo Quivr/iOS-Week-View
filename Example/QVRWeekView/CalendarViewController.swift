@@ -98,7 +98,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date) {
 
-        let dates = DateSupport.getAllDaysBetween(startDate, and: endDate)
+        let dates = DateSupport.getAllDates(between: startDate, and: endDate)
 
         for (date, events) in eventsSortedByDay where !dates.contains(date) {
             for event in events {
@@ -121,7 +121,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                     let start = dateWithInterval(eventStartOffset, fromDate: startOfDate)
                     let end = dateWithInterval(eventEndOffset, fromDate: startOfDate)
 
-                    let title = "Test+\(i):TextTest TextTest TextTest TextTest TextTest"
+                    let title = "Test+\(id):TextTest TextTest TextTest TextTest TextTest"
                     let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
 
                     let data = EventData(id: id, title: title, startDate: start, endDate: end, color: color)

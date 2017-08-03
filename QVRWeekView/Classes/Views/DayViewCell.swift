@@ -37,8 +37,6 @@ class DayViewCell: UICollectionViewCell {
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
-    // Stores is events are needed
-    var needsEvents: Bool = true
 
     // MARK: - INITIALIZERS & OVERRIDES -
 
@@ -84,6 +82,8 @@ class DayViewCell: UICollectionViewCell {
         self.eventsData.removeAll()
         self.eventFrames.removeAll()
         self.eventLayers.removeAll()
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 
     func setDate(`as` date: DayDate) {
@@ -131,17 +131,8 @@ class DayViewCell: UICollectionViewCell {
     }
 
     func setEventsData(_ eventsData: [Int: EventData], andFrames eventFrames: [Int: CGRect]) {
-        self.needsEvents = false
         self.eventsData = eventsData
         self.eventFrames = eventFrames
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
-    }
-
-    func clearEventsData() {
-        self.needsEvents = true
-        self.eventsData.removeAll()
-        self.eventFrames.removeAll()
         self.setNeedsLayout()
         self.layoutIfNeeded()
     }
