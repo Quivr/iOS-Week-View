@@ -6,20 +6,13 @@ import UIKit
  */
 class DayViewCell: UICollectionViewCell {
 
-    let dequeCellId = Int(drand48()*1000000)
+    // Static variable stores all ids of dayviewcells
+    private static var uniqueIds: [Int] = []
 
     // Date and event variables
     private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
-    private var eventFrames: [Int: CGRect] = [:] {
-        didSet {
-            let scaleY = self.frame.height / LayoutVariables.dayViewCellHeight
-            for (id, frame) in self.eventFrames {
-
-                self.eventFrames[id] = frame.applying(CGAffineTransform(scaleX: 1.0, y: scaleY))
-            }
-        }
-    }
+    private var eventFrames: [Int: CGRect] = [:]
 
     // Overlay variables
     private var isOverlayHidden: Bool = true
@@ -33,21 +26,26 @@ class DayViewCell: UICollectionViewCell {
     // Event rectangle shape layers
     private var eventLayers: [CALayer] = []
     // Previous height
-    private var prevHeight: CGFloat!
+    private var lastResizeHeight: CGFloat!
+    // Previous width
+    private var lastResizeWidth: CGFloat!
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
+    let id: Int
 
     // MARK: - INITIALIZERS & OVERRIDES -
 
     required init?(coder aDecoder: NSCoder) {
+        self.id = DayViewCell.genUniqueId()
         super.init(coder: aDecoder)
-        initialize()
+        self.initialize()
     }
 
     override init(frame: CGRect) {
+        self.id = DayViewCell.genUniqueId()
         super.init(frame: frame)
-        initialize()
+        self.initialize()
     }
 
     private func initialize() {
@@ -55,7 +53,8 @@ class DayViewCell: UICollectionViewCell {
         self.backgroundColor = LayoutDefaults.defaultDayViewColor
         self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
-        self.prevHeight = self.frame.height
+        self.lastResizeHeight = self.frame.height
+        self.lastResizeWidth = self.frame.width
     }
 
     override func layoutSubviews() {
@@ -64,8 +63,7 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
     }
 
-    override
-    func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         return layoutAttributes
     }
 
@@ -133,6 +131,15 @@ class DayViewCell: UICollectionViewCell {
     func setEventsData(_ eventsData: [Int: EventData], andFrames eventFrames: [Int: CGRect]) {
         self.eventsData = eventsData
         self.eventFrames = eventFrames
+        // Resize event frames from standard size to current size
+        let scaleY = self.frame.height / LayoutDefaults.dayViewCellHeight
+        let scaleX = self.frame.width / LayoutDefaults.dayViewCellWidth
+        for (id, frame) in self.eventFrames {
+            self.eventFrames[id] = frame.applying(CGAffineTransform(scaleX: scaleX, y: scaleY))
+        }
+        lastResizeWidth = self.frame.width
+        lastResizeHeight = self.frame.height
+        // Update UI
         self.setNeedsLayout()
         self.layoutIfNeeded()
     }
@@ -257,10 +264,10 @@ class DayViewCell: UICollectionViewCell {
         }
         self.eventLayers.removeAll()
 
-        var scaleY = CGFloat(1)
-
-        scaleY = self.frame.height/prevHeight
-        prevHeight = self.frame.height
+        let scaleY = self.frame.height/lastResizeHeight
+        let scaleX = self.frame.width/lastResizeWidth
+        lastResizeHeight = self.frame.height
+        lastResizeWidth = self.frame.width
 
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
@@ -268,9 +275,9 @@ class DayViewCell: UICollectionViewCell {
             guard eventsData[id] != nil else {
                 return
             }
-            let transform = CGAffineTransform(scaleX: 1.0, y: scaleY)
+            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
             var newFrame = frame
-            if scaleY != 1.0 {
+            if scaleY != 1.0 || scaleX != 1.0 {
                 self.eventFrames[id] = frame.applying(transform)
                 newFrame = self.eventFrames[id]!
             }
@@ -294,6 +301,15 @@ class DayViewCell: UICollectionViewCell {
             self.layer.addSublayer(eventRectLayer)
             self.layer.addSublayer(eventTextLayer)
         }
+    }
+
+    private static func genUniqueId() -> Int {
+        var id: Int!
+        repeat {
+            id = Int(drand48()*100000)
+        } while uniqueIds.contains(id)
+        uniqueIds.append(id)
+        return id
     }
 
 }

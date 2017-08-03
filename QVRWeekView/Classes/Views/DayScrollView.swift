@@ -175,7 +175,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
-            dayViewCells[dayViewCell.dequeCellId] = dayViewCell
+            dayViewCells[dayViewCell.id] = dayViewCell
             let dayDateForCell = getDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)
             if let eventDataForCell = allEventsData[dayDateForCell], let eventFramesForCell = allEventFrames[dayDateForCell] {
@@ -425,8 +425,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 let diff2 = abs(larger.day - self.activeDay.day)
                 return diff1 == diff2 ? smaller > larger : diff1 < diff2
             }
-
-            print(sortedChangedDays)
 
             // Safe exit
             DispatchQueue.main.sync {

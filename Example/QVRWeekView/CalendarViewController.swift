@@ -112,7 +112,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 var dateEvents: [EventData] = []
                 let n = Int(drand48()*25)
                 let startOfDate = date.getStartOfDay()
-                for i in 0...n {
+                for _ in 0...n {
                     let hourDuration = Double(Int(drand48()*4)+1)
                     let hourStart = drand48()*21
                     let eventStartOffset = Int((hourStart)*60.0*60.0)

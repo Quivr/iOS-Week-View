@@ -48,8 +48,10 @@ struct LayoutDefaults {
     static let portraitDayViewVerticalSpacing = CGFloat(15)
     static let landscapeDayViewVerticalSpacing = CGFloat(10)
 
-    // Height of day view cells
+    // Initial height of day view cells
     static let dayViewCellHeight = CGFloat(1400)
+    // Test width of day view cells - WARNING: ONLY USED FOR FRAME CALCULATION
+    static let dayViewCellWidth = CGFloat(200)
     // Pattern of dashed seperators in the day view cells
     static let mainSeperatorThickness = CGFloat(1)
     // Pattern of dashed seperators in the day view cells

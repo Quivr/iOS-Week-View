@@ -10,6 +10,12 @@ import Foundation
 class FrameCalculator {
 
     let date: DayDate
+    var width: CGFloat {
+        return LayoutDefaults.dayViewCellWidth
+    }
+    var height: CGFloat {
+        return LayoutDefaults.dayViewCellHeight
+    }
     weak var delegate: FrameCalculatorDelegate?
 
     private var csp: ConstraintSolver?
@@ -17,12 +23,6 @@ class FrameCalculator {
 
     var isCalculating: Bool {
         return !cancelFlag
-    }
-    var width: CGFloat {
-        return LayoutVariables.dayViewCellWidth
-    }
-    var height: CGFloat {
-        return LayoutVariables.dayViewCellHeight
     }
 
     init(date: DayDate) {
