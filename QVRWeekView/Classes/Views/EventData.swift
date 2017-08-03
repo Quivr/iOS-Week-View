@@ -17,7 +17,7 @@ public struct EventData: CustomStringConvertible, Equatable {
     public let color: UIColor
 
     public var description: String {
-        return "\n[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]"
+        return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
 
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {

@@ -64,6 +64,15 @@ public extension Date {
         return hours + (minutes/60) + (seconds/60/60)
     }
 
+    func applyTimeInHours(hourTime: Double) -> Date {
+        let hours = Int(hourTime)
+        var temp = (hourTime-Double(hours))*60
+        let minutes = Int(temp)
+        temp -= Double(minutes)
+        let seconds = Int(temp*60)
+        return self.withTimeSetTo(hour: hours, minutes: minutes, seconds: seconds)
+    }
+
     func withTimeSetTo(hour: Int, minutes: Int, seconds: Int) -> Date {
         let cal = Calendar.current
         var comps = DateComponents()
@@ -98,8 +107,8 @@ public extension Date {
         return cal.dateComponents(dayComponenets, from: self)
     }
 
-    mutating func advanceBy(seconds sec: Int) {
-        self = self.addingTimeInterval(TimeInterval(exactly: sec)!)
+    func advanceBy(seconds sec: Int) -> Date {
+        return self.addingTimeInterval(TimeInterval(exactly: sec)!)
     }
 }
 

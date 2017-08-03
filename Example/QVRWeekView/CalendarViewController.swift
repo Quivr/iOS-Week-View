@@ -37,24 +37,47 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         let alert = UIAlertController(title: "Long pressed \(date.description(with: Locale.current))",
                                       message: nil,
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Short", style: .default, handler: { _ in
+            let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+            let newEvent = EventData(id: self.id,
+                                     title: "Test Event \(self.id)",
+                                     startDate: date,
+                                     endDate: date.addingTimeInterval(60*60*1),
+                                     color: color)
+            self.allEvents[self.id] = newEvent
+            self.id += 1
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
+        alert.addAction(UIAlertAction(title: "Medium", style: .default, handler: { _ in
+            let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+            let newEvent = EventData(id: self.id,
+                                     title: "Test Event \(self.id)",
+                                     startDate: date,
+                                     endDate: date.addingTimeInterval(60*60*3),
+                                     color: color)
+            self.allEvents[self.id] = newEvent
+            self.id += 1
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
+        alert.addAction(UIAlertAction(title: "Long", style: .default, handler: { _ in
+            let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+            let newEvent = EventData(id: self.id,
+                                     title: "Test Event \(self.id)",
+                                     startDate: date,
+                                     endDate: date.addingTimeInterval(60*60*4),
+                                     color: color)
+            self.allEvents[self.id] = newEvent
+            self.id += 1
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
         self.present(alert, animated: true, completion: nil)
-        let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
-        let newEvent = EventData(id: id,
-                                 title: "Test Event \(id)",
-                                 startDate: date,
-                                 endDate: date.addingTimeInterval(60*60*2),
-                                 color: color)
-        allEvents[id] = newEvent
-        id += 1
-        weekView.loadEvents(withData: Array(self.allEvents.values))
+
     }
 
     func didTapEvent(in weekView: WeekView, eventId: Int) {
         let alert = UIAlertController(title: "Tapped event", message: "\(eventId)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (_) -> Void in
-
             self.allEvents[eventId] = nil
             self.eventsSortedByDay.removeAll()
             for event in Array(self.allEvents.values) {
@@ -109,7 +132,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 eventsSortedByDay[date] = dateEvents
             }
         }
-        weekView.loadEvents(withData: Array(allEvents.values))
+        weekView.loadEvents(withData: allEvents.isEmpty ? nil : Array(allEvents.values))
     }
 
     private func dateWithIntervalFromNow(_ interval: Int) -> Date {

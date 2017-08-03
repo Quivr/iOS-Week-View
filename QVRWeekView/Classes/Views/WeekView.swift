@@ -114,7 +114,10 @@ open class WeekView: UIView {
     /**
      Overwrittes all events with new data.
      */
-    public func loadEvents(withData eventsData: [EventData]) {
+    public func loadEvents(withData eventsData: [EventData]?) {
+        guard eventsData != nil else {
+            return
+        }
         dayScrollView.overwriteAllEvents(withData: eventsData)
     }
 

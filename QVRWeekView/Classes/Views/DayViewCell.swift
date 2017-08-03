@@ -6,15 +6,16 @@ import UIKit
  */
 class DayViewCell: UICollectionViewCell {
 
-    private let dequeCellId = Int(drand48()*10000)
+    let dequeCellId = Int(drand48()*1000000)
 
     // Date and event variables
     private(set) var date: DayDate = DayDate()
     private var eventsData: [Int: EventData] = [:]
     private var eventFrames: [Int: CGRect] = [:] {
         didSet {
+            let scaleY = self.frame.height / LayoutVariables.dayViewCellHeight
             for (id, frame) in self.eventFrames {
-                let scaleY = self.frame.height / LayoutVariables.dayViewCellHeight
+
                 self.eventFrames[id] = frame.applying(CGAffineTransform(scaleX: 1.0, y: scaleY))
             }
         }
@@ -150,7 +151,7 @@ class DayViewCell: UICollectionViewCell {
         if sender.state == .began {
 
             let yTouch = sender.location(ofTouch: 0, in: self).y
-            let time = Double((yTouch/self.frame.height)*24).roundToNearestQuarter()
+            let time = Double((yTouch/self.frame.height)*24)
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
@@ -164,6 +165,7 @@ class DayViewCell: UICollectionViewCell {
         for (id, frame) in eventFrames {
             if frame.contains(tapPoint) {
                 self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
+                return
             }
         }
     }
@@ -269,13 +271,10 @@ class DayViewCell: UICollectionViewCell {
         scaleY = self.frame.height/prevHeight
         prevHeight = self.frame.height
 
-        print("Rendering \(self.eventFrames.count) frames at \(date)")
-
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
 
             guard eventsData[id] != nil else {
-                print("render cancelled")
                 return
             }
             let transform = CGAffineTransform(scaleX: 1.0, y: scaleY)

@@ -53,7 +53,12 @@ class FrameCalculator {
                     if !sweepState.isEmpty {
                         if !areCollisions { areCollisions = true }
                         // Calculate new width
-                        let newWidth = self.width/CGFloat(sweepState.count+1)
+                        var minWidth = CGFloat.infinity
+                        for frame in sweepState {
+                            minWidth = frame.width < minWidth ? frame.width : minWidth
+                        }
+                        var newWidth = self.width/CGFloat(sweepState.count+1)
+                        newWidth = newWidth < minWidth ? newWidth : minWidth
                         for frame in sweepState {
                             frame.width = newWidth < frame.width ? newWidth : frame.width
                             if possibleFrameCollisions[point.frame] != nil { possibleFrameCollisions[point.frame]!.append(frame) }
@@ -145,7 +150,7 @@ class FrameCalculator {
         let count = Int(self.width/frame.width)
         var i = 0
         if choice == .optimal { i = 1 }
-        else if choice == .subOptimal { i = count == 1 ? 1 : (count <= 4 ? 2 : (count <= 6 ? count-2 : (count <= 7 ? count-1 : count))) }
+        else if choice == .subOptimal { i = count == 1 ? 1 : (count <= 6 ? 2 : (count <= 8 ? count-2 : (count <= 9 ? count-1 : count))) }
         else { i = count }
 
         while i <= count {
@@ -224,11 +229,9 @@ fileprivate class ConstraintSolver {
     }
 
     private func backtrack() -> [Int: CGRect]? {
-
         if !backtrack(depth: 0) && !cancelled {
             print("BACKTRACK FAILED ON VARIABLES: \(variables)")
         }
-
         if cancelled {
             return nil
         }
@@ -250,7 +253,7 @@ fileprivate class ConstraintSolver {
         })
 
         for value in domain {
-            if Date.timeIntervalSinceReferenceDate-startTime > 15.0 || cancelled {
+            if Date.timeIntervalSinceReferenceDate-startTime > 5.0 || cancelled {
                 return true
             }
             let activeFrame = variables[depth]
@@ -280,21 +283,20 @@ fileprivate class ConstraintSolver {
     }
 
     private func constraintIsSatsified(activeDepth d1: Int, checkDepth d2: Int) -> Bool {
-
+        
         if constraints[d1][d2] {
             let f1 = variables[d1]
             let f2 = variables[d2]
 
-            // Left corner of f1 is inside f2
-            let lci1 = ((f2.x < f1.x || f1.x.isEqual(to: f2.x, decimalPlaces: 12)) && (f1.x < f2.x2))
-            // Right corner of f1 is inside f2
-            let rci1 = ((f2.x < f1.x2) && (f1.x2 < f2.x2 || f1.x2.isEqual(to: f2.x2, decimalPlaces: 12)))
-            // Left corner of f2 is inside f1
-            let lci2 = ((f1.x < f2.x || f2.x.isEqual(to: f1.x, decimalPlaces: 12)) && (f2.x < f1.x2))
-            // Right corner of f2 is inside f1
-            let rci2 = ((f1.x < f2.x2) && (f2.x2 < f1.x2 || f2.x2.isEqual(to: f1.x2, decimalPlaces: 12)))
             // Left corner f1 is not inside f2 and right corner f1 is not inside f2
-            return (!lci1 && !rci1) && (!lci2 && !rci2)
+            return  (
+                    !((f2.x < f1.x || f1.x.isEqual(to: f2.x, decimalPlaces: 12)) && (f1.x < f2.x2)) &&
+                    !((f2.x < f1.x2) && (f1.x2 < f2.x2 || f1.x2.isEqual(to: f2.x2, decimalPlaces: 12)))
+                    ) &&
+                    (
+                    !((f1.x < f2.x || f2.x.isEqual(to: f1.x, decimalPlaces: 12)) && (f2.x < f1.x2)) &&
+                    !((f1.x < f2.x2) && (f2.x2 < f1.x2 || f2.x2.isEqual(to: f1.x2, decimalPlaces: 12)))
+                    )
         }
         else {
             return true

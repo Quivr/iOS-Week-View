@@ -18,6 +18,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
     // All event framesAll
     private(set) var allEventFrames: [DayDate: [Int: CGRect]] = [:]
+    // All active dayViewCells
+    private var dayViewCells: [Int: DayViewCell] = [:]
     // All frame calculators
     private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
@@ -173,8 +175,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
+            dayViewCells[dayViewCell.dequeCellId] = dayViewCell
             let dayDateForCell = getDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)
+            if let eventDataForCell = allEventsData[dayDateForCell], let eventFramesForCell = allEventFrames[dayDateForCell] {
+                dayViewCell.setEventsData(eventDataForCell, andFrames: eventFramesForCell)
+            }
             return dayViewCell
         }
         return UICollectionViewCell(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
@@ -183,16 +189,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
-            let dayDateForCell = getDayDate(forIndexPath: indexPath)
-            if let eventDataForCell = allEventsData[dayDateForCell], let eventFramesForCell = allEventFrames[dayDateForCell] {
-                print("Adding \(eventFramesForCell.count) frames to cell at date \(dayDateForCell), with data count \(eventDataForCell.count)")
-                dayViewCell.setEventsData(eventDataForCell, andFrames: eventFramesForCell)
-            }
-            else {
-                print("Not adding frames to cell at date \(dayDateForCell)")
-                print(allEventsData[dayDateForCell])
-                print(allEventFrames[dayDateForCell])
-            }
         }
     }
 
@@ -215,15 +211,11 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int : CGRect]?) {
-        print("Solution passed from calculator \(calculator.date) \(solution?.count ?? -1)")
         let date = calculator.date
         allEventFrames[date] = solution
         frameCalculators[date] = nil
-        print(allEventsData[date] == nil ? "Nil eventsdata" : "Eventsdata not nil")
-        for cell in dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell, dayViewCell.date == date,
-                let eventsData = allEventsData[date], let eventFrames = allEventFrames[date] {
-                print("Added to visible")
+        for (_, dayViewCell) in dayViewCells where dayViewCell.date == date {
+            if let eventsData = allEventsData[date], let eventFrames = allEventFrames[date] {
                 dayViewCell.setEventsData(eventsData, andFrames: eventFrames)
             }
         }
@@ -333,7 +325,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             eptSafeContinue = true
         }
         DispatchQueue.global(qos: .userInitiated).async {
-            print("START EVENT OVERWRITE")
 
             // New eventsdata
             var newEventsData: [DayDate: [Int: EventData]] = [:]
@@ -341,7 +332,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             var changedDayDates = Set<DayDate>()
 
             guard self.eptSafeContinue else {
-                print("Cancelling event processing - before main loop - global thread")
                 self.safe_call_overwriteAllEvents()
                 return
             }
@@ -350,7 +340,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             // days have had any changes done to them to queue them up for processing.
             for eventData in eventsData {
                 guard self.eptSafeContinue else {
-                    print("Cancelling event processing - in main proc loop - global thread")
                     self.safe_call_overwriteAllEvents()
                     return
                 }
@@ -407,24 +396,22 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
 
             guard self.eptSafeContinue else {
-                print("Cancelling event processing - before removal checks - global thread")
                 self.safe_call_overwriteAllEvents()
                 return
             }
 
+            // TODO: REPLACE ACTIVE DATES WITH ACTUAL ACTIVE DATES NOT DERIVED ONES (CALCULATE FROM CURRENT PERIOD)
             // Get sequence of active days
             let activeDates = newEventsData.keys
             // Iterate through all old days that have not been checked yet to look for inactive days
             for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
                 for (_, oldEvent) in oldEvents where self.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
-                    print("Adding \(dayDate) - removal detected")
                     changedDayDates.insert(dayDate)
                     break
                 }
             }
 
             guard self.eptSafeContinue else {
-                print("Cancelling event processing - before sorting - global thread")
                 self.safe_call_overwriteAllEvents()
                 return
             }
@@ -435,8 +422,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 return diff1 == diff2 ? smaller > larger : diff1 < diff2
             }
 
-            print("Changed days: \(sortedChangedDays)")
-
             // Safe exit
             DispatchQueue.main.sync {
                 self.eptRunning = false
@@ -445,14 +430,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 for dayDate in sortedChangedDays {
                     self.processEventsData(forDayDate: dayDate)
                 }
-                print("Safe cancel event processing - main thread\n")
             }
         }
     }
 
     private func safe_call_overwriteAllEvents() {
         DispatchQueue.main.sync {
-            print("Force cancel event processing - main thread\n")
             eptRunning = false
             overwriteAllEvents(withData: eptTempData)
         }
@@ -460,7 +443,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     private func safe_call_processEventsData(forDayDate dayDate: DayDate) {
         DispatchQueue.main.sync {
-            print("Starting process events for \(dayDate) - main thread")
             self.processEventsData(forDayDate: dayDate)
         }
     }
@@ -470,7 +452,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let startDate = currentPeriod.previousPeriod.startDate
             let endDate = currentPeriod.nextPeriod.endDate
             for (date, calc) in frameCalculators where date < startDate || date > endDate {
-                print("Canceling calculator for \(date)")
                 calc.cancelCalculation()
             }
             weekView.requestEvents(between: startDate, and: endDate)
