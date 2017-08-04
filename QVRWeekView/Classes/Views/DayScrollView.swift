@@ -624,10 +624,18 @@ extension DayScrollView {
     }
 
     /**
-     Sets the color of day view overlays.
+     Sets the color of default day view color.
      */
-    func setDayViewOverlayColor(to color: UIColor) {
-        LayoutVariables.overlayColor = color
+    func setPassedDayViewColor(to color: UIColor) {
+        LayoutVariables.passedDayViewColor = color
+        updateLayout()
+    }
+
+    /**
+     Sets the color of weekend day view color.
+     */
+    func setPassedWeekendDayViewColor(to color: UIColor) {
+        LayoutVariables.passedWeekendDayViewColor = color
         updateLayout()
     }
 
@@ -934,9 +942,10 @@ struct LayoutVariables {
     fileprivate(set) static var defaultDayViewColor = LayoutDefaults.defaultDayViewColor
     // Color for day view weekend color
     fileprivate(set) static var weekendDayViewColor = LayoutDefaults.weekendDayViewColor
-
-    // Color for day view overlays
-    fileprivate(set) static var overlayColor = LayoutDefaults.overlayColor
+    // Color for day view passed color
+    fileprivate(set) static var passedDayViewColor = LayoutDefaults.passedDayViewColor
+    // Color for day view passed weekend color
+    fileprivate(set) static var passedWeekendDayViewColor = LayoutDefaults.passedWeekendDayViewColor
 
     // Color for day view hour indicator
     fileprivate(set) static var hourIndicatorColor = LayoutDefaults.hourIndicatorColor

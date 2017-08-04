@@ -15,11 +15,9 @@ class DayViewCell: UICollectionViewCell {
     private var eventFrames: [Int: CGRect] = [:]
 
     // Overlay variables
-    private var isOverlayHidden: Bool = true
-    private var isHourIndicatorHidden: Bool = true
     private var bottomDistancePercent = CGFloat(0)
-    private var overlayView: UIView!
-    private var hourIndicatorView: UIView!
+    private var overlayView: UIView = UIView()
+    private var hourIndicatorView: UIView = UIView()
 
     // Seperator shape layers
     private var seperatorLayers: [CAShapeLayer] = []
@@ -49,18 +47,23 @@ class DayViewCell: UICollectionViewCell {
     }
 
     private func initialize() {
+        // Initialization
         self.clipsToBounds = true
         self.backgroundColor = LayoutDefaults.defaultDayViewColor
         self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
         self.lastResizeHeight = self.frame.height
         self.lastResizeWidth = self.frame.width
+        // Setup overlay
+        self.hourIndicatorView.layer.cornerRadius = 1
+        self.overlayView.addSubview(hourIndicatorView)
+        self.addSubview(overlayView)
     }
 
     override func layoutSubviews() {
+        updateOverlay()
         generateSeperatorLayers()
         generateEventLayers()
-        updateOverlay()
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -68,15 +71,10 @@ class DayViewCell: UICollectionViewCell {
     }
 
     func clearValues() {
-        for view in self.subviews {
-            view.removeFromSuperview()
-        }
         for eventLayer in self.eventLayers {
             eventLayer.removeFromSuperlayer()
         }
         self.date = DayDate()
-        self.overlayView = nil
-        self.hourIndicatorView = nil
         self.eventsData.removeAll()
         self.eventFrames.removeAll()
         self.eventLayers.removeAll()
@@ -87,43 +85,24 @@ class DayViewCell: UICollectionViewCell {
     func setDate(`as` date: DayDate) {
 
         self.date = date
-
         updateTimeView()
-
-        if date.isWeekend() {
-            self.backgroundColor = LayoutVariables.weekendDayViewColor
-        }
-        else {
-            self.backgroundColor = LayoutVariables.defaultDayViewColor
-        }
     }
 
     func updateTimeView() {
 
-        if overlayView != nil {
-            self.overlayView.removeFromSuperview()
-            self.overlayView = nil
-        }
-        if hourIndicatorView != nil {
-            self.hourIndicatorView.removeFromSuperview()
-            self.hourIndicatorView = nil
-        }
-
-        if self.date.hasPassed() {
-            self.isOverlayHidden = false
-            // If is today
-            if date.isToday() {
-                self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
-                self.isHourIndicatorHidden = false
-            }
-            else {
-                self.bottomDistancePercent = 1.0
-                self.isHourIndicatorHidden = true
-            }
-            generateOverlay()
+        if date.isToday() {
+            self.overlayView.isHidden = false
+            self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
+            self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
         }
         else {
-            isOverlayHidden = true
+            self.overlayView.isHidden = true
+            if date.hasPassed() {
+                self.backgroundColor = date.isWeekend() ? LayoutVariables.passedWeekendDayViewColor : LayoutVariables.passedDayViewColor
+            }
+            else {
+                self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
+            }
         }
         updateOverlay()
     }
@@ -168,40 +147,20 @@ class DayViewCell: UICollectionViewCell {
         }
     }
 
-    private func generateOverlay() {
-
-        if !isOverlayHidden {
-            self.overlayView = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: bottomDistancePercent*self.bounds.height))
-
-            if !isHourIndicatorHidden {
-                let thickness = LayoutVariables.hourIndicatorThickness
-                self.hourIndicatorView = UIView(frame: CGRect(x: 0,
-                                                              y: overlayView.frame.height-thickness/2,
-                                                              width: self.bounds.width,
-                                                              height: thickness))
-                self.hourIndicatorView.layer.cornerRadius = 1
-                self.overlayView.addSubview(hourIndicatorView)
-            }
-            self.addSubview(overlayView)
-        }
-    }
-
     private func updateOverlay() {
-        if !isOverlayHidden {
-            overlayView.frame = CGRect(x: overlayView.frame.origin.x,
-                                       y: overlayView.frame.origin.y,
+        if !self.overlayView.isHidden {
+            overlayView.frame = CGRect(x: 0,
+                                       y: 0,
                                        width: self.bounds.width,
                                        height: bottomDistancePercent*self.bounds.height)
-            overlayView.backgroundColor = LayoutVariables.overlayColor
-            if !isHourIndicatorHidden {
-                hourIndicatorView.frame = CGRect(x: hourIndicatorView.frame.origin.x,
-                                                 y: overlayView.frame.height-LayoutVariables.hourIndicatorThickness/2,
-                                                 width: self.bounds.width,
-                                                 height: hourIndicatorView.frame.height)
-                hourIndicatorView.backgroundColor = LayoutVariables.hourIndicatorColor
-            }
-            self.bringSubview(toFront: overlayView)
+            overlayView.backgroundColor = date.isWeekend() ? LayoutVariables.passedWeekendDayViewColor : LayoutVariables.passedDayViewColor
+            hourIndicatorView.frame = CGRect(x: 0,
+                                             y: overlayView.frame.height-LayoutVariables.hourIndicatorThickness/2,
+                                             width: self.bounds.width,
+                                             height: LayoutVariables.hourIndicatorThickness)
+            hourIndicatorView.backgroundColor = LayoutVariables.hourIndicatorColor
         }
+
     }
 
     private func generateSeperatorLayers() {

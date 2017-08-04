@@ -77,11 +77,12 @@ struct LayoutDefaults {
     static let backgroundColor = UIColor(red: 202/255, green: 202/255, blue: 202/255, alpha: 1.0)
     static let topBarColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
 
-    static let overlayColor = UIColor(red: 225/255, green: 225/255, blue: 225/255, alpha: 0.8)
-    static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 0.9)
+    static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 1.0)
 
     static let defaultDayViewColor = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1.0)
-    static let weekendDayViewColor = UIColor(red: 238/255, green: 238/255, blue: 238/255, alpha: 1.0)
+    static let weekendDayViewColor = UIColor(red: 222/255, green: 222/255, blue: 222/255, alpha: 1.0)
+    static let passedDayViewColor = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0)
+    static let passedWeekendDayViewColor = UIColor(red: 219/255, green: 219/255, blue: 219/255, alpha: 1.0)
 }
 
 struct NibNames {

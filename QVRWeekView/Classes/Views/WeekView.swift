@@ -466,7 +466,7 @@ public extension WeekView {
     }
 
     /**
-     Default color of the day view cells. These are all days that are not weekends.
+     Default color of the day view cells. These are all days that are not weekends and not passed.
      */
     public var defaultDayViewColor: UIColor {
         get {
@@ -490,16 +490,26 @@ public extension WeekView {
     }
 
     /**
-     Color for the overlay displayed ontop of the day view cells. Overlay will indicate which
-     days have passed and how much time of today has passed. Overlay view itself is not
-     transluscent, and requires a background color UIColor with alpha less than 1 for a transluscent effect.
+     Color for all day view cells that are passed days and not weekends.
      */
-    public var dayViewOverlayColor: UIColor {
+    public var passedDayViewColor: UIColor {
         get {
-            return LayoutVariables.overlayColor
+            return LayoutVariables.passedDayViewColor
         }
         set(color) {
-            self.dayScrollView.setDayViewOverlayColor(to: color)
+            self.dayScrollView.setPassedDayViewColor(to: color)
+        }
+    }
+
+    /**
+     Color for all day view cells that are passed weekend days.
+     */
+    public var passedWeekendDayViewColor: UIColor {
+        get {
+            return LayoutVariables.passedWeekendDayViewColor
+        }
+        set(color) {
+            self.dayScrollView.setPassedWeekendDayViewColor(to: color)
         }
     }
 
