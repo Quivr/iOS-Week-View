@@ -137,3 +137,25 @@ extension Double {
         return ((self*4).rounded())/4.0
     }
 }
+
+extension Dictionary where Key == DayDate, Value == [Int: EventData] {
+    mutating func addEvent(_ event: EventData, onDay dayDate: DayDate) {
+        if self[dayDate] == nil {
+            self[dayDate] = [event.id: event]
+        }
+        else {
+            self[dayDate]![event.id] = event
+        }
+    }
+}
+
+extension Dictionary where Key == DayDate, Value == [EventData] {
+    mutating func addEvent(_ event: EventData, onDay dayDate: DayDate) {
+        if self[dayDate] == nil {
+            self[dayDate] = [event]
+        }
+        else {
+            self[dayDate]!.append(event)
+        }
+    }
+}

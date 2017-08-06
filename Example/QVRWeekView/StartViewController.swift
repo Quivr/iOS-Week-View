@@ -55,7 +55,7 @@ class StartViewController: UIViewController {
             weekView.dayLabelFont = UIFont.italicSystemFont(ofSize: 20)
 
             weekView.topBarColor = UIColor.green
-            weekView.topBarHeight = 50
+            weekView.topBarHeight = 70
             weekView.sideBarWidth = 10
             weekView.mainBackgroundColor = UIColor.blue
 

@@ -19,6 +19,7 @@
 		9118F5351F28B64D0055371E /* DayDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9118F5331F28B5430055371E /* DayDate.swift */; };
 		912E8F5F1F2B6B1F00249B43 /* FrameCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */; };
 		914BF61B1F29402E00520603 /* Period.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914BF61A1F29402E00520603 /* Period.swift */; };
+		917DB8291F37720A00FFC03A /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917DB8281F37720A00FFC03A /* Util.swift */; };
 		918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918FFFF51F27792A00BE1D5C /* EventData.swift */; };
 		9B2C595BB029A5D9899700F5EDFC8457 /* HourSideBarView.xib in Sources */ = {isa = PBXBuildFile; fileRef = 1178724172D54021F6CF6520AC40D5BD /* HourSideBarView.xib */; };
 		9BD2DDE25252CC369CA6CA00DBB0E82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
@@ -60,6 +61,7 @@
 		912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameCalculator.swift; sourceTree = "<group>"; };
 		913917491EE8B0F300581FD6 /* HourSideBarViewC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HourSideBarViewC.xib; sourceTree = "<group>"; };
 		914BF61A1F29402E00520603 /* Period.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
+		917DB8281F37720A00FFC03A /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		918FFFF51F27792A00BE1D5C /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventData.swift; path = ../Views/EventData.swift; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		955FFDC1095EBEC1F6BB4B14BC950856 /* Pods-QVRWeekView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-QVRWeekView_Example.modulemap"; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				9118F5331F28B5430055371E /* DayDate.swift */,
 				914BF61A1F29402E00520603 /* Period.swift */,
 				912E8F5E1F2B6B1F00249B43 /* FrameCalculator.swift */,
+				917DB8281F37720A00FFC03A /* Util.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				918FFFF61F27792A00BE1D5C /* EventData.swift in Sources */,
 				F78B09FC0C1BB7E79E135CBB0D48B757 /* Constants.swift in Sources */,
 				9112D1AE1ED2464B0001F8CB /* DayCollectionView.swift in Sources */,
+				917DB8291F37720A00FFC03A /* Util.swift in Sources */,
 				475652CB1F5346DA98EE254088807160 /* DateSupport.swift in Sources */,
 				9118F5351F28B64D0055371E /* DayDate.swift in Sources */,
 				EACC9EFDA234938673377AC6A1E38685 /* DayScrollView.swift in Sources */,

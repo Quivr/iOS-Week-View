@@ -18,6 +18,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
     // All event framesAll
     private(set) var allEventFrames: [DayDate: [Int: CGRect]] = [:]
+    // All fullday events
+    private var allDayEvents: [DayDate: [EventData]] = [:]
     // All active dayViewCells
     private var dayViewCells: [Int: DayViewCell] = [:]
     // All frame calculators
@@ -189,12 +191,16 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
+            if let allDayEvents = allDayEvents[dayViewCell.date] {
+                weekView.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayViewCell.date)
+            }
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             weekView.discardLabel(withDate: dayViewCell.date)
+            weekView.discardAllDayEvents(forDate: dayViewCell.date)
         }
     }
 
@@ -332,6 +338,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
             // New eventsdata
             var newEventsData: [DayDate: [Int: EventData]] = [:]
+            // New all day events
+            var newAllDayEvents: [DayDate: [EventData]] = [:]
             // Stores the days which will be changed
             var changedDayDates = Set<DayDate>()
 
@@ -350,50 +358,37 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 let start = eventData.startDate
                 let end = eventData.endDate
 
-                if start.isSameDayAs(end) {
-                    let dayDate = DayDate(date: start)
-                    if !changedDayDates.contains(dayDate) &&
-                        self.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
-                        changedDayDates.insert(dayDate)
-                    }
-                    if newEventsData[dayDate] == nil {
-                        let newEventDict = [eventData.id: eventData]
-                        newEventsData[dayDate] = newEventDict
-                    }
-                    else {
-                        newEventsData[dayDate]![eventData.id] = eventData
-                    }
+                if eventData.allDay {
+                    newAllDayEvents.addEvent(eventData, onDay: DayDate(date: start))
                 }
-                else if !start.isSameDayAs(end) && end.isMidnight() {
-                    let dayDate = DayDate(date: start)
-                    let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
-                    if !changedDayDates.contains(dayDate) &&
-                        self.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
-                        changedDayDates.insert(dayDate)
-                    }
-                    if newEventsData[dayDate] == nil {
-                        let newEventDict = [newData.id: newData]
-                        newEventsData[dayDate] = newEventDict
-                    }
-                    else {
-                        newEventsData[dayDate]![newData.id] = newData
-                    }
-                }
-                else if !end.isMidnight() {
-                    let allDays = DateSupport.getAllDates(between: start, and: end)
-                    let splitEvent = eventData.split(across: allDays)
-                    for (date, event) in splitEvent {
-                        let dayDate = DayDate(date: date)
+                else {
+                    if start.isSameDayAs(end) {
+                        let dayDate = DayDate(date: start)
                         if !changedDayDates.contains(dayDate) &&
-                            self.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                            Util.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
                             changedDayDates.insert(dayDate)
                         }
-                        if newEventsData[dayDate] == nil {
-                            let newEventDict = [event.id: event]
-                            newEventsData[dayDate] = newEventDict
+                        newEventsData.addEvent(eventData, onDay: dayDate)
+                    }
+                    else if !start.isSameDayAs(end) && end.isMidnight() {
+                        let dayDate = DayDate(date: start)
+                        let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
+                        if !changedDayDates.contains(dayDate) &&
+                            Util.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                            changedDayDates.insert(dayDate)
                         }
-                        else {
-                            newEventsData[dayDate]![event.id] = event
+                        newEventsData.addEvent(newData, onDay: dayDate)
+                    }
+                    else if !end.isMidnight() {
+                        let allDays = DateSupport.getAllDates(between: start, and: end)
+                        let splitEvent = eventData.split(across: allDays)
+                        for (date, event) in splitEvent {
+                            let dayDate = DayDate(date: date)
+                            if !changedDayDates.contains(dayDate) &&
+                                Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                                changedDayDates.insert(dayDate)
+                            }
+                            newEventsData.addEvent(event, onDay: dayDate)
                         }
                     }
                 }
@@ -409,7 +404,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                                                          and: self.currentPeriod.nextPeriod.endDate)
             // Iterate through all old days that have not been checked yet to look for inactive days
             for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
-                for (_, oldEvent) in oldEvents where self.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
+                for (_, oldEvent) in oldEvents where Util.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
                     changedDayDates.insert(dayDate)
                     break
                 }
@@ -431,6 +426,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 self.eptRunning = false
                 self.eptSafeContinue = false
                 self.allEventsData = newEventsData
+                self.allDayEvents = newAllDayEvents
+                for cell in self.dayCollectionView.visibleCells {
+                    if let dayViewCell = cell as? DayViewCell,
+                       let weekView = self.superview?.superview as? WeekView,
+                       let events = self.allDayEvents[dayViewCell.date] {
+                        weekView.addAllDayEvents(events, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
+                    }
+                }
                 for dayDate in sortedChangedDays {
                     self.processEventsData(forDayDate: dayDate)
                 }
@@ -457,10 +460,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     // MARK: - HELPER/PRIVATE FUNCTIONS -
-
-    private func isEvent(_ event: EventData, fromDay dayDate: DayDate, notInOrHasChanged eventStore: [DayDate: [Int: EventData]]) -> Bool {
-        return (eventStore[dayDate] == nil) || (eventStore[dayDate]![event.id] == nil) || (eventStore[dayDate]![event.id]! != event)
-    }
 
     fileprivate func updateLayout() {
 
@@ -507,7 +506,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         else if change > 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.minOffsetX).roundUpAdditionalHalf()
         }
-
     }
 
     private func scrollToNearestCell() {
@@ -550,7 +548,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         activeDay = dayDate
         requestEvents()
     }
-
 }
 
 // MARK: - CUSTOMIZATION EXTENSION -
@@ -963,6 +960,11 @@ struct LayoutVariables {
     fileprivate(set) static var dashedSeparatorThickness = LayoutDefaults.dashedSeparatorThickness
     // Pattern for day view dashed Separators
     fileprivate(set) static var dashedSeparatorPattern = LayoutDefaults.dashedSeparatorPattern
+
+    // Height of an all day event
+    fileprivate(set) static var allDayEventHeight = LayoutDefaults.allDayEventHeight
+    // Vertical spacing of an all day event
+    fileprivate(set) static var allDayEventVerticalSpacing = LayoutDefaults.allDayVerticalSpacing
 
     // MARK: - UPDATE FUNCTIONS -
 

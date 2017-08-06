@@ -70,6 +70,20 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
             self.id += 1
             weekView.loadEvents(withData: Array(self.allEvents.values))
         }))
+        alert.addAction(UIAlertAction(title: "All day", style: .default, handler: { _ in
+            let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+            let newEvent = EventData(
+                id: self.id,
+                title: "Test Event \(self.id)",
+                startDate: date,
+                endDate: date.addingTimeInterval(1),
+                color: color,
+                allDay: true
+            )
+            self.allEvents[self.id] = newEvent
+            self.id += 1
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
         self.present(alert, animated: true, completion: nil)
 
     }

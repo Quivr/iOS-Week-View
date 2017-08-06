@@ -15,12 +15,13 @@ public struct EventData: CustomStringConvertible, Equatable {
     public let startDate: Date
     public let endDate: Date
     public let color: UIColor
+    public let allDay: Bool
 
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
 
-    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
+    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
         self.id = id
         self.title = title
         if startDate.compare(endDate).rawValue >= 0 {
@@ -29,14 +30,15 @@ public struct EventData: CustomStringConvertible, Equatable {
         self.startDate = startDate
         self.endDate = endDate
         self.color = color
+        self.allDay = allDay
+    }
+
+    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
     public init() {
-        self.init(id: 0,
-                  title: "null",
-                  startDate: Date(),
-                  endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!),
-                  color: UIColor.blue)
+        self.init(id: -1, title: "null", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
     }
 
     public static func == (lhs: EventData, rhs: EventData) -> Bool {

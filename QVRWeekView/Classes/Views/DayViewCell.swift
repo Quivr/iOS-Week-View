@@ -22,7 +22,7 @@ class DayViewCell: UICollectionViewCell {
     // separator shape layers
     private var separatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
-    private var eventLayers: [CALayer] = []
+    private var eventLayers: [CAShapeLayer] = []
     // Previous height
     private var lastResizeHeight: CGFloat!
     // Previous width
@@ -241,24 +241,10 @@ class DayViewCell: UICollectionViewCell {
                 newFrame = self.eventFrames[id]!
             }
 
-            let eventRectLayer = CAShapeLayer()
-            eventRectLayer.path = CGPath(rect: newFrame, transform: nil)
-            eventRectLayer.fillColor = eventsData[id]!.color.cgColor
+            let layer = Util.makeEventLayer(withData: eventsData[id]!, andFrame: newFrame)
 
-            let eventTextLayer = CATextLayer()
-            eventTextLayer.frame = newFrame
-            eventTextLayer.string = eventsData[id]!.title
-            let font = FontVariables.eventLabelFont
-            let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
-            eventTextLayer.font = ctFont
-            eventTextLayer.fontSize = font.pointSize
-            eventTextLayer.isWrapped = true
-            eventTextLayer.contentsScale = UIScreen.main.scale
-
-            self.eventLayers.append(eventRectLayer)
-            self.eventLayers.append(eventTextLayer)
-            self.layer.addSublayer(eventRectLayer)
-            self.layer.addSublayer(eventTextLayer)
+            self.eventLayers.append(layer)
+            self.layer.addSublayer(layer)
         }
     }
 

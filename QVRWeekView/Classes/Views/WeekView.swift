@@ -39,8 +39,10 @@ open class WeekView: UIView {
 
     // The actual view being displayed, all other views are subview of this mainview
     private(set) var mainView: UIView!
-    // Array of all daylabels
-    private var visibleDayLabels: [DayDate:UILabel] = [:]
+    // Array of visible daylabels
+    private var visibleDayLabels: [DayDate: UILabel] = [:]
+    // Array of visible allDayEvents
+    private var visibleAllDayEvents: [DayDate: [CAShapeLayer]] = [:]
     // Array of labels not being displayed
     private var discardedDayLabels: [UILabel] = []
     // Left side buffer for top bar
@@ -142,12 +144,11 @@ open class WeekView: UIView {
 
         var label: UILabel!
         if !discardedDayLabels.isEmpty {
-            label = discardedDayLabels[0]
-            label.frame = generateDayLabelFrame(forIndex: indexPath)
-            discardedDayLabels.remove(at: 0)
+            label = discardedDayLabels.remove(at: 0)
+            label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
         }
         else {
-            label = makeDayLabel(withIndexPath: indexPath)
+            label = Util.makeDayLabel(withIndexPath: indexPath)
         }
 
         label.text = date.simpleString
@@ -165,6 +166,47 @@ open class WeekView: UIView {
         trashExcessDayLabels()
     }
 
+    func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+        let newTopBarHeight = LayoutVariables.dayLabelHeight+LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
+
+        if self.topBarHeight < newTopBarHeight {
+            self.topBarHeight = newTopBarHeight
+        }
+
+        if visibleAllDayEvents[dayDate] != nil {
+            for layer in visibleAllDayEvents[dayDate]! {
+                layer.removeFromSuperlayer()
+            }
+            visibleAllDayEvents[dayDate] = nil
+        }
+
+        let max = events.count
+        var i = 0
+        var layers: [CAShapeLayer] = []
+        for event in events {
+            let newFrame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
+            let layer = Util.makeEventLayer(withData: event, andFrame: newFrame)
+            self.topBarView.layer.addSublayer(layer)
+            layers.append(layer)
+            i += 1
+        }
+        self.visibleAllDayEvents[dayDate] = layers
+    }
+
+    func discardAllDayEvents(forDate dayDate: DayDate) {
+        if visibleAllDayEvents[dayDate] != nil {
+            for layer in visibleAllDayEvents[dayDate]! {
+                layer.removeFromSuperlayer()
+            }
+            visibleAllDayEvents[dayDate] = nil
+        }
+
+        let newTopBarHeight = LayoutVariables.dayLabelHeight
+        if visibleAllDayEvents.isEmpty && self.topBarHeight > newTopBarHeight {
+            self.topBarHeight = newTopBarHeight
+        }
+    }
+
     func updateVisibleLabelsAndMainConstraints() {
         updateTopAndSideBarConstraints()
 
@@ -174,7 +216,7 @@ open class WeekView: UIView {
                 let dateId = dayViewCell.date
 
                 if let label = visibleDayLabels[dateId] {
-                    label.frame = generateDayLabelFrame(forIndex: indexPath)
+                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
                     label.font = FontVariables.dayLabelFont
                     label.textColor = FontVariables.dayLabelTextColor
                 }
@@ -234,21 +276,6 @@ open class WeekView: UIView {
         }
     }
 
-    private func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
-
-        // Make as daylabel
-        let labelFrame = generateDayLabelFrame(forIndex: indexPath)
-        let dayLabel = UILabel(frame: labelFrame)
-        dayLabel.font = FontVariables.dayLabelFont
-        dayLabel.textColor = FontVariables.dayLabelTextColor
-        dayLabel.textAlignment = .center
-        return dayLabel
-    }
-
-    private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
-        let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: topBarHeight)
-    }
 }
 
 // MARK: - CUSTOMIZATION EXTENSION -
@@ -345,6 +372,19 @@ public extension WeekView {
         }
         set(scale) {
             FontVariables.dayLabelMinimumScale = scale
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Height of the day labels.
+     */
+    public var dayLabelHeight: CGFloat {
+        get {
+            return LayoutVariables.dayLabelHeight
+        }
+        set(height) {
+            LayoutVariables.dayLabelHeight = height
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -714,4 +754,9 @@ public struct FontVariables {
     fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
     // Minimum scale for all hour labels
     fileprivate(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumScale
+}
+
+extension LayoutVariables {
+    // Height of day labels
+    fileprivate(set) static var dayLabelHeight = LayoutDefaults.topBarHeight
 }

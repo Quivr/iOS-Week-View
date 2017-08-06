@@ -48,6 +48,11 @@ struct LayoutDefaults {
     static let portraitDayViewVerticalSpacing = CGFloat(15)
     static let landscapeDayViewVerticalSpacing = CGFloat(10)
 
+    // Height of all day events
+    static let allDayEventHeight = CGFloat(40)
+    // Vertical spacing of all day events
+    static let allDayVerticalSpacing = CGFloat(5)
+
     // Initial height of day view cells
     static let dayViewCellHeight = CGFloat(1400)
     // Test width of day view cells - WARNING: ONLY USED FOR FRAME CALCULATION
@@ -80,9 +85,9 @@ struct LayoutDefaults {
     static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 1.0)
 
     static let defaultDayViewColor = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1.0)
-    static let weekendDayViewColor = UIColor(red: 222/255, green: 222/255, blue: 222/255, alpha: 1.0)
-    static let passedDayViewColor = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0)
-    static let passedWeekendDayViewColor = UIColor(red: 219/255, green: 219/255, blue: 219/255, alpha: 1.0)
+    static let weekendDayViewColor = UIColor(red: 234/255, green: 234/255, blue: 234/255, alpha: 1.0)
+    static let passedDayViewColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
+    static let passedWeekendDayViewColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1.0)
 }
 
 struct NibNames {
