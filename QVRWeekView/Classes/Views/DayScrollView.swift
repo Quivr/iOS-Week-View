@@ -359,7 +359,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 let end = eventData.endDate
 
                 if eventData.allDay {
-                    newAllDayEvents.addEvent(eventData, onDay: DayDate(date: start))
+                    let dayDate = DayDate(date: start)
+                    newAllDayEvents.addEvent(eventData, onDay: dayDate)
                 }
                 else {
                     if start.isSameDayAs(end) {
@@ -415,6 +416,17 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 return
             }
 
+            // Iterate through all old all day events that have not been checked yet to look for inactive days
+            for (dayDate, _) in self.allDayEvents where activeDates.contains(dayDate) && newAllDayEvents[dayDate] == nil {
+                newAllDayEvents[dayDate] = []
+                break
+            }
+
+            guard self.eptSafeContinue else {
+                self.safe_call_overwriteAllEvents()
+                return
+            }
+
             let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
                 let diff1 = abs(smaller.day - self.activeDay.day)
                 let diff2 = abs(larger.day - self.activeDay.day)
@@ -431,7 +443,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                     if let dayViewCell = cell as? DayViewCell,
                        let weekView = self.superview?.superview as? WeekView,
                        let events = self.allDayEvents[dayViewCell.date] {
-                        weekView.addAllDayEvents(events, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
+                        if events.isEmpty {
+                            weekView.discardAllDayEvents(forDate: dayViewCell.date)
+                        }
+                        else {
+                            weekView.addAllDayEvents(events, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
+                        }
                     }
                 }
                 for dayDate in sortedChangedDays {

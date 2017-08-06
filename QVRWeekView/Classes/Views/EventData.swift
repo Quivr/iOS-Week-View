@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct EventData: CustomStringConvertible, Equatable {
+public struct EventData: CustomStringConvertible, Equatable, Hashable {
 
     public let id: Int
     public let title: String
@@ -16,6 +16,10 @@ public struct EventData: CustomStringConvertible, Equatable {
     public let endDate: Date
     public let color: UIColor
     public let allDay: Bool
+
+    public var hashValue: Int {
+        return id
+    }
 
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"

@@ -42,7 +42,7 @@ open class WeekView: UIView {
     // Array of visible daylabels
     private var visibleDayLabels: [DayDate: UILabel] = [:]
     // Array of visible allDayEvents
-    private var visibleAllDayEvents: [DayDate: [CAShapeLayer]] = [:]
+    private var visibleAllDayEvents: [DayDate: [EventData: CAShapeLayer]] = [:]
     // Array of labels not being displayed
     private var discardedDayLabels: [UILabel] = []
     // Left side buffer for top bar
@@ -73,7 +73,9 @@ open class WeekView: UIView {
         // Get the view layout from the nib
         setView()
         // Create pinch recognizer
-        self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView)))
+        self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView(_:))))
+        // Create tap recognizer for top bar
+        self.topBarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapTopBar(_:))))
         // Set clipping to bounds (prevents side bar and other sub view protrusion)
         self.clipsToBounds = true
     }
@@ -174,7 +176,7 @@ open class WeekView: UIView {
         }
 
         if visibleAllDayEvents[dayDate] != nil {
-            for layer in visibleAllDayEvents[dayDate]! {
+            for (_, layer) in visibleAllDayEvents[dayDate]! {
                 layer.removeFromSuperlayer()
             }
             visibleAllDayEvents[dayDate] = nil
@@ -182,12 +184,12 @@ open class WeekView: UIView {
 
         let max = events.count
         var i = 0
-        var layers: [CAShapeLayer] = []
+        var layers: [EventData: CAShapeLayer] = [:]
         for event in events {
             let newFrame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
             let layer = Util.makeEventLayer(withData: event, andFrame: newFrame)
             self.topBarView.layer.addSublayer(layer)
-            layers.append(layer)
+            layers[event] = layer
             i += 1
         }
         self.visibleAllDayEvents[dayDate] = layers
@@ -195,7 +197,7 @@ open class WeekView: UIView {
 
     func discardAllDayEvents(forDate dayDate: DayDate) {
         if visibleAllDayEvents[dayDate] != nil {
-            for layer in visibleAllDayEvents[dayDate]! {
+            for (_, layer) in visibleAllDayEvents[dayDate]! {
                 layer.removeFromSuperlayer()
             }
             visibleAllDayEvents[dayDate] = nil
@@ -204,6 +206,17 @@ open class WeekView: UIView {
         let newTopBarHeight = LayoutVariables.dayLabelHeight
         if visibleAllDayEvents.isEmpty && self.topBarHeight > newTopBarHeight {
             self.topBarHeight = newTopBarHeight
+        }
+    }
+
+    func tapTopBar(_ sender: UITapGestureRecognizer) {
+        let touchPoint = sender.location(ofTouch: 0, in: self.topBarView)
+        for (_, eventLayers) in visibleAllDayEvents {
+            for (event, layer) in eventLayers {
+                if layer.path!.contains(touchPoint) {
+                    eventViewWasTapped(event)
+                }
+            }
         }
     }
 
