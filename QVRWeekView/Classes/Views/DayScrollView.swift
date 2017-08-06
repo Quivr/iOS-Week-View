@@ -30,10 +30,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(yearActive)
         }
     }
+    // Current active day
+    private(set) var activeDay: DayDate = DayDate.today
     // Year todauy
     private var yearToday: Int = DayDate.today.year
-    // Current active day
-    private var activeDay: DayDate = DayDate.today
     // Current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
     // Bool stores if the collection view just reset
@@ -233,8 +233,15 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INTERNAL FUNCTIONS -
 
-    func showToday() {
-        goToAndShow(dayDate: DayDate.today)
+
+    func goToAndShow(dayDate: DayDate) {
+        yearActive = dayDate.year
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.day)*LayoutVariables.totalDayViewCellWidth,
+                                                   y: 0),
+                                           animated: false)
+        currentPeriod = Period(ofDate: dayDate)
+        activeDay = dayDate
+        requestEvents()
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {
@@ -554,16 +561,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         frameCalculators[dayDate]?.cancelCalculation()
         frameCalculators[dayDate] = calc
         calc.calculate(withData: allEventsData[dayDate])
-    }
-
-    private func goToAndShow(dayDate: DayDate) {
-        yearActive = dayDate.year
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.day)*LayoutVariables.totalDayViewCellWidth,
-                                                   y: 0),
-                                           animated: false)
-        currentPeriod = Period(ofDate: dayDate)
-        activeDay = dayDate
-        requestEvents()
     }
 }
 

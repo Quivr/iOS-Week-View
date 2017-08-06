@@ -35,6 +35,10 @@ open class WeekView: UIView {
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
 
+    public var currentDay: Date {
+        return dayScrollView.activeDay.dateObj
+    }
+
     // MARK: - PRIVATE VARIABLES -
 
     // The actual view being displayed, all other views are subview of this mainview
@@ -109,10 +113,17 @@ open class WeekView: UIView {
     }
 
     /**
+     Shows the day view cell corresponding to asked day.
+     */
+    public func showDay(withDate date: Date) {
+        dayScrollView.goToAndShow(dayDate: DayDate(date: date))
+    }
+
+    /**
      Shows the day view cell corresponding to today.
      */
     public func showToday() {
-        dayScrollView.showToday()
+        dayScrollView.goToAndShow(dayDate: DayDate(date: Date()))
     }
 
     /**
