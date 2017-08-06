@@ -29,11 +29,11 @@ class StartViewController: UIViewController {
             weekView.dayViewHourIndicatorColor = UIColor.blue
             weekView.dayViewHourIndicatorThickness = 9
             weekView.dayViewCellHeight = 500
-            weekView.dayViewMainSeperatorColor = UIColor.red
-            weekView.dayViewMainSeperatorThickness = 4
-            weekView.dayViewDashedSeperatorColor = UIColor.orange
-            weekView.dayViewDashedSeperatorPattern = [9, 3]
-            weekView.dayViewDashedSeperatorThickness = 2
+            weekView.dayViewMainSeparatorColor = UIColor.red
+            weekView.dayViewMainSeparatorThickness = 4
+            weekView.dayViewDashedSeparatorColor = UIColor.orange
+            weekView.dayViewDashedSeparatorPattern = [9, 3]
+            weekView.dayViewDashedSeparatorThickness = 2
             weekView.weekendDayViewColor = UIColor.darkGray
             weekView.defaultDayViewColor = UIColor.gray
 

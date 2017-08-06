@@ -538,55 +538,55 @@ public extension WeekView {
     }
 
     /**
-     Color of the main seperators in the day view cells. Main seperators are full lines and not dashed.
+     Color of the main separators in the day view cells. Main separators are full lines and not dashed.
      */
-    public var dayViewMainSeperatorColor: UIColor {
+    public var dayViewMainSeparatorColor: UIColor {
         get {
-            return LayoutVariables.mainSeperatorColor
+            return LayoutVariables.mainSeparatorColor
         }
         set(color) {
-            self.dayScrollView.setDayViewMainSeperatorColor(to: color)
+            self.dayScrollView.setDayViewMainSeparatorColor(to: color)
         }
     }
 
     /**
-     Thickness of the main seperators in the day view cells. Main seperators are full lines and not dashed.
+     Thickness of the main separators in the day view cells. Main separators are full lines and not dashed.
      */
-    public var dayViewMainSeperatorThickness: CGFloat {
+    public var dayViewMainSeparatorThickness: CGFloat {
         get {
-            return LayoutVariables.mainSeperatorThickness
+            return LayoutVariables.mainSeparatorThickness
         }
         set(thickness) {
-            self.dayScrollView.setDayViewMainSeperatorThickness(to: thickness)
+            self.dayScrollView.setDayViewMainSeparatorThickness(to: thickness)
         }
     }
 
     /**
-     Color of the dashed/dotted seperators in the day view cells.
+     Color of the dashed/dotted separators in the day view cells.
      */
-    public var dayViewDashedSeperatorColor: UIColor {
+    public var dayViewDashedSeparatorColor: UIColor {
         get {
-            return LayoutVariables.dashedSeperatorColor
+            return LayoutVariables.dashedSeparatorColor
         }
         set(color) {
-            self.dayScrollView.setDayViewDashedSeperatorColor(to: color)
+            self.dayScrollView.setDayViewDashedSeparatorColor(to: color)
         }
     }
 
     /**
-     Thickness of the dashed/dotted seperators in the day view cells.
+     Thickness of the dashed/dotted separators in the day view cells.
      */
-    public var dayViewDashedSeperatorThickness: CGFloat {
+    public var dayViewDashedSeparatorThickness: CGFloat {
         get {
-            return LayoutVariables.dashedSeperatorThickness
+            return LayoutVariables.dashedSeparatorThickness
         }
         set(thickness) {
-            self.dayScrollView.setDayViewDashedSeperatorThickness(to: thickness)
+            self.dayScrollView.setDayViewDashedSeparatorThickness(to: thickness)
         }
     }
 
     /**
-     Sets the pattern for the dashed/dotted seperators. Requires an array of NSNumbers.
+     Sets the pattern for the dashed/dotted separators. Requires an array of NSNumbers.
      Example 1: [10, 5] will provide a pattern of 10 points drawn, 5 points empty, repeated.
      Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points
      drawn, 2 points empty.
@@ -594,12 +594,12 @@ public extension WeekView {
      See Apple API for additional information on pattern drawing.
      https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern
      */
-    public var dayViewDashedSeperatorPattern: [NSNumber] {
+    public var dayViewDashedSeparatorPattern: [NSNumber] {
         get {
-            return LayoutVariables.dashedSeperatorPattern
+            return LayoutVariables.dashedSeparatorPattern
         }
         set(pattern) {
-            self.dayScrollView.setDayViewDashedSeperatorPattern(to: pattern)
+            self.dayScrollView.setDayViewDashedSeparatorPattern(to: pattern)
         }
     }
 

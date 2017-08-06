@@ -656,42 +656,42 @@ extension DayScrollView {
     }
 
     /**
-     Sets the color of the main day view seperators.
+     Sets the color of the main day view separators.
      */
-    func setDayViewMainSeperatorColor(to color: UIColor) {
-        LayoutVariables.mainSeperatorColor = color
+    func setDayViewMainSeparatorColor(to color: UIColor) {
+        LayoutVariables.mainSeparatorColor = color
         updateLayout()
     }
 
     /**
-     Sets the thickness of the main day view seperators.
+     Sets the thickness of the main day view separators.
      */
-    func setDayViewMainSeperatorThickness(to thickness: CGFloat) {
-        LayoutVariables.mainSeperatorThickness = thickness
+    func setDayViewMainSeparatorThickness(to thickness: CGFloat) {
+        LayoutVariables.mainSeparatorThickness = thickness
         updateLayout()
     }
 
     /**
-     Sets the color of the dashed day view seperators.
+     Sets the color of the dashed day view separators.
      */
-    func setDayViewDashedSeperatorColor(to color: UIColor) {
-        LayoutVariables.dashedSeperatorColor = color
+    func setDayViewDashedSeparatorColor(to color: UIColor) {
+        LayoutVariables.dashedSeparatorColor = color
         updateLayout()
     }
 
     /**
-     Sets the thickness of the dashed day view seperators.
+     Sets the thickness of the dashed day view separators.
      */
-    func setDayViewDashedSeperatorThickness(to thickness: CGFloat) {
-        LayoutVariables.dashedSeperatorThickness = thickness
+    func setDayViewDashedSeparatorThickness(to thickness: CGFloat) {
+        LayoutVariables.dashedSeparatorThickness = thickness
         updateLayout()
     }
 
     /**
-     Sets the thickness of the dashed day view seperators.
+     Sets the thickness of the dashed day view separators.
      */
-    func setDayViewDashedSeperatorPattern(to pattern: [NSNumber]) {
-        LayoutVariables.dashedSeperatorPattern = pattern
+    func setDayViewDashedSeparatorPattern(to pattern: [NSNumber]) {
+        LayoutVariables.dashedSeparatorPattern = pattern
         updateLayout()
     }
 
@@ -952,17 +952,17 @@ struct LayoutVariables {
     // Thickness for day view hour indicator
     fileprivate(set) static var hourIndicatorThickness = LayoutDefaults.hourIndicatorThickness
 
-    // Color for day view main seperators
-    fileprivate(set) static var mainSeperatorColor = LayoutDefaults.backgroundColor
-    // Thickness for day view main seperators
-    fileprivate(set) static var mainSeperatorThickness = LayoutDefaults.mainSeperatorThickness
+    // Color for day view main separators
+    fileprivate(set) static var mainSeparatorColor = LayoutDefaults.backgroundColor
+    // Thickness for day view main Separators
+    fileprivate(set) static var mainSeparatorThickness = LayoutDefaults.mainSeparatorThickness
 
-    // Color for day view dahshed seperators
-    fileprivate(set) static var dashedSeperatorColor = LayoutDefaults.backgroundColor
-    // Thickness for day view dashed seperators
-    fileprivate(set) static var dashedSeperatorThickness = LayoutDefaults.dashedSeperatorThickness
-    // Pattern for day view dashed seperators
-    fileprivate(set) static var dashedSeperatorPattern = LayoutDefaults.dashedSeperatorPattern
+    // Color for day view dahshed Separators
+    fileprivate(set) static var dashedSeparatorColor = LayoutDefaults.backgroundColor
+    // Thickness for day view dashed Separators
+    fileprivate(set) static var dashedSeparatorThickness = LayoutDefaults.dashedSeparatorThickness
+    // Pattern for day view dashed Separators
+    fileprivate(set) static var dashedSeparatorPattern = LayoutDefaults.dashedSeparatorPattern
 
     // MARK: - UPDATE FUNCTIONS -
 

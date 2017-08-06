@@ -19,8 +19,8 @@ class DayViewCell: UICollectionViewCell {
     private var overlayView: UIView = UIView()
     private var hourIndicatorView: UIView = UIView()
 
-    // Seperator shape layers
-    private var seperatorLayers: [CAShapeLayer] = []
+    // separator shape layers
+    private var separatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
     private var eventLayers: [CALayer] = []
     // Previous height
@@ -62,7 +62,7 @@ class DayViewCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         updateOverlay()
-        generateSeperatorLayers()
+        generateSeparatorLayers()
         generateEventLayers()
     }
 
@@ -163,18 +163,18 @@ class DayViewCell: UICollectionViewCell {
 
     }
 
-    private func generateSeperatorLayers() {
-        // Clear old seperators
-        for layer in self.seperatorLayers {
+    private func generateSeparatorLayers() {
+        // Clear old separators
+        for layer in self.separatorLayers {
             layer.removeFromSuperlayer()
         }
-        self.seperatorLayers.removeAll()
+        self.separatorLayers.removeAll()
 
         let hourHeight = self.bounds.height/DateSupport.hoursInDay
         let dottedPathCombine = CGMutablePath()
         let linePathCombine = CGMutablePath()
 
-        // Generate line seperator paths
+        // Generate line separator paths
         for i in 0...Int(DateSupport.hoursInDay)-1 {
 
             let dottedPath = UIBezierPath()
@@ -192,25 +192,25 @@ class DayViewCell: UICollectionViewCell {
             dottedPathCombine.addPath(dottedPath.cgPath)
         }
 
-        // Generate line seperator shape layers
+        // Generate line separator shape layers
         let lineLayer = CAShapeLayer()
         lineLayer.path=linePathCombine
-        lineLayer.lineWidth = LayoutVariables.mainSeperatorThickness
+        lineLayer.lineWidth = LayoutVariables.mainSeparatorThickness
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.opacity = 1.0
-        lineLayer.strokeColor = LayoutVariables.mainSeperatorColor.cgColor
+        lineLayer.strokeColor = LayoutVariables.mainSeparatorColor.cgColor
 
         let dottedLineLayer = CAShapeLayer()
         dottedLineLayer.path=dottedPathCombine
-        dottedLineLayer.lineDashPattern = LayoutVariables.dashedSeperatorPattern
-        dottedLineLayer.lineWidth = LayoutVariables.dashedSeperatorThickness
+        dottedLineLayer.lineDashPattern = LayoutVariables.dashedSeparatorPattern
+        dottedLineLayer.lineWidth = LayoutVariables.dashedSeparatorThickness
         dottedLineLayer.fillColor = UIColor.clear.cgColor
         dottedLineLayer.opacity = 1.0
-        dottedLineLayer.strokeColor = LayoutVariables.dashedSeperatorColor.cgColor
+        dottedLineLayer.strokeColor = LayoutVariables.dashedSeparatorColor.cgColor
 
-        // Add seperator layers as sublayers
-        self.seperatorLayers.append(dottedLineLayer)
-        self.seperatorLayers.append(lineLayer)
+        // Add separator layers as sublayers
+        self.separatorLayers.append(dottedLineLayer)
+        self.separatorLayers.append(lineLayer)
         self.layer.addSublayer(lineLayer)
         self.layer.addSublayer(dottedLineLayer)
     }

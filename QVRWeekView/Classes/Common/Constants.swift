@@ -52,12 +52,12 @@ struct LayoutDefaults {
     static let dayViewCellHeight = CGFloat(1400)
     // Test width of day view cells - WARNING: ONLY USED FOR FRAME CALCULATION
     static let dayViewCellWidth = CGFloat(200)
-    // Pattern of dashed seperators in the day view cells
-    static let mainSeperatorThickness = CGFloat(1)
-    // Pattern of dashed seperators in the day view cells
-    static let dashedSeperatorPattern: [NSNumber] = [3, 1]
-    // Pattern of dashed seperators in the day view cells
-    static let dashedSeperatorThickness = CGFloat(1)
+    // Pattern of dashed separators in the day view cells
+    static let mainSeparatorThickness = CGFloat(1)
+    // Pattern of dashed separators in the day view cells
+    static let dashedSeparatorPattern: [NSNumber] = [3, 1]
+    // Pattern of dashed separators in the day view cells
+    static let dashedSeparatorThickness = CGFloat(1)
     // Thickness of hour indicator in the day view cells
     static let hourIndicatorThickness = CGFloat(3)
 
