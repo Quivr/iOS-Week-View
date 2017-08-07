@@ -128,7 +128,7 @@ class DayViewCell: UICollectionViewCell {
         if sender.state == .began {
 
             let yTouch = sender.location(ofTouch: 0, in: self).y
-            let time = Double((yTouch/self.frame.height)*24)
+            let time = Double((yTouch/self.frame.height)*24).roundToNearestQuarter()
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
