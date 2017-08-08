@@ -233,10 +233,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INTERNAL FUNCTIONS -
 
-
     func goToAndShow(dayDate: DayDate) {
         yearActive = dayDate.year
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.day)*LayoutVariables.totalDayViewCellWidth,
+        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
                                                    y: 0),
                                            animated: false)
         currentPeriod = Period(ofDate: dayDate)

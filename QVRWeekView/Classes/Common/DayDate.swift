@@ -44,6 +44,10 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         return DateFormatter().monthSymbols[month-1].getFirstNCharacters(n: 3)
     }
 
+    lazy var dayInYear: Int = {
+        return self.dateObj.getDayOfYear()
+    }()
+
     private lazy var dateComponents: DateComponents = {
         var dateComps: DateComponents = DateComponents()
         dateComps.day = self.day
