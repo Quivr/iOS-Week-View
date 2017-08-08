@@ -77,7 +77,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                                                             width: self.bounds.width,
                                                             height: LayoutVariables.totalContentHeight),
                                               collectionViewLayout: DayCollectionViewFlowLayout())
-        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(DayDate.today.day), y: 0)
+        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(DayDate.today.dayInYear), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
@@ -310,7 +310,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func getDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
 
-        var dayCount = (indexPath.row - DayDate.today.day)
+        var dayCount = (indexPath.row - DayDate.today.dayInYear)
         let yearOffset = yearActive - yearToday
         if yearOffset != 0 {
             let delta = (yearOffset / abs(yearOffset))
@@ -434,8 +434,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
 
             let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
-                let diff1 = abs(smaller.day - self.activeDay.day)
-                let diff2 = abs(larger.day - self.activeDay.day)
+                let diff1 = abs(smaller.dayInYear - self.activeDay.dayInYear)
+                let diff2 = abs(larger.dayInYear - self.activeDay.dayInYear)
                 return diff1 == diff2 ? smaller > larger : diff1 < diff2
             }
 
