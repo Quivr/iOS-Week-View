@@ -85,6 +85,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         // Set content size for vertical scrolling
         self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
+        self.contentOffset = CGPoint(x: 0, y: LayoutVariables.dayViewCellHeight*DateSupport.getPercentTodayPassed())
 
         // Add tap gesture recognizer
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
@@ -233,11 +234,17 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INTERNAL FUNCTIONS -
 
-    func goToAndShow(dayDate: DayDate) {
+    func goToAndShow(dayDate: DayDate, showNow: Bool=false) {
         yearActive = dayDate.year
         dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
                                                    y: 0),
-                                           animated: false)
+                                           animated: true)
+        if showNow {
+            let yOffset = LayoutVariables.totalContentHeight*DateSupport.getPercentTodayPassed()-(LayoutVariables.activeFrameHeight/2)
+            let minOffsetY = LayoutVariables.minOffsetY
+            let maxOffsetY = LayoutVariables.maxOffsetY
+            self.setContentOffset(CGPoint(x:0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
+        }
         currentPeriod = Period(ofDate: dayDate)
         activeDay = dayDate
         requestEvents()

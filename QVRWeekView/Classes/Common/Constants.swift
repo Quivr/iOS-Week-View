@@ -21,7 +21,7 @@ struct LayoutDefaults {
     static let dayLabelMinimumScale = CGFloat(0.4)
 
     // Default font of hour labels
-    static let hourLabelFont = UIFont.systemFont(ofSize: 12)
+    static let hourLabelFont = UIFont.boldSystemFont(ofSize: 12)
     // Default text color of hour labels
     static let hourLabelTextColor = UIColor.black
     // Default minimum event label scaling

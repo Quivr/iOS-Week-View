@@ -53,6 +53,17 @@ struct Util {
         return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.defaultTopBarHeight)
     }
 
+    static func generateDayLabelText(forLabel label: UILabel, andDate dayDate: DayDate) -> String {
+        let possibleText = dayDate.simpleStringYear as NSString
+        let size = possibleText.size(attributes: [NSFontAttributeName: label.font])
+        if FontVariables.dayLabelShowYear && size.width <= label.frame.width {
+            return dayDate.simpleStringYear
+        }
+        else {
+            return  dayDate.simpleString
+        }
+    }
+
     static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
         let row = CGFloat(indexPath.row)
         let width = LayoutVariables.dayViewCellWidth/CGFloat(max)

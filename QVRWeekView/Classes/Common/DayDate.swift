@@ -26,23 +26,27 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         return Calendar.current.date(from: dateComps)!
     }()
 
-    var hashValue: Int {
-        return "\(day)-\(month)-\(year)-\(era)".hashValue
-    }
+    lazy var hashValue: Int = {
+        return "\(self.day)-\(self.month)-\(self.year)-\(self.era)".hashValue
+    }()
 
-    var simpleString: String {
-        return "\(dayOfWeek) \(day) \(monthStr)"
-    }
+    lazy var simpleString: String = {
+        return "\(self.dayOfWeek) \(self.day) \(self.monthStr)"
+    }()
 
-    var dayOfWeek: String {
+    lazy var simpleStringYear: String = {
+        return "\(self.dayOfWeek) \(self.day) \(self.monthStr) \(self.year)"
+    }()
+
+    lazy var dayOfWeek: String = {
         let df = DateFormatter()
         df.dateFormat = "EEEE"
-        return df.string(from: dateObj).capitalized.getFirstNCharacters(n: 3)
-    }
+        return df.string(from: self.dateObj).capitalized.getFirstNCharacters(n: 3)
+    }()
 
-    var monthStr: String {
-        return DateFormatter().monthSymbols[month-1].getFirstNCharacters(n: 3)
-    }
+    lazy var monthStr: String = {
+        return DateFormatter().monthSymbols[self.month-1].getFirstNCharacters(n: 3)
+    }()
 
     lazy var dayInYear: Int = {
         return self.dateObj.getDayOfYear()

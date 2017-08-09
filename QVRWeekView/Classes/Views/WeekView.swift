@@ -124,7 +124,7 @@ open class WeekView: UIView {
      Shows the day view cell corresponding to today.
      */
     public func showToday() {
-        dayScrollView.goToAndShow(dayDate: DayDate(date: Date()))
+        dayScrollView.goToAndShow(dayDate: DayDate(date: Date()), showNow: true)
     }
 
     /**
@@ -165,7 +165,7 @@ open class WeekView: UIView {
             label = Util.makeDayLabel(withIndexPath: indexPath)
         }
 
-        label.text = date.simpleString
+        label.text = Util.generateDayLabelText(forLabel: label, andDate: date)
         visibleDayLabels[date] = label
         self.topBarView.addSubview(label)
     }
@@ -182,6 +182,13 @@ open class WeekView: UIView {
 
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
         let extraHeight = LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
+
+        if self.topBarHeight < extraHeight {
+            self.extraTopBarHeight = extraHeight
+            UIView.animate(withDuration: 0.25, animations: {
+                self.layoutIfNeeded()
+            })
+        }
 
         if visibleAllDayEvents[dayDate] != nil {
             for (_, layer) in visibleAllDayEvents[dayDate]! {
@@ -202,13 +209,6 @@ open class WeekView: UIView {
             i += 1
         }
         self.visibleAllDayEvents[dayDate] = layers
-
-        if self.topBarHeight < extraHeight {
-            self.extraTopBarHeight = extraHeight
-            UIView.animate(withDuration: 0.25, animations: {
-                self.layoutIfNeeded()
-            })
-        }
     }
 
     func discardAllDayEvents(forDate dayDate: DayDate) {
@@ -244,16 +244,23 @@ open class WeekView: UIView {
         for cell in dayScrollView.dayCollectionView.visibleCells {
             let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
             if let dayViewCell = cell as? DayViewCell {
-                let dateId = dayViewCell.date
+                let dayDate = dayViewCell.date
 
-                if let label = visibleDayLabels[dateId] {
+                if let label = visibleDayLabels[dayDate] {
                     label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+                    label.text = Util.generateDayLabelText(forLabel: label, andDate: dayDate)
                     label.font = FontVariables.dayLabelFont
                     label.textColor = FontVariables.dayLabelTextColor
                 }
             }
         }
+
         trashExcessDayLabels()
+
+        for label in discardedDayLabels {
+            label.font = FontVariables.dayLabelFont
+            label.textColor = FontVariables.dayLabelTextColor
+        }
     }
 
     func updateTopAndSideBarPositions() {
@@ -296,8 +303,7 @@ open class WeekView: UIView {
     }
 
     private func trashExcessDayLabels() {
-
-        let maxAllowed = Int(LayoutVariables.visibleDays)+1
+        let maxAllowed = Int(LayoutVariables.visibleDays)
 
         if discardedDayLabels.count > maxAllowed {
             let overflow = discardedDayLabels.count - maxAllowed
@@ -336,8 +342,9 @@ public extension WeekView {
             return LayoutVariables.defaultTopBarHeight
         }
         set(height) {
-            LayoutVariables.defaultTopBarHeight = height
             self.topBarHeight = self.extraTopBarHeight + height
+            LayoutVariables.defaultTopBarHeight = height
+            updateVisibleLabelsAndMainConstraints()
         }
     }
 
@@ -428,6 +435,19 @@ public extension WeekView {
         }
         set(scale) {
             FontVariables.dayLabelMinimumScale = scale
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     The config that the day labels will show.
+     */
+    public var dayLabelShowYear: Bool {
+        get {
+            return FontVariables.dayLabelShowYear
+        }
+        set(bool) {
+            FontVariables.dayLabelShowYear = bool
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -814,6 +834,8 @@ public struct FontVariables {
     fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
     // Minimum scale for all day labels
     fileprivate(set) static var dayLabelMinimumScale = LayoutDefaults.dayLabelMinimumScale
+    // Mode of the day labels
+    fileprivate(set) static var dayLabelShowYear = true
 
     // Font for all hour labels
     fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont
