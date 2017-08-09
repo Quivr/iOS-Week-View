@@ -80,8 +80,9 @@ open class WeekView: UIView {
         self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView(_:))))
         // Create tap recognizer for top bar
         self.topBarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapTopBar(_:))))
-        // Set clipping to bounds (prevents side bar and other sub view protrusion)
+        // Set clipping to bounds (prevents side bar, top bar and other sub view protrusion)
         self.clipsToBounds = true
+        self.topBarView.clipsToBounds = true
     }
 
     private func setView() {
@@ -180,11 +181,7 @@ open class WeekView: UIView {
     }
 
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
-        let newTopBarHeight = LayoutVariables.dayLabelHeight+LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
-
-        if self.topBarHeight < newTopBarHeight {
-            self.topBarHeight = newTopBarHeight
-        }
+        let extraHeight = LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
 
         if visibleAllDayEvents[dayDate] != nil {
             for (_, layer) in visibleAllDayEvents[dayDate]! {
@@ -197,13 +194,21 @@ open class WeekView: UIView {
         var i = 0
         var layers: [EventData: CAShapeLayer] = [:]
         for event in events {
-            let newFrame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
-            let layer = Util.makeEventLayer(withData: event, andFrame: newFrame)
+            let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
+            let layer = Util.makeEventLayer(withData: event, andFrame: frame)
             self.topBarView.layer.addSublayer(layer)
             layers[event] = layer
+
             i += 1
         }
         self.visibleAllDayEvents[dayDate] = layers
+
+        if self.topBarHeight < extraHeight {
+            self.extraTopBarHeight = extraHeight
+            UIView.animate(withDuration: 0.25, animations: {
+                self.layoutIfNeeded()
+            })
+        }
     }
 
     func discardAllDayEvents(forDate dayDate: DayDate) {
@@ -214,9 +219,11 @@ open class WeekView: UIView {
             visibleAllDayEvents[dayDate] = nil
         }
 
-        let newTopBarHeight = LayoutVariables.dayLabelHeight
-        if visibleAllDayEvents.isEmpty && self.topBarHeight > newTopBarHeight {
-            self.topBarHeight = newTopBarHeight
+        if visibleAllDayEvents.isEmpty && self.topBarHeight > LayoutVariables.defaultTopBarHeight {
+            self.extraTopBarHeight = 0
+            UIView.animate(withDuration: 0.25, animations: {
+                self.layoutIfNeeded()
+            })
         }
     }
 
@@ -302,7 +309,7 @@ open class WeekView: UIView {
 
 }
 
-// MARK: - CUSTOMIZATION EXTENSION -
+// MARK: - LAYOUT PROPERTIES EXTENSION -
 
 public extension WeekView {
 
@@ -322,9 +329,34 @@ public extension WeekView {
     }
 
     /**
+     Default height of the top bar
+     */
+    public var defaultTopBarHeight: CGFloat {
+        get {
+            return LayoutVariables.defaultTopBarHeight
+        }
+        set(height) {
+            LayoutVariables.defaultTopBarHeight = height
+            self.topBarHeight = self.extraTopBarHeight + height
+        }
+    }
+
+    /**
+     Extra height added on to default top bar height.
+     */
+    internal var extraTopBarHeight: CGFloat {
+        get {
+            return self.topBarHeight-self.defaultTopBarHeight
+        }
+        set (extraHeight) {
+            self.topBarHeight = LayoutVariables.defaultTopBarHeight + extraHeight
+        }
+    }
+
+    /**
      Height of top bar.
      */
-    public var topBarHeight: CGFloat {
+    private(set) var topBarHeight: CGFloat {
         get {
             return self.topBarView.frame.height
         }
@@ -401,19 +433,6 @@ public extension WeekView {
     }
 
     /**
-     Height of the day labels.
-     */
-    public var dayLabelHeight: CGFloat {
-        get {
-            return LayoutVariables.dayLabelHeight
-        }
-        set(height) {
-            LayoutVariables.dayLabelHeight = height
-            updateVisibleLabelsAndMainConstraints()
-        }
-    }
-
-    /**
      Font for all hour labels contained in the side bar.
      */
     public var hourLabelFont: UIFont {
@@ -449,6 +468,30 @@ public extension WeekView {
         set(scale) {
             FontVariables.hourLabelMinimumScale = scale
             updateHourSideBarView()
+        }
+    }
+
+    /**
+     Height of all day labels.
+     */
+    public var allDayEventHeight: CGFloat {
+        get {
+            return LayoutVariables.allDayEventHeight
+        }
+        set(height) {
+            self.dayScrollView.setAllDayEventHeight(to: height)
+        }
+    }
+
+    /**
+     Height of all day labels.
+     */
+    public var allDayEventVerticalSpacing: CGFloat {
+        get {
+            return LayoutVariables.allDayEventVerticalSpacing
+        }
+        set(height) {
+            dayScrollView.setAllDayEventVerticalSpacing(to: height)
         }
     }
 
@@ -781,6 +824,8 @@ public struct FontVariables {
 }
 
 extension LayoutVariables {
-    // Height of day labels
-    fileprivate(set) static var dayLabelHeight = LayoutDefaults.topBarHeight
+
+    // Default height of the top bar
+    fileprivate(set) static var defaultTopBarHeight = LayoutDefaults.defaultTopBarHeight
+
 }

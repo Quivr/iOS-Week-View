@@ -50,14 +50,14 @@ struct Util {
 
     static func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.dayLabelHeight)
+        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.defaultTopBarHeight)
     }
 
     static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
         let row = CGFloat(indexPath.row)
         let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
         return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
-                      y: LayoutVariables.dayLabelHeight+LayoutVariables.allDayEventVerticalSpacing,
+                      y: LayoutVariables.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
                       width: width,
                       height: LayoutVariables.allDayEventHeight)
     }

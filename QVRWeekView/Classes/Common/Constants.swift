@@ -37,7 +37,7 @@ struct LayoutDefaults {
     // MARK: - SIZES, BUFFERS AND LAYOUT -
 
     // Sizes of weekview elements
-    static let topBarHeight = CGFloat(35)
+    static let defaultTopBarHeight = CGFloat(35)
     static let sideBarWidth = CGFloat(25)
 
     // Horizontal spacing of day view cells

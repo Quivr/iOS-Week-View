@@ -767,6 +767,21 @@ extension DayScrollView {
     func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
         LayoutVariables.velocityOffsetMultiplier = multiplier
     }
+
+    /**
+     Sets the sensitivity of horizontal scrolling.
+     */
+    func setAllDayEventHeight(to height: CGFloat) {
+        LayoutVariables.allDayEventHeight = height
+    }
+
+    /**
+     Sets the sensitivity of horizontal scrolling.
+     */
+    func setAllDayEventVerticalSpacing(to height: CGFloat) {
+        LayoutVariables.allDayEventVerticalSpacing = height
+    }
+
 }
 
 // MARK: - DAYSCROLLVIEW DELEGATE -
@@ -945,6 +960,10 @@ struct LayoutVariables {
     }
     // Velocity multiplier for pagin
     fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
+    // Height of an all day event
+    fileprivate(set) static var allDayEventHeight = LayoutDefaults.allDayEventHeight
+    // Vertical spacing of an all day event
+    fileprivate(set) static var allDayEventVerticalSpacing = LayoutDefaults.allDayVerticalSpacing
 
     // MARK: - FONT & COLOUR VARIABLES -
 
@@ -973,11 +992,6 @@ struct LayoutVariables {
     fileprivate(set) static var dashedSeparatorThickness = LayoutDefaults.dashedSeparatorThickness
     // Pattern for day view dashed Separators
     fileprivate(set) static var dashedSeparatorPattern = LayoutDefaults.dashedSeparatorPattern
-
-    // Height of an all day event
-    fileprivate(set) static var allDayEventHeight = LayoutDefaults.allDayEventHeight
-    // Vertical spacing of an all day event
-    fileprivate(set) static var allDayEventVerticalSpacing = LayoutDefaults.allDayVerticalSpacing
 
     // MARK: - UPDATE FUNCTIONS -
 
