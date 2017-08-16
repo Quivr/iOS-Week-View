@@ -15,9 +15,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
     // All eventData objects
-    private(set) var allEventsData: [DayDate: [Int: EventData]] = [:]
+    private(set) var allEventsData: [DayDate: [String: EventData]] = [:]
     // All event framesAll
-    private(set) var allEventFrames: [DayDate: [Int: CGRect]] = [:]
+    private(set) var allEventFrames: [DayDate: [String: CGRect]] = [:]
     // All fullday events
     private var allDayEvents: [DayDate: [EventData]] = [:]
     // All active dayViewCells
@@ -218,7 +218,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     // solution == nil => do not render events. solution.isEmpty => render empty
-    func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int : CGRect]?) {
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String : CGRect]?) {
         let date = calculator.date
         allEventFrames[date] = solution
         frameCalculators[date] = nil
@@ -350,7 +350,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         DispatchQueue.global(qos: .userInitiated).async {
 
             // New eventsdata
-            var newEventsData: [DayDate: [Int: EventData]] = [:]
+            var newEventsData: [DayDate: [String: EventData]] = [:]
             // New all day events
             var newAllDayEvents: [DayDate: [EventData]] = [:]
             // Stores the days which will be changed

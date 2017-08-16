@@ -11,8 +11,8 @@ class DayViewCell: UICollectionViewCell {
 
     // Date and event variables
     private(set) var date: DayDate = DayDate()
-    private var eventsData: [Int: EventData] = [:]
-    private var eventFrames: [Int: CGRect] = [:]
+    private var eventsData: [String: EventData] = [:]
+    private var eventFrames: [String: CGRect] = [:]
 
     // Overlay variables
     private var bottomDistancePercent = CGFloat(0)
@@ -107,7 +107,7 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
     }
 
-    func setEventsData(_ eventsData: [Int: EventData], andFrames eventFrames: [Int: CGRect]) {
+    func setEventsData(_ eventsData: [String: EventData], andFrames eventFrames: [String: CGRect]) {
         self.eventsData = eventsData
         self.eventFrames = eventFrames
         // Resize event frames from standard size to current size

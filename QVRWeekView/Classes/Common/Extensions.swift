@@ -138,7 +138,7 @@ extension Double {
     }
 }
 
-extension Dictionary where Key == DayDate, Value == [Int: EventData] {
+extension Dictionary where Key == DayDate, Value == [String: EventData] {
     mutating func addEvent(_ event: EventData, onDay dayDate: DayDate) {
         if self[dayDate] == nil {
             self[dayDate] = [event.id: event]

@@ -818,7 +818,7 @@ public extension WeekView {
 @objc public protocol WeekViewDelegate: class {
     func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
-    func didTapEvent(in weekView: WeekView, eventId: Int)
+    func didTapEvent(in weekView: WeekView, eventId: String)
 
     func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date)
 

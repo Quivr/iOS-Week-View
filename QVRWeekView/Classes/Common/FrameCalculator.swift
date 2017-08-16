@@ -30,7 +30,7 @@ class FrameCalculator {
     }
 
     // Calculate and return the solution
-    func calculate(withData eventsData: [Int: EventData]?) {
+    func calculate(withData eventsData: [String: EventData]?) {
 
         guard eventsData != nil else {
             self.delegate?.passSolution(fromCalculator: self, solution: [:])
@@ -86,7 +86,7 @@ class FrameCalculator {
                 }
             }
 
-            var frames: [Int: CGRect]?
+            var frames: [String: CGRect]?
             if areCollisions {
                 // Register possible collisions as constraints
                 for (frame1, frameList) in possibleFrameCollisions {
@@ -127,7 +127,7 @@ class FrameCalculator {
     }
 
     // Generate end points used during sweep phase
-    private func calculateEndPoints(`for` eventsData: [Int: EventData]) -> [EndPoint] {
+    private func calculateEndPoints(`for` eventsData: [String: EventData]) -> [EndPoint] {
         var endPoints: [EndPoint] = []
         for (id, data) in eventsData {
             let frame = getEventFrame(withData: data)
@@ -190,7 +190,7 @@ class FrameCalculator {
     // Struct used for endpoints
     private struct EndPoint: CustomStringConvertible {
         var y: CGFloat
-        var id: Int
+        var id: String
         var frame: EventFrame
         var isStart: Bool
         var isEnd: Bool {
@@ -206,7 +206,7 @@ class FrameCalculator {
 
 protocol FrameCalculatorDelegate: class {
 
-    func passSolution(fromCalculator calculator: FrameCalculator, solution: [Int: CGRect]?)
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?)
 
 }
 
@@ -229,11 +229,11 @@ fileprivate class ConstraintSolver {
         self.startTime = Date.timeIntervalSinceReferenceDate
     }
 
-    func solveWithBacktracking() -> [Int: CGRect]? {
+    func solveWithBacktracking() -> [String: CGRect]? {
         return backtrack()
     }
 
-    private func backtrack() -> [Int: CGRect]? {
+    private func backtrack() -> [String: CGRect]? {
         if !backtrack(depth: 0) && !cancelled {
             print("BACKTRACK FAILED ON VARIABLES: \(variables)")
         }
@@ -241,7 +241,7 @@ fileprivate class ConstraintSolver {
             return nil
         }
         else {
-            var solution: [Int: CGRect] = [:]
+            var solution: [String: CGRect] = [:]
             for vari in variables {
                 solution[vari.id] = vari.cgRect
             }
@@ -315,7 +315,7 @@ fileprivate class ConstraintSolver {
 
 fileprivate class EventFrame: CustomStringConvertible, Hashable {
 
-    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: Int) {
+    init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: String) {
         self.x = x
         self.y = y
         self.width = width
@@ -323,7 +323,7 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
         self.id = id
     }
 
-    let id: Int
+    let id: String
     var x: CGFloat
     var y: CGFloat
     var width: CGFloat
@@ -346,7 +346,7 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
     }
 
     var hashValue: Int {
-        return id
+        return id.hashValue
     }
 
     static func == (lhs: EventFrame, rhs: EventFrame) -> Bool {

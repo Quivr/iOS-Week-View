@@ -10,7 +10,7 @@ import Foundation
 
 public struct EventData: CustomStringConvertible, Equatable, Hashable {
 
-    public let id: Int
+    public let id: String
     public let title: String
     public let startDate: Date
     public let endDate: Date
@@ -18,14 +18,14 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
     public let allDay: Bool
 
     public var hashValue: Int {
-        return id
+        return id.hashValue
     }
 
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
 
-    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+    public init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
         self.id = id
         self.title = title
         if startDate.compare(endDate).rawValue >= 0 {
@@ -35,6 +35,14 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
         self.endDate = endDate
         self.color = color
         self.allDay = allDay
+    }
+
+    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+        self.init(id: String(id), title: title, startDate: startDate, endDate: endDate, color: color, allDay: allDay)
+    }
+
+    public init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
     public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {

@@ -88,11 +88,11 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     }
 
-    func didTapEvent(in weekView: WeekView, eventId: Int) {
+    func didTapEvent(in weekView: WeekView, eventId: String) {
         let alert = UIAlertController(title: "Tapped event", message: "\(eventId)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (_) -> Void in
-            self.allEvents[eventId] = nil
+            self.allEvents[Int(eventId)!] = nil
             self.eventsSortedByDay.removeAll()
             for event in Array(self.allEvents.values) {
                 let date = event.startDate.getDayValue()
@@ -116,7 +116,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
         for (date, events) in eventsSortedByDay where !dates.contains(date) {
             for event in events {
-                allEvents[event.id] = nil
+                allEvents[Int(event.id)!] = nil
             }
             eventsSortedByDay[date] = nil
         }
