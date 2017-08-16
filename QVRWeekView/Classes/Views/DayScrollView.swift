@@ -455,12 +455,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 for cell in self.dayCollectionView.visibleCells {
                     if let dayViewCell = cell as? DayViewCell,
                        let weekView = self.superview?.superview as? WeekView,
-                       let events = self.allDayEvents[dayViewCell.date] {
-                        if events.isEmpty {
+                       let allDayEvents = self.allDayEvents[dayViewCell.date] {
+                        if allDayEvents.isEmpty {
                             weekView.discardAllDayEvents(forDate: dayViewCell.date)
                         }
                         else {
-                            weekView.addAllDayEvents(events, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
+                            weekView.addAllDayEvents(allDayEvents, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
                         }
                     }
                 }
