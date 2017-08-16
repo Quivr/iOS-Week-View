@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct EventData: CustomStringConvertible, Equatable, Hashable {
+public class EventData: CustomStringConvertible, Equatable, Hashable {
 
     public let id: String
     public let title: String
@@ -16,6 +16,7 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
     public let endDate: Date
     public let color: UIColor
     public let allDay: Bool
+    private(set) var gradientLayer: CAGradientLayer?
 
     public var hashValue: Int {
         return id.hashValue
@@ -37,24 +38,36 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
         self.allDay = allDay
     }
 
-    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
         self.init(id: String(id), title: title, startDate: startDate, endDate: endDate, color: color, allDay: allDay)
     }
 
-    public init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor) {
+    public convenience init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
-    public init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
+    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
-    public init() {
+    public convenience init() {
         self.init(id: -1, title: "null", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
     }
 
     public static func == (lhs: EventData, rhs: EventData) -> Bool {
         return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
+    }
+
+    public func configureGradient(_ endColor: UIColor) {
+        let gradient = CAGradientLayer()
+        gradient.colors = [self.color.cgColor, endColor.cgColor]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 1)
+        self.gradientLayer = gradient
+    }
+
+    public func configureGradient(_ gradient: CAGradientLayer) {
+        self.gradientLayer = gradient
     }
 
     func split(across dateRange: [Date]) -> [Date:EventData] {

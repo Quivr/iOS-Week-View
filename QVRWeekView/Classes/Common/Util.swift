@@ -13,7 +13,14 @@ struct Util {
 
         let eventRectLayer = CAShapeLayer()
         eventRectLayer.path = CGPath(rect: frame, transform: nil)
-        eventRectLayer.fillColor = data.color.cgColor
+        if let gradient = data.gradientLayer {
+            gradient.frame = frame
+            eventRectLayer.fillColor = UIColor.clear.cgColor
+            eventRectLayer.addSublayer(gradient)
+        }
+        else {
+            eventRectLayer.fillColor = data.color.cgColor
+        }
 
         let eventTextLayer = CATextLayer()
         eventTextLayer.frame = frame

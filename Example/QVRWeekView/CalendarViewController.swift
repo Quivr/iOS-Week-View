@@ -37,6 +37,18 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         let alert = UIAlertController(title: "Long pressed \(date.description(with: Locale.current))",
                                       message: nil,
                                       preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Short Gradient", style: .default, handler: { _ in
+            let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+            let newEvent = EventData(id: self.id,
+                                     title: "Test Event \(self.id)",
+                                     startDate: date,
+                                     endDate: date.addingTimeInterval(60*60*1),
+                                     color: color)
+            newEvent.configureGradient(UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5))
+            self.allEvents[self.id] = newEvent
+            self.id += 1
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
         alert.addAction(UIAlertAction(title: "Short", style: .default, handler: { _ in
             let color = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
             let newEvent = EventData(id: self.id,
