@@ -227,6 +227,10 @@ open class WeekView: UIView {
         }
     }
 
+    func hasAllDayEvents(forDate dayDate: DayDate) -> Bool{
+        return (visibleAllDayEvents[dayDate] != nil)
+    }
+
     func tapTopBar(_ sender: UITapGestureRecognizer) {
         let touchPoint = sender.location(ofTouch: 0, in: self.topBarView)
         for (_, eventLayers) in visibleAllDayEvents {

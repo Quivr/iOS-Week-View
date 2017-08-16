@@ -95,6 +95,10 @@ public extension Date {
         return comps.hour == 0 && comps.minute == 0 && comps.second == 0
     }
 
+    func isMidnight(afterDate date: Date) -> Bool {
+        return self.isMidnight() && self.getNextDay().isSameDayAs(date)
+    }
+
     func isSameDayAs(_ day: Date) -> Bool {
         let todayComponents = day.getDayComponents()
         let selfComponents = self.getDayComponents()
@@ -102,9 +106,8 @@ public extension Date {
     }
 
     func getDayComponents() -> DateComponents {
-        let cal = Calendar.current
         let dayComponenets: Set<Calendar.Component> = [.day, .month, .year, .era]
-        return cal.dateComponents(dayComponenets, from: self)
+        return Calendar.current.dateComponents(dayComponenets, from: self)
     }
 
     func advanceBy(seconds sec: Int) -> Date {

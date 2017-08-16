@@ -356,11 +356,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             // Stores the days which will be changed
             var changedDayDates = Set<DayDate>()
 
-            guard self.eptSafeContinue else {
-                self.safe_call_overwriteAllEvents()
-                return
-            }
-
             // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
             // days have had any changes done to them to queue them up for processing.
             for eventData in eventsData {
@@ -368,49 +363,19 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                     self.safe_call_overwriteAllEvents()
                     return
                 }
-                let start = eventData.startDate
-                let end = eventData.endDate
-
-                if eventData.allDay {
-                    let dayDate = DayDate(date: start)
-                    newAllDayEvents.addEvent(eventData, onDay: dayDate)
-                }
-                else {
-                    if start.isSameDayAs(end) {
-                        let dayDate = DayDate(date: start)
+                let possibleSplitEvents = eventData.checkForSplitting()
+                for (dayDate, event) in possibleSplitEvents {
+                    if event.allDay {
+                        newAllDayEvents.addEvent(event, onDay: dayDate)
+                    }
+                    else {
                         if !changedDayDates.contains(dayDate) &&
-                            Util.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                            Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
                             changedDayDates.insert(dayDate)
                         }
-                        newEventsData.addEvent(eventData, onDay: dayDate)
-                    }
-                    else if !start.isSameDayAs(end) && end.isMidnight() {
-                        let dayDate = DayDate(date: start)
-                        let newData = eventData.remakeEventData(withStart: start, andEnd: end.addingTimeInterval(TimeInterval(exactly: -1)!))
-                        if !changedDayDates.contains(dayDate) &&
-                            Util.isEvent(eventData, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
-                            changedDayDates.insert(dayDate)
-                        }
-                        newEventsData.addEvent(newData, onDay: dayDate)
-                    }
-                    else if !end.isMidnight() {
-                        let allDays = DateSupport.getAllDates(between: start, and: end)
-                        let splitEvent = eventData.split(across: allDays)
-                        for (date, event) in splitEvent {
-                            let dayDate = DayDate(date: date)
-                            if !changedDayDates.contains(dayDate) &&
-                                Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
-                                changedDayDates.insert(dayDate)
-                            }
-                            newEventsData.addEvent(event, onDay: dayDate)
-                        }
+                        newEventsData.addEvent(event, onDay: dayDate)
                     }
                 }
-            }
-
-            guard self.eptSafeContinue else {
-                self.safe_call_overwriteAllEvents()
-                return
             }
 
             // Get sequence of active days
@@ -422,17 +387,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                     changedDayDates.insert(dayDate)
                     break
                 }
-            }
-
-            guard self.eptSafeContinue else {
-                self.safe_call_overwriteAllEvents()
-                return
-            }
-
-            // Iterate through all old all day events that have not been checked yet to look for inactive days
-            for (dayDate, _) in self.allDayEvents where activeDates.contains(dayDate) && newAllDayEvents[dayDate] == nil {
-                newAllDayEvents[dayDate] = []
-                break
             }
 
             guard self.eptSafeContinue else {
@@ -454,13 +408,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 self.allDayEvents = newAllDayEvents
                 for cell in self.dayCollectionView.visibleCells {
                     if let dayViewCell = cell as? DayViewCell,
-                       let weekView = self.superview?.superview as? WeekView,
-                       let allDayEvents = self.allDayEvents[dayViewCell.date] {
-                        if allDayEvents.isEmpty {
-                            weekView.discardAllDayEvents(forDate: dayViewCell.date)
+                       let weekView = self.superview?.superview as? WeekView {
+                        let dayDate = dayViewCell.date
+                        let allThisDayEvents = self.allDayEvents[dayDate]
+                        if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
+                            weekView.discardAllDayEvents(forDate: dayDate)
                         }
-                        else {
-                            weekView.addAllDayEvents(allDayEvents, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayViewCell.date)
+                        else if allThisDayEvents != nil {
+                            weekView.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
                         }
                     }
                 }

@@ -76,11 +76,42 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
                 splitEventData[end.getDayValue()] = remakeEventData(withStart: end.getStartOfDay(), andEnd: end)
             }
             else {
-                splitEventData[date.getDayValue()] = remakeEventData(withStart: date.getStartOfDay(), andEnd: date.getEndOfDay())
+                splitEventData[date.getDayValue()] = remakeEventDataAsAllDay(forDate: date)
             }
         }
 
         return splitEventData
+    }
+
+    func checkForSplitting () -> [DayDate:EventData] {
+        var splitEvents: [DayDate: EventData] = [:]
+        let startDayDate = DayDate(date: startDate)
+        if startDate.isSameDayAs(endDate) {
+            splitEvents[startDayDate] = self
+        }
+        else if !startDate.isSameDayAs(endDate) && endDate.isMidnight(afterDate: startDate) {
+            splitEvents[startDayDate] = self.remakeEventData(withStart: startDate, andEnd: endDate.addingTimeInterval(-1))
+        }
+        else if !endDate.isMidnight(afterDate: startDate) {
+            let dateRange = DateSupport.getAllDates(between: startDate, and: endDate)
+            for date in dateRange {
+                if self.allDay {
+                    splitEvents[DayDate(date: date)] = self.remakeEventDataAsAllDay(forDate: date)
+                }
+                else {
+                    if date.isSameDayAs(startDate) {
+                        splitEvents[DayDate(date: date)] = self.remakeEventData(withStart: startDate, andEnd: date.getEndOfDay())
+                    }
+                    else if date.isSameDayAs(endDate) {
+                        splitEvents[DayDate(date: date)] = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: endDate)
+                    }
+                    else {
+                        splitEvents[DayDate(date: date)] = self.remakeEventDataAsAllDay(forDate: date)
+                    }
+                }
+            }
+        }
+        return splitEvents
     }
 
     func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
@@ -89,5 +120,13 @@ public struct EventData: CustomStringConvertible, Equatable, Hashable {
         let title = self.title
 
         return EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+    }
+
+    func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
+        let id = self.id
+        let color = self.color
+        let title = self.title
+
+        return EventData(id: id, title: title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), color: color, allDay: true)
     }
 }
