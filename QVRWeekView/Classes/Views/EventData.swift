@@ -128,18 +128,10 @@ public class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
-        let id = self.id
-        let color = self.color
-        let title = self.title
-
-        return EventData(id: id, title: title, startDate: start, endDate: end, color: color)
+        return EventData(id: self.id, title: self.title, startDate: start, endDate: end, color: self.color, allDay: self.allDay)
     }
 
     func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
-        let id = self.id
-        let color = self.color
-        let title = self.title
-
-        return EventData(id: id, title: title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), color: color, allDay: true)
+        return EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), color: self.color, allDay: true)
     }
 }
