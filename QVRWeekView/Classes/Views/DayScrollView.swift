@@ -360,7 +360,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             // days have had any changes done to them to queue them up for processing.
             for eventData in eventsData {
                 guard self.eptSafeContinue else {
-                    self.safe_call_overwriteAllEvents()
+                    self.safeCallbackOverwriteAllEvents()
                     return
                 }
                 let possibleSplitEvents = eventData.checkForSplitting()
@@ -390,7 +390,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
 
             guard self.eptSafeContinue else {
-                self.safe_call_overwriteAllEvents()
+                self.safeCallbackOverwriteAllEvents()
                 return
             }
 
@@ -426,13 +426,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    private func safe_call_overwriteAllEvents() {
-        DispatchQueue.main.sync {
-            eptRunning = false
-            overwriteAllEvents(withData: eptTempData)
-        }
-    }
-
     func requestEvents() {
         if let weekView = self.superview?.superview as? WeekView {
             let startDate = currentPeriod.previousPeriod.startDate
@@ -445,6 +438,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     // MARK: - HELPER/PRIVATE FUNCTIONS -
+
+    private func safeCallbackOverwriteAllEvents() {
+        DispatchQueue.main.sync {
+            eptRunning = false
+            overwriteAllEvents(withData: eptTempData)
+        }
+    }
 
     fileprivate func updateLayout() {
 

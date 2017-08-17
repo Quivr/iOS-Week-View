@@ -180,7 +180,7 @@ open class WeekView: UIView {
             visibleDayLabels.removeValue(forKey: date)
             discardedDayLabels.append(label)
         }
-        trashExcessDayLabels()
+        trashExtraDiscardedDayLabels()
     }
 
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
@@ -307,18 +307,18 @@ open class WeekView: UIView {
                 }
             }
         }
-        trashExcessDayLabels()
-        updateDiscardedLabels()
+        updateDiscardedDayLabels()
     }
 
-    private func updateDiscardedLabels() {
+    private func updateDiscardedDayLabels() {
+        trashExtraDiscardedDayLabels()
         for label in discardedDayLabels {
             label.font = FontVariables.dayLabelCurrentFont
             label.textColor = FontVariables.dayLabelTextColor
         }
     }
 
-    private func trashExcessDayLabels() {
+    private func trashExtraDiscardedDayLabels() {
         let maxAllowed = Int(LayoutVariables.visibleDays)
 
         if discardedDayLabels.count > maxAllowed {

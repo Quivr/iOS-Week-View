@@ -2,20 +2,20 @@ import Foundation
 
 public class DateSupport {
 
-    public static let secondsInADay: Int = 60*60*24
+    // TODO: REPLACE WITH CUSTOMIZABLE HOUR FORMAT GENERATION IN HOUR SIDE BAR VIEW
     public static let hoursInDay: CGFloat = 24
 
+    // Returns number between 0.0 and 1.0 to indicate how much of today has passed.
     public static func getPercentTodayPassed() -> CGFloat {
         return Date().getPercentDayPassed()
     }
 
+    // Gets the date for 'days' number of days in the future (or past if days is negative)
     public static func getDate(forDaysInFuture days: Int) -> Date {
-
-        let cal = Calendar.current
-        let date = cal.date(byAdding: .day, value: days, to: Date())!
-        return date
+        return Date().date(withDayAdded: days)
     }
 
+    // Returns an array of dates between and including startDay and endDay.
     public static func getAllDates(between startDay: Date, and endDay: Date) -> [Date] {
         var cursorDay = startDay
         var allDays: [Date] = []
@@ -27,17 +27,14 @@ public class DateSupport {
         return allDays
     }
 
+    // Returns an array of DayDates between and including startDay and endDay.
     static func getAllDayDates(between startDay: DayDate, and endDay: DayDate) -> [DayDate] {
-        var cursorDay = startDay.dateObj
-        var allDays: [DayDate] = []
-        while !cursorDay.isSameDayAs(endDay.dateObj.getNextDay()) {
-            allDays.append(DayDate(date: cursorDay))
-            cursorDay = cursorDay.getNextDay()
-        }
-
-        return allDays
+        return getAllDates(between: startDay.dateObj, and: endDay.dateObj).map({ (item) -> DayDate in
+            return DayDate(date: item)
+        })
     }
 
+    // Gets the number of days in the year.
     public static func getDaysInYear(_ year: Int) -> Int {
 
         let cal = Calendar.current

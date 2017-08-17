@@ -8,14 +8,24 @@
 
 import Foundation
 
+/**
+ Class event data stores basic data needed by the rest of the code to calculate and draw events in the dayViewCells in the dayScrollView.
+ */
 public class EventData: CustomStringConvertible, Equatable, Hashable {
 
+    // Id of the event
     public let id: String
+    // Title of the event
     public let title: String
+    // Start date of the event
     public let startDate: Date
+    // End date of the event
     public let endDate: Date
+    // Color of the event
     public let color: UIColor
+    // Stores if event is an all day event
     public let allDay: Bool
+    // Stores an optional gradient layer which will be used to draw event.
     private(set) var gradientLayer: CAGradientLayer?
 
     public var hashValue: Int {
@@ -58,6 +68,7 @@ public class EventData: CustomStringConvertible, Equatable, Hashable {
         return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
     }
 
+    // Configures the gradient based on the provided color and given endColor.
     public func configureGradient(_ endColor: UIColor) {
         let gradient = CAGradientLayer()
         gradient.colors = [self.color.cgColor, endColor.cgColor]
@@ -66,36 +77,15 @@ public class EventData: CustomStringConvertible, Equatable, Hashable {
         self.gradientLayer = gradient
     }
 
+    // Configures the gradient based on provided gradient.
     public func configureGradient(_ gradient: CAGradientLayer) {
         self.gradientLayer = gradient
     }
 
-    func split(across dateRange: [Date]) -> [Date:EventData] {
-
-        let start = self.startDate
-        let end = self.endDate
-
-        guard dateRange.count > 1 && !start.isSameDayAs(end) else {
-            return [start.getDayValue(): self]
-        }
-
-        var splitEventData: [Date:EventData] = [:]
-
-        for date in dateRange {
-            if date.isSameDayAs(start) {
-                splitEventData[start.getDayValue()] = remakeEventData(withStart: start, andEnd: start.getEndOfDay())
-            }
-            else if date.isSameDayAs(end) {
-                splitEventData[end.getDayValue()] = remakeEventData(withStart: end.getStartOfDay(), andEnd: end)
-            }
-            else {
-                splitEventData[date.getDayValue()] = remakeEventDataAsAllDay(forDate: date)
-            }
-        }
-
-        return splitEventData
-    }
-
+    /**
+     In case this event spans multiple days this function will be called to split it into multiple events
+     which can be assigned to individual dayViewCells.
+     */
     func checkForSplitting () -> [DayDate:EventData] {
         var splitEvents: [DayDate: EventData] = [:]
         let startDayDate = DayDate(date: startDate)

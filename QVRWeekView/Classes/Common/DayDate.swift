@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+/**
+ Day date class is used as a reliable way to assign a day to things such as dayViewCells and dictionaries
+ storing event and frame data. DayDates are not influenced by timezones and thus the date is has been given will
+ remain. DayDates are also easy to compare, print as strings and are hashable.
+ */
 class DayDate: Hashable, Comparable, CustomStringConvertible {
 
     let day: Int

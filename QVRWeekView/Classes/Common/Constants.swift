@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+/**
+ LayoutDefaults struct provides default values for all layout variables.
+ */
 struct LayoutDefaults {
 
     // MARK: - FONTS, LABEL AND TEXT COLOUR VALUES -
@@ -79,22 +82,30 @@ struct LayoutDefaults {
 
     // MARK: - COLOURS -
 
+    // Color of the background (behind the day view cells)
     static let backgroundColor = UIColor(red: 202/255, green: 202/255, blue: 202/255, alpha: 1.0)
+    // Color of the top bar (containing day labels)
     static let topBarColor = UIColor(red: 220/255, green: 220/255, blue: 220/255, alpha: 1.0)
-
+    // Color of the hour indicator displayed over the today day view cell.
     static let hourIndicatorColor = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 1.0)
-
+    // Default color for a day view cell. These are days in the future (or today in the future) that are not weekends.
     static let defaultDayViewColor = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1.0)
+    // Color for day view cells that are in the future and weekends.
     static let weekendDayViewColor = UIColor(red: 234/255, green: 234/255, blue: 234/255, alpha: 1.0)
+    // Color for passed day view cells that are not weekends.
     static let passedDayViewColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
+    // Color for passed day view cells that are weekend.
     static let passedWeekendDayViewColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1.0)
 }
 
 struct NibNames {
+    // Nibname for fetching day view cell
     static let dayViewCell = "DayViewCell"
-    static let eventView = "EventView"
+    // Nib name for fetching hour side bar view
     static let hourSideBarView = "HourSideBarView"
+    // Nib name for fetching hour side bar view made by constraints
     static let constrainedHourSideBarView = "HourSideBarViewC"
+    // Nib name for fetching the main week view.
     static let weekView = "WeekView"
 }
 

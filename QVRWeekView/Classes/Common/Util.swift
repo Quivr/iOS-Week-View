@@ -121,6 +121,7 @@ struct Util {
 
 extension FontVariables {
 
+    // Day label text mode determines which format the day labels will be displayed in. 0 is the longest, 1 is smaller, 2 is smallest format.
     fileprivate(set) static var dayLabelTextMode = 0
 
 }

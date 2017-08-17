@@ -8,6 +8,10 @@
 
 import Foundation
 
+/**
+ Period class provides a convenient way to keep track of which periods are currently
+ being displayed in which periods will have to be loaded next.
+ */
 class Period: CustomStringConvertible {
 
     let startDate: DayDate
