@@ -47,12 +47,12 @@ class StartViewController: UIViewController {
             weekView.hourLabelFont = UIFont.italicSystemFont(ofSize: 5)
             weekView.hourLabelTextColor = UIColor.blue
 
-            weekView.eventLabelMinimumScale = 0.05
+            weekView.eventLabelMinimumFontSize = 3
             weekView.eventLabelTextColor = UIColor.green
             weekView.eventLabelFont = UIFont.italicSystemFont(ofSize: 25)
 
             weekView.dayLabelTextColor = UIColor.white
-            weekView.dayLabelFont = UIFont.italicSystemFont(ofSize: 20)
+            weekView.dayLabelDefaultFont = UIFont.italicSystemFont(ofSize: 20)
             weekView.dayLabelShowYear = false
 
             weekView.topBarColor = UIColor.green

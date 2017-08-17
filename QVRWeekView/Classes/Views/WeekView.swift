@@ -165,7 +165,10 @@ open class WeekView: UIView {
             label = Util.makeDayLabel(withIndexPath: indexPath)
         }
 
-        label.text = Util.generateDayLabelText(forLabel: label, andDate: date)
+        if let newFontSize = Util.assignTextAndResizeFont(forLabel: label, andDate: date) {
+            FontVariables.dayLabelCurrentFontSize = newFontSize
+            updateVisibleLabels()
+        }
         visibleDayLabels[date] = label
         self.topBarView.addSubview(label)
     }
@@ -227,7 +230,7 @@ open class WeekView: UIView {
         }
     }
 
-    func hasAllDayEvents(forDate dayDate: DayDate) -> Bool{
+    func hasAllDayEvents(forDate dayDate: DayDate) -> Bool {
         return (visibleAllDayEvents[dayDate] != nil)
     }
 
@@ -243,28 +246,9 @@ open class WeekView: UIView {
     }
 
     func updateVisibleLabelsAndMainConstraints() {
+        resetFontValues()
         updateTopAndSideBarConstraints()
-
-        for cell in dayScrollView.dayCollectionView.visibleCells {
-            let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
-            if let dayViewCell = cell as? DayViewCell {
-                let dayDate = dayViewCell.date
-
-                if let label = visibleDayLabels[dayDate] {
-                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
-                    label.text = Util.generateDayLabelText(forLabel: label, andDate: dayDate)
-                    label.font = FontVariables.dayLabelFont
-                    label.textColor = FontVariables.dayLabelTextColor
-                }
-            }
-        }
-
-        trashExcessDayLabels()
-
-        for label in discardedDayLabels {
-            label.font = FontVariables.dayLabelFont
-            label.textColor = FontVariables.dayLabelTextColor
-        }
+        updateVisibleLabels()
     }
 
     func updateTopAndSideBarPositions() {
@@ -306,6 +290,34 @@ open class WeekView: UIView {
         updateTopAndSideBarPositions()
     }
 
+    private func updateVisibleLabels() {
+        for cell in dayScrollView.dayCollectionView.visibleCells {
+            let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
+            if let dayViewCell = cell as? DayViewCell {
+                let dayDate = dayViewCell.date
+
+                if let label = visibleDayLabels[dayDate] {
+                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+                    label.font = FontVariables.dayLabelCurrentFont
+                    label.textColor = FontVariables.dayLabelTextColor
+                    if let newFontSize = Util.assignTextAndResizeFont(forLabel: label, andDate: dayDate) {
+                        FontVariables.dayLabelCurrentFontSize = newFontSize
+                        updateVisibleLabels()
+                    }
+                }
+            }
+        }
+        trashExcessDayLabels()
+        updateDiscardedLabels()
+    }
+
+    private func updateDiscardedLabels() {
+        for label in discardedDayLabels {
+            label.font = FontVariables.dayLabelCurrentFont
+            label.textColor = FontVariables.dayLabelTextColor
+        }
+    }
+
     private func trashExcessDayLabels() {
         let maxAllowed = Int(LayoutVariables.visibleDays)
 
@@ -315,6 +327,11 @@ open class WeekView: UIView {
                 discardedDayLabels.remove(at: i)
             }
         }
+    }
+
+    private func resetFontValues() {
+        FontVariables.dayLabelCurrentFontSize = FontVariables.dayLabelDefaultFont.pointSize
+        Util.resetDayLabelTextMode()
     }
 
 }
@@ -406,12 +423,12 @@ public extension WeekView {
     /**
      Font for all day labels contained in the top bar.
      */
-    public var dayLabelFont: UIFont {
+    public var dayLabelDefaultFont: UIFont {
         get {
-            return FontVariables.dayLabelFont
+            return FontVariables.dayLabelDefaultFont
         }
         set(font) {
-            FontVariables.dayLabelFont = font
+            FontVariables.dayLabelDefaultFont = font
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -430,15 +447,14 @@ public extension WeekView {
     }
 
     /**
-     Minimum percentage that day label text will be resized to if label is too small.
-     (CURRENTLY NOT IMPLEMENTED)
+     Minimum font size that day label text will be resized to if label is too small.
      */
-    public var dayLabelMinimumScale: CGFloat {
+    public var dayLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.dayLabelMinimumScale
+            return FontVariables.dayLabelMinimumFontSize
         }
         set(scale) {
-            FontVariables.dayLabelMinimumScale = scale
+            FontVariables.dayLabelMinimumFontSize = scale
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -485,12 +501,12 @@ public extension WeekView {
     /**
      Minimum percentage that hour label text will be resized to if label is too small.
      */
-    public var hourLabelMinimumScale: CGFloat {
+    public var hourLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.hourLabelMinimumScale
+            return FontVariables.hourLabelMinimumFontSize
         }
         set(scale) {
-            FontVariables.hourLabelMinimumScale = scale
+            FontVariables.hourLabelMinimumFontSize = scale
             updateHourSideBarView()
         }
     }
@@ -587,12 +603,12 @@ public extension WeekView {
     /**
      Minimum percentage that event label text will be resized to if label is too small.
      */
-    public var eventLabelMinimumScale: CGFloat {
+    public var eventLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.eventLabelMinimumScale
+            return FontVariables.eventLabelMinimumFontSize
         }
         set(scale) {
-            self.dayScrollView.setEventLabelMinimumScale(to: scale)
+            self.dayScrollView.setEventLabelMinimumFontSize(to: scale)
         }
     }
 
@@ -832,21 +848,52 @@ public extension WeekView {
 
 public struct FontVariables {
 
-    // Font for all day labels
-    fileprivate(set) static var dayLabelFont = LayoutDefaults.dayLabelFont
+    // Default font for all day labels
+    fileprivate(set) static var dayLabelDefaultFont = LayoutDefaults.dayLabelFont {
+        didSet {
+            updateDayLabelCurrentFont()
+        }
+    }
+    // Current font for all day labels
+    private(set) static var dayLabelCurrentFont = LayoutDefaults.dayLabelFont
     // Text color for all day labels
     fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
-    // Minimum scale for all day labels
-    fileprivate(set) static var dayLabelMinimumScale = LayoutDefaults.dayLabelMinimumScale
+    // Minimum font for all day labels
+    fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
+    // Minimum font for all day labels
+    fileprivate(set) static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
+        didSet {
+            updateDayLabelCurrentFont()
+        }
+    }
     // Mode of the day labels
     fileprivate(set) static var dayLabelShowYear = true
 
     // Font for all hour labels
-    fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont
+    fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont {
+        didSet {
+            updateHourMinScale()
+        }
+    }
     // Text color for all hour labels
     fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
+    // Minimum font size for all hour labels
+    fileprivate(set) static var hourLabelMinimumFontSize = LayoutDefaults.hourLabelMinimumFontSize {
+        didSet {
+            updateHourMinScale()
+        }
+    }
     // Minimum scale for all hour labels
-    fileprivate(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumScale
+    private(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumFontSize / LayoutDefaults.hourLabelFont.pointSize
+
+    private static func updateHourMinScale () {
+        hourLabelMinimumScale = hourLabelMinimumFontSize / hourLabelFont.pointSize
+    }
+
+    private static func updateDayLabelCurrentFont () {
+        dayLabelCurrentFont = dayLabelDefaultFont.withSize(dayLabelCurrentFontSize)
+    }
+
 }
 
 extension LayoutVariables {

@@ -41,7 +41,7 @@ struct Util {
         // Make as daylabel
         let labelFrame = Util.generateDayLabelFrame(forIndex: indexPath)
         let dayLabel = UILabel(frame: labelFrame)
-        dayLabel.font = FontVariables.dayLabelFont
+        dayLabel.font = FontVariables.dayLabelCurrentFont
         dayLabel.textColor = FontVariables.dayLabelTextColor
         dayLabel.textAlignment = .center
         return dayLabel
@@ -60,15 +60,53 @@ struct Util {
         return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.defaultTopBarHeight)
     }
 
-    static func generateDayLabelText(forLabel label: UILabel, andDate dayDate: DayDate) -> String {
-        let possibleText = dayDate.simpleStringYear as NSString
-        let size = possibleText.size(attributes: [NSFontAttributeName: label.font])
-        if FontVariables.dayLabelShowYear && size.width <= label.frame.width {
-            return dayDate.simpleStringYear
+    static func assignTextAndResizeFont(forLabel label: UILabel, andDate dayDate: DayDate) -> CGFloat? {
+        let currentFont = label.font!
+        let labelWidth = label.frame.width
+        var possibleText = dayDate.getString(forMode: FontVariables.dayLabelTextMode) as NSString
+        var textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
+
+        label.text = possibleText as String
+        if textSize.width > labelWidth && FontVariables.dayLabelTextMode < 2 {
+            possibleText = dayDate.defaultString as NSString
+            textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
+            if textSize.width <= labelWidth {
+                label.text = possibleText as String
+                FontVariables.dayLabelTextMode = 1
+            }
+            else {
+                let scale = (labelWidth / textSize.width)
+                var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
+
+                while possibleText.size(attributes: [NSFontAttributeName: newFont]).width > labelWidth && newFont.pointSize > FontVariables.dayLabelMinimumFontSize {
+                    newFont = newFont.withSize(newFont.pointSize-0.25)
+                }
+
+                if newFont.pointSize < FontVariables.dayLabelMinimumFontSize {
+                    newFont = newFont.withSize(FontVariables.dayLabelMinimumFontSize)
+                }
+
+                label.font = newFont
+                if possibleText.size(attributes: [NSFontAttributeName: newFont]).width > labelWidth {
+                    label.text = dayDate.smallString
+                    FontVariables.dayLabelTextMode = 2
+                }
+                else {
+                    label.text = possibleText as String
+                    FontVariables.dayLabelTextMode = 1
+                }
+
+                if newFont.pointSize < FontVariables.dayLabelCurrentFontSize {
+                    label.font = newFont
+                    return newFont.pointSize
+                }
+            }
         }
-        else {
-            return  dayDate.simpleString
-        }
+        return nil
+    }
+
+    static func resetDayLabelTextMode() {
+        FontVariables.dayLabelTextMode = 0
     }
 
     static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
@@ -79,4 +117,10 @@ struct Util {
                       width: width,
                       height: LayoutVariables.allDayEventHeight)
     }
+}
+
+extension FontVariables {
+
+    fileprivate(set) static var dayLabelTextMode = 0
+
 }

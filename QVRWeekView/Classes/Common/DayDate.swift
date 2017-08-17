@@ -15,6 +15,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     let month: Int
     let year: Int
     let era: Int
+    static let formats = ["E d MMM yyyy", "E d MMM", "d MMM"]
 
     public var description: String {
         return "\(day)-\(month)-\(year)-\(era)"
@@ -30,22 +31,16 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         return "\(self.day)-\(self.month)-\(self.year)-\(self.era)".hashValue
     }()
 
-    lazy var simpleString: String = {
-        return "\(self.dayOfWeek) \(self.day) \(self.monthStr)"
+    lazy var largeString: String = {
+        return self.getString(forMode: 0)
     }()
 
-    lazy var simpleStringYear: String = {
-        return "\(self.dayOfWeek) \(self.day) \(self.monthStr) \(self.year)"
+    lazy var defaultString: String = {
+        return self.getString(forMode: 1)
     }()
 
-    lazy var dayOfWeek: String = {
-        let df = DateFormatter()
-        df.dateFormat = "EEEE"
-        return df.string(from: self.dateObj).capitalized.getFirstNCharacters(n: 3)
-    }()
-
-    lazy var monthStr: String = {
-        return DateFormatter().monthSymbols[self.month-1].getFirstNCharacters(n: 3)
+    lazy var smallString: String = {
+        return self.getString(forMode: 2)
     }()
 
     lazy var dayInYear: Int = {
@@ -101,6 +96,12 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
                 } else { return lhs.month < rhs.month }
             } else { return lhs.year < rhs.year }
         } else { return lhs.era < rhs.era }
+    }
+
+    func getString(forMode mode: Int) -> String {
+        let df = DateFormatter()
+        df.dateFormat = DayDate.formats[mode]
+        return df.string(from: self.dateObj)
     }
 
     func hasPassed() -> Bool {

@@ -18,21 +18,21 @@ struct LayoutDefaults {
     // Default text color of day labels
     static let dayLabelTextColor = UIColor.black
     // Default minimum event label scaling
-    static let dayLabelMinimumScale = CGFloat(0.4)
+    static let dayLabelMinimumFontSize = CGFloat(8)
 
     // Default font of hour labels
     static let hourLabelFont = UIFont.boldSystemFont(ofSize: 12)
     // Default text color of hour labels
     static let hourLabelTextColor = UIColor.black
     // Default minimum event label scaling
-    static let hourLabelMinimumScale = CGFloat(0.5)
+    static let hourLabelMinimumFontSize = CGFloat(6)
 
     // Default font of events labels
     static let eventLabelFont = UIFont.boldSystemFont(ofSize: 12)
     // Default text color of event labels
     static let eventLabelTextColor = UIColor.white
     // Default minimum event label scaling
-    static let eventLabelMinimumScale = CGFloat(0.85)
+    static let eventLabelMinimumFontSize = CGFloat(8)
 
     // MARK: - SIZES, BUFFERS AND LAYOUT -
 

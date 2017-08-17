@@ -574,8 +574,8 @@ extension DayScrollView {
     /**
      Sets the minimum scale for day labels.
      */
-    func setEventLabelMinimumScale(to scale: CGFloat) {
-        FontVariables.eventLabelMinimumScale = scale
+    func setEventLabelMinimumFontSize(to size: CGFloat) {
+        FontVariables.eventLabelMinimumFontSize = size
         updateLayout()
     }
 
@@ -1014,5 +1014,5 @@ extension FontVariables {
     // Text color for all event labels
     fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
     // Minimum scaling for all event labels
-    fileprivate(set) static var eventLabelMinimumScale = LayoutDefaults.eventLabelMinimumScale
+    fileprivate(set) static var eventLabelMinimumFontSize = LayoutDefaults.eventLabelMinimumFontSize
 }
