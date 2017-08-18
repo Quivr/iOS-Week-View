@@ -7,24 +7,31 @@
 
 ## About
 
-[WIP] QVRWeekView is a framework that contains a week/day view that will soon also allow you to display, add and remove events.
+QVRWeekView is a work in progress framework that contains a week/day view that allows you to display, add and remove events.
 
-## Features
+<img src="http://i.imgur.com/z5sn14F.gif" width="200"> <img src="http://i.imgur.com/jQK7LXM.gif" width="200">
+
+### Features
 
 * Horizontal and vertical scrolling
 * Infinite horizontal scrolling
 * Zooming
 * Colour, size and font customization features
+* Day and hour label font resizing
+* Dynamic event adding and removing
+* Event tap, long press and event request callbacks
+* Number of visible days customizable
 
-## Example
+### Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
+Most useful example code can be found in `Example > QVRWeekView > CalendarViewController or StartViewController`
 
-## Requirements
+### Requirements
 
 This pod requires a minimum deployment target of iOS 9.0.
 
-## Installation
+### Installation
 
 QVRWeekView is available through [CocoaPods](http://cocoapods.org). To install it, simply add the following line to your Podfile:
 
@@ -34,11 +41,13 @@ pod "QVRWeekView"
 
 ## Usage
 
-Once the framework is installed, there are two ways you can incorporate the WeekView into your project:
+### Setup
+
+Once the framework is installed, there are two ways you can incorporate the `WeekView` into your project:
 
 #### 1. Programatically
 
-To add the WeekView programatically, simply import QVRWeekView into your code by adding:
+To add the WeekView programatically, simply import `QVRWeekView` into your code by adding:
 ```ruby
 import QVRWeekView
 ```
@@ -52,15 +61,87 @@ into either your viewDidLoad or viewWillAppear method.
 
 #### 2. Via the storyboard
 
-To add the WeekView via the storyboard, simply add a View onto your View Controller and resize it or add constraints. Then go to the identity inspector of your view and select the Class to be `WeekView` and the module to be `QVRWeekView` (See image).
+To add the `WeekView` via the storyboard, simply add a View onto your View Controller and resize it or add constraints. Then go to the identity inspector of your view and select the Class to be `WeekView` and the module to be `QVRWeekView` (See image).
 
 ![image](http://i.imgur.com/5ymQ8iE.png "Identity Inspector - WeekView")
 
 Then you should be all set!
 
-### Extra notes
+### Working with WeekView
 
-For now the only methods publicly available are some customization functions, and a few useful features such as "show today" and "update time". Remember, WeekView is a subclass of UIView and can be used as such.
+#### WeekView Delegate
+
+`WeekView` has a delegate called `WeekViewDelegate`. For now this delegate contains only three functions:
+
+| Function                            | Parameters                                                                             | Behaviour                                                             | Recommended use                                                     |
+| ------------------------------|---------------------------------------------------------------------|--------------------------------------------------------|-------------------------------------------------------------|
+| didLongPressDayView      | weekView:`WeekView`, date:`Date`                                       | Called when a dayView column is long pressed. The passed `date` contains which time point was pressed | Use this function to add individual user events           |
+| didTapEvent                      | weekView:`WeekView`, eventId:`Int`                                    | Called when an event is tapped. `eventId` of the tapped event is passed                           | Use this function to prompt event editing or removal |
+| loadNewEvents                 | weekView:`WeekView`, startDate:`Date` , endDate:`Date`  | Called when events are ready to be loaded. `startDate` and `endDate` indicate (inclusively) between which two dates events are required.  | Use this function to load in stored events                   |
+
+#### WeekView Public functions
+
+| Function                            | Parameters                           | Behaviour                                                             |
+| ------------------------------|---------------------------------|--------------------------------------------------------|
+| updateTimeDisplayed       | `\`                                         | Updates the time displayed by the hour indicator |
+| showDay                           | date:`Date`                           | Scrolls the week view to the day passed by `date`  |
+| showToday                        | `\`                                         | Scrolls the week view to today                              |
+| loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects.         |
+
+#### EventData<sup>1</sup>
+
+EventData is the main object used to communicate events between the WeekView and your code. EventData can be overriden.
+
+| Variable/Function            | Purpose                           |
+| ----------------------------|---------------------------------|
+| id:`String`                    | A unique identifier for this event |
+| title:`String`                 | A title that will be displayed for this event|
+| startDate:`Date`            |  The start date for this event |
+| endDate:`Date`              | The end date for this event |
+| color:`UIColor`              | The main color for this event  |
+| allDay:`Bool`                  | Indicates if this event is an all day event, all day events are displayed along the top bar |
+| configureGradient()       | Used to configure a gradient that will be used to render your event instead of just a solid color |
+
+### Customizing WeekView
+
+Below is a table of all customizable properties of the `WeekView`
+
+| Property
+|----------------------------------------|
+mainBackgroundColor:`UIColor`         |
+defaultTopBarHeight:`CGFloat`         |
+topBarColor:`UIColor`         |
+sideBarWidth:`CGFloat`         |
+dayLabelDefaultFont:`UIFont`         |
+dayLabelTextColor:`UIColor`         |
+dayLabelMinimumFontSize:`CGFloat`         |
+hourLabelFont:`UIFont`         |
+hourLabelTextColor:`UIColor`         |
+hourLabelMinimumFontSize:`CGFloat`         |
+allDayEventHeight:`CGFloat`         |
+allDayEventVerticalSpacing:`CGFloat`         |
+visibleDaysInPortraitMode:`Int`         |
+visibleDaysInLandscapeMode:`Int`         |
+eventLabelFont:`UIFont`         |
+eventLabelTextColor:`UIColor`         |
+eventLabelMinimumFontSize:`CGFloat`         |
+defaultDayViewColor:`UIColor`         |
+weekendDayViewColor:`UIColor`         |
+passedDayViewColor:`UIColor`         |
+passedWeekendDayViewColor:`UIColor`         |
+dayViewHourIndicatorColor:`UIColor`         |
+dayViewHourIndicatorThickness:`CGFloat`         |
+dayViewMainSeparatorColor:`UIColor`         |
+dayViewMainSeparatorThickness:`CGFloat`         |
+dayViewDashedSeparatorColor:`UIColor`         |
+dayViewDashedSeparatorThickness:`CGFloat`         |
+dayViewDashedSeparatorPattern:`[NSNumber]`         |
+dayViewCellHeight:`CGFloat`         |
+portraitDayViewSideSpacing:`CGFloat`         |
+landscapeDayViewSideSpacing:`CGFloat`         |
+portraitDayViewVerticalSpacing:`CGFloat`         |
+landscapeDayViewVerticalSpacing:`CGFloat`         |
+velocityOffsetMultiplier:`CGFloat`         |
 
 ## How it works
 
@@ -71,8 +152,10 @@ WeekView handles all top level operations such as pinch gestures and orientation
 ## Upcoming features
 
 - [x] Ability to add and remove events
-- [ ] Event color customization
-- [ ] Extra customization features
+- [x] Event color customization
+- [x] Extra customization features
+- [ ] Improved UI features
+- [ ] Increased event processing efficiency
 
 ## Author
 

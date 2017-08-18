@@ -11,7 +11,7 @@ import Foundation
 /**
  Class event data stores basic data needed by the rest of the code to calculate and draw events in the dayViewCells in the dayScrollView.
  */
-public class EventData: CustomStringConvertible, Equatable, Hashable {
+open class EventData: CustomStringConvertible, Equatable, Hashable {
 
     // Id of the event
     public let id: String
