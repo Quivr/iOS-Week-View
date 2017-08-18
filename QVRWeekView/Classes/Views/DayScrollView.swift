@@ -2,10 +2,9 @@ import Foundation
 import UIKit
 
 // MARK: - DAY SCROLL VIEW -
-/**
 
+/**
  Class of the scroll view contained within the WeekView.
- 
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate,
 UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, FrameCalculatorDelegate {
@@ -191,17 +190,21 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
-            weekView.addLabel(forIndexPath: indexPath, withDate: dayViewCell.date)
-            if let allDayEvents = allDayEvents[dayViewCell.date] {
-                weekView.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayViewCell.date)
+            let dayDate = dayViewCell.date
+            weekView.addDayLabel(forIndexPath: indexPath, withDate: dayDate)
+            if let allDayEvents = allDayEvents[dayDate] {
+                weekView.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayDate)
             }
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
-            weekView.discardLabel(withDate: dayViewCell.date)
-            weekView.discardAllDayEvents(forDate: dayViewCell.date)
+            let dayDate = dayViewCell.date
+            weekView.discardDayLabel(withDate: dayDate)
+            if weekView.hasAllDayEvents(forDate: dayDate) {
+                weekView.removeAllDayEvents(forDate: dayDate)
+            }
         }
     }
 
@@ -412,7 +415,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                         let dayDate = dayViewCell.date
                         let allThisDayEvents = self.allDayEvents[dayDate]
                         if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
-                            weekView.discardAllDayEvents(forDate: dayDate)
+                            weekView.removeAllDayEvents(forDate: dayDate)
                         }
                         else if allThisDayEvents != nil {
                             weekView.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)

@@ -12,27 +12,34 @@ import Foundation
  */
 class FrameCalculator {
 
+    // The date of the day view cell that is being analysed.
     let date: DayDate
+    // Width of the current day view cell.
     var width: CGFloat {
         return LayoutDefaults.dayViewCellWidth
     }
+    // Height of the current day view cells.
     var height: CGFloat {
         return LayoutDefaults.dayViewCellHeight
     }
+    // Delegate
     weak var delegate: FrameCalculatorDelegate?
-
+    // Constraint solution problem solver.
     private var csp: ConstraintSolver?
+    // Bool used as a cancelation flag.
     private var cancelFlag: Bool = false
 
+    // Variable returns if FrameCalculator is calculating.
     var isCalculating: Bool {
         return !cancelFlag
     }
 
+    // Initialize with a date.
     init(date: DayDate) {
         self.date = date
     }
 
-    // Calculate and return the solution
+    // Calculate the solution.
     func calculate(withData eventsData: [String: EventData]?) {
 
         guard eventsData != nil else {
@@ -103,7 +110,7 @@ class FrameCalculator {
                 // Create constraint solver and run backtracking algorithm
                 self.csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
                 if !self.cancelFlag {
-                    frames = self.csp?.solveWithBacktracking()
+                    frames = self.csp?.backtrack()
                 }
                 DispatchQueue.main.sync {
                     self.delegate?.passSolution(fromCalculator: self, solution: frames)
@@ -124,12 +131,13 @@ class FrameCalculator {
         }
     }
 
+    // Method will trigger the FrameCalculator to stop calculating and return nil.
     func cancelCalculation() {
         cancelFlag = true
         csp?.cancel()
     }
 
-    // Generate end points used during sweep phase
+    // Generate end points used during sweep line phase.
     private func calculateEndPoints(`for` eventsData: [String: EventData]) -> [EndPoint] {
         var endPoints: [EndPoint] = []
         for (id, data) in eventsData {
@@ -152,7 +160,7 @@ class FrameCalculator {
         return endPoints
     }
 
-    // Generate domain of possible width and position values based on width of frame
+    // Generate domain of possible width and position values based on width of frame.
     private func domain(forFrame frame: EventFrame, _ choice: DomainChoice = .subOptimal) -> Set<WidthPosValue> {
         var domain = Set<WidthPosValue>()
         let count = Int(self.width/frame.width)
@@ -171,14 +179,14 @@ class FrameCalculator {
         return domain
     }
 
-    // Domain choice enum
+    // Domain choice enum.
     private enum DomainChoice {
         case optimal
         case subOptimal
         case singular
     }
 
-    // Return event frame based on event data
+    // Return event frame based on event data.
     private func getEventFrame(withData data: EventData) -> EventFrame {
         let time = data.startDate.getTimeInHours()
         let duration = data.endDate.getTimeInHours() - time
@@ -190,7 +198,7 @@ class FrameCalculator {
                           id: data.id)
     }
 
-    // Struct used for endpoints
+    // Struct used for endpoints during sweep line phase.
     private struct EndPoint: CustomStringConvertible {
         var y: CGFloat
         var id: String
@@ -207,10 +215,10 @@ class FrameCalculator {
 
 // MARK: - FrameCalculator Delegate -
 
+// Protocol contains FrameCalculator delegate functions.
 protocol FrameCalculatorDelegate: class {
-
+    // Delegate function passes solution back to main thread
     func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?)
-
 }
 
 // MARK: - Constraint Optimization -
@@ -220,13 +228,20 @@ protocol FrameCalculatorDelegate: class {
  */
 fileprivate class ConstraintSolver {
 
+    // All domains of each variables.
     let domains: [Set<WidthPosValue>]
+    // All variables.
     let variables: [EventFrame]
+    // Bool matrix storing which variables are linked by a constraint
     let constraints: [[Bool]]
+    // Number of variables.
     let n: Int
+    // Start time of the algorithm.
     let startTime: TimeInterval
+    // Bool stores a cancellation flag.
     private var cancelled: Bool = false
 
+    // Init with given domains, constraintsa and variables.
     init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
         self.variables = variables
         self.constraints = constraints
@@ -235,11 +250,8 @@ fileprivate class ConstraintSolver {
         self.startTime = Date.timeIntervalSinceReferenceDate
     }
 
-    func solveWithBacktracking() -> [String: CGRect]? {
-        return backtrack()
-    }
-
-    private func backtrack() -> [String: CGRect]? {
+    // Trigger the backtrack algorithm and check if solution is valid.
+    func backtrack() -> [String: CGRect]? {
         if !backtrack(depth: 0) && !cancelled {
             print("BACKTRACK FAILED ON VARIABLES: \(variables)")
         }
@@ -255,6 +267,7 @@ fileprivate class ConstraintSolver {
         }
     }
 
+    // Backtracking algorithm/
     private func backtrack(depth: Int) -> Bool {
 
         let domain = domains[depth].sorted(by: { (v1, v2) -> Bool in
@@ -293,13 +306,14 @@ fileprivate class ConstraintSolver {
         return false
     }
 
+    // Check if constraint is satisfied between two depths.
     private func constraintIsSatsified(activeDepth d1: Int, checkDepth d2: Int) -> Bool {
 
         if constraints[d1][d2] {
             let f1 = variables[d1]
             let f2 = variables[d2]
 
-            // Left corner f1 is not inside f2 and right corner f1 is not inside f2
+            // Check that left corner f1 is not inside f2 and right corner f1 is not inside f2.
             return  (
                     !((f2.x < f1.x || f1.x.isEqual(to: f2.x, decimalPlaces: 12)) && (f1.x < f2.x2)) &&
                     !((f2.x < f1.x2) && (f1.x2 < f2.x2 || f1.x2.isEqual(to: f2.x2, decimalPlaces: 12)))
@@ -314,6 +328,7 @@ fileprivate class ConstraintSolver {
         }
     }
 
+    // Method triggers thread cancellation
     fileprivate func cancel() {
         self.cancelled = true
     }
