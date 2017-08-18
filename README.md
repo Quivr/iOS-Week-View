@@ -9,7 +9,7 @@
 
 QVRWeekView is a work in progress framework that contains a week/day view that allows you to display, add and remove events.
 
-<img src="http://i.imgur.com/z5sn14F.gif" width="200"> <img src="http://i.imgur.com/jQK7LXM.gif" width="200">
+<img src="http://i.imgur.com/z5sn14F.gif" width="200"> <img src="http://i.imgur.com/5mSeSrJ.gif" width="200">
 
 ### Features
 
