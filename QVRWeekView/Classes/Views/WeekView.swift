@@ -449,10 +449,17 @@ extension WeekView {
 public struct FontVariables {
 
     // Minimum font for all day labels
-    fileprivate(set) static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
+    fileprivate static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
         didSet {
             updateDayLabelCurrentFont()
         }
+    }
+    // Current font for all day labels
+    private(set) static var dayLabelCurrentFont = LayoutDefaults.dayLabelFont
+
+    // Method updates the current font of day labels.
+    static func updateDayLabelCurrentFont () {
+        dayLabelCurrentFont = dayLabelDefaultFont.withSize(dayLabelCurrentFontSize)
     }
 
 }

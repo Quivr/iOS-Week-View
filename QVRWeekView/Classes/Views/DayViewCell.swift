@@ -265,4 +265,3 @@ protocol DayViewCellDelegate: class {
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
 
 }
-

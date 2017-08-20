@@ -43,6 +43,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                                      title: "Test Event \(self.id)",
                                      startDate: date,
                                      endDate: date.addingTimeInterval(60*60*1),
+                                     location: "loc test",
                                      color: color)
             newEvent.configureGradient(UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5))
             self.allEvents[self.id] = newEvent
@@ -55,6 +56,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                                      title: "Test Event \(self.id)",
                                      startDate: date,
                                      endDate: date.addingTimeInterval(60*60*1),
+                                     location: "loc test",
                                      color: color)
             self.allEvents[self.id] = newEvent
             self.id += 1
@@ -66,6 +68,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                                      title: "Test Event \(self.id)",
                                      startDate: date,
                                      endDate: date.addingTimeInterval(60*60*3),
+                                     location: "loc test",
                                      color: color)
             self.allEvents[self.id] = newEvent
             self.id += 1
@@ -77,6 +80,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                                      title: "Test Event \(self.id)",
                                      startDate: date,
                                      endDate: date.addingTimeInterval(60*60*4),
+                                     location: "loc test",
                                      color: color)
             self.allEvents[self.id] = newEvent
             self.id += 1
@@ -89,6 +93,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 title: "Test Event \(self.id)",
                 startDate: date,
                 endDate: date.addingTimeInterval(60*60*24*3),
+                location: "loc test",
                 color: color
             )
             self.allEvents[self.id] = newEvent
@@ -102,6 +107,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 title: "Test Event \(self.id)",
                 startDate: date.getStartOfDay(),
                 endDate: date.getEndOfDay(),
+                location: "loc test",
                 color: color,
                 allDay: true
             )
@@ -116,6 +122,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
                 title: "Test Event \(self.id)",
                 startDate: date.getStartOfDay(),
                 endDate: date.addingTimeInterval(60*60*24*2.5),
+                location: "loc test",
                 color: color,
                 allDay: true
             )

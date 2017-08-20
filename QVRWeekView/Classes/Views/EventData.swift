@@ -21,6 +21,8 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     public let startDate: Date
     // End date of the event
     public let endDate: Date
+    // Location of the event
+    public let location: String
     // Color of the event
     public let color: UIColor
     // Stores if event is an all day event
@@ -39,9 +41,9 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     /**
-     Main initializer.
+     Main initializer. All properties.
      */
-    public init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+    public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool) {
         self.id = id
         self.title = title
         if startDate.compare(endDate).rawValue >= 0 {
@@ -49,29 +51,44 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         }
         self.startDate = startDate
         self.endDate = endDate
+        self.location = location
         self.color = color
         self.allDay = allDay
     }
 
     /**
-     Convenience initializer.
+     Convenience initializer. All properties except for Int Id instead of String.
      */
-    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
-        self.init(id: String(id), title: title, startDate: startDate, endDate: endDate, color: color, allDay: allDay)
+    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool) {
+        self.init(id: String(id), title: title, startDate: startDate, endDate: endDate, location: location, color: color, allDay: allDay)
     }
 
     /**
-     Convenience initializer.
+     Convenience initializer. String Id + no allDay parameter.
+     */
+    public convenience init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: location, color: color, allDay: false)
+    }
+
+    /**
+     Convenience initializer. Int Id + no allDay parameter.
+     */
+    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, location: String, color: UIColor) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: location, color: color, allDay: false)
+    }
+
+    /**
+     Convenience initializer. String Id + no allDay and location parameter.
      */
     public convenience init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor) {
-        self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: "", color: color, allDay: false)
     }
 
     /**
-     Convenience initializer.
+     Convenience initializer. Int Id + no allDay and location parameter.
      */
     public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
-        self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: "", color: color, allDay: false)
     }
 
     /**
@@ -118,14 +135,20 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             eventRectLayer.fillColor = self.color.cgColor
         }
 
+        let string = self.getEventDisplayString()
         let eventTextLayer = CATextLayer()
         eventTextLayer.frame = frame
-        eventTextLayer.string = self.title
+        eventTextLayer.string = string
         let font = FontVariables.eventLabelFont
+
+//        let attributedTitle = NSAttributedString(string: string, attributes: [NSFontAttributeName: font])
+//        let titleSize = attributedTitle.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
         let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
+
         eventTextLayer.font = ctFont
         eventTextLayer.fontSize = font.pointSize
         eventTextLayer.isWrapped = true
+        eventTextLayer.truncationMode = kCATruncationEnd
         eventTextLayer.contentsScale = UIScreen.main.scale
 
         eventRectLayer.addSublayer(eventTextLayer)
@@ -168,10 +191,18 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
-        return EventData(id: self.id, title: self.title, startDate: start, endDate: end, color: self.color, allDay: self.allDay)
+        return EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay)
     }
 
     func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
-        return EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), color: self.color, allDay: true)
+        return EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
+    }
+
+    private func getEventDisplayString() -> String {
+        let df = DateFormatter()
+        df.dateFormat = "HH:mm"
+        let timeStr = self.allDay ? "" : " (\(df.string(from: self.startDate)) - \(df.string(from: self.endDate)))"
+        return "\(self.title)\(timeStr) \(self.location != "" ? "| \(self.location)" : "")"
+
     }
 }

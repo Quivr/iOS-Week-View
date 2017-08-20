@@ -474,12 +474,11 @@ extension FontVariables {
             updateDayLabelCurrentFont()
         }
     }
-    // Current font for all day labels
-    private(set) static var dayLabelCurrentFont = LayoutDefaults.dayLabelFont
     // Text color for all day labels
     fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
     // Minimum font for all day labels
     fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
+
     // Font for all hour labels
     fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont {
         didSet {
@@ -500,11 +499,6 @@ extension FontVariables {
     // Method updates the minimum hour scale
     private static func updateHourMinScale () {
         hourLabelMinimumScale = hourLabelMinimumFontSize / hourLabelFont.pointSize
-    }
-
-    // Method updates the current font of day labels.
-    static func updateDayLabelCurrentFont () {
-        dayLabelCurrentFont = dayLabelDefaultFont.withSize(dayLabelCurrentFontSize)
     }
 
 }
