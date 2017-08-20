@@ -10,6 +10,15 @@ import Foundation
 import UIKit
 
 /**
+ Enum stores the text mode that the day date should return.
+ */
+enum TextMode {
+    case large
+    case normal
+    case small
+}
+
+/**
  Day date class is used as a reliable way to assign a day to things such as dayViewCells and dictionaries
  storing event and frame data. DayDates are not influenced by timezones and thus the date is has been given will
  remain. DayDates are also easy to compare, print as strings and are hashable.
@@ -20,7 +29,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     let month: Int
     let year: Int
     let era: Int
-    static let formats = ["E d MMM yyyy", "E d MMM", "d MMM"]
+    static let formats: [TextMode: String] = [.large: "E d MMM yyyy", .normal: "E d MMM", .small: "d MMM"]
 
     public var description: String {
         return "\(day)-\(month)-\(year)-\(era)"
@@ -37,15 +46,15 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     }()
 
     lazy var largeString: String = {
-        return self.getString(forMode: 0)
+        return self.getString(forMode: .large)
     }()
 
     lazy var defaultString: String = {
-        return self.getString(forMode: 1)
+        return self.getString(forMode: .normal)
     }()
 
     lazy var smallString: String = {
-        return self.getString(forMode: 2)
+        return self.getString(forMode: .small)
     }()
 
     lazy var dayInYear: Int = {
@@ -103,7 +112,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         } else { return lhs.era < rhs.era }
     }
 
-    func getString(forMode mode: Int) -> String {
+    func getString(forMode mode: TextMode) -> String {
         let df = DateFormatter()
         df.dateFormat = DayDate.formats[mode]
         return df.string(from: self.dateObj)

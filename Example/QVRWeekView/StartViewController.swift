@@ -50,6 +50,7 @@ class StartViewController: UIViewController {
             weekView.eventLabelMinimumFontSize = 3
             weekView.eventLabelTextColor = UIColor.green
             weekView.eventLabelFont = UIFont.italicSystemFont(ofSize: 25)
+            weekView.eventLabelInfoFont = UIFont.boldSystemFont(ofSize: 15)
 
             weekView.dayLabelTextColor = UIColor.white
             weekView.dayLabelDefaultFont = UIFont.italicSystemFont(ofSize: 20)

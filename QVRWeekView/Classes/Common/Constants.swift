@@ -32,6 +32,8 @@ struct LayoutDefaults {
 
     // Default font of events labels
     static let eventLabelFont = UIFont.boldSystemFont(ofSize: 12)
+    // Thin font of event labels
+    static let eventLabelThinFont = UIFont.systemFont(ofSize: 12)
     // Default text color of event labels
     static let eventLabelTextColor = UIColor.white
     // Default minimum event label scaling

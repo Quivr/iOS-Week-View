@@ -27,18 +27,36 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     public let color: UIColor
     // Stores if event is an all day event
     public let allDay: Bool
-    // Stores an optional gradient layer which will be used to draw event.
-    private(set) var gradientLayer: CAGradientLayer?
+    // Stores an optional gradient layer which will be used to draw event. Can only be set once.
+    private(set) var gradientLayer: CAGradientLayer? { didSet { gradientLayer = oldValue ?? gradientLayer } }
 
     // Hashvalue
     public var hashValue: Int {
         return id.hashValue
     }
 
-    // Stirng descriptor
+    // String descriptor
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
+
+    // Layer of this event
+    lazy var layer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        if let gradient = self.gradientLayer {
+            layer.fillColor = UIColor.clear.cgColor
+            layer.addSublayer(gradient)
+        }
+        else {
+            layer.fillColor = self.color.cgColor
+        }
+        let eventTextLayer = CATextLayer()
+        eventTextLayer.isWrapped = true
+        eventTextLayer.contentsScale = UIScreen.main.scale
+        eventTextLayer.string = self.getDisplayString()
+        layer.addSublayer(eventTextLayer)
+        return layer
+    }()
 
     /**
      Main initializer. All properties.
@@ -103,6 +121,27 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
     }
 
+    /**
+     Returns the string that will be displayed by this event. Overridable.
+     */
+    open func getDisplayString(withMainFont mainFont: UIFont = FontVariables.eventLabelFont, andInfoFont infoFont: UIFont = FontVariables.eventLabelInfoFont) -> NSAttributedString {
+        let df = DateFormatter()
+        df.dateFormat = "HH:mm"
+        let mainFontAttributes: [String: Any] = [NSFontAttributeName: mainFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
+        let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
+        let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
+        if !self.allDay {
+            mainAttributedString.append(NSMutableAttributedString(
+                string: " (\(df.string(from: self.startDate)) - \(df.string(from: self.endDate)))",
+                attributes: infoFontAttributes))
+        }
+        if self.location != "" {
+            mainAttributedString.append(NSMutableAttributedString(string: " | \(self.location)", attributes: infoFontAttributes))
+        }
+        return mainAttributedString
+
+    }
+
     // Configures the gradient based on the provided color and given endColor.
     public func configureGradient(_ endColor: UIColor) {
         let gradient = CAGradientLayer()
@@ -120,39 +159,39 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     /**
      Creates a layer object for current event data and given frame.
      */
-    func generateLayer(withFrame frame: CGRect) -> CAShapeLayer {
-        let eventRectLayer = CAShapeLayer()
-        eventRectLayer.path = CGPath(rect: frame, transform: nil)
-        if let gradient = self.gradientLayer {
-            CATransaction.begin()
-            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-            gradient.frame = frame
-            CATransaction.commit()
-            eventRectLayer.fillColor = UIColor.clear.cgColor
-            eventRectLayer.addSublayer(gradient)
+    func generateLayer(withFrame frame: CGRect, resizeText: Bool = false) -> CAShapeLayer {
+
+        self.layer.path = CGPath(rect: frame, transform: nil)
+        for sub in self.layer.sublayers! {
+
+            if let gradient = sub as? CAGradientLayer {
+                CATransaction.begin()
+                CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+                gradient.frame = frame
+                CATransaction.commit()
+            }
+            else if let text = sub as? CATextLayer {
+                if resizeText {
+                    CATransaction.setDisableActions(false)
+                    if let string = text.string as? NSAttributedString {
+                        let font = FontVariables.eventLabelFont
+                        var fontSize = font.pointSize
+                        while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: frame).height > frame.height &&
+                            fontSize > FontVariables.eventLabelMinimumFontSize {
+                                fontSize -= 1
+                        }
+                        text.string = self.getDisplayString(
+                            withMainFont: FontVariables.eventLabelFont.withSize(fontSize),
+                            andInfoFont: FontVariables.eventLabelInfoFont.withSize(fontSize))
+                    }
+                }
+                CATransaction.setDisableActions(true)
+                text.frame = frame
+            }
+
         }
-        else {
-            eventRectLayer.fillColor = self.color.cgColor
-        }
 
-        let string = self.getEventDisplayString()
-        let eventTextLayer = CATextLayer()
-        eventTextLayer.frame = frame
-        eventTextLayer.string = string
-        let font = FontVariables.eventLabelFont
-
-//        let attributedTitle = NSAttributedString(string: string, attributes: [NSFontAttributeName: font])
-//        let titleSize = attributedTitle.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
-        let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
-
-        eventTextLayer.font = ctFont
-        eventTextLayer.fontSize = font.pointSize
-        eventTextLayer.isWrapped = true
-        eventTextLayer.truncationMode = kCATruncationEnd
-        eventTextLayer.contentsScale = UIScreen.main.scale
-
-        eventRectLayer.addSublayer(eventTextLayer)
-        return eventRectLayer
+        return self.layer
     }
 
     /**
@@ -196,13 +235,5 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
 
     func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
         return EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
-    }
-
-    private func getEventDisplayString() -> String {
-        let df = DateFormatter()
-        df.dateFormat = "HH:mm"
-        let timeStr = self.allDay ? "" : " (\(df.string(from: self.startDate)) - \(df.string(from: self.endDate)))"
-        return "\(self.title)\(timeStr) \(self.location != "" ? "| \(self.location)" : "")"
-
     }
 }

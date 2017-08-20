@@ -58,12 +58,12 @@ struct Util {
         var textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
 
         label.text = possibleText as String
-        if textSize.width > labelWidth && FontVariables.dayLabelTextMode < 2 {
+        if textSize.width > labelWidth && FontVariables.dayLabelTextMode != .small {
             possibleText = dayDate.defaultString as NSString
             textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
             if textSize.width <= labelWidth {
                 label.text = possibleText as String
-                FontVariables.dayLabelTextMode = 1
+                FontVariables.dayLabelTextMode = .normal
             }
             else {
                 let scale = (labelWidth / textSize.width)
@@ -80,11 +80,11 @@ struct Util {
                 label.font = newFont
                 if possibleText.size(attributes: [NSFontAttributeName: newFont]).width > labelWidth {
                     label.text = dayDate.smallString
-                    FontVariables.dayLabelTextMode = 2
+                    FontVariables.dayLabelTextMode = .small
                 }
                 else {
                     label.text = possibleText as String
-                    FontVariables.dayLabelTextMode = 1
+                    FontVariables.dayLabelTextMode = .normal
                 }
 
                 if newFont.pointSize < FontVariables.dayLabelCurrentFont.pointSize {
@@ -98,7 +98,7 @@ struct Util {
 
     // Method resets the day label text mode back to zero.
     static func resetDayLabelTextMode() {
-        FontVariables.dayLabelTextMode = 0
+        FontVariables.dayLabelTextMode = .large
     }
 
     /**
@@ -113,12 +113,18 @@ struct Util {
                       width: width,
                       height: LayoutVariables.allDayEventHeight)
     }
+
+    static func getSize(ofString string: String, withFont font: UIFont, inFrame frame: CGRect) -> CGRect {
+        let text = NSAttributedString(string: string, attributes: [NSFontAttributeName: font])
+        return text.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
+    }
+
 }
 
 // Util extension for FontVariables.
 extension FontVariables {
 
     // Day label text mode determines which format the day labels will be displayed in. 0 is the longest, 1 is smaller, 2 is smallest format.
-    fileprivate(set) static var dayLabelTextMode = 0
+    fileprivate(set) static var dayLabelTextMode: TextMode = .large
 
 }

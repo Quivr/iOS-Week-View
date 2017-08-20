@@ -314,6 +314,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         if state == .cancelled || state == .ended || state == .failed {
             self.previousZoomTouch = nil
+            for (_, cell) in dayViewCells {
+                cell.updateEventTextFontSize()
+            }
             scrollToNearestCell()
         }
     }
@@ -559,10 +562,18 @@ extension DayScrollView {
     }
 
     /**
-     Sets the font for event labels.
+     Sets the default font for event labels.
      */
     func setEventLabelFont(to font: UIFont) {
         FontVariables.eventLabelFont = font
+        updateLayout()
+    }
+
+    /**
+     Sets the thin font for event labels.
+     */
+    func setEventLabelInfoFont(to font: UIFont) {
+        FontVariables.eventLabelInfoFont = font
         updateLayout()
     }
 
@@ -1014,8 +1025,11 @@ extension FontVariables {
 
     // Font for all event labels
     fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
+    // Font for all event labels
+    fileprivate(set) static var eventLabelInfoFont = LayoutDefaults.eventLabelThinFont
     // Text color for all event labels
     fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
     // Minimum scaling for all event labels
     fileprivate(set) static var eventLabelMinimumFontSize = LayoutDefaults.eventLabelMinimumFontSize
+
 }

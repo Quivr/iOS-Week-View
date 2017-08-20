@@ -222,6 +222,18 @@ public extension WeekView {
     }
 
     /**
+    Thin font used for all event labels contained in the day view cells.
+    */
+    public var eventLabelInfoFont: UIFont {
+        get {
+            return FontVariables.eventLabelInfoFont
+        }
+        set(font) {
+            self.dayScrollView.setEventLabelInfoFont(to: font)
+        }
+    }
+
+    /**
      Text color for all event labels contained in the day view cells.
      */
     public var eventLabelTextColor: UIColor {

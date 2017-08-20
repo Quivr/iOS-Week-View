@@ -119,8 +119,7 @@ class DayViewCell: UICollectionViewCell {
         lastResizeWidth = self.frame.width
         lastResizeHeight = self.frame.height
         // Update UI
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
+        self.generateEventLayers(andResizeText: true)
     }
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -145,6 +144,11 @@ class DayViewCell: UICollectionViewCell {
                 return
             }
         }
+    }
+
+    func updateEventTextFontSize() {
+        print("update \(date.defaultString)")
+        self.generateEventLayers(andResizeText: true)
     }
 
     private func updateOverlay() {
@@ -215,7 +219,7 @@ class DayViewCell: UICollectionViewCell {
         self.layer.addSublayer(dottedLineLayer)
     }
 
-    private func generateEventLayers() {
+    private func generateEventLayers(andResizeText resizeText: Bool = false) {
 
         // Remove all shape and text layers from superlayer
         for layer in self.eventLayers {
@@ -240,7 +244,7 @@ class DayViewCell: UICollectionViewCell {
                 self.eventFrames[id] = frame.applying(transform)
                 newFrame = self.eventFrames[id]!
             }
-            let layer = eventsData[id]!.generateLayer(withFrame: newFrame)
+            let layer = eventsData[id]!.generateLayer(withFrame: newFrame, resizeText: resizeText)
 
             self.eventLayers.append(layer)
             self.layer.addSublayer(layer)
