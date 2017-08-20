@@ -12,34 +12,6 @@ import Foundation
  */
 struct Util {
 
-    // Function returns a CAShapeLayer that represents the event given by eventData and frame.
-    static func makeEventLayer(withData data: EventData, andFrame frame: CGRect) -> CAShapeLayer {
-
-        let eventRectLayer = CAShapeLayer()
-        eventRectLayer.path = CGPath(rect: frame, transform: nil)
-        if let gradient = data.gradientLayer {
-            gradient.frame = frame
-            eventRectLayer.fillColor = UIColor.clear.cgColor
-            eventRectLayer.addSublayer(gradient)
-        }
-        else {
-            eventRectLayer.fillColor = data.color.cgColor
-        }
-
-        let eventTextLayer = CATextLayer()
-        eventTextLayer.frame = frame
-        eventTextLayer.string = data.title
-        let font = FontVariables.eventLabelFont
-        let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
-        eventTextLayer.font = ctFont
-        eventTextLayer.fontSize = font.pointSize
-        eventTextLayer.isWrapped = true
-        eventTextLayer.contentsScale = UIScreen.main.scale
-
-        eventRectLayer.addSublayer(eventTextLayer)
-        return eventRectLayer
-    }
-
     // Function returns a dayLabel UILabel with the correct size and position according to given indexPath.
     static func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
 

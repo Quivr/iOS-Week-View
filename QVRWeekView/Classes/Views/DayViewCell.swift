@@ -240,8 +240,7 @@ class DayViewCell: UICollectionViewCell {
                 self.eventFrames[id] = frame.applying(transform)
                 newFrame = self.eventFrames[id]!
             }
-
-            let layer = Util.makeEventLayer(withData: eventsData[id]!, andFrame: newFrame)
+            let layer = eventsData[id]!.generateLayer(withFrame: newFrame)
 
             self.eventLayers.append(layer)
             self.layer.addSublayer(layer)
@@ -266,3 +265,4 @@ protocol DayViewCellDelegate: class {
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
 
 }
+

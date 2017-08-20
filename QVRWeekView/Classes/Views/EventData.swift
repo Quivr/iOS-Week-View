@@ -28,14 +28,19 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     // Stores an optional gradient layer which will be used to draw event.
     private(set) var gradientLayer: CAGradientLayer?
 
+    // Hashvalue
     public var hashValue: Int {
         return id.hashValue
     }
 
+    // Stirng descriptor
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
 
+    /**
+     Main initializer.
+     */
     public init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
         self.id = id
         self.title = title
@@ -48,22 +53,35 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         self.allDay = allDay
     }
 
+    /**
+     Convenience initializer.
+     */
     public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
         self.init(id: String(id), title: title, startDate: startDate, endDate: endDate, color: color, allDay: allDay)
     }
 
+    /**
+     Convenience initializer.
+     */
     public convenience init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
+    /**
+     Convenience initializer.
+     */
     public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor) {
         self.init(id: id, title: title, startDate: startDate, endDate: endDate, color: color, allDay: false)
     }
 
+    /**
+     Convenience initializer.
+     */
     public convenience init() {
         self.init(id: -1, title: "null", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
     }
 
+    // Static equal comparison operator
     public static func == (lhs: EventData, rhs: EventData) -> Bool {
         return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
     }
@@ -80,6 +98,38 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     // Configures the gradient based on provided gradient.
     public func configureGradient(_ gradient: CAGradientLayer) {
         self.gradientLayer = gradient
+    }
+
+    /**
+     Creates a layer object for current event data and given frame.
+     */
+    func generateLayer(withFrame frame: CGRect) -> CAShapeLayer {
+        let eventRectLayer = CAShapeLayer()
+        eventRectLayer.path = CGPath(rect: frame, transform: nil)
+        if let gradient = self.gradientLayer {
+            CATransaction.begin()
+            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+            gradient.frame = frame
+            CATransaction.commit()
+            eventRectLayer.fillColor = UIColor.clear.cgColor
+            eventRectLayer.addSublayer(gradient)
+        }
+        else {
+            eventRectLayer.fillColor = self.color.cgColor
+        }
+
+        let eventTextLayer = CATextLayer()
+        eventTextLayer.frame = frame
+        eventTextLayer.string = self.title
+        let font = FontVariables.eventLabelFont
+        let ctFont: CTFont = CTFontCreateWithName(font.fontName as CFString, font.pointSize, nil)
+        eventTextLayer.font = ctFont
+        eventTextLayer.fontSize = font.pointSize
+        eventTextLayer.isWrapped = true
+        eventTextLayer.contentsScale = UIScreen.main.scale
+
+        eventRectLayer.addSublayer(eventTextLayer)
+        return eventRectLayer
     }
 
     /**
