@@ -594,6 +594,14 @@ extension DayScrollView {
     }
 
     /**
+     Sets the minimum scale for day labels.
+     */
+    func setEventLabelFontResizingEnabled(to bool: Bool) {
+        FontVariables.eventLabelFontResizingEnabled = bool
+        updateLayout()
+    }
+
+    /**
      Sets the color of default day view color.
      */
     func setDefaultDayViewColor(to color: UIColor) {
@@ -1031,5 +1039,7 @@ extension FontVariables {
     fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
     // Minimum scaling for all event labels
     fileprivate(set) static var eventLabelMinimumFontSize = LayoutDefaults.eventLabelMinimumFontSize
+    // Stores if event label resizing is enabled
+    fileprivate(set) static var eventLabelFontResizingEnabled = false
 
 }

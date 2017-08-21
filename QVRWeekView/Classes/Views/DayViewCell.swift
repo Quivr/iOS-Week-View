@@ -119,7 +119,7 @@ class DayViewCell: UICollectionViewCell {
         lastResizeWidth = self.frame.width
         lastResizeHeight = self.frame.height
         // Update UI
-        self.generateEventLayers(andResizeText: true)
+        self.generateEventLayers(andResizeText: FontVariables.eventLabelFontResizingEnabled)
     }
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
@@ -147,8 +147,7 @@ class DayViewCell: UICollectionViewCell {
     }
 
     func updateEventTextFontSize() {
-        print("update \(date.defaultString)")
-        self.generateEventLayers(andResizeText: true)
+        self.generateEventLayers(andResizeText: FontVariables.eventLabelFontResizingEnabled)
     }
 
     private func updateOverlay() {

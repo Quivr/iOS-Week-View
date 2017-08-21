@@ -258,6 +258,18 @@ public extension WeekView {
     }
 
     /**
+
+     */
+    public var eventLabelFontResizingEnabled: Bool {
+        get {
+            return FontVariables.eventLabelFontResizingEnabled
+        }
+        set(bool) {
+            self.dayScrollView.setEventLabelFontResizingEnabled(to: bool)
+        }
+    }
+
+    /**
      Default color of the day view cells. These are all days that are not weekends and not passed.
      */
     public var defaultDayViewColor: UIColor {

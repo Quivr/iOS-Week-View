@@ -262,7 +262,7 @@ open class WeekView: UIView {
         var layers: [EventData: CAShapeLayer] = [:]
         for event in events {
             let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
-            let layer = event.generateLayer(withFrame: frame, resizeText: true)
+            let layer = event.generateLayer(withFrame: frame, resizeText: FontVariables.eventLabelFontResizingEnabled)
             self.topBarView.layer.addSublayer(layer)
             layers[event] = layer
 
