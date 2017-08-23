@@ -120,7 +120,12 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
 
     // Static equal comparison operator
     public static func == (lhs: EventData, rhs: EventData) -> Bool {
-        return (lhs.id == rhs.id) && (lhs.startDate == rhs.startDate) && (lhs.endDate == rhs.endDate) && (lhs.title == rhs.title)
+        return (lhs.id == rhs.id) &&
+            (lhs.startDate == rhs.startDate) &&
+            (lhs.endDate == rhs.endDate) &&
+            (lhs.title == rhs.title) &&
+            (lhs.location == rhs.location) &&
+            (lhs.allDay && rhs.allDay)
     }
 
     /**
