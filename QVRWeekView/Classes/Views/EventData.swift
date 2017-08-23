@@ -64,14 +64,16 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool) {
         self.id = id
         self.title = title
-        if startDate.compare(endDate).rawValue >= 0 {
-            fatalError("Invalid start and end date passed to EventData on initialisation. Start: \(startDate), End: \(endDate)")
-        }
-        self.startDate = startDate
-        self.endDate = endDate
         self.location = location
         self.color = color
         self.allDay = allDay
+        guard startDate.compare(endDate).rawValue <= 0 else {
+            self.startDate = startDate
+            self.endDate = startDate
+            return
+        }
+        self.startDate = startDate
+        self.endDate = endDate
     }
 
     /**
