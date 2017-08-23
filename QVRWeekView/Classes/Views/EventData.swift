@@ -154,7 +154,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     // Configures the gradient based on provided gradient.
-    public func configureGradient(_ gradient: CAGradientLayer) {
+    public func configureGradient(_ gradient: CAGradientLayer?) {
         self.gradientLayer = gradient
     }
 
@@ -232,10 +232,14 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
-        return EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay)
+        newEvent.configureGradient(self.gradientLayer)
+        return newEvent
     }
 
     func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
-        return EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
+        newEvent.configureGradient(self.gradientLayer)
+        return newEvent
     }
 }
