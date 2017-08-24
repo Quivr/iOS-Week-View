@@ -139,7 +139,7 @@ class DayViewCell: UICollectionViewCell {
         let tapPoint = sender.location(in: self)
 
         for (id, frame) in eventFrames {
-            if frame.contains(tapPoint) {
+            if frame.contains(tapPoint) && eventsData[id] != nil {
                 self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
                 return
             }

@@ -41,6 +41,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var eptRunning: Bool = false
     // Bool stores if event thread should stop
     private var eptSafeContinue: Bool = false
+    // Bool stores is view is scrolling to a specific day
+    private var scrollingToDay: Bool = false
     // Stores most recently assigned event data
     private var eptTempData: [EventData]?
     // Previous zoom scale of content
@@ -131,7 +133,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
 
             if  let path = collectionView.indexPathForItem(at: cvLeft),
-                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell {
+                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell, !scrollingToDay {
 
                 activeDay = dayViewCell.date
                 if activeDay > currentPeriod.endDate {
@@ -159,13 +161,22 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
+        if scrollView is DayCollectionView && !decelerate {
             scrollToNearestCell()
         }
     }
 
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        if scrollView is DayCollectionView && scrollingToDay {
+            scrollingToDay = false
+            requestEvents()
+        }
+    }
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        scrollToNearestCell()
+        if scrollView is DayCollectionView {
+            scrollToNearestCell()
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -239,6 +250,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func goToAndShow(dayDate: DayDate, showNow: Bool=false) {
         yearActive = dayDate.year
+        currentPeriod = Period(ofDate: dayDate)
+        activeDay = dayDate
+        scrollingToDay = true
         dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
                                                    y: 0),
                                            animated: true)
@@ -248,9 +262,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let maxOffsetY = LayoutVariables.maxOffsetY
             self.setContentOffset(CGPoint(x:0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
         }
-        currentPeriod = Period(ofDate: dayDate)
-        activeDay = dayDate
-        requestEvents()
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizerState) {
@@ -433,7 +444,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func requestEvents() {
-        if let weekView = self.superview?.superview as? WeekView {
+        if let weekView = self.superview?.superview as? WeekView, !scrollingToDay {
             let startDate = currentPeriod.previousPeriod.startDate
             let endDate = currentPeriod.nextPeriod.endDate
             for (date, calc) in frameCalculators where date < startDate || date > endDate {
