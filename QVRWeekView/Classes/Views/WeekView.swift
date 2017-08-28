@@ -268,7 +268,6 @@ open class WeekView: UIView {
             let layer = event.generateLayer(withFrame: frame, resizeText: FontVariables.eventLabelFontResizingEnabled)
             self.topBarView.layer.addSublayer(layer)
             layers[event] = layer
-
             i += 1
         }
         self.visibleAllDayEvents[dayDate] = layers

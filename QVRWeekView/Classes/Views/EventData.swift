@@ -125,7 +125,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             (lhs.endDate == rhs.endDate) &&
             (lhs.title == rhs.title) &&
             (lhs.location == rhs.location) &&
-            (lhs.allDay && rhs.allDay)
+            (lhs.allDay == rhs.allDay)
     }
 
     /**
