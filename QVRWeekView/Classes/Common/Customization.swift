@@ -119,6 +119,20 @@ public extension WeekView {
     }
 
     /**
+     Date formats for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelDateFormats: [TextMode: String] {
+        get {
+            return FontVariables.dayLabelDateFormats
+        }
+        set(formats) {
+            FontVariables.dayLabelDateFormats = formats
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
      Font for all hour labels contained in the side bar.
      */
     public var hourLabelFont: UIFont {
@@ -158,6 +172,19 @@ public extension WeekView {
     }
 
     /**
+     Format of all hour labels.
+     */
+    public var hourLabelDateFormat: String {
+        get {
+            return FontVariables.hourLabelDateFormat
+        }
+        set(format) {
+            FontVariables.hourLabelDateFormat = format
+            updateHourSideBarView()
+        }
+    }
+
+    /**
      Height of all day labels.
      */
     public var allDayEventHeight: CGFloat {
@@ -188,6 +215,7 @@ public extension WeekView {
         for view in self.sideBarView.subviews {
             if let hourSideBarView = view as? HourSideBarView {
                 hourSideBarView.layoutIfNeeded()
+                hourSideBarView.updateLabels()
             }
         }
     }
@@ -517,6 +545,8 @@ extension FontVariables {
     fileprivate(set) static var dayLabelTodayTextColor = LayoutDefaults.dayLabelTodayTextColor
     // Minimum font for all day labels
     fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
+    // Date formats for day labels
+    fileprivate(set) static var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
 
     // Font for all hour labels
     fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont {
@@ -534,6 +564,8 @@ extension FontVariables {
     }
     // Minimum scale for all hour labels
     private(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumFontSize / LayoutDefaults.hourLabelFont.pointSize
+    // Default format for all hour labels
+    fileprivate(set) static var hourLabelDateFormat = LayoutDefaults.hourLabelDateFormat
 
     // Method updates the minimum hour scale
     private static func updateHourMinScale () {

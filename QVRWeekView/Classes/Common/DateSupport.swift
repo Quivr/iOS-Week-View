@@ -2,7 +2,6 @@ import Foundation
 
 public class DateSupport {
 
-    // TODO: REPLACE WITH CUSTOMIZABLE HOUR FORMAT GENERATION IN HOUR SIDE BAR VIEW
     public static let hoursInDay: CGFloat = 24
 
     // Returns number between 0.0 and 1.0 to indicate how much of today has passed.
@@ -48,6 +47,19 @@ public class DateSupport {
         let firstJanuaryNextYear = cal.date(from: dateComps)!
 
         return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
+    }
+
+    static func getZeroDate() -> Date {
+        var dc = DateComponents()
+        dc.era = 1
+        dc.year = 1
+        dc.month = 1
+        dc.day = 1
+        dc.hour = 0
+        dc.minute = 0
+        dc.second = 0
+        dc.nanosecond = 0
+        return Calendar.current.date(from: dc)!
     }
 
 }

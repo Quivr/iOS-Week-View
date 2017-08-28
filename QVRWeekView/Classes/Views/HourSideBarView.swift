@@ -23,6 +23,7 @@ class HourSideBarView: UIView {
     override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         setView()
+        updateLabels()
         view!.prepareForInterfaceBuilder()
     }
 
@@ -41,6 +42,21 @@ class HourSideBarView: UIView {
             for label in hourLabels {
                 label.minimumScaleFactor = FontVariables.hourLabelMinimumScale
             }
+        }
+        updateLabels()
+    }
+
+    func updateLabels () {
+        hourLabels.sort { (label1, label2) -> Bool in
+            return label1.text! < label2.text!
+        }
+
+        var date = DateSupport.getZeroDate()
+        let df = DateFormatter()
+        df.dateFormat = FontVariables.hourLabelDateFormat
+        for label in hourLabels {
+            label.text = df.string(from: date)
+            date.advanceBy(hours: 1)
         }
     }
 

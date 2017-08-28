@@ -12,7 +12,7 @@ import UIKit
 /**
  Enum stores the text mode that the day date should return.
  */
-enum TextMode {
+public enum TextMode {
     case large
     case normal
     case small
@@ -20,7 +20,7 @@ enum TextMode {
 
 /**
  Day date class is used as a reliable way to assign a day to things such as dayViewCells and dictionaries
- storing event and frame data. DayDates are not influenced by timezones and thus the date is has been given will
+ storing event and frame data. DayDates are not influenced by timezones and thus the date it has been given will
  remain. DayDates are also easy to compare, print as strings and are hashable.
  */
 class DayDate: Hashable, Comparable, CustomStringConvertible {
@@ -29,7 +29,6 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     let month: Int
     let year: Int
     let era: Int
-    static let formats: [TextMode: String] = [.large: "E d MMM yyyy", .normal: "E d MMM", .small: "d MMM"]
 
     public var description: String {
         return "\(day)-\(month)-\(year)-\(era)"
@@ -114,7 +113,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
 
     func getString(forMode mode: TextMode) -> String {
         let df = DateFormatter()
-        df.dateFormat = DayDate.formats[mode]
+        df.dateFormat = FontVariables.dayLabelDateFormats[mode]
         return df.string(from: self.dateObj)
     }
 

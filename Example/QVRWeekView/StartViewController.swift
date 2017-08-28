@@ -45,7 +45,8 @@ class StartViewController: UIViewController {
             weekView.portraitDayViewVerticalSpacing = 60
 
             weekView.hourLabelFont = UIFont.italicSystemFont(ofSize: 5)
-            weekView.hourLabelTextColor = UIColor.blue
+            weekView.hourLabelTextColor = UIColor.white
+            weekView.hourLabelDateFormat = "HH:mm"
 
             weekView.eventLabelMinimumFontSize = 3
             weekView.eventLabelTextColor = UIColor.green
@@ -54,10 +55,13 @@ class StartViewController: UIViewController {
 
             weekView.dayLabelTextColor = UIColor.white
             weekView.dayLabelDefaultFont = UIFont.italicSystemFont(ofSize: 20)
+            weekView.dayLabelTodayTextColor = UIColor.red
+            weekView.dayLabelDateFormats = [.large: "y M d", .normal: "y M", .small: "yy MM"]
+            weekView.dayLabelMinimumFontSize = 2
 
             weekView.topBarColor = UIColor.green
             weekView.defaultTopBarHeight = 70
-            weekView.sideBarWidth = 10
+            weekView.sideBarWidth = 40
             weekView.mainBackgroundColor = UIColor.blue
 
             weekView.velocityOffsetMultiplier = 0.01

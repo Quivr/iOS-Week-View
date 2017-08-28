@@ -21,9 +21,11 @@ struct LayoutDefaults {
     // Default text color of day labels
     static let dayLabelTextColor = UIColor.black
     // Text color of today day label
-    static let dayLabelTodayTextColor = UIColor(red: 0.1, green: 0.1, blue: 0.7, alpha: 1.0)
+    static let dayLabelTodayTextColor = UIColor(red: 20/255, green: 66/255, blue: 111/255, alpha: 1.0)
     // Default minimum event label scaling
     static let dayLabelMinimumFontSize = CGFloat(8)
+    // Date formats for day labels
+    static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
 
     // Default font of hour labels
     static let hourLabelFont = UIFont.boldSystemFont(ofSize: 12)
@@ -31,6 +33,8 @@ struct LayoutDefaults {
     static let hourLabelTextColor = UIColor.black
     // Default minimum event label scaling
     static let hourLabelMinimumFontSize = CGFloat(6)
+    // Default hour label format
+    static let hourLabelDateFormat: String = "HH"
 
     // Default font of events labels
     static let eventLabelFont = UIFont.boldSystemFont(ofSize: 12)

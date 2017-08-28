@@ -41,8 +41,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var yearToday: Int = DayDate.today.year
     // Current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
-    // Bool stores if the collection view just reset
-    private var didJustResetView: Bool = false
     // Bool stores if event thread is running
     private var eptRunning: Bool = false
     // Bool stores if event thread should stop
@@ -153,12 +151,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if scrollView is DayCollectionView && !decelerate {
-            scrollToNearestCell()
-        }
-    }
-
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         if scrollView is DayCollectionView && scrollingToDay {
             scrollingToDay = false
@@ -166,10 +158,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView is DayCollectionView {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
             scrollToNearestCell()
         }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollToNearestCell()
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -177,7 +173,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
@@ -460,7 +455,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         // Get old offset ratio before resizing cells
         let oldXOffset = dayCollectionView.contentOffset.x
-        let oldIndexPath = IndexPath(row: Int(round((oldXOffset/LayoutVariables.totalDayViewCellWidth))), section: 0)
         let oldWidth = dayCollectionView.contentSize.width
 
         // Update layout variables
@@ -476,7 +470,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: LayoutVariables.activeFrameWidth, height: LayoutVariables.totalContentHeight)
 
         if oldWidth != LayoutVariables.totalContentWidth {
-            let newXOffset = CGFloat(CGFloat(oldIndexPath.row)*LayoutVariables.totalDayViewCellWidth).roundUpAdditionalHalf()
+            let newXOffset = CGFloat(CGFloat(activeDay.dayInYear)*LayoutVariables.totalDayViewCellWidth).roundUpAdditionalHalf()
             dayCollectionView.contentOffset = CGPoint(x: newXOffset, y: 0)
         }
         else {
@@ -492,7 +486,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     private func resetView(withYearOffsetChange change: Int) {
-        didJustResetView = true
         activeYear += change
 
         if change < 0 {
@@ -514,7 +507,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let targetXOffset = (round(xOffset / totalDayViewWidth)*totalDayViewWidth).roundUpAdditionalHalf()
             dayCollectionView.setContentOffset(CGPoint(x: targetXOffset, y: dayCollectionView.contentOffset.y), animated: true)
         }
-        didJustResetView = false
     }
 
     private func updateDayViewCellSizeAndSpacing() {
@@ -787,6 +779,7 @@ extension DayScrollView {
      */
     func setAllDayEventHeight(to height: CGFloat) {
         LayoutVariables.allDayEventHeight = height
+        updateLayout()
     }
 
     /**
@@ -794,6 +787,7 @@ extension DayScrollView {
      */
     func setAllDayEventVerticalSpacing(to height: CGFloat) {
         LayoutVariables.allDayEventVerticalSpacing = height
+        updateLayout()
     }
 
 }

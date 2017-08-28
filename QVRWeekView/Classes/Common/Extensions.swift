@@ -128,8 +128,13 @@ public extension Date {
     }
 
     // Returns date advanced by number of seconds.
-    func advanceBy(seconds sec: Int) -> Date {
-        return self.addingTimeInterval(TimeInterval(exactly: sec)!)
+    func advancedBy(seconds sec: Double) -> Date {
+        return self.addingTimeInterval(sec)
+    }
+
+    // Returns date advanced by number of seconds.
+    mutating func advanceBy(hours hour: Double) {
+        self.addTimeInterval(hour*60*60)
     }
 }
 

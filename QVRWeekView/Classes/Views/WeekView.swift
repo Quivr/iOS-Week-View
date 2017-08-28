@@ -406,6 +406,14 @@ open class WeekView: UIView {
         Util.resetDayLabelTextMode()
     }
 
+    private func updateHourSideBarLabels() {
+        for subView in self.sideBarView.subviews {
+            if let hourSideBarView = subView as? HourSideBarView {
+                hourSideBarView.updateLabels()
+            }
+        }
+    }
+
 }
 
 /**
