@@ -93,6 +93,19 @@ public extension WeekView {
     }
 
     /**
+     Text color for today day label contained in the top bar.
+     */
+    public var dayLabelTodayTextColor: UIColor {
+        get {
+            return FontVariables.dayLabelTodayTextColor
+        }
+        set(color) {
+            FontVariables.dayLabelTodayTextColor = color
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
      Minimum font size that day label text will be resized to if label is too small.
      */
     public var dayLabelMinimumFontSize: CGFloat {
@@ -500,6 +513,8 @@ extension FontVariables {
     }
     // Text color for all day labels
     fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
+    // Text color for today day labels
+    fileprivate(set) static var dayLabelTodayTextColor = LayoutDefaults.dayLabelTextColor
     // Minimum font for all day labels
     fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
 

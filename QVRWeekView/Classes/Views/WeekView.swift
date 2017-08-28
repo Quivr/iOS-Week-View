@@ -34,10 +34,6 @@ open class WeekView: UIView {
 
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
-    // Curent day that is being displayed by the dayViewScroll.
-    public var currentDay: Date {
-        return dayScrollView.activeDay.dateObj
-    }
 
     // MARK: - PRIVATE VARIABLES -
 
@@ -167,7 +163,7 @@ open class WeekView: UIView {
      Method delegates event view taps, and sends a callback with the event id up to the WeekViewDelegate.
      */
     func eventViewWasTapped(_ eventData: EventData) {
-        self.delegate?.didTapEvent(in: self, eventId: eventData.id)
+        self.delegate?.didTapEvent(in: self, withId: eventData.id)
     }
 
     /**
@@ -179,10 +175,17 @@ open class WeekView: UIView {
     }
 
     /**
+     Method delegates active day change and sends a callback with the new day up to the WeekViewDelegate.
+     */
+    func activeDayWasChanged(to day: DayDate) {
+        self.delegate?.activeDayChanged?(in: self, to: day.dateObj)
+    }
+
+    /**
      Method delegates event requests and sends a callback with start and end Date up to the WeekViewDelegate.
      */
     func requestEvents(between startDate: DayDate, and endDate: DayDate) {
-        self.delegate?.loadNewEvents(in: self, between: startDate.dateObj, and: endDate.dateObj)
+        self.delegate?.eventLoadRequest(in: self, between: startDate.dateObj, and: endDate.dateObj)
     }
 
     // MARK: - INTERNAL FUNCTIONS -
@@ -435,13 +438,18 @@ extension WeekView {
 
 // MARK: - WEEKVIEW DELEGATE -
 
+/**
+ Protocol methods.
+ */
 @objc public protocol WeekViewDelegate: class {
     func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
-    func didTapEvent(in weekView: WeekView, eventId: String)
+    func didTapEvent(in weekView: WeekView, withId eventId: String)
 
-    func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date)
+    @objc
+    optional func activeDayChanged(in weekView: WeekView, to date: Date)
 
+    func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date)
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -

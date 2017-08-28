@@ -20,6 +20,8 @@ struct LayoutDefaults {
     static let dayLabelFont = UIFont.boldSystemFont(ofSize: 14)
     // Default text color of day labels
     static let dayLabelTextColor = UIColor.black
+    // Text color of today day label
+    static let dayLabelTodayTextColor = UIColor(red: 0.1, green: 0.1, blue: 0.7, alpha: 1.0)
     // Default minimum event label scaling
     static let dayLabelMinimumFontSize = CGFloat(8)
 

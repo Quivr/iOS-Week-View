@@ -24,13 +24,19 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // All frame calculators
     private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
-    private var yearActive: Int = DayDate.today.year {
+    private var activeYear: Int = DayDate.today.year {
         didSet {
-            LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(yearActive)
+            LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(activeYear)
         }
     }
     // Current active day
-    private(set) var activeDay: DayDate = DayDate.today
+    private var activeDay: DayDate = DayDate.today {
+        didSet {
+            if let weekView = self.superview?.superview as? WeekView {
+                weekView.activeDayWasChanged(to: self.activeDay)
+            }
+        }
+    }
     // Year todauy
     private var yearToday: Int = DayDate.today.year
     // Current period
@@ -133,28 +139,15 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
 
             if  let path = collectionView.indexPathForItem(at: cvLeft),
-                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell, !scrollingToDay {
+                let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
+                !scrollingToDay, activeDay != dayViewCell.date {
 
-                activeDay = dayViewCell.date
+                self.activeDay = dayViewCell.date
                 if activeDay > currentPeriod.endDate {
-                    // Remove redundant events
-                    for day in currentPeriod.previousPeriod.allDaysInPeriod() {
-                        allEventsData.removeValue(forKey: day)
-                    }
-                    // Set current period to next period
-                    currentPeriod = currentPeriod.nextPeriod
-                    // Load new events for new period
-                    requestEvents()
+                    changePeriod(inDirection: .forward)
                 }
                 else if activeDay < currentPeriod.startDate {
-                    // Remove redundant events
-                    for day in currentPeriod.nextPeriod.allDaysInPeriod() {
-                        allEventsData.removeValue(forKey: day)
-                    }
-                    // Set current period to previous period
-                    currentPeriod = currentPeriod.previousPeriod
-                    // Load new events for new period
-                    requestEvents()
+                    changePeriod(inDirection: .backward)
                 }
             }
         }
@@ -249,7 +242,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // MARK: - INTERNAL FUNCTIONS -
 
     func goToAndShow(dayDate: DayDate, showNow: Bool=false) {
-        yearActive = dayDate.year
+        activeYear = dayDate.year
         currentPeriod = Period(ofDate: dayDate)
         activeDay = dayDate
         scrollingToDay = true
@@ -335,10 +328,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func getDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
 
         var dayCount = (indexPath.row - DayDate.today.dayInYear)
-        let yearOffset = yearActive - yearToday
+        let yearOffset = activeYear - yearToday
         if yearOffset != 0 {
             let delta = (yearOffset / abs(yearOffset))
-            var yearCursor = yearActive
+            var yearCursor = activeYear
             while yearCursor != yearToday {
                 let days = DateSupport.getDaysInYear(yearCursor)
                 dayCount += delta*days
@@ -500,7 +493,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     private func resetView(withYearOffsetChange change: Int) {
         didJustResetView = true
-        yearActive += change
+        activeYear += change
 
         if change < 0 {
             dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
@@ -532,7 +525,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     private func processEventsData(forDayDate dayDate: DayDate) {
-
         frameCalculators[dayDate]?.cancelCalculation()
         let calc = FrameCalculator(date: dayDate)
         calc.delegate = self
@@ -540,6 +532,33 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         frameCalculators[dayDate] = calc
         calc.calculate(withData: allEventsData[dayDate])
     }
+
+    private func changePeriod(inDirection change: PeriodChange) {
+        var oldPeriod, newPeriod: Period!
+
+        if change == .forward {
+            oldPeriod = currentPeriod.previousPeriod
+            newPeriod = currentPeriod.nextPeriod
+        } else {
+            oldPeriod = currentPeriod.nextPeriod
+            newPeriod = currentPeriod.previousPeriod
+        }
+        // Remove redundant events
+        for day in oldPeriod.allDaysInPeriod() {
+            allEventsData.removeValue(forKey: day)
+        }
+        // Set current period to next period
+        currentPeriod = newPeriod
+        // Load new events for new period
+        requestEvents()
+    }
+}
+
+// MARK: - PERIOD CHANGE ENUM -
+
+fileprivate enum PeriodChange {
+    case forward
+    case backward
 }
 
 // MARK: - CUSTOMIZATION EXTENSION -
@@ -776,16 +795,6 @@ extension DayScrollView {
     func setAllDayEventVerticalSpacing(to height: CGFloat) {
         LayoutVariables.allDayEventVerticalSpacing = height
     }
-
-}
-
-// MARK: - DAYSCROLLVIEW DELEGATE -
-
-protocol DayScrollViewDelegate: class {
-
-    func dayCellWasLongPressed(sender: DayScrollView, dayCell: DayViewCell)
-
-    func eventWasTapped(sender: DayScrollView, event: EventData)
 
 }
 

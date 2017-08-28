@@ -135,7 +135,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
 
     }
 
-    func didTapEvent(in weekView: WeekView, eventId: String) {
+    func didTapEvent(in weekView: WeekView, withId eventId: String) {
         let alert = UIAlertController(title: "Tapped event", message: "\(eventId)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (_) -> Void in
@@ -157,7 +157,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         self.present(alert, animated: true, completion: nil)
     }
 
-    func loadNewEvents(in weekView: WeekView, between startDate: Date, and endDate: Date) {
+    func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date) {
 
         let dates = DateSupport.getAllDates(between: startDate, and: endDate)
 
@@ -194,6 +194,10 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
             }
         }
         weekView.loadEvents(withData: allEvents.isEmpty ? nil : Array(allEvents.values))
+    }
+
+    func activeDayChanged(in weekView: WeekView, to date: Date) {
+        // OPTIONAL
     }
 
     private func dateWithIntervalFromNow(_ interval: Int) -> Date {
