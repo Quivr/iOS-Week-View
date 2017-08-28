@@ -377,7 +377,7 @@ open class WeekView: UIView {
      */
     private func updateDayLabel(_ dayLabel: UILabel, withDate dayDate: DayDate) {
         dayLabel.font = FontVariables.dayLabelCurrentFont
-        dayLabel.textColor = FontVariables.dayLabelTextColor
+        dayLabel.textColor = dayDate == DayDate.today ? FontVariables.dayLabelTodayTextColor : FontVariables.dayLabelTextColor
         if let newFontSize = Util.assignTextAndResizeFont(forLabel: dayLabel, andDate: dayDate) {
             FontVariables.dayLabelCurrentFontSize = newFontSize
             updateVisibleDayLabels()

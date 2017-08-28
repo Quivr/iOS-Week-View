@@ -514,7 +514,7 @@ extension FontVariables {
     // Text color for all day labels
     fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
     // Text color for today day labels
-    fileprivate(set) static var dayLabelTodayTextColor = LayoutDefaults.dayLabelTextColor
+    fileprivate(set) static var dayLabelTodayTextColor = LayoutDefaults.dayLabelTodayTextColor
     // Minimum font for all day labels
     fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
 

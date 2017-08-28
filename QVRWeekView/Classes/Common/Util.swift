@@ -18,8 +18,6 @@ struct Util {
         // Make as daylabel
         let labelFrame = Util.generateDayLabelFrame(forIndex: indexPath)
         let dayLabel = UILabel(frame: labelFrame)
-        dayLabel.font = FontVariables.dayLabelCurrentFont
-        dayLabel.textColor = FontVariables.dayLabelTextColor
         dayLabel.textAlignment = .center
         return dayLabel
     }
