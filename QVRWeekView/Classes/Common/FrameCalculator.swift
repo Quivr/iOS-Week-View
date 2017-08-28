@@ -55,7 +55,7 @@ class FrameCalculator {
 
             var eventFrames: [EventFrame] = []
             var sweepState = Set<EventFrame>()
-            var possibleFrameCollisions: [EventFrame: [EventFrame]] = [:]
+            var frameCollisions: [EventFrame: [EventFrame]] = [:]
 
             var frameIndices: [EventFrame: Int] = [:]
             var areCollisions = false
@@ -76,10 +76,10 @@ class FrameCalculator {
                         newWidth = newWidth < minWidth ? newWidth : minWidth
                         for frame in sweepState {
                             frame.width = newWidth < frame.width ? newWidth : frame.width
-                            if possibleFrameCollisions[point.frame] != nil { possibleFrameCollisions[point.frame]!.append(frame) }
-                            else { possibleFrameCollisions[point.frame] = [frame] }
-                            if possibleFrameCollisions[frame] != nil { possibleFrameCollisions[frame]!.append(point.frame) }
-                            else { possibleFrameCollisions[frame] = [point.frame] }
+                            if frameCollisions[point.frame] != nil { frameCollisions[point.frame]!.append(frame) }
+                            else { frameCollisions[point.frame] = [frame] }
+                            if frameCollisions[frame] != nil { frameCollisions[frame]!.append(point.frame) }
+                            else { frameCollisions[frame] = [point.frame] }
                         }
                         point.frame.width = newWidth
                     }
@@ -99,7 +99,7 @@ class FrameCalculator {
             var frames: [String: CGRect]?
             if areCollisions {
                 // Register possible collisions as constraints
-                for (frame1, frameList) in possibleFrameCollisions {
+                for (frame1, frameList) in frameCollisions {
                     let index1 = frameIndices[frame1]!
                     for frame2 in frameList {
                         let index2 = frameIndices[frame2]!
@@ -252,23 +252,19 @@ fileprivate class ConstraintSolver {
 
     // Trigger the backtrack algorithm and check if solution is valid.
     func backtrack() -> [String: CGRect]? {
-        if !backtrack(depth: 0) && !cancelled {
-            print("BACKTRACK FAILED ON VARIABLES: \(variables)")
-        }
-        if cancelled {
+        switch backtrack(depth: 0) {
+        case .success:
+            return exportSolution()
+        case .cancelled:
             return nil
-        }
-        else {
-            var solution: [String: CGRect] = [:]
-            for vari in variables {
-                solution[vari.id] = vari.cgRect
-            }
-            return solution
+        case .running, .timeout:
+            print("timeout or fail")
+            return backupAlgorithm()
         }
     }
 
     // Backtracking algorithm/
-    private func backtrack(depth: Int) -> Bool {
+    private func backtrack(depth: Int) -> BacktrackState {
 
         let domain = domains[depth].sorted(by: { (v1, v2) -> Bool in
             if v1.width.isEqual(to: v2.width, decimalPlaces: 12) {
@@ -277,9 +273,13 @@ fileprivate class ConstraintSolver {
         })
 
         for value in domain {
-            if Date.timeIntervalSinceReferenceDate-startTime > 5.0 || cancelled {
-                return true
+            if Date.timeIntervalSinceReferenceDate-startTime > 0.95 {
+                return .timeout
             }
+            if cancelled {
+                return .cancelled
+            }
+
             let activeFrame = variables[depth]
             activeFrame.applyValue(value)
             var noFails = true
@@ -293,17 +293,23 @@ fileprivate class ConstraintSolver {
             }
             if noFails {
                 if depth == (n-1) {
-                    return true
+                    return .success
                 }
                 else {
                     let nextDepth = depth + 1
-                    if backtrack(depth: nextDepth) {
-                        return true
+                    let result = backtrack(depth: nextDepth)
+                    if result != .running {
+                        return result
                     }
                 }
             }
         }
-        return false
+        return .running
+    }
+
+    private func backupAlgorithm() -> [String: CGRect] {
+        // TODO: IMPLEMENT
+        return exportSolution()
     }
 
     // Check if constraint is satisfied between two depths.
@@ -331,6 +337,21 @@ fileprivate class ConstraintSolver {
     // Method triggers thread cancellation
     fileprivate func cancel() {
         self.cancelled = true
+    }
+
+    private func exportSolution() -> [String: CGRect] {
+        var solution: [String: CGRect] = [:]
+        for vari in variables {
+            solution[vari.id] = vari.cgRect
+        }
+        return solution
+    }
+
+    private enum BacktrackState {
+        case running
+        case timeout
+        case cancelled
+        case success
     }
 }
 
