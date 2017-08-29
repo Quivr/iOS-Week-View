@@ -360,9 +360,9 @@ fileprivate class ConstraintSolver {
         return .running
     }
 
-    private func backupAlgorithm() -> [String: CGRect] {
+    private func backupAlgorithm() -> [String: CGRect]? {
         var solution: [String: CGRect] = [:]
-        for collisionGroup in collisionGroups {
+        for collisionGroup in collisionGroups where !cancelled {
             let colCount = CGFloat(collisionGroup.count)
             var maxColSize = 0
             for col in collisionGroup {
@@ -380,6 +380,9 @@ fileprivate class ConstraintSolver {
                     colIndex += 1
                 }
             }
+        }
+        if cancelled {
+            return nil
         }
         return solution
     }
