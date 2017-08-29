@@ -391,8 +391,8 @@ open class WeekView: UIView {
 
         if discardedDayLabels.count > maxAllowed {
             let overflow = discardedDayLabels.count - maxAllowed
-            for i in 0...overflow {
-                discardedDayLabels.remove(at: i)
+            for _ in 0...overflow {
+                discardedDayLabels.removeFirst()
             }
         }
     }
