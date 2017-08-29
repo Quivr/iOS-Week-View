@@ -33,6 +33,17 @@ public class DateSupport {
         })
     }
 
+    public static func getDate(fromDayOfYear dayOfYear: Int, forYear year: Int) -> Date {
+        let cal = Calendar.current
+        var dc = DateComponents()
+        dc.era = Date().getEra()
+        dc.year = year
+        dc.month = 1
+        dc.day = 1
+        let firstDayOfYear = cal.date(from: dc)!
+        return cal.date(byAdding: .day, value: dayOfYear, to: firstDayOfYear)!
+    }
+
     // Gets the number of days in the year.
     public static func getDaysInYear(_ year: Int) -> Int {
 
@@ -45,7 +56,6 @@ public class DateSupport {
 
         dateComps.year = year + 1
         let firstJanuaryNextYear = cal.date(from: dateComps)!
-
         return cal.dateComponents([.day], from: firstJanuaryThisYear, to: firstJanuaryNextYear).day!
     }
 

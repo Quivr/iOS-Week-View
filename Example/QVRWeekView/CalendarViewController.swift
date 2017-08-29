@@ -26,7 +26,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     @IBAction func testButtonPress(_ sender: Any) {
         let df = DateFormatter()
         df.dateFormat="yyyy-MM-dd"
-        let date = df.date(from: "2019-12-15")!
+        let date = df.date(from: "2020-01-03")!
         weekView.showDay(withDate: date)
     }
 

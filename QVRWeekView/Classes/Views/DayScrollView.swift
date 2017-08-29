@@ -127,7 +127,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
 
         if let collectionView = scrollView as? DayCollectionView {
-            print(scrollView.contentOffset.x)
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
                 resetView(withYearOffsetChange: -1)
             }
@@ -136,7 +135,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
 
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
-
             if  let path = collectionView.indexPathForItem(at: cvLeft),
                 let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
                 !scrollingToDay, activeDay != dayViewCell.date {
@@ -322,26 +320,11 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func getDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
-
-        var dayCount = (indexPath.row - DayDate.today.dayInYear)
-        let yearOffset = activeYear - yearToday
-        if yearOffset != 0 {
-            let delta = (yearOffset / abs(yearOffset))
-            var yearCursor = activeYear
-            while yearCursor != yearToday {
-                let days = DateSupport.getDaysInYear(yearCursor)
-                dayCount += delta*days
-                yearCursor -= delta
-            }
-        }
-        let date = DateSupport.getDate(forDaysInFuture: dayCount)
+        let date = DateSupport.getDate(fromDayOfYear: indexPath.row, forYear: activeYear)
         return DayDate(date: date)
     }
 
     func overwriteAllEvents(withData eventsData: [EventData]!) {
-
-        print("received events data")
-
         guard eventsData != nil else {
             return
         }
@@ -436,13 +419,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func requestEvents() {
         if let weekView = self.superview?.superview as? WeekView, !scrollingToDay {
-            print(activeDay)
             self.currentPeriod = Period(ofDate: activeDay)
             let startDate = currentPeriod.startDate
             let endDate = currentPeriod.endDate
-            print("requesting \(startDate) and \(endDate)")
             for (date, calc) in frameCalculators where date < startDate || date > endDate {
-                print("cancelling \(date)")
                 calc.cancelCalculation()
             }
             weekView.requestEvents(between: startDate, and: endDate)

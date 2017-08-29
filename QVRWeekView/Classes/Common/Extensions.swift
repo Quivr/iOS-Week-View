@@ -29,6 +29,11 @@ public extension Date {
         return (Calendar.current.component(.weekday, from: self)-1)
     }
 
+    // Get era
+    func getEra() -> Int {
+        return Calendar.current.component(.era, from: self)
+    }
+
     // Returns a date with day of self and time at 12pm
     func getDayValue() -> Date {
         var todayComponents = self.getDayComponents()
