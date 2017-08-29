@@ -127,6 +127,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
 
         if let collectionView = scrollView as? DayCollectionView {
+            print(scrollView.contentOffset.x)
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
                 resetView(withYearOffsetChange: -1)
             }
@@ -141,11 +142,11 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 !scrollingToDay, activeDay != dayViewCell.date {
 
                 self.activeDay = dayViewCell.date
-                if activeDay > currentPeriod.endDate {
-                    changePeriod(inDirection: .forward)
+                if activeDay > currentPeriod.lateMidLimit {
+                    updatePeriod()
                 }
-                else if activeDay < currentPeriod.startDate {
-                    changePeriod(inDirection: .backward)
+                else if activeDay < currentPeriod.earlyMidLimit {
+                    updatePeriod()
                 }
             }
         }
@@ -339,6 +340,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func overwriteAllEvents(withData eventsData: [EventData]!) {
 
+        print("received events data")
+
         guard eventsData != nil else {
             return
         }
@@ -384,8 +387,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
 
             // Get sequence of active days
-            let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.previousPeriod.startDate,
-                                                         and: self.currentPeriod.nextPeriod.endDate)
+            let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.startDate,
+                                                         and: self.currentPeriod.endDate)
             // Iterate through all old days that have not been checked yet to look for inactive days
             for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
                 for (_, oldEvent) in oldEvents where Util.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
@@ -433,9 +436,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func requestEvents() {
         if let weekView = self.superview?.superview as? WeekView, !scrollingToDay {
-            let startDate = currentPeriod.previousPeriod.startDate
-            let endDate = currentPeriod.nextPeriod.endDate
+            print(activeDay)
+            self.currentPeriod = Period(ofDate: activeDay)
+            let startDate = currentPeriod.startDate
+            let endDate = currentPeriod.endDate
+            print("requesting \(startDate) and \(endDate)")
             for (date, calc) in frameCalculators where date < startDate || date > endDate {
+                print("cancelling \(date)")
                 calc.cancelCalculation()
             }
             weekView.requestEvents(between: startDate, and: endDate)
@@ -525,22 +532,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         calc.calculate(withData: allEventsData[dayDate])
     }
 
-    private func changePeriod(inDirection change: PeriodChange) {
-        var oldPeriod, newPeriod: Period!
-
-        if change == .forward {
-            oldPeriod = currentPeriod.previousPeriod
-            newPeriod = currentPeriod.nextPeriod
-        } else {
-            oldPeriod = currentPeriod.nextPeriod
-            newPeriod = currentPeriod.previousPeriod
-        }
-        // Remove redundant events
-        for day in oldPeriod.allDaysInPeriod() {
-            allEventsData.removeValue(forKey: day)
-        }
-        // Set current period to next period
-        currentPeriod = newPeriod
+    private func updatePeriod() {
+        // Set current period to new period
+        self.currentPeriod = Period(ofDate: self.activeDay)
         // Load new events for new period
         requestEvents()
     }

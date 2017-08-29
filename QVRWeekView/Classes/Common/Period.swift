@@ -21,35 +21,27 @@ class Period: CustomStringConvertible {
         return "[\(startDate) -> \(endDate)]"
     }
 
-    lazy var nextPeriod: Period = {
-        return Period(ofDate: self.endDate.getDayDateWith(daysAdded: 1))
+    lazy var earlyMidLimit: DayDate = {
+        return self.startDate.getDayDateWith(daysAdded: 7)
     }()
 
-    lazy var previousPeriod: Period = {
-        return Period(ofDate: self.startDate.getDayDateWith(daysAdded: -1))
+    lazy var lateMidLimit: DayDate = {
+        return self.endDate.getDayDateWith(daysAdded: -7)
     }()
-
-    lazy var surroundingPeriods: [Period] = {
-        return [self.previousPeriod, self, self.nextPeriod]
-    }()
-
-    init(ofDate date: DayDate) {
-        self.startDate = date.getDayDateMonday()
-        self.endDate = startDate.getDayDateWith(daysAdded: 6)
-    }
 
     init(startDate: DayDate, endDate: DayDate) {
         self.startDate = startDate
         self.endDate = endDate
     }
 
+    convenience init(ofDate date: DayDate) {
+        let startThisWeek = date.getDayDateMonday()
+        self.init(startDate: startThisWeek.getDayDateWith(daysAdded: -1).getDayDateMonday(),
+                  endDate: startThisWeek.getDayDateWith(daysAdded: 13))
+    }
+
     func allDaysInPeriod() -> [DayDate] {
-        let dates = DateSupport.getAllDates(between: startDate.dateObj, and: endDate.dateObj)
-        var dayDates: [DayDate] = []
-        for date in dates {
-            dayDates.append(DayDate(date: date))
-        }
-        return dayDates
+        return DateSupport.getAllDayDates(between: startDate, and: endDate)
     }
 
 }
