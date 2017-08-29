@@ -16,10 +16,12 @@ class FrameCalculator {
     let date: DayDate
     // Width of the current day view cell.
     var width: CGFloat {
+        // Use default values as consistent value, this allows them to be resized easily.
         return LayoutDefaults.dayViewCellWidth
     }
     // Height of the current day view cells.
     var height: CGFloat {
+        // Use default values as consistent value, this allows them to be resized easily.
         return LayoutDefaults.dayViewCellHeight
     }
     // Delegate
@@ -56,6 +58,8 @@ class FrameCalculator {
             var eventFrames: [EventFrame] = []
             var sweepState = Set<EventFrame>()
             var frameCollisions: [EventFrame: [EventFrame]] = [:]
+            var collisionGroups: [[[EventFrame]]] = []
+            var activeGroup: [[EventFrame]] = []
 
             var frameIndices: [EventFrame: Int] = [:]
             var areCollisions = false
@@ -64,6 +68,7 @@ class FrameCalculator {
             // Sweep through all frames from top to bottom
             for point in endPoints {
                 if point.isStart {
+                    let newFrame = point.frame
                     // If collisions, resize and reposition the frames.
                     if !sweepState.isEmpty {
                         if !areCollisions { areCollisions = true }
@@ -83,12 +88,55 @@ class FrameCalculator {
                         }
                         point.frame.width = newWidth
                     }
-                    sweepState.insert(point.frame)
+                    if activeGroup.isEmpty {
+                        activeGroup.append([point.frame])
+                        for frame in sweepState {
+                            activeGroup.append([frame])
+                        }
+                    }
+                    else {
+                        // Stores index of column to be added to
+                        var addToIndex: Int?
+                        // Counter keeps index of columns
+                        var cIndex = 0
+                        // Iterate through all columns in group
+                        for column in activeGroup {
+                            // Stores if this column is valid for the new frame
+                            var validColumn = true
+                            // If a frame in column is currently in the sweep state then the newframe might collide with it.
+                            // So this column is not valid.
+                            for frame in column where sweepState.contains(frame) {
+                                validColumn = false
+                            }
+                            // If this column is valid store the addToIndex
+                            if validColumn {
+                                addToIndex = cIndex
+                            }
+                            // Increment counter
+                            cIndex += 1
+                        }
+                        // If an index was found, add frame to column in that index
+                        if let index1 = addToIndex {
+                            var col = activeGroup[index1]
+                            col.append(newFrame)
+                            activeGroup[index1] = col
+                        }
+                            // If no index was found append a new column
+                        else {
+                            activeGroup.append([newFrame])
+                        }
+                    }
+                    sweepState.insert(newFrame)
                 }
                 else {
                     // Remove from sweepingline and add to eventFrames
                     let frame = point.frame
                     sweepState.remove(frame)
+                    // If sweepstate is now empty then the current active group is finished, append it to collisonGroups and reset active group.
+                    if sweepState.isEmpty {
+                        collisionGroups.append(activeGroup)
+                        activeGroup.removeAll()
+                    }
                     eventFrames.append(frame)
                     domains.append(self.domain(forFrame: frame, .subOptimal))
                     frameIndices[frame] = index
@@ -108,7 +156,7 @@ class FrameCalculator {
                 }
 
                 // Create constraint solver and run backtracking algorithm
-                self.csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames)
+                self.csp = ConstraintSolver(domains: domains, constraints: constraints, variables: eventFrames, backup: collisionGroups, width: self.width)
                 if !self.cancelFlag {
                     frames = self.csp?.backtrack()
                 }
@@ -236,18 +284,24 @@ fileprivate class ConstraintSolver {
     let constraints: [[Bool]]
     // Number of variables.
     let n: Int
+    // Width of day
+    let width: CGFloat
+    // Backup collision groups
+    let collisionGroups: [[[EventFrame]]]
     // Start time of the algorithm.
     let startTime: TimeInterval
     // Bool stores a cancellation flag.
     private var cancelled: Bool = false
 
     // Init with given domains, constraintsa and variables.
-    init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame]) {
+    init (domains: [Set<WidthPosValue>], constraints: [[Bool]], variables: [EventFrame], backup collisionGroups: [[[EventFrame]]], width: CGFloat) {
         self.variables = variables
         self.constraints = constraints
         self.domains = domains
         self.n = variables.count
         self.startTime = Date.timeIntervalSinceReferenceDate
+        self.collisionGroups = collisionGroups
+        self.width = width
     }
 
     // Trigger the backtrack algorithm and check if solution is valid.
@@ -258,7 +312,6 @@ fileprivate class ConstraintSolver {
         case .cancelled:
             return nil
         case .running, .timeout:
-            print("timeout or fail")
             return backupAlgorithm()
         }
     }
@@ -273,7 +326,7 @@ fileprivate class ConstraintSolver {
         })
 
         for value in domain {
-            if Date.timeIntervalSinceReferenceDate-startTime > 0.95 {
+            if Date.timeIntervalSinceReferenceDate-startTime > 0.75 {
                 return .timeout
             }
             if cancelled {
@@ -308,8 +361,27 @@ fileprivate class ConstraintSolver {
     }
 
     private func backupAlgorithm() -> [String: CGRect] {
-        // TODO: IMPLEMENT
-        return exportSolution()
+        var solution: [String: CGRect] = [:]
+        for collisionGroup in collisionGroups {
+            let colCount = CGFloat(collisionGroup.count)
+            var maxColSize = 0
+            for col in collisionGroup {
+                maxColSize = col.count > maxColSize ? col.count : maxColSize
+            }
+            for i in 0...maxColSize {
+                var colIndex = CGFloat(0)
+                for col in collisionGroup {
+                    if col.count >= i+1 {
+                        let frame = col[i]
+                        frame.width = width / colCount
+                        frame.x = (colIndex*width) / colCount
+                        solution[frame.id] = frame.cgRect
+                    }
+                    colIndex += 1
+                }
+            }
+        }
+        return solution
     }
 
     // Check if constraint is satisfied between two depths.
