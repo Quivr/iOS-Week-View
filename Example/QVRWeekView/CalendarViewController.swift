@@ -145,6 +145,13 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     func didTapEvent(in weekView: WeekView, withId eventId: String) {
         let alert = UIAlertController(title: "Tapped event", message: "\(eventId)", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Change color", style: .default, handler: { (_) in
+            let id = Int(eventId)!
+            let event = self.allEvents[id]!
+            let newEvent = event.remakeEventData(withColor: UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5))
+            self.allEvents[id] = newEvent
+            weekView.loadEvents(withData: Array(self.allEvents.values))
+        }))
         alert.addAction(UIAlertAction(title: "Remove", style: .destructive, handler: { (_) -> Void in
             self.allEvents[Int(eventId)!] = nil
             self.eventsSortedByDay.removeAll()

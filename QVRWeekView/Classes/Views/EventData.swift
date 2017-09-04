@@ -115,7 +115,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
      Convenience initializer.
      */
     public convenience init() {
-        self.init(id: -1, title: "null", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
+        self.init(id: -1, title: "New Item", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
     }
 
     // Static equal comparison operator
@@ -125,7 +125,8 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             (lhs.endDate == rhs.endDate) &&
             (lhs.title == rhs.title) &&
             (lhs.location == rhs.location) &&
-            (lhs.allDay == rhs.allDay)
+            (lhs.allDay == rhs.allDay) &&
+            (lhs.color.isEqual(rhs.color))
     }
 
     /**
@@ -236,13 +237,19 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         return splitEvents
     }
 
-    func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
+    public func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
         let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
 
-    func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
+    public func remakeEventData(withColor color: UIColor) -> EventData {
+        let newEvent = EventData(id: self.id, title: self.title, startDate: self.startDate, endDate: self.endDate, location: self.location, color: color, allDay: self.allDay)
+        newEvent.configureGradient(self.gradientLayer)
+        return newEvent
+    }
+
+    public func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
         let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
