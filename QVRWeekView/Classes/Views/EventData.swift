@@ -53,7 +53,6 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         let eventTextLayer = CATextLayer()
         eventTextLayer.isWrapped = true
         eventTextLayer.contentsScale = UIScreen.main.scale
-        eventTextLayer.string = self.getDisplayString()
         layer.addSublayer(eventTextLayer)
         return layer
     }()
@@ -194,10 +193,11 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                             andInfoFont: FontVariables.eventLabelInfoFont.withSize(fontSize))
                     }
                     CATransaction.setDisableActions(true)
+                } else {
+                    text.string = self.getDisplayString()
                 }
                 text.frame = frame
             }
-
         }
         return self.layer
     }
