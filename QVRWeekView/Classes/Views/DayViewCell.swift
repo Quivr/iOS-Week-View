@@ -128,18 +128,19 @@ class DayViewCell: UICollectionViewCell {
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
         let yTouch = sender.location(ofTouch: 0, in: self).y
+        let previewPosition = self.previewPosition(forYCoordinate: yTouch)
         if sender.state == .began {
-            self.makePreviewLayer(at: yTouch)
+            self.makePreviewLayer(at: previewPosition)
         }
         else if sender.state == .ended {
             self.removePreviewLayer()
-            let time = Double((yTouch/self.frame.height)*24).roundToNearestQuarter()
+            let time = Double((previewPosition.y/self.frame.height)*24)
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
         else if sender.state == .changed {
-            self.movePreviewLayer(to: yTouch)
+            self.movePreviewLayer(to: previewPosition)
         }
     }
 
@@ -259,21 +260,32 @@ class DayViewCell: UICollectionViewCell {
         }
     }
 
-    private func makePreviewLayer(at yPosition: CGFloat) {
+    private func makePreviewLayer(at position: CGPoint) {
         self.removePreviewLayer()
-        let layer = CAShapeLayer()
-        layer.path = CGPath(rect: CGRect(x: 0, y: 0, width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours)), transform: nil)
-        layer.position = CGPoint(x: 0, y: yPosition-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
-        layer.fillColor = LayoutVariables.previewEventColor.cgColor
-        self.layer.addSublayer(layer)
-        self.previewLayer = layer
+        let previewLayer = CAShapeLayer()
+        let previewRect = CGRect(x: 0, y: 0, width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
+        previewLayer.path = CGPath(rect: previewRect, transform: nil)
+        previewLayer.position = position
+        previewLayer.fillColor = LayoutVariables.previewEventColor.cgColor
+
+        let textLayer = CATextLayer()
+        textLayer.frame = previewRect
+        let mainFontAttributes: [String: Any] = [NSFontAttributeName: FontVariables.eventLabelFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
+        let mainAttributedString = NSMutableAttributedString(string: LayoutVariables.previewEventText, attributes: mainFontAttributes)
+        textLayer.string = mainAttributedString
+        textLayer.isWrapped = true
+        textLayer.contentsScale = UIScreen.main.scale
+
+        previewLayer.addSublayer(textLayer)
+        self.layer.addSublayer(previewLayer)
+        self.previewLayer = previewLayer
     }
 
-    private func movePreviewLayer(to yPosition: CGFloat) {
+    private func movePreviewLayer(to position: CGPoint) {
         if let layer = self.previewLayer {
             CATransaction.begin()
             CATransaction.setAnimationDuration(0.0)
-            layer.position = CGPoint(x: 0, y: yPosition-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
+            layer.position = position
             CATransaction.commit()
         }
     }
@@ -283,6 +295,10 @@ class DayViewCell: UICollectionViewCell {
             previousPreview.removeFromSuperlayer()
             self.previewLayer = nil
         }
+    }
+
+    private func previewPosition(forYCoordinate yCoord: CGFloat) -> CGPoint {
+        return CGPoint(x: 0, y: yCoord-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
     }
 
     private static func genUniqueId() -> Int {
