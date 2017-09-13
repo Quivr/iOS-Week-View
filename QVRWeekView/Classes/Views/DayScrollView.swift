@@ -397,16 +397,19 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 self.eptSafeContinue = false
                 self.allEventsData = newEventsData
                 self.allDayEvents = newAllDayEvents
-                for cell in self.dayCollectionView.visibleCells {
-                    if let dayViewCell = cell as? DayViewCell,
-                       let weekView = self.superview?.superview as? WeekView {
-                        let dayDate = dayViewCell.date
-                        let allThisDayEvents = self.allDayEvents[dayDate]
-                        if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
-                            weekView.removeAllDayEvents(forDate: dayDate)
-                        }
-                        else if allThisDayEvents != nil {
-                            weekView.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
+                if let weekView = self.superview?.superview as? WeekView {
+                    for cell in self.dayCollectionView.visibleCells {
+                        if let dayViewCell = cell as? DayViewCell {
+                            let dayDate = dayViewCell.date
+                            let allThisDayEvents = self.allDayEvents[dayDate]
+                            if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
+                                weekView.removeAllDayEvents(forDate: dayDate)
+                                dayViewCell.setNeedsLayout()
+                            }
+                            else if allThisDayEvents != nil {
+                                weekView.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
+                                dayViewCell.setNeedsLayout()
+                            }
                         }
                     }
                 }

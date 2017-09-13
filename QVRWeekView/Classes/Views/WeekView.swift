@@ -83,7 +83,11 @@ open class WeekView: UIView {
      Updates displayed time and requests event when moving to window.
      */
     open override func didMoveToWindow() {
-        updateTimeDisplayed()
+        // Update the displayed time
+        self.updateTimeDisplayed()
+        // Redraw events (primarily to remove a possible preview)
+        self.redrawEvents()
+        // Request new events
         dayScrollView.requestEvents()
     }
 

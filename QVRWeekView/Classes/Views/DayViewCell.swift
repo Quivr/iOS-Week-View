@@ -137,11 +137,13 @@ class DayViewCell: UICollectionViewCell {
             let time = Double((previewPosition.y/self.frame.height)*24)
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
-            previewVisible = false
+            self.previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
         else if sender.state == .changed {
             self.movePreviewLayer(to: previewPosition)
+        } else if sender.state == .cancelled || sender.state == .failed {
+            self.previewVisible = false
         }
     }
 
@@ -257,7 +259,7 @@ class DayViewCell: UICollectionViewCell {
         }
         if let pLayer = self.previewLayer {
             pLayer.removeFromSuperlayer()
-            if (previewVisible) {
+            if previewVisible {
                 self.layer.addSublayer(pLayer)
             }
         }
