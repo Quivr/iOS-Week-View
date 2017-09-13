@@ -25,6 +25,7 @@ class DayViewCell: UICollectionViewCell {
     private var eventLayers: [CAShapeLayer] = []
     // Layer of the preview event
     private var previewLayer: CAShapeLayer?
+    private var previewVisible: Bool = false
     // Previous height
     private var lastResizeHeight: CGFloat!
     // Previous width
@@ -133,10 +134,10 @@ class DayViewCell: UICollectionViewCell {
             self.makePreviewLayer(at: previewPosition)
         }
         else if sender.state == .ended {
-            self.removePreviewLayer()
             let time = Double((previewPosition.y/self.frame.height)*24)
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
+            previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
         else if sender.state == .changed {
@@ -256,7 +257,9 @@ class DayViewCell: UICollectionViewCell {
         }
         if let pLayer = self.previewLayer {
             pLayer.removeFromSuperlayer()
-            self.layer.addSublayer(pLayer)
+            if (previewVisible) {
+                self.layer.addSublayer(pLayer)
+            }
         }
     }
 
@@ -279,6 +282,7 @@ class DayViewCell: UICollectionViewCell {
         previewLayer.addSublayer(textLayer)
         self.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
+        self.previewVisible = true
     }
 
     private func movePreviewLayer(to position: CGPoint) {
@@ -294,6 +298,7 @@ class DayViewCell: UICollectionViewCell {
         if let previousPreview = self.previewLayer {
             previousPreview.removeFromSuperlayer()
             self.previewLayer = nil
+            self.previewVisible = false
         }
     }
 

@@ -192,10 +192,10 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                             withMainFont: FontVariables.eventLabelFont.withSize(fontSize),
                             andInfoFont: FontVariables.eventLabelInfoFont.withSize(fontSize))
                     }
-                    CATransaction.setDisableActions(true)
                 } else {
                     text.string = self.getDisplayString()
                 }
+                CATransaction.setDisableActions(true)
                 text.frame = frame
             }
         }

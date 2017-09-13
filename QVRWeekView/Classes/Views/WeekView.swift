@@ -125,10 +125,24 @@ open class WeekView: UIView {
      Updates the time displayed on the calendar
      */
     public func updateTimeDisplayed() {
-        let dayCollectionView = dayScrollView.dayCollectionView!
-        for cell in dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell {
-                dayViewCell.updateTimeView()
+        if let dayCollectionView = dayScrollView.dayCollectionView {
+            for cell in dayCollectionView.visibleCells {
+                if let dayViewCell = cell as? DayViewCell {
+                    dayViewCell.updateTimeView()
+                }
+            }
+        }
+    }
+
+    /**
+     Redraws all events in the dayview cells
+     */
+    public func redrawEvents() {
+        if let dayCollectionView = dayScrollView.dayCollectionView {
+            for cell in dayCollectionView.visibleCells {
+                if let dayViewCell = cell as? DayViewCell {
+                    dayViewCell.setNeedsLayout()
+                }
             }
         }
     }
