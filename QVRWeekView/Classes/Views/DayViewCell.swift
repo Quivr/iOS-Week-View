@@ -23,10 +23,16 @@ class DayViewCell: UICollectionViewCell {
     private var separatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
     private var eventLayers: [CAShapeLayer] = []
+    // Layer of the preview event
+    private var previewLayer: CAShapeLayer?
     // Previous height
     private var lastResizeHeight: CGFloat!
     // Previous width
     private var lastResizeWidth: CGFloat!
+    // Height of an hour
+    private var hourHeight: CGFloat {
+        return self.bounds.height/DateSupport.hoursInDay
+    }
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
@@ -83,13 +89,11 @@ class DayViewCell: UICollectionViewCell {
     }
 
     func setDate(`as` date: DayDate) {
-
         self.date = date
         updateTimeView()
     }
 
     func updateTimeView() {
-
         if date.isToday() {
             self.overlayView.isHidden = false
             self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
@@ -123,21 +127,24 @@ class DayViewCell: UICollectionViewCell {
     }
 
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
-
+        let yTouch = sender.location(ofTouch: 0, in: self).y
         if sender.state == .began {
-
-            let yTouch = sender.location(ofTouch: 0, in: self).y
+            self.makePreviewLayer(at: yTouch)
+        }
+        else if sender.state == .ended {
+            self.removePreviewLayer()
             let time = Double((yTouch/self.frame.height)*24).roundToNearestQuarter()
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
+        else if sender.state == .changed {
+            self.movePreviewLayer(to: yTouch)
+        }
     }
 
     func tapAction(_ sender: UITapGestureRecognizer) {
-
         let tapPoint = sender.location(in: self)
-
         for (id, frame) in eventFrames {
             if frame.contains(tapPoint) && eventsData[id] != nil {
                 self.delegate?.eventViewWasTappedIn(self, withEventData: eventsData[id]!)
@@ -173,7 +180,6 @@ class DayViewCell: UICollectionViewCell {
         }
         self.separatorLayers.removeAll()
 
-        let hourHeight = self.bounds.height/DateSupport.hoursInDay
         let dottedPathCombine = CGMutablePath()
         let linePathCombine = CGMutablePath()
 
@@ -219,7 +225,6 @@ class DayViewCell: UICollectionViewCell {
     }
 
     private func generateEventLayers(andResizeText resizeText: Bool = false) {
-
         // Remove all shape and text layers from superlayer
         for layer in self.eventLayers {
             layer.removeFromSuperlayer()
@@ -247,6 +252,36 @@ class DayViewCell: UICollectionViewCell {
 
             self.eventLayers.append(layer)
             self.layer.addSublayer(layer)
+        }
+        if let pLayer = self.previewLayer {
+            pLayer.removeFromSuperlayer()
+            self.layer.addSublayer(pLayer)
+        }
+    }
+
+    private func makePreviewLayer(at yPosition: CGFloat) {
+        self.removePreviewLayer()
+        let layer = CAShapeLayer()
+        layer.path = CGPath(rect: CGRect(x: 0, y: 0, width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours)), transform: nil)
+        layer.position = CGPoint(x: 0, y: yPosition-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
+        layer.fillColor = LayoutVariables.previewEventColor.cgColor
+        self.layer.addSublayer(layer)
+        self.previewLayer = layer
+    }
+
+    private func movePreviewLayer(to yPosition: CGFloat) {
+        if let layer = self.previewLayer {
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(0.0)
+            layer.position = CGPoint(x: 0, y: yPosition-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
+            CATransaction.commit()
+        }
+    }
+
+    func removePreviewLayer() {
+        if let previousPreview = self.previewLayer {
+            previousPreview.removeFromSuperlayer()
+            self.previewLayer = nil
         }
     }
 

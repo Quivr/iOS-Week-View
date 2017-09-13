@@ -141,7 +141,8 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         if !self.allDay {
             mainAttributedString.append(NSMutableAttributedString(
                 string: " (\(df.string(from: self.startDate)) - \(df.string(from: self.endDate)))",
-                attributes: infoFontAttributes))
+                attributes: infoFontAttributes)
+            )
         }
         if self.location != "" {
             mainAttributedString.append(NSMutableAttributedString(string: " | \(self.location)", attributes: infoFontAttributes))
@@ -192,13 +193,12 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                             withMainFont: FontVariables.eventLabelFont.withSize(fontSize),
                             andInfoFont: FontVariables.eventLabelInfoFont.withSize(fontSize))
                     }
+                    CATransaction.setDisableActions(true)
                 }
-                CATransaction.setDisableActions(true)
                 text.frame = frame
             }
 
         }
-
         return self.layer
     }
 

@@ -137,6 +137,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
             self.id += 1
             weekView.loadEvents(withData: Array(self.allEvents.values))
         }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
         self.present(alert, animated: true, completion: nil)
 

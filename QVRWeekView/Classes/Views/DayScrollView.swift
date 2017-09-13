@@ -590,10 +590,34 @@ extension DayScrollView {
     }
 
     /**
-     Sets the minimum scale for day labels.
+     Sets whether event label text should resize or not.
      */
     func setEventLabelFontResizingEnabled(to bool: Bool) {
         FontVariables.eventLabelFontResizingEnabled = bool
+        updateLayout()
+    }
+
+    /**
+     Sets the text of the preview event.
+     */
+    func setPreviewEventText(to text: String) {
+        LayoutVariables.previewEventText = text
+        updateLayout()
+    }
+
+    /**
+     Sets the color of the preview event.
+     */
+    func setPreviewEventColor(to color: UIColor) {
+        LayoutVariables.previewEventColor = color
+        updateLayout()
+    }
+
+    /**
+     Sets the text of the preview event.
+     */
+    func setPreviewEventHeightInHours(to height: Double) {
+        LayoutVariables.previewEventHeightInHours = height
         updateLayout()
     }
 
@@ -964,6 +988,13 @@ struct LayoutVariables {
     fileprivate(set) static var dashedSeparatorThickness = LayoutDefaults.dashedSeparatorThickness
     // Pattern for day view dashed Separators
     fileprivate(set) static var dashedSeparatorPattern = LayoutDefaults.dashedSeparatorPattern
+
+    // Text contained in preview event
+    fileprivate(set) static var previewEventText = LayoutDefaults.previewEventText
+    // Color of the preview event
+    fileprivate(set) static var previewEventColor = LayoutDefaults.previewEventColor
+    // Height of the preview event in hours.
+    fileprivate(set) static var previewEventHeightInHours = LayoutDefaults.previewEventHeightInHours
 
     // MARK: - UPDATE FUNCTIONS -
 

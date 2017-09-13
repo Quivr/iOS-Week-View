@@ -45,6 +45,13 @@ struct LayoutDefaults {
     // Default minimum event label scaling
     static let eventLabelMinimumFontSize = CGFloat(8)
 
+    // Default text of preview event
+    static let previewEventText = "New Item"
+    // Default color of the preview event
+    static let previewEventColor = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
+    // Default height of the preview event in hours
+    static let previewEventHeightInHours = 2.0
+
     // MARK: - SIZES, BUFFERS AND LAYOUT -
 
     // Sizes of weekview elements

@@ -299,7 +299,7 @@ public extension WeekView {
     }
 
     /**
-
+     Sets whether event label font resizing is enabled or not.
      */
     public var eventLabelFontResizingEnabled: Bool {
         get {
@@ -307,6 +307,42 @@ public extension WeekView {
         }
         set(bool) {
             self.dayScrollView.setEventLabelFontResizingEnabled(to: bool)
+        }
+    }
+
+    /**
+     The text shown inside the previw event.
+     */
+    public var previewEventText: String {
+        get {
+            return LayoutVariables.previewEventText
+        }
+        set(text) {
+            self.dayScrollView.setPreviewEventText(to: text)
+        }
+    }
+
+    /**
+     The color of the preview event.
+     */
+    public var previewEventColor: UIColor {
+        get {
+            return LayoutVariables.previewEventColor
+        }
+        set(color) {
+            self.dayScrollView.setPreviewEventColor(to: color)
+        }
+    }
+
+    /**
+     Height of the preview event in hours.
+     */
+    public var previewEventHeightInHours: Double {
+        get {
+            return LayoutVariables.previewEventHeightInHours
+        }
+        set(height) {
+            self.dayScrollView.setPreviewEventHeightInHours(to: height)
         }
     }
 
