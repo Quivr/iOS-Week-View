@@ -24,7 +24,7 @@ class DayViewCell: UICollectionViewCell {
     // Event rectangle shape layers
     private var eventLayers: [CAShapeLayer] = []
     // Layer of the preview event
-    private var previewLayer: CAShapeLayer?
+    private var previewLayer: CALayer?
     private var previewVisible: Bool = false
     // Previous height
     private var lastResizeHeight: CGFloat!
@@ -130,18 +130,21 @@ class DayViewCell: UICollectionViewCell {
     func longPressAction(_ sender: UILongPressGestureRecognizer) {
         let yTouch = sender.location(ofTouch: 0, in: self).y
         let previewPosition = self.previewPosition(forYCoordinate: yTouch)
+        let previewSize = CGSize(width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
+        let previewFrame = CGRect(origin: previewPosition, size: previewSize)
         if sender.state == .began {
-            self.makePreviewLayer(at: previewPosition)
+            self.makePreviewLayer(at: previewFrame)
         }
         else if sender.state == .ended {
-            let time = Double((previewPosition.y/self.frame.height)*24)
+            let time = Double((previewPosition.y/self.frame.height)*24).roundToNearestQuarter()
             let hours = Int(time)
             let minutes = Int((time-Double(hours))*60)
+            let previewEndPosition = CGPoint(x: 0, y: CGFloat(time/24)*self.frame.height)
             self.previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
         else if sender.state == .changed {
-            self.movePreviewLayer(to: previewPosition)
+            self.movePreviewLayer(to: previewFrame)
         } else if sender.state == .cancelled || sender.state == .failed {
             self.previewVisible = false
         }
@@ -265,16 +268,14 @@ class DayViewCell: UICollectionViewCell {
         }
     }
 
-    private func makePreviewLayer(at position: CGPoint) {
+    private func makePreviewLayer(at frame: CGRect) {
         self.removePreviewLayer()
-        let previewLayer = CAShapeLayer()
-        let previewRect = CGRect(x: 0, y: 0, width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
-        previewLayer.path = CGPath(rect: previewRect, transform: nil)
-        previewLayer.position = position
-        previewLayer.fillColor = LayoutVariables.previewEventColor.cgColor
+        let previewLayer = CALayer()
+        previewLayer.frame = frame
+        previewLayer.backgroundColor = LayoutVariables.previewEventColor.cgColor
 
         let textLayer = CATextLayer()
-        textLayer.frame = previewRect
+        textLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: frame.size)
         let mainFontAttributes: [String: Any] = [NSFontAttributeName: FontVariables.eventLabelFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: LayoutVariables.previewEventText, attributes: mainFontAttributes)
         textLayer.string = mainAttributedString
@@ -287,13 +288,17 @@ class DayViewCell: UICollectionViewCell {
         self.previewVisible = true
     }
 
-    private func movePreviewLayer(to position: CGPoint) {
+    private func movePreviewLayer(to frame: CGRect) {
         if let layer = self.previewLayer {
             CATransaction.begin()
             CATransaction.setAnimationDuration(0.0)
-            layer.position = position
+            layer.frame = frame
             CATransaction.commit()
         }
+    }
+
+    func releasePreviewLayer() {
+
     }
 
     func removePreviewLayer() {
