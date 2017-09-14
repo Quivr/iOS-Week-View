@@ -51,6 +51,8 @@ struct LayoutDefaults {
     static let previewEventColor = UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 0.5)
     // Default height of the preview event in hours
     static let previewEventHeightInHours = 2.0
+    // Default precision of the preview event in minutes.
+    static let previewEventPrecisionInMinutes = 15.0
 
     // MARK: - SIZES, BUFFERS AND LAYOUT -
 

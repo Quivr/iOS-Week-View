@@ -317,7 +317,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func releasePreviewLayer(at position: CGPoint) {
         if let prevLayer = self.previewLayer {
             let anim = CABasicAnimation(keyPath: "position")
-            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearestQuarter())*hourHeight
+            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0))*hourHeight
             let roundedPos = CGPoint(x: position.x, y: rounded)
             anim.duration = 0.20
             anim.fromValue = prevLayer.position

@@ -168,9 +168,9 @@ extension CGFloat {
 }
 
 extension Double {
-    // Returns self rounded to nearest quarter (0.25)
-    func roundToNearestQuarter() -> Double {
-        return ((self*4).rounded())/4.0
+    // Returns self rounded to nearest value. Value must be between 0 and 1, example: quarter (0.25)
+    func roundToNearest(_ value: Double) -> Double {
+        return ((self/value).rounded())*value
     }
 }
 

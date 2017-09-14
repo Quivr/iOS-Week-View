@@ -347,6 +347,18 @@ public extension WeekView {
     }
 
     /**
+     The number of minutes the preview event will snap to. Ex: 15.0 will snap preview event to nearest 15 minutes.
+     */
+    public var previewEventPrecisionInMinutes: Double {
+        get {
+            return LayoutVariables.previewEventPrecisionInMinutes
+        }
+        set(mins) {
+            self.dayScrollView.setPreviewEventPrecisionInMinutes(to: mins)
+        }
+    }
+
+    /**
      Default color of the day view cells. These are all days that are not weekends and not passed.
      */
     public var defaultDayViewColor: UIColor {

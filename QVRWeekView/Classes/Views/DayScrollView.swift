@@ -628,6 +628,14 @@ extension DayScrollView {
     }
 
     /**
+     Sets the precision of the preview event.
+     */
+    func setPreviewEventPrecisionInMinutes(to minutes: Double) {
+        LayoutVariables.previewEventPrecisionInMinutes = minutes
+        updateLayout()
+    }
+
+    /**
      Sets the color of default day view color.
      */
     func setDefaultDayViewColor(to color: UIColor) {
@@ -1001,6 +1009,8 @@ struct LayoutVariables {
     fileprivate(set) static var previewEventColor = LayoutDefaults.previewEventColor
     // Height of the preview event in hours.
     fileprivate(set) static var previewEventHeightInHours = LayoutDefaults.previewEventHeightInHours
+    // Number of minutes the preview event will snap to.
+    fileprivate(set) static var previewEventPrecisionInMinutes = LayoutDefaults.previewEventPrecisionInMinutes
 
     // MARK: - UPDATE FUNCTIONS -
 
