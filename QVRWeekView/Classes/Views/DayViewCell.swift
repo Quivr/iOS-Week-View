@@ -4,7 +4,7 @@ import UIKit
 /**
  Class of the day view columns generated and displayed within DayScrollView
  */
-class DayViewCell: UICollectionViewCell {
+class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
     // Static variable stores all ids of dayviewcells
     private static var uniqueIds: [Int] = []
@@ -25,6 +25,7 @@ class DayViewCell: UICollectionViewCell {
     private var eventLayers: [CAShapeLayer] = []
     // Layer of the preview event
     private var previewLayer: CALayer?
+    // Stores if preview should be currently visible or not
     private var previewVisible: Bool = false
     // Previous height
     private var lastResizeHeight: CGFloat!
@@ -38,6 +39,7 @@ class DayViewCell: UICollectionViewCell {
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
     let id: Int
+    var addingEvent: Bool = false
 
     // MARK: - INITIALIZERS & OVERRIDES -
 
@@ -71,6 +73,9 @@ class DayViewCell: UICollectionViewCell {
         updateOverlay()
         generateSeparatorLayers()
         generateEventLayers()
+        if self.addingEvent {
+            self.addingEvent = false
+        }
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
@@ -125,29 +130,6 @@ class DayViewCell: UICollectionViewCell {
         lastResizeHeight = self.frame.height
         // Update UI
         self.generateEventLayers(andResizeText: FontVariables.eventLabelFontResizingEnabled)
-    }
-
-    func longPressAction(_ sender: UILongPressGestureRecognizer) {
-        let yTouch = sender.location(ofTouch: 0, in: self).y
-        let previewPosition = self.previewPosition(forYCoordinate: yTouch)
-        let previewSize = CGSize(width: self.bounds.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
-        let previewFrame = CGRect(origin: previewPosition, size: previewSize)
-        if sender.state == .began {
-            self.makePreviewLayer(at: previewFrame)
-        }
-        else if sender.state == .ended {
-            let time = Double((previewPosition.y/self.frame.height)*24).roundToNearestQuarter()
-            let hours = Int(time)
-            let minutes = Int((time-Double(hours))*60)
-            let previewEndPosition = CGPoint(x: 0, y: CGFloat(time/24)*self.frame.height)
-            self.previewVisible = false
-            self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
-        }
-        else if sender.state == .changed {
-            self.movePreviewLayer(to: previewFrame)
-        } else if sender.state == .cancelled || sender.state == .failed {
-            self.previewVisible = false
-        }
     }
 
     func tapAction(_ sender: UITapGestureRecognizer) {
@@ -268,14 +250,41 @@ class DayViewCell: UICollectionViewCell {
         }
     }
 
-    private func makePreviewLayer(at frame: CGRect) {
-        self.removePreviewLayer()
+    func longPressAction(_ sender: UILongPressGestureRecognizer) {
+        guard !self.addingEvent else {
+            return
+        }
+
+        let yTouch = sender.location(ofTouch: 0, in: self).y
+        let previewPos = self.previewPosition(forYCoordinate: yTouch)
+
+        if sender.state == .began {
+            self.makePreviewLayer(at: previewPos)
+        }
+        else if sender.state == .ended {
+            self.releasePreviewLayer(at: previewPos)
+        }
+        else if sender.state == .changed {
+            movePreviewLayer(to: previewPos)
+        } else if sender.state == .cancelled || sender.state == .failed {
+            self.previewVisible = false
+        }
+    }
+
+    private func makePreviewLayer(at position: CGPoint) {
+        removePreviewLayer()
+
+        let startingBounds = CGRect(x: 0, y: 0, width: 0, height: 0)
+        let endingBounds = CGRect(x: 0, y: 0, width: self.frame.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
+
         let previewLayer = CALayer()
-        previewLayer.frame = frame
+        previewLayer.bounds = startingBounds
+        previewLayer.position = position
         previewLayer.backgroundColor = LayoutVariables.previewEventColor.cgColor
+        previewLayer.masksToBounds = true
 
         let textLayer = CATextLayer()
-        textLayer.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: frame.size)
+        textLayer.frame = endingBounds
         let mainFontAttributes: [String: Any] = [NSFontAttributeName: FontVariables.eventLabelFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: LayoutVariables.previewEventText, attributes: mainFontAttributes)
         textLayer.string = mainAttributedString
@@ -286,18 +295,48 @@ class DayViewCell: UICollectionViewCell {
         self.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
         self.previewVisible = true
+
+        let anim = CABasicAnimation(keyPath: "bounds")
+        anim.duration = 0.15
+        anim.fromValue = previewLayer.bounds
+        anim.toValue = endingBounds
+
+        previewLayer.bounds = endingBounds
+        previewLayer.add(anim, forKey: "bounds")
     }
 
-    private func movePreviewLayer(to frame: CGRect) {
+    private func movePreviewLayer(to position: CGPoint) {
         if let layer = self.previewLayer {
             CATransaction.begin()
             CATransaction.setAnimationDuration(0.0)
-            layer.frame = frame
+            layer.position = position
             CATransaction.commit()
         }
     }
 
-    func releasePreviewLayer() {
+    func releasePreviewLayer(at position: CGPoint) {
+        if let prevLayer = self.previewLayer {
+            let anim = CABasicAnimation(keyPath: "position")
+            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearestQuarter())*hourHeight
+            let roundedPos = CGPoint(x: position.x, y: rounded)
+            anim.duration = 0.20
+            anim.fromValue = prevLayer.position
+            anim.toValue = roundedPos
+            anim.delegate = self
+            prevLayer.position = roundedPos
+            prevLayer.add(anim, forKey: "position")
+        }
+    }
+
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        if let prevLayer = self.previewLayer, flag {
+            let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2)))/self.frame.height)*24 )
+            let hours = Int(time)
+            let minutes = Int((time-Double(hours))*60)
+
+            self.previewVisible = false
+            self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
+        }
 
     }
 
@@ -310,7 +349,7 @@ class DayViewCell: UICollectionViewCell {
     }
 
     private func previewPosition(forYCoordinate yCoord: CGFloat) -> CGPoint {
-        return CGPoint(x: 0, y: yCoord-hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2))
+        return CGPoint(x: self.frame.width/2, y: yCoord)
     }
 
     private static func genUniqueId() -> Int {

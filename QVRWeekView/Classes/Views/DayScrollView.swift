@@ -215,6 +215,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int) {
         if let weekView = self.superview?.superview as? WeekView {
             weekView.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
+            for (_, dayViewCell) in dayViewCells {
+                dayViewCell.addingEvent = true
+            }
         }
     }
 
