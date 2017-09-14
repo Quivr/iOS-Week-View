@@ -416,8 +416,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                         }
                     }
                 }
+                // Process events for days with changed data
                 for dayDate in sortedChangedDays {
                     self.processEventsData(forDayDate: dayDate)
+                }
+                // Redraw days with no changed data
+                for (_, dayViewCell) in self.dayViewCells where !sortedChangedDays.contains(dayViewCell.date) {
+                    dayViewCell.setNeedsLayout()
                 }
             }
         }
