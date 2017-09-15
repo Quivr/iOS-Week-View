@@ -246,6 +246,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
                                                    y: 0),
                                            animated: true)
+        dayCollectionView.reloadData()
+        
         if showNow {
             let yOffset = LayoutVariables.totalContentHeight*DateSupport.getPercentTodayPassed()-(LayoutVariables.activeFrameHeight/2)
             let minOffsetY = LayoutVariables.minOffsetY
