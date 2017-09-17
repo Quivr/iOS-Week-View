@@ -239,15 +239,21 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // MARK: - INTERNAL FUNCTIONS -
 
     func goToAndShow(dayDate: DayDate, showNow: Bool=false) {
+        let animated = dayDate.year == activeYear
         activeYear = dayDate.year
         currentPeriod = Period(ofDate: dayDate)
         activeDay = dayDate
-        scrollingToDay = true
+        if animated {
+            scrollingToDay = true
+        }
         dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
                                                    y: 0),
-                                           animated: true)
+                                           animated: animated)
+        if !animated {
+            requestEvents()
+        }
         dayCollectionView.reloadData()
-        
+
         if showNow {
             let yOffset = LayoutVariables.totalContentHeight*DateSupport.getPercentTodayPassed()-(LayoutVariables.activeFrameHeight/2)
             let minOffsetY = LayoutVariables.minOffsetY
