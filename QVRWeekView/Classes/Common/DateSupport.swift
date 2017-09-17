@@ -16,6 +16,10 @@ public class DateSupport {
 
     // Returns an array of dates between and including startDay and endDay.
     public static func getAllDates(between startDay: Date, and endDay: Date) -> [Date] {
+        guard DayDate(date: startDay) < DayDate(date: endDay) else {
+            print("Invalid dates given.")
+            return []
+        }
         var cursorDay = startDay
         var allDays: [Date] = []
         while !cursorDay.isSameDayAs(endDay.getNextDay()) {
