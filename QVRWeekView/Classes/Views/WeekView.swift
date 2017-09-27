@@ -22,8 +22,8 @@ open class WeekView: UIView {
 
     @IBOutlet var sideBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet var sideBarWidthConstraint: NSLayoutConstraint!
-    @IBOutlet var sideBarYPositionConstraint: NSLayoutConstraint!
-    @IBOutlet var hourSideBarBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var hourSideBarYPositionConstraint: NSLayoutConstraint!
+    @IBOutlet var hourSideBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet var topBarWidthConstraint: NSLayoutConstraint!
     @IBOutlet var topBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet var topBarXPositionConstraint: NSLayoutConstraint!
@@ -344,7 +344,7 @@ open class WeekView: UIView {
      Method will update top and side bar positions, so that they scroll along with the current dayScrollView.
      */
     func updateTopAndSideBarPositions() {
-        sideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
+        hourSideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
         topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
     }
 
@@ -361,7 +361,7 @@ open class WeekView: UIView {
         let sideBarHeight = dayViewCellHeight + dayViewCellHourHeight
 
         // Set position and size constraints for side bar and hour view
-        self.hourSideBarBottomConstraint.constant = dayViewCellHourHeight
+        self.hourSideBarHeightConstraint.constant = dayViewCellHeight
         self.sideBarHeightConstraint.constant = sideBarHeight
         self.sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
 

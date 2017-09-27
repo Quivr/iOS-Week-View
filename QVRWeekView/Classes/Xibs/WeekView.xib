@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13122.17" systemVersion="16F2073" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WeekView" customModule="QVRWeekView" customModuleProvider="target">
             <connections>
                 <outlet property="dayScrollView" destination="dhg-SP-fAj" id="bUp-E7-Ixh"/>
-                <outlet property="hourSideBarBottomConstraint" destination="SY8-ah-q4Y" id="RWR-Um-sdV"/>
+                <outlet property="hourSideBarHeightConstraint" destination="dBr-bh-Ky5" id="7Oc-p1-rPJ"/>
+                <outlet property="hourSideBarYPositionConstraint" destination="257-A5-8hg" id="na7-fq-o5l"/>
                 <outlet property="sideBarHeightConstraint" destination="jQr-zE-7Aq" id="qFD-5X-C4h"/>
                 <outlet property="sideBarView" destination="uo6-Ir-nWX" id="UV0-OE-B2b"/>
                 <outlet property="sideBarWidthConstraint" destination="Tzj-JN-kxG" id="6EJ-Ei-xaH"/>
-                <outlet property="sideBarYPositionConstraint" destination="L45-UD-6z8" id="Ao7-sQ-Qgg"/>
                 <outlet property="topBarHeightConstraint" destination="pjQ-6I-MeC" id="u3Z-va-Paa"/>
                 <outlet property="topBarView" destination="Vcr-a0-fjB" id="7Fb-cb-IH6"/>
                 <outlet property="topBarWidthConstraint" destination="x5a-o6-Osn" id="O91-bD-pPi"/>
@@ -39,15 +39,17 @@
                     <rect key="frame" x="0.0" y="35" width="25" height="632"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VcM-2k-vaz" customClass="HourSideBarView" customModule="QVRWeekView" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="25" height="592"/>
+                            <rect key="frame" x="0.0" y="0.0" width="25" height="600"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="600" id="dBr-bh-Ky5"/>
+                            </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" red="0.74509803919999995" green="0.74509803919999995" blue="0.74509803919999995" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="VcM-2k-vaz" firstAttribute="top" secondItem="uo6-Ir-nWX" secondAttribute="top" id="257-A5-8hg"/>
                         <constraint firstItem="VcM-2k-vaz" firstAttribute="leading" secondItem="uo6-Ir-nWX" secondAttribute="leading" id="OM4-b8-9me"/>
-                        <constraint firstAttribute="bottom" secondItem="VcM-2k-vaz" secondAttribute="bottom" constant="40" id="SY8-ah-q4Y"/>
                         <constraint firstAttribute="width" constant="25" id="Tzj-JN-kxG"/>
                         <constraint firstAttribute="trailing" secondItem="VcM-2k-vaz" secondAttribute="trailing" id="dNC-Sj-rdY"/>
                         <constraint firstAttribute="height" constant="632" id="jQr-zE-7Aq"/>

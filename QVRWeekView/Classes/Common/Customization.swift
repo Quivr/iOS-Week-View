@@ -54,6 +54,18 @@ public extension WeekView {
     }
 
     /**
+     Color of the side bar containing hour labels.
+     */
+    public var sideBarColor: UIColor {
+        get {
+            return self.sideBarView.backgroundColor!
+        }
+        set(color) {
+            self.sideBarView.backgroundColor = color
+        }
+    }
+
+    /**
      Width of the side bar containing hour labels.
      */
     public var sideBarWidth: CGFloat {
