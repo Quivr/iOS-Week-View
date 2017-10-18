@@ -114,6 +114,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     func getString(forMode mode: TextMode) -> String {
         let df = DateFormatter()
         df.dateFormat = FontVariables.dayLabelDateFormats[mode]
+        df.locale = NSLocale.current
         return df.string(from: self.dateObj)
     }
 
