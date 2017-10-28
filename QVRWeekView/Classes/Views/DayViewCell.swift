@@ -334,7 +334,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
             let rounded = time.roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0)
             let hours = Int(rounded)
             let minutes = Int((rounded-Double(hours))*60.0)
-            
+
             self.previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
