@@ -331,9 +331,10 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if let prevLayer = self.previewLayer, flag {
             let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2)))/self.frame.height)*24 )
-            let hours = Int(time)
-            let minutes = Int((time-Double(hours))*60)
-
+            let rounded = time.roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0)
+            let hours = Int(rounded)
+            let minutes = Int((rounded-Double(hours))*60.0)
+            
             self.previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
         }
