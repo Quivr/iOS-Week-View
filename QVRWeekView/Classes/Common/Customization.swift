@@ -83,10 +83,10 @@ public extension WeekView {
      */
     public var dayLabelDefaultFont: UIFont {
         get {
-            return FontVariables.dayLabelDefaultFont
+            return TextVariables.dayLabelDefaultFont
         }
         set(font) {
-            FontVariables.dayLabelDefaultFont = font
+            TextVariables.dayLabelDefaultFont = font
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -96,10 +96,10 @@ public extension WeekView {
      */
     public var dayLabelTextColor: UIColor {
         get {
-            return FontVariables.dayLabelTextColor
+            return TextVariables.dayLabelTextColor
         }
         set(color) {
-            FontVariables.dayLabelTextColor = color
+            TextVariables.dayLabelTextColor = color
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -109,10 +109,10 @@ public extension WeekView {
      */
     public var dayLabelTodayTextColor: UIColor {
         get {
-            return FontVariables.dayLabelTodayTextColor
+            return TextVariables.dayLabelTodayTextColor
         }
         set(color) {
-            FontVariables.dayLabelTodayTextColor = color
+            TextVariables.dayLabelTodayTextColor = color
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -122,10 +122,10 @@ public extension WeekView {
      */
     public var dayLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.dayLabelMinimumFontSize
+            return TextVariables.dayLabelMinimumFontSize
         }
         set(scale) {
-            FontVariables.dayLabelMinimumFontSize = scale
+            TextVariables.dayLabelMinimumFontSize = scale
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -136,10 +136,28 @@ public extension WeekView {
      */
     public var dayLabelDateFormats: [TextMode: String] {
         get {
-            return FontVariables.dayLabelDateFormats
+            return TextVariables.dayLabelDateFormats
         }
         set(formats) {
-            FontVariables.dayLabelDateFormats = formats
+            TextVariables.dayLabelDateFormats = formats
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Locale for the day labels.
+     If none is given device locale will be used.
+    */
+    public var dayLabelDateLocale: Locale {
+        get {
+            if let locale = TextVariables.dayLabelDateLocale {
+                return locale
+            } else {
+                return NSLocale.current
+            }
+        }
+        set(locale) {
+            TextVariables.dayLabelDateLocale = locale
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -149,10 +167,10 @@ public extension WeekView {
      */
     public var hourLabelFont: UIFont {
         get {
-            return FontVariables.hourLabelFont
+            return TextVariables.hourLabelFont
         }
         set(font) {
-            FontVariables.hourLabelFont = font
+            TextVariables.hourLabelFont = font
             updateHourSideBarView()
         }
     }
@@ -162,10 +180,10 @@ public extension WeekView {
      */
     public var hourLabelTextColor: UIColor {
         get {
-            return FontVariables.hourLabelTextColor
+            return TextVariables.hourLabelTextColor
         }
         set(color) {
-            FontVariables.hourLabelTextColor = color
+            TextVariables.hourLabelTextColor = color
             updateHourSideBarView()
         }
     }
@@ -175,10 +193,10 @@ public extension WeekView {
      */
     public var hourLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.hourLabelMinimumFontSize
+            return TextVariables.hourLabelMinimumFontSize
         }
         set(scale) {
-            FontVariables.hourLabelMinimumFontSize = scale
+            TextVariables.hourLabelMinimumFontSize = scale
             updateHourSideBarView()
         }
     }
@@ -188,10 +206,10 @@ public extension WeekView {
      */
     public var hourLabelDateFormat: String {
         get {
-            return FontVariables.hourLabelDateFormat
+            return TextVariables.hourLabelDateFormat
         }
         set(format) {
-            FontVariables.hourLabelDateFormat = format
+            TextVariables.hourLabelDateFormat = format
             updateHourSideBarView()
         }
     }
@@ -267,7 +285,7 @@ public extension WeekView {
      */
     public var eventLabelFont: UIFont {
         get {
-            return FontVariables.eventLabelFont
+            return TextVariables.eventLabelFont
         }
         set(font) {
             self.dayScrollView.setEventLabelFont(to: font)
@@ -279,7 +297,7 @@ public extension WeekView {
     */
     public var eventLabelInfoFont: UIFont {
         get {
-            return FontVariables.eventLabelInfoFont
+            return TextVariables.eventLabelInfoFont
         }
         set(font) {
             self.dayScrollView.setEventLabelInfoFont(to: font)
@@ -291,7 +309,7 @@ public extension WeekView {
      */
     public var eventLabelTextColor: UIColor {
         get {
-            return FontVariables.eventLabelTextColor
+            return TextVariables.eventLabelTextColor
         }
         set(color) {
             self.dayScrollView.setEventLabelTextColor(to: color)
@@ -303,7 +321,7 @@ public extension WeekView {
      */
     public var eventLabelMinimumFontSize: CGFloat {
         get {
-            return FontVariables.eventLabelMinimumFontSize
+            return TextVariables.eventLabelMinimumFontSize
         }
         set(scale) {
             self.dayScrollView.setEventLabelMinimumFontSize(to: scale)
@@ -315,7 +333,7 @@ public extension WeekView {
      */
     public var eventLabelFontResizingEnabled: Bool {
         get {
-            return FontVariables.eventLabelFontResizingEnabled
+            return TextVariables.eventLabelFontResizingEnabled
         }
         set(bool) {
             self.dayScrollView.setEventLabelFontResizingEnabled(to: bool)
@@ -591,7 +609,7 @@ public extension WeekView {
 }
 
 // Customization extension for FontVariables.
-extension FontVariables {
+extension TextVariables {
 
     // Default font for all day labels
     fileprivate(set) static var dayLabelDefaultFont = LayoutDefaults.dayLabelFont {
@@ -607,6 +625,8 @@ extension FontVariables {
     fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
     // Date formats for day labels
     fileprivate(set) static var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
+    // Locale of day labels
+    fileprivate(set) static var dayLabelDateLocale: Locale?
 
     // Font for all hour labels
     fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont {

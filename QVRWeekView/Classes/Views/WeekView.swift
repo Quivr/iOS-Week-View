@@ -283,7 +283,7 @@ open class WeekView: UIView {
         var layers: [EventData: CAShapeLayer] = [:]
         for event in events {
             let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
-            let layer = event.generateLayer(withFrame: frame, resizeText: FontVariables.eventLabelFontResizingEnabled)
+            let layer = event.generateLayer(withFrame: frame, resizeText: TextVariables.eventLabelFontResizingEnabled)
             self.topBarView.layer.addSublayer(layer)
             layers[event] = layer
             i += 1
@@ -393,10 +393,10 @@ open class WeekView: UIView {
      Method updates a day labels font, text color and also performs a text assignment resize check.
      */
     private func updateDayLabel(_ dayLabel: UILabel, withDate dayDate: DayDate) {
-        dayLabel.font = FontVariables.dayLabelCurrentFont
-        dayLabel.textColor = dayDate == DayDate.today ? FontVariables.dayLabelTodayTextColor : FontVariables.dayLabelTextColor
+        dayLabel.font = TextVariables.dayLabelCurrentFont
+        dayLabel.textColor = dayDate == DayDate.today ? TextVariables.dayLabelTodayTextColor : TextVariables.dayLabelTextColor
         if let newFontSize = Util.assignTextAndResizeFont(forLabel: dayLabel, andDate: dayDate) {
-            FontVariables.dayLabelCurrentFontSize = newFontSize
+            TextVariables.dayLabelCurrentFontSize = newFontSize
             updateVisibleDayLabels()
         }
     }
@@ -419,7 +419,7 @@ open class WeekView: UIView {
      Method resets all font values such as font resizing and day label text mode.
      */
     private func resetFontValues() {
-        FontVariables.dayLabelCurrentFontSize = FontVariables.dayLabelDefaultFont.pointSize
+        TextVariables.dayLabelCurrentFontSize = TextVariables.dayLabelDefaultFont.pointSize
         Util.resetDayLabelTextMode()
     }
 
@@ -479,7 +479,7 @@ extension WeekView {
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
-public struct FontVariables {
+public struct TextVariables {
 
     // Minimum font for all day labels
     fileprivate static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {

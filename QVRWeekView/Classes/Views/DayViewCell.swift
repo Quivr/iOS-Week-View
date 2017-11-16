@@ -129,7 +129,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         lastResizeWidth = self.frame.width
         lastResizeHeight = self.frame.height
         // Update UI
-        self.generateEventLayers(andResizeText: FontVariables.eventLabelFontResizingEnabled)
+        self.generateEventLayers(andResizeText: TextVariables.eventLabelFontResizingEnabled)
     }
 
     func tapAction(_ sender: UITapGestureRecognizer) {
@@ -143,7 +143,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     }
 
     func updateEventTextFontSize() {
-        self.generateEventLayers(andResizeText: FontVariables.eventLabelFontResizingEnabled)
+        self.generateEventLayers(andResizeText: TextVariables.eventLabelFontResizingEnabled)
     }
 
     private func updateOverlay() {
@@ -285,7 +285,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         let textLayer = CATextLayer()
         textLayer.frame = endingBounds
-        let mainFontAttributes: [String: Any] = [NSFontAttributeName: FontVariables.eventLabelFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
+        let mainFontAttributes: [String: Any] = [NSFontAttributeName: TextVariables.eventLabelFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: LayoutVariables.previewEventText, attributes: mainFontAttributes)
         textLayer.string = mainAttributedString
         textLayer.isWrapped = true

@@ -580,7 +580,7 @@ extension DayScrollView {
      Sets the default font for event labels.
      */
     func setEventLabelFont(to font: UIFont) {
-        FontVariables.eventLabelFont = font
+        TextVariables.eventLabelFont = font
         updateLayout()
     }
 
@@ -588,7 +588,7 @@ extension DayScrollView {
      Sets the thin font for event labels.
      */
     func setEventLabelInfoFont(to font: UIFont) {
-        FontVariables.eventLabelInfoFont = font
+        TextVariables.eventLabelInfoFont = font
         updateLayout()
     }
 
@@ -596,7 +596,7 @@ extension DayScrollView {
      Sets the text color for event labels.
      */
     func setEventLabelTextColor(to color: UIColor) {
-        FontVariables.eventLabelTextColor = color
+        TextVariables.eventLabelTextColor = color
         updateLayout()
     }
 
@@ -604,7 +604,7 @@ extension DayScrollView {
      Sets the minimum scale for day labels.
      */
     func setEventLabelMinimumFontSize(to size: CGFloat) {
-        FontVariables.eventLabelMinimumFontSize = size
+        TextVariables.eventLabelMinimumFontSize = size
         updateLayout()
     }
 
@@ -612,7 +612,7 @@ extension DayScrollView {
      Sets whether event label text should resize or not.
      */
     func setEventLabelFontResizingEnabled(to bool: Bool) {
-        FontVariables.eventLabelFontResizingEnabled = bool
+        TextVariables.eventLabelFontResizingEnabled = bool
         updateLayout()
     }
 
@@ -1077,7 +1077,7 @@ struct LayoutVariables {
     }
 }
 
-extension FontVariables {
+extension TextVariables {
 
     // Font for all event labels
     fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont

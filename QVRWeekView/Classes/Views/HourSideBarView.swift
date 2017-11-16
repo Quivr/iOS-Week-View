@@ -28,19 +28,19 @@ class HourSideBarView: UIView {
     }
 
     override func layoutSubviews() {
-        if hourLabels[0].font != FontVariables.hourLabelFont {
+        if hourLabels[0].font != TextVariables.hourLabelFont {
             for label in hourLabels {
-                label.font = FontVariables.hourLabelFont
+                label.font = TextVariables.hourLabelFont
             }
         }
-        if hourLabels[0].textColor != FontVariables.hourLabelTextColor {
+        if hourLabels[0].textColor != TextVariables.hourLabelTextColor {
             for label in hourLabels {
-                label.textColor = FontVariables.hourLabelTextColor
+                label.textColor = TextVariables.hourLabelTextColor
             }
         }
-        if hourLabels[0].minimumScaleFactor != FontVariables.hourLabelMinimumScale {
+        if hourLabels[0].minimumScaleFactor != TextVariables.hourLabelMinimumScale {
             for label in hourLabels {
-                label.minimumScaleFactor = FontVariables.hourLabelMinimumScale
+                label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
             }
         }
         updateLabels()
@@ -53,7 +53,7 @@ class HourSideBarView: UIView {
 
         var date = DateSupport.getZeroDate()
         let df = DateFormatter()
-        df.dateFormat = FontVariables.hourLabelDateFormat
+        df.dateFormat = TextVariables.hourLabelDateFormat
         for label in hourLabels {
             label.text = df.string(from: date)
             date.advanceBy(hours: 1)
@@ -81,9 +81,9 @@ class HourSideBarView: UIView {
         self.backgroundColor = UIColor.clear
 
         for label in hourLabels {
-            label.font = FontVariables.hourLabelFont
-            label.textColor = FontVariables.hourLabelTextColor
-            label.minimumScaleFactor = FontVariables.hourLabelMinimumScale
+            label.font = TextVariables.hourLabelFont
+            label.textColor = TextVariables.hourLabelTextColor
+            label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
             label.adjustsFontSizeToFitWidth = true
         }
     }

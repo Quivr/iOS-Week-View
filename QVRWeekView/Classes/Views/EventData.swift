@@ -131,11 +131,11 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     /**
      Returns the string that will be displayed by this event. Overridable.
      */
-    open func getDisplayString(withMainFont mainFont: UIFont = FontVariables.eventLabelFont, andInfoFont infoFont: UIFont = FontVariables.eventLabelInfoFont) -> NSAttributedString {
+    open func getDisplayString(withMainFont mainFont: UIFont = TextVariables.eventLabelFont, andInfoFont infoFont: UIFont = TextVariables.eventLabelInfoFont) -> NSAttributedString {
         let df = DateFormatter()
         df.dateFormat = "HH:mm"
-        let mainFontAttributes: [String: Any] = [NSFontAttributeName: mainFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
-        let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: FontVariables.eventLabelTextColor.cgColor]
+        let mainFontAttributes: [String: Any] = [NSFontAttributeName: mainFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
+        let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
         if !self.allDay {
             mainAttributedString.append(NSMutableAttributedString(
@@ -182,15 +182,15 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                 if resizeText {
                     CATransaction.setDisableActions(false)
                     if let string = text.string as? NSAttributedString {
-                        let font = FontVariables.eventLabelFont
+                        let font = TextVariables.eventLabelFont
                         var fontSize = font.pointSize
                         while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: frame).height > frame.height &&
-                            fontSize > FontVariables.eventLabelMinimumFontSize {
+                            fontSize > TextVariables.eventLabelMinimumFontSize {
                                 fontSize -= 1
                         }
                         text.string = self.getDisplayString(
-                            withMainFont: FontVariables.eventLabelFont.withSize(fontSize),
-                            andInfoFont: FontVariables.eventLabelInfoFont.withSize(fontSize))
+                            withMainFont: TextVariables.eventLabelFont.withSize(fontSize),
+                            andInfoFont: TextVariables.eventLabelInfoFont.withSize(fontSize))
                     }
                 } else {
                     text.string = self.getDisplayString()
