@@ -71,8 +71,6 @@ class StartViewController: UIViewController {
 
             weekView.allDayEventHeight = 30
             weekView.allDayEventVerticalSpacing = 10
-
-            print(weekView.dayLabelDateLocaleIdentifier)
         }
     }
 
