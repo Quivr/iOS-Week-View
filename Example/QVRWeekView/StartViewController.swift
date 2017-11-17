@@ -56,9 +56,11 @@ class StartViewController: UIViewController {
             weekView.dayLabelTextColor = UIColor.white
             weekView.dayLabelDefaultFont = UIFont.italicSystemFont(ofSize: 20)
             weekView.dayLabelTodayTextColor = UIColor.red
-            weekView.dayLabelDateFormats = [.large: "y M d", .normal: "y M", .small: "yy MM"]
+            weekView.dayLabelShortDateFormat = "yy MM"
+            weekView.dayLabelLongDateFormat = "y M d"
+            weekView.dayLabelNormalDateFormat = "y M"
             weekView.dayLabelMinimumFontSize = 2
-            weekView.dayLabelDateLocale = Locale(identifier: "de")
+            weekView.dayLabelDateLocaleIdentifier = "nl"
 
             weekView.topBarColor = UIColor.green
             weekView.defaultTopBarHeight = 70
@@ -69,6 +71,8 @@ class StartViewController: UIViewController {
 
             weekView.allDayEventHeight = 30
             weekView.allDayEventVerticalSpacing = 10
+
+            print(weekView.dayLabelDateLocaleIdentifier)
         }
     }
 

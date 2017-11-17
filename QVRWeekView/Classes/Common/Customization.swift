@@ -131,15 +131,43 @@ public extension WeekView {
     }
 
     /**
-     Date formats for day labels.
+     Short date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelDateFormats: [TextMode: String] {
+    public var dayLabelShortDateFormat: String {
         get {
-            return TextVariables.dayLabelDateFormats
+            return TextVariables.dayLabelDateFormats[.small]!
         }
-        set(formats) {
-            TextVariables.dayLabelDateFormats = formats
+        set(format) {
+            TextVariables.dayLabelDateFormats[.small] = format
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Normal date format for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelNormalDateFormat: String {
+        get {
+            return TextVariables.dayLabelDateFormats[.normal]!
+        }
+        set(format) {
+            TextVariables.dayLabelDateFormats[.normal] = format
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Long date format for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelLongDateFormat: String {
+        get {
+            return TextVariables.dayLabelDateFormats[.large]!
+        }
+        set(format) {
+            TextVariables.dayLabelDateFormats[.large] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -148,16 +176,16 @@ public extension WeekView {
      Locale for the day labels.
      If none is given device locale will be used.
     */
-    public var dayLabelDateLocale: Locale {
+    public var dayLabelDateLocaleIdentifier: String {
         get {
             if let locale = TextVariables.dayLabelDateLocale {
-                return locale
+                return locale.languageCode!
             } else {
-                return NSLocale.current
+                return NSLocale.current.languageCode!
             }
         }
-        set(locale) {
-            TextVariables.dayLabelDateLocale = locale
+        set(id) {
+            TextVariables.dayLabelDateLocale = Locale(identifier: id)
             updateVisibleLabelsAndMainConstraints()
         }
     }
