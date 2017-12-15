@@ -238,7 +238,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INTERNAL FUNCTIONS -
 
-    func goToAndShow(dayDate: DayDate, showNow: Bool=false) {
+    func goToAndShow(dayDate: DayDate, showTime: Date? = nil) {
         let animated = dayDate.year == activeYear
         activeYear = dayDate.year
         currentPeriod = Period(ofDate: dayDate)
@@ -254,8 +254,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
         dayCollectionView.reloadData()
 
-        if showNow {
-            let yOffset = LayoutVariables.totalContentHeight*DateSupport.getPercentTodayPassed()-(LayoutVariables.activeFrameHeight/2)
+        if let time = showTime {
+            let yOffset = LayoutVariables.totalContentHeight*time.getPercentDayPassed()-(LayoutVariables.activeFrameHeight/2)
             let minOffsetY = LayoutVariables.minOffsetY
             let maxOffsetY = LayoutVariables.maxOffsetY
             self.setContentOffset(CGPoint(x:0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)

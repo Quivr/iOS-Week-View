@@ -154,15 +154,20 @@ open class WeekView: UIView {
     /**
      Shows the day view cell corresponding to asked day.
      */
-    public func showDay(withDate date: Date) {
-        dayScrollView.goToAndShow(dayDate: DayDate(date: date))
+    public func showDay(withDate date: Date, showTime: Bool = false) {
+        if showTime {
+            dayScrollView.goToAndShow(dayDate: DayDate(date: date), showTime: date)
+        } else {
+            dayScrollView.goToAndShow(dayDate: DayDate(date: date))
+        }
     }
 
     /**
      Shows the day view cell corresponding to today.
      */
     public func showToday() {
-        dayScrollView.goToAndShow(dayDate: DayDate(date: Date()), showNow: true)
+        let now = Date()
+        dayScrollView.goToAndShow(dayDate: DayDate(date: now), showTime: now)
     }
 
     /**
