@@ -154,8 +154,8 @@ WeekView handles all top level operations such as pinch gestures and orientation
 - [x] Ability to add and remove events
 - [x] Event color customization
 - [x] Extra customization features
-- [ ] Improved UI features
-- [ ] Increased event processing efficiency
+- [x] Improved UI features
+- [x] Increased event processing efficiency
 
 ## Author
 
