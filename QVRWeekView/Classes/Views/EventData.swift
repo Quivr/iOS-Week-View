@@ -29,6 +29,8 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     public let allDay: Bool
     // Stores an optional gradient layer which will be used to draw event. Can only be set once.
     private(set) var gradientLayer: CAGradientLayer? { didSet { gradientLayer = oldValue ?? gradientLayer } }
+    // Stores an optional dictionary, containing the time of the original event before splitting
+    private(set) var originalTime: [String:Date]?
 
     // Hashvalue
     public var hashValue: Int {
@@ -114,7 +116,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
      Convenience initializer.
      */
     public convenience init() {
-        self.init(id: -1, title: "New Item", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
+        self.init(id: -1, title: "New Event", startDate: Date(), endDate: Date().addingTimeInterval(TimeInterval(exactly: 10000)!), color: UIColor.blue)
     }
 
     // Static equal comparison operator
@@ -138,8 +140,14 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
         if !self.allDay {
+            var startShow = self.startDate
+            var endShow = self.endDate
+            if let origin = self.originalTime, let start = origin["startDate"], let end = origin["endDate"] {
+                startShow = start
+                endShow = end
+            }
             mainAttributedString.append(NSMutableAttributedString(
-                string: " (\(df.string(from: self.startDate)) - \(df.string(from: self.endDate)))",
+                string: " (\(df.string(from: startShow)) - \(df.string(from: endShow)))",
                 attributes: infoFontAttributes)
             )
         }
@@ -164,6 +172,16 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         if let grad = gradient {
             self.gradientLayer = CALayer(layer: grad) as? CAGradientLayer
         }
+    }
+
+    // Set original time dict. based on provided start and end date
+    public func setOriginalTime(oldStartDate: Date, oldEndDate: Date) {
+        self.originalTime = ["startDate": oldStartDate, "endDate": oldEndDate]
+    }
+
+    // Set original time dict. based on provided dict.
+    public func setOriginalTime(originTime: [String:Date]) {
+        self.originalTime = originTime
     }
 
     /**
@@ -224,15 +242,18 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                     splitEvents[DayDate(date: date)] = self.remakeEventDataAsAllDay(forDate: date)
                 }
                 else {
+                    var newData = EventData()
                     if date.isSameDayAs(startDate) {
-                        splitEvents[DayDate(date: date)] = self.remakeEventData(withStart: startDate, andEnd: date.getEndOfDay())
+                        newData = self.remakeEventData(withStart: startDate, andEnd: date.getEndOfDay())
                     }
                     else if date.isSameDayAs(endDate) {
-                        splitEvents[DayDate(date: date)] = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: endDate)
+                        newData = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: endDate)
                     }
                     else {
-                        splitEvents[DayDate(date: date)] = self.remakeEventDataAsAllDay(forDate: date)
+                        newData = self.remakeEventDataAsAllDay(forDate: date)
                     }
+                    newData.setOriginalTime(oldStartDate: self.startDate, oldEndDate: self.endDate)
+                    splitEvents[DayDate(date: date)] = newData
                 }
             }
         }
