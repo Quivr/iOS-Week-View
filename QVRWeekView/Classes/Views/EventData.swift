@@ -161,7 +161,9 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
 
     // Configures the gradient based on provided gradient.
     public func configureGradient(_ gradient: CAGradientLayer?) {
-        self.gradientLayer = gradient
+        if let grad = gradient {
+            self.gradientLayer = CALayer(layer: grad) as? CAGradientLayer
+        }
     }
 
     /**
