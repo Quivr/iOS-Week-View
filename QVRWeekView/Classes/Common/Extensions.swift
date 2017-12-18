@@ -56,6 +56,11 @@ public extension Date {
         return Calendar.current.date(byAdding: .day, value: 1, to: self)!
     }
 
+    // Returns previous day date.
+    func getPreviousDay() -> Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: self)!
+    }
+
     // Returns date for start of self.
     func getStartOfDay() -> Date {
         return Calendar.current.startOfDay(for: self)
@@ -108,15 +113,15 @@ public extension Date {
         return (self.compare(Date()).rawValue == -1)
     }
 
-    // Returns true if self is midnight.
+    // Returns true if self is midnight, up to minute precision.
     func isMidnight() -> Bool {
-        let comps = Calendar.current.dateComponents([.hour, .minute, .second], from: self)
-        return comps.hour == 0 && comps.minute == 0 && comps.second == 0
+        let comps = Calendar.current.dateComponents([.hour, .minute], from: self)
+        return comps.hour == 0 && comps.minute == 0
     }
 
     // Returns true if self is the midnight after given date.
     func isMidnight(afterDate date: Date) -> Bool {
-        return self.isMidnight() && self.getNextDay().isSameDayAs(date)
+        return self.isMidnight() && self.getPreviousDay().isSameDayAs(date)
     }
 
     // Returns true if self is same day as given day.

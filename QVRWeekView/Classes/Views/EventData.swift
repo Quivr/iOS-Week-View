@@ -237,7 +237,9 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             splitEvents[startDayDate] = self
         }
         else if !startDate.isSameDayAs(endDate) && endDate.isMidnight(afterDate: startDate) {
-            splitEvents[startDayDate] = self.remakeEventData(withStart: startDate, andEnd: endDate.addingTimeInterval(-1))
+            let newData = self.remakeEventData(withStart: startDate, andEnd: startDate.getEndOfDay())
+            newData.setOriginalTime(oldStartDate: startDate, oldEndDate: endDate)
+            splitEvents[startDayDate] = newData
         }
         else if !endDate.isMidnight(afterDate: startDate) {
             let dateRange = DateSupport.getAllDates(between: startDate, and: endDate)
