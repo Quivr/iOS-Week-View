@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 s.name             = 'QVRWeekView'
-s.version          = '0.10.9'
+s.version          = '0.10.10'
 s.summary          = 'QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.'
 
 # This description is used to generate tags and improve search results.
@@ -28,10 +28,8 @@ s.source           = { :git => 'https://github.com/Quivr/iOS-Week-View.git', :ta
 
 s.ios.deployment_target = '9.0'
 
-s.source_files = 'QVRWeekView/Classes/**/*'
+s.source_files = 'QVRWeekView/QVRWeekView/Classes/**/*'
 
 s.frameworks = 'UIKit'
-
-
 
 end
