@@ -30,6 +30,9 @@
 		64988F492029D68000C1A3BF /* DayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64988F342029D68000C1A3BF /* DayViewCell.swift */; };
 		64988F4A2029D68000C1A3BF /* WeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64988F352029D68000C1A3BF /* WeekView.swift */; };
 		64988F4B2029D68000C1A3BF /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = 64988F372029D68000C1A3BF /* .gitkeep */; };
+		64A1636F202AFD80002FEF01 /* CalendarWeekView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64A16366202AFD7F002FEF01 /* CalendarWeekView.framework */; };
+		64A16374202AFD80002FEF01 /* CalendarWeekViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A16373202AFD80002FEF01 /* CalendarWeekViewTests.swift */; };
+		64A16376202AFD80002FEF01 /* CalendarWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 64A16368202AFD80002FEF01 /* CalendarWeekView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 64988F042029D66600C1A3BF;
 			remoteInfo = QVRWeekView;
+		};
+		64A16370202AFD80002FEF01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 64988EFC2029D66600C1A3BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 64A16365202AFD7F002FEF01;
+			remoteInfo = CalendarWeekView;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -69,6 +79,12 @@
 		64988F342029D68000C1A3BF /* DayViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewCell.swift; sourceTree = "<group>"; };
 		64988F352029D68000C1A3BF /* WeekView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
 		64988F372029D68000C1A3BF /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		64A16366202AFD7F002FEF01 /* CalendarWeekView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CalendarWeekView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A16368202AFD80002FEF01 /* CalendarWeekView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CalendarWeekView.h; sourceTree = "<group>"; };
+		64A16369202AFD80002FEF01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		64A1636E202AFD80002FEF01 /* CalendarWeekViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CalendarWeekViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		64A16373202AFD80002FEF01 /* CalendarWeekViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarWeekViewTests.swift; sourceTree = "<group>"; };
+		64A16375202AFD80002FEF01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +103,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		64A16362202AFD7F002FEF01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64A1636B202AFD80002FEF01 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64A1636F202AFD80002FEF01 /* CalendarWeekView.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -95,6 +126,8 @@
 			children = (
 				64988F072029D66600C1A3BF /* QVRWeekView */,
 				64988F122029D66600C1A3BF /* QVRWeekViewTests */,
+				64A16367202AFD7F002FEF01 /* CalendarWeekView */,
+				64A16372202AFD80002FEF01 /* CalendarWeekViewTests */,
 				64988F062029D66600C1A3BF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,6 +137,8 @@
 			children = (
 				64988F052029D66600C1A3BF /* QVRWeekView.framework */,
 				64988F0E2029D66600C1A3BF /* QVRWeekViewTests.xctest */,
+				64A16366202AFD7F002FEF01 /* CalendarWeekView.framework */,
+				64A1636E202AFD80002FEF01 /* CalendarWeekViewTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -186,6 +221,24 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		64A16367202AFD7F002FEF01 /* CalendarWeekView */ = {
+			isa = PBXGroup;
+			children = (
+				64A16368202AFD80002FEF01 /* CalendarWeekView.h */,
+				64A16369202AFD80002FEF01 /* Info.plist */,
+			);
+			path = CalendarWeekView;
+			sourceTree = "<group>";
+		};
+		64A16372202AFD80002FEF01 /* CalendarWeekViewTests */ = {
+			isa = PBXGroup;
+			children = (
+				64A16373202AFD80002FEF01 /* CalendarWeekViewTests.swift */,
+				64A16375202AFD80002FEF01 /* Info.plist */,
+			);
+			path = CalendarWeekViewTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -194,6 +247,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				64988F162029D66600C1A3BF /* QVRWeekView.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64A16363202AFD7F002FEF01 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64A16376202AFD80002FEF01 /* CalendarWeekView.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +297,42 @@
 			productReference = 64988F0E2029D66600C1A3BF /* QVRWeekViewTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		64A16365202AFD7F002FEF01 /* CalendarWeekView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 64A16377202AFD80002FEF01 /* Build configuration list for PBXNativeTarget "CalendarWeekView" */;
+			buildPhases = (
+				64A16361202AFD7F002FEF01 /* Sources */,
+				64A16362202AFD7F002FEF01 /* Frameworks */,
+				64A16363202AFD7F002FEF01 /* Headers */,
+				64A16364202AFD7F002FEF01 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CalendarWeekView;
+			productName = CalendarWeekView;
+			productReference = 64A16366202AFD7F002FEF01 /* CalendarWeekView.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		64A1636D202AFD80002FEF01 /* CalendarWeekViewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 64A1637A202AFD80002FEF01 /* Build configuration list for PBXNativeTarget "CalendarWeekViewTests" */;
+			buildPhases = (
+				64A1636A202AFD80002FEF01 /* Sources */,
+				64A1636B202AFD80002FEF01 /* Frameworks */,
+				64A1636C202AFD80002FEF01 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				64A16371202AFD80002FEF01 /* PBXTargetDependency */,
+			);
+			name = CalendarWeekViewTests;
+			productName = CalendarWeekViewTests;
+			productReference = 64A1636E202AFD80002FEF01 /* CalendarWeekViewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -251,6 +348,14 @@
 						ProvisioningStyle = Automatic;
 					};
 					64988F0D2029D66600C1A3BF = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					64A16365202AFD7F002FEF01 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					64A1636D202AFD80002FEF01 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -270,6 +375,8 @@
 			targets = (
 				64988F042029D66600C1A3BF /* QVRWeekView */,
 				64988F0D2029D66600C1A3BF /* QVRWeekViewTests */,
+				64A16365202AFD7F002FEF01 /* CalendarWeekView */,
+				64A1636D202AFD80002FEF01 /* CalendarWeekViewTests */,
 			);
 		};
 /* End PBXProject section */
@@ -289,6 +396,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		64988F0C2029D66600C1A3BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64A16364202AFD7F002FEF01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64A1636C202AFD80002FEF01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -327,6 +448,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		64A16361202AFD7F002FEF01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		64A1636A202AFD80002FEF01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64A16374202AFD80002FEF01 /* CalendarWeekViewTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -334,6 +470,11 @@
 			isa = PBXTargetDependency;
 			target = 64988F042029D66600C1A3BF /* QVRWeekView */;
 			targetProxy = 64988F102029D66600C1A3BF /* PBXContainerItemProxy */;
+		};
+		64A16371202AFD80002FEF01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 64A16365202AFD7F002FEF01 /* CalendarWeekView */;
+			targetProxy = 64A16370202AFD80002FEF01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -523,6 +664,80 @@
 			};
 			name = Release;
 		};
+		64A16378202AFD80002FEF01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 6754N2LED2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CalendarWeekView/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.CalendarWeekView;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		64A16379202AFD80002FEF01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 6754N2LED2;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = CalendarWeekView/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.CalendarWeekView;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		64A1637B202AFD80002FEF01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6754N2LED2;
+				INFOPLIST_FILE = CalendarWeekViewTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.CalendarWeekViewTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		64A1637C202AFD80002FEF01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 6754N2LED2;
+				INFOPLIST_FILE = CalendarWeekViewTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.CalendarWeekViewTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -549,6 +764,24 @@
 			buildConfigurations = (
 				64988F1D2029D66600C1A3BF /* Debug */,
 				64988F1E2029D66600C1A3BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		64A16377202AFD80002FEF01 /* Build configuration list for PBXNativeTarget "CalendarWeekView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64A16378202AFD80002FEF01 /* Debug */,
+				64A16379202AFD80002FEF01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		64A1637A202AFD80002FEF01 /* Build configuration list for PBXNativeTarget "CalendarWeekViewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64A1637B202AFD80002FEF01 /* Debug */,
+				64A1637C202AFD80002FEF01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
