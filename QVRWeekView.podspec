@@ -19,14 +19,14 @@ s.summary          = 'QVRWeekView is a simple calendar week view with support fo
 
 s.description      = 'QVRWeekView is a framework which provides a calendar view that can be customized to display between 1 to 7 days in both portrait and landscape mode. Includes customization features to customize colours, fonts and sizes.'
 
-s.homepage         = 'https://github.com/Quivr/iOS-Week-View'
+s.homepage         = 'https://github.com/lesyk/QVRWeekView'
 # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Reinert' => 'reilemx@gmail.com' }
-s.source           = { :git => 'https://github.com/Quivr/iOS-Week-View.git', :tag => s.version.to_s }
+s.source           = { :git => 'https://github.com/lesyk/QVRWeekView', :tag => s.version.to_s }
 # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-s.ios.deployment_target = '9.0'
+s.ios.deployment_target = '10.0'
 
 s.source_files = 'QVRWeekView/Classes/**/*'
 
