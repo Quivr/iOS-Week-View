@@ -113,6 +113,20 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     /**
+     Convenience initializer. Int Id + allDay and no location parameter.
+     */
+    public convenience init(id: Int, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: "", color: color, allDay: allDay)
+    }
+
+    /**
+     Convenience initializer. String Id + allDay and no location parameter.
+     */
+    public convenience init(id: String, title: String, startDate: Date, endDate: Date, color: UIColor, allDay: Bool) {
+        self.init(id: id, title: title, startDate: startDate, endDate: endDate, location: "", color: color, allDay: allDay)
+    }
+
+    /**
      Convenience initializer.
      */
     public convenience init() {
