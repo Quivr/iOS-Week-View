@@ -1,11 +1,3 @@
-//
-//  Period.swift
-//  Pods
-//
-//  Created by Reinert Lemmens on 7/26/17.
-//
-//
-
 import Foundation
 
 /**

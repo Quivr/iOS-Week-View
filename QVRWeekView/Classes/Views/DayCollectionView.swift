@@ -1,11 +1,3 @@
-//
-//  DayCollectionView.swift
-//  Pods
-//
-//  Created by Reinert Lemmens on 5/22/17.
-//
-//
-
 import UIKit
 
 // MARK: - DAY COLLECTION VIEW -

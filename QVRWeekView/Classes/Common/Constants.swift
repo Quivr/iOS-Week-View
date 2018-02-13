@@ -1,11 +1,3 @@
-//
-//  Constants.swift
-//  ProjectCalendar
-//
-//  Created by Reinert Lemmens on 5/7/17.
-//  Copyright © 2017 lemonrainn. All rights reserved.
-//
-
 import Foundation
 import UIKit
 

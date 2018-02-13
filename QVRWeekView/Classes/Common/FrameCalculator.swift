@@ -1,10 +1,3 @@
-//
-//  EventFrameCalculator.swift
-//  QVRWeekView
-//
-//  Created by Reinert Lemmens on 7/28/17.
-//
-
 import Foundation
 
 /**

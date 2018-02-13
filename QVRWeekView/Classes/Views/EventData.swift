@@ -1,11 +1,3 @@
-//
-//  EventData.swift
-//  Pods
-//
-//  Created by Reinert Lemmens on 7/25/17.
-//
-//
-
 import Foundation
 
 /**
