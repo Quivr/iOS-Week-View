@@ -174,6 +174,8 @@ open class WeekView: UIView {
         guard eventsData != nil else {
             return
         }
+        // Reload dayCollectionView data to prevent allDayEvent bugs.
+        dayScrollView.dayCollectionView.reloadData()
         dayScrollView.overwriteAllEvents(withData: eventsData)
     }
 
