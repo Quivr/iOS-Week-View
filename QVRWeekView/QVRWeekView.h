@@ -1,11 +1,3 @@
-//
-//  QVRWeekView.h
-//  QVRWeekView
-//
-//  Created by Viktor Lesyk on 2/6/18.
-//  Copyright © 2018 Viktor Lesyk. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
 //! Project version number for QVRWeekView.

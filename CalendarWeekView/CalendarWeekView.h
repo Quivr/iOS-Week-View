@@ -1,11 +1,3 @@
-//
-//  CalendarWeekView.h
-//  CalendarWeekView
-//
-//  Created by Viktor Lesyk on 2/7/18.
-//  Copyright © 2018 Viktor Lesyk. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
 //! Project version number for CalendarWeekView.
