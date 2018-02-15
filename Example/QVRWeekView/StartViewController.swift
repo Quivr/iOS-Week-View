@@ -1,3 +1,11 @@
+//
+//  StartViewController.swift
+//  QVRWeekView
+//
+//  Created by Reinert Lemmens on 5/19/17.
+//  Copyright © 2017 CocoaPods. All rights reserved.
+//
+
 import UIKit
 
 class StartViewController: UIViewController {

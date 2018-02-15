@@ -1,3 +1,11 @@
+//
+//  AppDelegate.swift
+//  QVRWeekView
+//
+//  Created by reilem on 05/17/2017.
+//  Copyright (c) 2017 reilem. All rights reserved.
+//
+
 import UIKit
 
 @UIApplicationMain

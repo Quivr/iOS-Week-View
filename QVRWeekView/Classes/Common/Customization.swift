@@ -1,3 +1,10 @@
+//
+//  Customization.swift
+//  QVRWeekView
+//
+//  Created by Reinert Lemmens on 18/08/2017.
+//
+
 import Foundation
 
 /**
