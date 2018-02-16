@@ -280,11 +280,11 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         // Set current zoom
         var currentZoom = previousZoom + zoomChange
-        if currentZoom < LayoutDefaults.minimumZoom {
-            currentZoom = LayoutDefaults.minimumZoom
+        if currentZoom < LayoutVariables.minimumZoomScale {
+            currentZoom = LayoutVariables.minimumZoomScale
         }
-        else if currentZoom > LayoutDefaults.maximumZoom {
-            currentZoom = LayoutDefaults.maximumZoom
+        else if currentZoom > LayoutVariables.maximumZoomScale {
+            currentZoom = LayoutVariables.maximumZoomScale
         }
         LayoutVariables.zoomScale = currentZoom
         // Update the height and contents of the visible day views
@@ -792,6 +792,14 @@ extension DayScrollView {
         return false
     }
 
+    func setMinimumZoomScale(to scale: CGFloat) {
+        LayoutVariables.minimumZoomScale = scale
+    }
+
+    func setMaximumZoomScale(to scale: CGFloat) {
+        LayoutVariables.maximumZoomScale = scale
+    }
+
     /**
      Sets the sensitivity of horizontal scrolling.
      */
@@ -967,6 +975,10 @@ struct LayoutVariables {
     // Height of all scrollable content
     private(set) static var totalContentWidth = CGFloat(collectionViewCellCount)*totalDayViewCellWidth+dayViewHorizontalSpacing
 
+    // Minimum zoom scale value
+    fileprivate(set) static var minimumZoomScale = LayoutDefaults.minimumZoom
+    // Maximum zoom scale valueapp store
+    fileprivate(set) static var maximumZoomScale = LayoutDefaults.maximumZoom
     // Min x-axis values that repeating starts at
     private(set) static var minOffsetX = CGFloat(0)
     // Max x-axis values that repeating starts at

@@ -67,6 +67,9 @@ class StartViewController: UIViewController {
             weekView.sideBarWidth = 40
             weekView.mainBackgroundColor = UIColor.blue
 
+            weekView.minimumZoomScale = 0.1
+            weekView.maximumZoomScale = 5.0
+
             weekView.velocityOffsetMultiplier = 0.01
 
             weekView.allDayEventHeight = 30

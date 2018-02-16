@@ -623,6 +623,32 @@ public extension WeekView {
     }
 
     /**
+     The minimum zoom scale to which the weekview can be zoomed. Ex. 0.5 means that the weekview
+     can be zoomed to half the original given hourHeight.
+     */
+    public var minimumZoomScale: CGFloat {
+        get {
+            return LayoutVariables.minimumZoomScale
+        }
+        set(scale) {
+            self.dayScrollView.setMinimumZoomScale(to: scale)
+        }
+    }
+
+    /**
+     The maximum zoom scale to which the weekview can be zoomed. Ex. 2.0 means that the weekview
+     can be zoomed to double the original given hourHeight.
+     */
+    public var maximumZoomScale: CGFloat {
+        get {
+            return LayoutVariables.minimumZoomScale
+        }
+        set(scale) {
+            self.dayScrollView.setMaximumZoomScale(to: scale)
+        }
+    }
+
+    /**
      Sensitivity for horizontal scrolling. A higher number will multiply input velocity
      more and thus result in more cells being skipped when scrolling.
      */
