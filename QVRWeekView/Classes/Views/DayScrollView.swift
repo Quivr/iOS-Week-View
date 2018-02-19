@@ -617,6 +617,22 @@ extension DayScrollView {
     }
 
     /**
+    Sets the horizontal padding of the text within event labels.
+     */
+    func setEventLabelHorizontalTextPadding(to padding: CGFloat) {
+        TextVariables.eventLabelHorizontalTextPadding = padding
+        updateLayout()
+    }
+
+    /**
+     Sets the vertical padding of the text within event labels.
+     */
+    func setEventLabelVerticalTextPadding(to padding: CGFloat) {
+        TextVariables.eventLabelVerticalTextPadding = padding
+        updateLayout()
+    }
+
+    /**
      Sets the text of the preview event.
      */
     func setPreviewEventText(to text: String) {
@@ -1101,5 +1117,9 @@ extension TextVariables {
     fileprivate(set) static var eventLabelMinimumFontSize = LayoutDefaults.eventLabelMinimumFontSize
     // Stores if event label resizing is enabled
     fileprivate(set) static var eventLabelFontResizingEnabled = false
+    // Horizontal padding of text in event labels
+    fileprivate(set) static var eventLabelHorizontalTextPadding = LayoutDefaults.eventLabelHorizontalTextPadding
+    // Vertical padding of text in event labels
+    fileprivate(set) static var eventLabelVerticalTextPadding = LayoutDefaults.eventLabelVerticalTextPadding
 
 }

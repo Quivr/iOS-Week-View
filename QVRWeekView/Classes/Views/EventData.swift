@@ -195,7 +195,6 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
 
         self.layer.path = CGPath(rect: frame, transform: nil)
         for sub in self.layer.sublayers! {
-
             if let gradient = sub as? CAGradientLayer {
                 CATransaction.begin()
                 CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
@@ -220,7 +219,12 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                     text.string = self.getDisplayString()
                 }
                 CATransaction.setDisableActions(true)
-                text.frame = frame
+                let xPadding = TextVariables.eventLabelHorizontalTextPadding
+                let yPadding = TextVariables.eventLabelVerticalTextPadding
+                text.frame = CGRect(x: frame.origin.x + xPadding,
+                                    y: frame.origin.y + yPadding,
+                                    width: frame.width - 2*xPadding,
+                                    height: frame.height - 2*yPadding)
             }
         }
         return self.layer

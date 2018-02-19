@@ -369,6 +369,30 @@ public extension WeekView {
     }
 
     /**
+     Horizontal padding of the text within event labels.
+     */
+    public var eventLabelHorizontalTextPadding: CGFloat {
+        get {
+            return TextVariables.eventLabelHorizontalTextPadding
+        }
+        set(padding) {
+            self.dayScrollView.setEventLabelHorizontalTextPadding(to: padding)
+        }
+    }
+
+    /**
+     Vertical padding of the text within event labels.
+     */
+    public var eventLabelVerticalTextPadding: CGFloat {
+        get {
+            return TextVariables.eventLabelVerticalTextPadding
+        }
+        set(padding) {
+            self.dayScrollView.setEventLabelVerticalTextPadding(to: padding)
+        }
+    }
+
+    /**
      The text shown inside the previw event.
      */
     public var previewEventText: String {
