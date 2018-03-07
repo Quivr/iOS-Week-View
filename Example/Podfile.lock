@@ -1,5 +1,5 @@
 PODS:
-  - QVRWeekView (0.10.13)
+  - QVRWeekView (0.11.2)
 
 DEPENDENCIES:
   - QVRWeekView (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  QVRWeekView: f8c5ff57b345a6c4768120661dab3a0d7bffd4c7
+  QVRWeekView: beb67fd9afad626c8478559a226aa859c6ee81cc
 
 PODFILE CHECKSUM: b7347a90519a3b9f7c751125add22b43c90a08b3
 
