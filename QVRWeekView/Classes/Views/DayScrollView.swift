@@ -854,6 +854,13 @@ extension DayScrollView {
         updateLayout()
     }
 
+    /**
+     Sets spread all day events on x axis, if not true than spread will be made on y axis.
+     */
+    func setAllDayEventsSpreadOnX(to onX: Bool) {
+        LayoutVariables.allDayEventsSpreadOnX = onX
+    }
+
 }
 
 // MARK: - SCROLLVIEW LAYOUT VARIABLES -
@@ -1030,6 +1037,8 @@ struct LayoutVariables {
     fileprivate(set) static var allDayEventHeight = LayoutDefaults.allDayEventHeight
     // Vertical spacing of an all day event
     fileprivate(set) static var allDayEventVerticalSpacing = LayoutDefaults.allDayVerticalSpacing
+    // Spread all day events on x axis, if not true than spread will be made on y axis
+    fileprivate(set) static var allDayEventsSpreadOnX = LayoutDefaults.allDayEventsSpreadOnX
 
     // MARK: - FONT & COLOUR VARIABLES -
 

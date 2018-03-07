@@ -56,6 +56,7 @@ class StartViewController: UIViewController {
             weekView.eventLabelVerticalTextPadding = CGFloat(5)
 
             weekView.showPreviewOnLongPress = false
+            weekView.allDayEventsSpreadOnX = false
 
 //            weekView.todayViewColor = .black
 

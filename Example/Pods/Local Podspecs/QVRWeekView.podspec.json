@@ -1,6 +1,6 @@
 {
   "name": "QVRWeekView",
-  "version": "0.11.2",
+  "version": "0.11.4",
   "summary": "QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.",
   "description": "QVRWeekView is a framework which provides a calendar view that can be customized to display between 1 to 7 days in both portrait and landscape mode. Includes customization features to customize colours, fonts and sizes.",
   "homepage": "https://github.com/lesyk/QVRWeekView",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/lesyk/QVRWeekView",
-    "tag": "0.11.2"
+    "tag": "0.11.4"
   },
   "platforms": {
     "ios": "10.0"

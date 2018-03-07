@@ -267,6 +267,18 @@ public extension WeekView {
     }
 
     /**
+     Spread all day events on x axis, if not true than spread will be made on y axis.
+     */
+    public var allDayEventsSpreadOnX: Bool {
+        get {
+            return LayoutVariables.allDayEventsSpreadOnX
+        }
+        set(onX) {
+            self.dayScrollView.setAllDayEventsSpreadOnX(to: onX)
+        }
+    }
+
+    /**
      Helper function for hour label customization.
      */
     private func updateHourSideBarView() {

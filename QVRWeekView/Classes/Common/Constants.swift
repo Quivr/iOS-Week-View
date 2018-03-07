@@ -78,6 +78,8 @@ struct LayoutDefaults {
     static let allDayEventHeight = CGFloat(40)
     // Vertical spacing of all day events
     static let allDayVerticalSpacing = CGFloat(5)
+    // Spread all day events on x axis, if not true than spread will be made on y axis
+    static let allDayEventsSpreadOnX = true
 
     // Initial height of day view cells
     static let dayViewCellHeight = CGFloat(1400)
