@@ -469,10 +469,10 @@ public extension WeekView {
      */
     public var todayViewColor: UIColor {
         get {
-            return LayoutVariables.weekendDayViewColor
+            return LayoutVariables.todayViewColor
         }
         set(color) {
-            self.dayScrollView.setWeekendDayViewColor(to: color)
+            self.dayScrollView.setTodayViewColor(to: color)
         }
     }
 
