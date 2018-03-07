@@ -113,6 +113,8 @@ struct LayoutDefaults {
     static let passedDayViewColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
     // Color for passed day view cells that are weekend.
     static let passedWeekendDayViewColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1.0)
+    // Color for today's view cell.
+    static let todayViewColor = UIColor.clear
 }
 
 struct NibNames {

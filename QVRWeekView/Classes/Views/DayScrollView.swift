@@ -681,6 +681,14 @@ extension DayScrollView {
     }
 
     /**
+     Sets the color of today's view.
+     */
+    func setTodayViewColor(to color: UIColor) {
+        LayoutVariables.todayViewColor = color
+        updateLayout()
+    }
+
+    /**
      Sets the color of day view hour indicators.
      */
     func setDayViewHourIndicatorColor(to color: UIColor) {
@@ -998,6 +1006,8 @@ struct LayoutVariables {
     fileprivate(set) static var passedDayViewColor = LayoutDefaults.passedDayViewColor
     // Color for day view passed weekend color
     fileprivate(set) static var passedWeekendDayViewColor = LayoutDefaults.passedWeekendDayViewColor
+    // Color for today
+    fileprivate(set) static var todayViewColor = LayoutDefaults.todayViewColor
 
     // Color for day view hour indicator
     fileprivate(set) static var hourIndicatorColor = LayoutDefaults.hourIndicatorColor

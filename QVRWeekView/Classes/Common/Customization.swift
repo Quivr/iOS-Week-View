@@ -465,6 +465,18 @@ public extension WeekView {
     }
 
     /**
+     Color for today's view cell.
+     */
+    public var todayViewColor: UIColor {
+        get {
+            return LayoutVariables.weekendDayViewColor
+        }
+        set(color) {
+            self.dayScrollView.setWeekendDayViewColor(to: color)
+        }
+    }
+
+    /**
      Color of the hour indicator.
      */
     public var dayViewHourIndicatorColor: UIColor {

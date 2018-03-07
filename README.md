@@ -129,6 +129,7 @@ defaultDayViewColor:`UIColor`         |
 weekendDayViewColor:`UIColor`         |
 passedDayViewColor:`UIColor`         |
 passedWeekendDayViewColor:`UIColor`         |
+todayViewColor:`UIColor`         |
 dayViewHourIndicatorColor:`UIColor`         |
 dayViewHourIndicatorThickness:`CGFloat`         |
 dayViewMainSeparatorColor:`UIColor`         |

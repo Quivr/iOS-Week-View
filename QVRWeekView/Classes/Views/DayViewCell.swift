@@ -102,10 +102,13 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func updateTimeView() {
         if date.isToday() {
             self.overlayView.isHidden = false
-            self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
-            self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
-        }
-        else {
+            if LayoutDefaults.todayViewColor == LayoutVariables.defaultDayViewColor {
+                self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
+                self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
+            } else {
+                self.backgroundColor = LayoutDefaults.todayViewColor
+            }
+        } else {
             self.overlayView.isHidden = true
             if date.hasPassed() {
                 self.backgroundColor = date.isWeekend() ? LayoutVariables.passedWeekendDayViewColor : LayoutVariables.passedDayViewColor
