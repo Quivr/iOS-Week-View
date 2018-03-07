@@ -52,6 +52,8 @@ class StartViewController: UIViewController {
             weekView.eventLabelTextColor = UIColor.green
             weekView.eventLabelFont = UIFont.italicSystemFont(ofSize: 25)
             weekView.eventLabelInfoFont = UIFont.boldSystemFont(ofSize: 15)
+            weekView.eventLabelHorizontalTextPadding = CGFloat(0)
+            weekView.eventLabelVerticalTextPadding = CGFloat(5)
 
 //            weekView.todayViewColor = .black
 
@@ -68,6 +70,9 @@ class StartViewController: UIViewController {
             weekView.defaultTopBarHeight = 70
             weekView.sideBarWidth = 40
             weekView.mainBackgroundColor = UIColor.blue
+
+            weekView.minimumZoomScale = 0.1
+            weekView.maximumZoomScale = 5.0
 
             weekView.velocityOffsetMultiplier = 0.01
 

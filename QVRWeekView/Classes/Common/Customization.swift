@@ -369,6 +369,30 @@ public extension WeekView {
     }
 
     /**
+     Horizontal padding of the text within event labels.
+     */
+    public var eventLabelHorizontalTextPadding: CGFloat {
+        get {
+            return TextVariables.eventLabelHorizontalTextPadding
+        }
+        set(padding) {
+            self.dayScrollView.setEventLabelHorizontalTextPadding(to: padding)
+        }
+    }
+
+    /**
+     Vertical padding of the text within event labels.
+     */
+    public var eventLabelVerticalTextPadding: CGFloat {
+        get {
+            return TextVariables.eventLabelVerticalTextPadding
+        }
+        set(padding) {
+            self.dayScrollView.setEventLabelVerticalTextPadding(to: padding)
+        }
+    }
+
+    /**
      The text shown inside the previw event.
      */
     public var previewEventText: String {
@@ -631,6 +655,32 @@ public extension WeekView {
             if self.dayScrollView.setLandscapeDayViewVerticalSpacing(to: height) {
                 updateVisibleLabelsAndMainConstraints()
             }
+        }
+    }
+
+    /**
+     The minimum zoom scale to which the weekview can be zoomed. Ex. 0.5 means that the weekview
+     can be zoomed to half the original given hourHeight.
+     */
+    public var minimumZoomScale: CGFloat {
+        get {
+            return LayoutVariables.minimumZoomScale
+        }
+        set(scale) {
+            self.dayScrollView.setMinimumZoomScale(to: scale)
+        }
+    }
+
+    /**
+     The maximum zoom scale to which the weekview can be zoomed. Ex. 2.0 means that the weekview
+     can be zoomed to double the original given hourHeight.
+     */
+    public var maximumZoomScale: CGFloat {
+        get {
+            return LayoutVariables.minimumZoomScale
+        }
+        set(scale) {
+            self.dayScrollView.setMaximumZoomScale(to: scale)
         }
     }
 
