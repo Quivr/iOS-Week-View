@@ -297,7 +297,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         previewLayer.addSublayer(textLayer)
         self.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
-        self.previewVisible = true
+        self.previewVisible = LayoutVariables.showPreviewOnLongPress
 
         let anim = CABasicAnimation(keyPath: "bounds")
         anim.duration = 0.15
@@ -332,7 +332,8 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     }
 
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        if let prevLayer = self.previewLayer, flag {
+        // Animation is either finished, or preview is not visible
+        if let prevLayer = self.previewLayer, (flag || !previewVisible) {
             let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2)))/self.frame.height)*24 )
             let rounded = time.roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0)
             let hours = Int(rounded)

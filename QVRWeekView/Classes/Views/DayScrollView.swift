@@ -665,6 +665,13 @@ extension DayScrollView {
     }
 
     /**
+     Sets show preview on long press.
+     */
+    func setShowPreviewOnLongPress(to show: Bool) {
+        LayoutVariables.showPreviewOnLongPress = show
+    }
+
+    /**
      Sets the color of default day view color.
      */
     func setDefaultDayViewColor(to color: UIColor) {
@@ -1062,6 +1069,8 @@ struct LayoutVariables {
     fileprivate(set) static var previewEventHeightInHours = LayoutDefaults.previewEventHeightInHours
     // Number of minutes the preview event will snap to.
     fileprivate(set) static var previewEventPrecisionInMinutes = LayoutDefaults.previewEventPrecisionInMinutes
+    // Show preview on long press.
+    fileprivate(set) static var showPreviewOnLongPress = LayoutDefaults.showPreviewOnLongPress
 
     // MARK: - UPDATE FUNCTIONS -
 

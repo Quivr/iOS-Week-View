@@ -441,6 +441,18 @@ public extension WeekView {
     }
 
     /**
+     Show preview on long press.
+     */
+    public var showPreviewOnLongPress: Bool {
+        get {
+            return LayoutVariables.showPreviewOnLongPress
+        }
+        set(show) {
+            self.dayScrollView.setShowPreviewOnLongPress(to: show)
+        }
+    }
+
+    /**
      Default color of the day view cells. These are all days that are not weekends and not passed.
      */
     public var defaultDayViewColor: UIColor {

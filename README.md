@@ -143,6 +143,7 @@ landscapeDayViewSideSpacing:`CGFloat`         |
 portraitDayViewVerticalSpacing:`CGFloat`         |
 landscapeDayViewVerticalSpacing:`CGFloat`         |
 velocityOffsetMultiplier:`CGFloat`         |
+showPreviewOnLongPress: `Bool`            |
 
 ## How it works
 
