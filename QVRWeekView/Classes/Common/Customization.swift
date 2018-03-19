@@ -472,6 +472,9 @@ public extension WeekView {
             return LayoutVariables.defaultDayViewColor
         }
         set(color) {
+            if self.todayViewColor == self.defaultDayViewColor {
+                self.dayScrollView.setTodayViewColor(to: color)
+            }
             self.dayScrollView.setDefaultDayViewColor(to: color)
         }
     }
