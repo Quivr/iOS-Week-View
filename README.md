@@ -106,42 +106,45 @@ EventData is the main object used to communicate events between the WeekView and
 
 Below is a table of all customizable properties of the `WeekView`
 
-| Property
-|----------------------------------------|
-mainBackgroundColor:`UIColor`         |
-defaultTopBarHeight:`CGFloat`         |
-topBarColor:`UIColor`         |
-sideBarWidth:`CGFloat`         |
-dayLabelDefaultFont:`UIFont`         |
-dayLabelTextColor:`UIColor`         |
-dayLabelMinimumFontSize:`CGFloat`         |
-hourLabelFont:`UIFont`         |
-hourLabelTextColor:`UIColor`         |
-hourLabelMinimumFontSize:`CGFloat`         |
-allDayEventHeight:`CGFloat`         |
-allDayEventVerticalSpacing:`CGFloat`         |
-visibleDaysInPortraitMode:`Int`         |
-visibleDaysInLandscapeMode:`Int`         |
-eventLabelFont:`UIFont`         |
-eventLabelTextColor:`UIColor`         |
-eventLabelMinimumFontSize:`CGFloat`         |
-defaultDayViewColor:`UIColor`         |
-weekendDayViewColor:`UIColor`         |
-passedDayViewColor:`UIColor`         |
-passedWeekendDayViewColor:`UIColor`         |
-dayViewHourIndicatorColor:`UIColor`         |
-dayViewHourIndicatorThickness:`CGFloat`         |
-dayViewMainSeparatorColor:`UIColor`         |
-dayViewMainSeparatorThickness:`CGFloat`         |
-dayViewDashedSeparatorColor:`UIColor`         |
-dayViewDashedSeparatorThickness:`CGFloat`         |
-dayViewDashedSeparatorPattern:`[NSNumber]`         |
-dayViewCellHeight:`CGFloat`         |
-portraitDayViewSideSpacing:`CGFloat`         |
-landscapeDayViewSideSpacing:`CGFloat`         |
-portraitDayViewVerticalSpacing:`CGFloat`         |
-landscapeDayViewVerticalSpacing:`CGFloat`         |
-velocityOffsetMultiplier:`CGFloat`         |
+| Property | Description |
+| ------------- |:-------------:|
+| mainBackgroundColor:`UIColor`       | |
+| defaultTopBarHeight:`CGFloat`     | |
+| topBarColor:`UIColor`         | |
+| sideBarWidth:`CGFloat`         | |
+| dayLabelDefaultFont:`UIFont`         | |
+| dayLabelTextColor:`UIColor`         | |
+| dayLabelMinimumFontSize:`CGFloat`  | |
+| hourLabelFont:`UIFont`         | |
+| hourLabelTextColor:`UIColor`         | |
+| hourLabelMinimumFontSize:`CGFloat`      | |
+| allDayEventHeight:`CGFloat`         | |
+| allDayEventVerticalSpacing:`CGFloat`    | |
+| visibleDaysInPortraitMode:`Int`       | |
+| visibleDaysInLandscapeMode:`Int`    | |
+| eventLabelFont:`UIFont`         | |
+| eventLabelTextColor:`UIColor`         | |
+| eventLabelMinimumFontSize:`CGFloat`         | |
+| defaultDayViewColor:`UIColor`         | |
+| weekendDayViewColor:`UIColor`         | |
+| passedDayViewColor:`UIColor`         | |
+| passedWeekendDayViewColor:`UIColor`         | |
+| todayViewColor:`UIColor`         | |
+| dayViewHourIndicatorColor:`UIColor`         | |
+| dayViewHourIndicatorThickness:`CGFloat`         | |
+| dayViewMainSeparatorColor:`UIColor`         | |
+| dayViewMainSeparatorThickness:`CGFloat`         | |
+| dayViewDashedSeparatorColor:`UIColor`         | |
+| dayViewDashedSeparatorThickness:`CGFloat`         | |
+| dayViewDashedSeparatorPattern:`[NSNumber]`         | |
+| dayViewCellHeight:`CGFloat`         | |
+| portraitDayViewSideSpacing:`CGFloat`         | | 
+| landscapeDayViewSideSpacing:`CGFloat`         | | 
+| portraitDayViewVerticalSpacing:`CGFloat`         | |
+| landscapeDayViewVerticalSpacing:`CGFloat`         | |
+| velocityOffsetMultiplier:`CGFloat`         | |
+| showPreviewOnLongPress: `Bool`            | |
+| allDayEventsSpreadOnX: `Bool`            | Sets spread all day events on x axis, if not true than spread will be made on y axis. |
 
 ## How it works
 
@@ -156,6 +159,7 @@ WeekView handles all top level operations such as pinch gestures and orientation
 - [x] Extra customization features
 - [x] Improved UI features
 - [x] Increased event processing efficiency
+- [ ] Add scroll to all day events
 
 ## Author
 

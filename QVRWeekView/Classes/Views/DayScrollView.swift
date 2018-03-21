@@ -665,6 +665,13 @@ extension DayScrollView {
     }
 
     /**
+     Sets show preview on long press.
+     */
+    func setShowPreviewOnLongPress(to show: Bool) {
+        LayoutVariables.showPreviewOnLongPress = show
+    }
+
+    /**
      Sets the color of default day view color.
      */
     func setDefaultDayViewColor(to color: UIColor) {
@@ -693,6 +700,14 @@ extension DayScrollView {
      */
     func setPassedWeekendDayViewColor(to color: UIColor) {
         LayoutVariables.passedWeekendDayViewColor = color
+        updateLayout()
+    }
+
+    /**
+     Sets the color of today's view.
+     */
+    func setTodayViewColor(to color: UIColor) {
+        LayoutVariables.todayViewColor = color
         updateLayout()
     }
 
@@ -837,6 +852,13 @@ extension DayScrollView {
     func setAllDayEventVerticalSpacing(to height: CGFloat) {
         LayoutVariables.allDayEventVerticalSpacing = height
         updateLayout()
+    }
+
+    /**
+     Sets spread all day events on x axis, if not true than spread will be made on y axis.
+     */
+    func setAllDayEventsSpreadOnX(to onX: Bool) {
+        LayoutVariables.allDayEventsSpreadOnX = onX
     }
 
 }
@@ -1015,6 +1037,8 @@ struct LayoutVariables {
     fileprivate(set) static var allDayEventHeight = LayoutDefaults.allDayEventHeight
     // Vertical spacing of an all day event
     fileprivate(set) static var allDayEventVerticalSpacing = LayoutDefaults.allDayVerticalSpacing
+    // Spread all day events on x axis, if not true than spread will be made on y axis
+    fileprivate(set) static var allDayEventsSpreadOnX = LayoutDefaults.allDayEventsSpreadOnX
 
     // MARK: - FONT & COLOUR VARIABLES -
 
@@ -1026,6 +1050,8 @@ struct LayoutVariables {
     fileprivate(set) static var passedDayViewColor = LayoutDefaults.passedDayViewColor
     // Color for day view passed weekend color
     fileprivate(set) static var passedWeekendDayViewColor = LayoutDefaults.passedWeekendDayViewColor
+    // Color for today
+    fileprivate(set) static var todayViewColor = LayoutDefaults.todayViewColor
 
     // Color for day view hour indicator
     fileprivate(set) static var hourIndicatorColor = LayoutDefaults.hourIndicatorColor
@@ -1052,6 +1078,8 @@ struct LayoutVariables {
     fileprivate(set) static var previewEventHeightInHours = LayoutDefaults.previewEventHeightInHours
     // Number of minutes the preview event will snap to.
     fileprivate(set) static var previewEventPrecisionInMinutes = LayoutDefaults.previewEventPrecisionInMinutes
+    // Show preview on long press.
+    fileprivate(set) static var showPreviewOnLongPress = LayoutDefaults.showPreviewOnLongPress
 
     // MARK: - UPDATE FUNCTIONS -
 

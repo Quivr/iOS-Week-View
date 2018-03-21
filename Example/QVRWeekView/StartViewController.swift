@@ -55,6 +55,11 @@ class StartViewController: UIViewController {
             weekView.eventLabelHorizontalTextPadding = CGFloat(0)
             weekView.eventLabelVerticalTextPadding = CGFloat(5)
 
+            weekView.showPreviewOnLongPress = false
+            weekView.allDayEventsSpreadOnX = false
+
+//            weekView.todayViewColor = .black
+
             weekView.dayLabelTextColor = UIColor.white
             weekView.dayLabelDefaultFont = UIFont.italicSystemFont(ofSize: 20)
             weekView.dayLabelTodayTextColor = UIColor.red

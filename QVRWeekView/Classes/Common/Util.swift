@@ -102,14 +102,25 @@ struct Util {
     /**
      Functions generates a frame for an all day event according to the indexPath and
      the count (= how many'th all day event frame in current day) and the max (= how many all day events in current day.
+     Depending on LayoutVariables.allDayEventsSpreadOnX, events will be spreaded on x or y axis.
      */
     static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
-        let row = CGFloat(indexPath.row)
-        let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
-                      y: LayoutVariables.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
-                      width: width,
-                      height: LayoutVariables.allDayEventHeight)
+        if LayoutVariables.allDayEventsSpreadOnX {
+            let row = CGFloat(indexPath.row)
+            let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
+            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
+                          y: LayoutVariables.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
+                          width: width,
+                          height: LayoutVariables.allDayEventHeight)
+
+        } else {
+            let row = CGFloat(indexPath.row)
+            let height = LayoutVariables.allDayEventHeight/CGFloat(max)
+            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth),
+                          y: LayoutVariables.defaultTopBarHeight+CGFloat(count)*height,
+                          width: LayoutVariables.dayViewCellWidth,
+                          height: height)
+        }
     }
 
     static func getSize(ofString string: String, withFont font: UIFont, inFrame frame: CGRect) -> CGRect {

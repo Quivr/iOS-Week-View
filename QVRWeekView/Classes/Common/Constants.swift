@@ -57,6 +57,8 @@ struct LayoutDefaults {
     static let previewEventHeightInHours = 2.0
     // Default precision of the preview event in minutes.
     static let previewEventPrecisionInMinutes = 15.0
+    // Default show preview on long press
+    static let showPreviewOnLongPress = true
 
     // MARK: - SIZES, BUFFERS AND LAYOUT -
 
@@ -76,6 +78,8 @@ struct LayoutDefaults {
     static let allDayEventHeight = CGFloat(40)
     // Vertical spacing of all day events
     static let allDayVerticalSpacing = CGFloat(5)
+    // Spread all day events on x axis, if not true than spread will be made on y axis
+    static let allDayEventsSpreadOnX = true
 
     // Initial height of day view cells
     static let dayViewCellHeight = CGFloat(1400)
@@ -117,6 +121,8 @@ struct LayoutDefaults {
     static let passedDayViewColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 1.0)
     // Color for passed day view cells that are weekend.
     static let passedWeekendDayViewColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1.0)
+    // Color for today's view cell.
+    static let todayViewColor = defaultDayViewColor
 }
 
 struct NibNames {

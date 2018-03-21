@@ -267,6 +267,18 @@ public extension WeekView {
     }
 
     /**
+     Spread all day events on x axis, if not true than spread will be made on y axis.
+     */
+    public var allDayEventsSpreadOnX: Bool {
+        get {
+            return LayoutVariables.allDayEventsSpreadOnX
+        }
+        set(onX) {
+            self.dayScrollView.setAllDayEventsSpreadOnX(to: onX)
+        }
+    }
+
+    /**
      Helper function for hour label customization.
      */
     private func updateHourSideBarView() {
@@ -441,6 +453,18 @@ public extension WeekView {
     }
 
     /**
+     Show preview on long press.
+     */
+    public var showPreviewOnLongPress: Bool {
+        get {
+            return LayoutVariables.showPreviewOnLongPress
+        }
+        set(show) {
+            self.dayScrollView.setShowPreviewOnLongPress(to: show)
+        }
+    }
+
+    /**
      Default color of the day view cells. These are all days that are not weekends and not passed.
      */
     public var defaultDayViewColor: UIColor {
@@ -448,6 +472,9 @@ public extension WeekView {
             return LayoutVariables.defaultDayViewColor
         }
         set(color) {
+            if self.todayViewColor == self.defaultDayViewColor {
+                self.dayScrollView.setTodayViewColor(to: color)
+            }
             self.dayScrollView.setDefaultDayViewColor(to: color)
         }
     }
@@ -485,6 +512,18 @@ public extension WeekView {
         }
         set(color) {
             self.dayScrollView.setPassedWeekendDayViewColor(to: color)
+        }
+    }
+
+    /**
+     Color for today's view cell.
+     */
+    public var todayViewColor: UIColor {
+        get {
+            return LayoutVariables.todayViewColor
+        }
+        set(color) {
+            self.dayScrollView.setTodayViewColor(to: color)
         }
     }
 
