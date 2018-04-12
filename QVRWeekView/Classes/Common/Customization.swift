@@ -32,10 +32,10 @@ public extension WeekView {
      */
     public var defaultTopBarHeight: CGFloat {
         get {
-            return LayoutVariables.defaultTopBarHeight
+            return dayScrollView.layoutVariables.defaultTopBarHeight
         }
         set(height) {
-            LayoutVariables.defaultTopBarHeight = height
+            dayScrollView.layoutVariables.defaultTopBarHeight = height
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -247,7 +247,7 @@ public extension WeekView {
      */
     public var allDayEventHeight: CGFloat {
         get {
-            return LayoutVariables.allDayEventHeight
+            return dayScrollView.layoutVariables.allDayEventHeight
         }
         set(height) {
             self.dayScrollView.setAllDayEventHeight(to: height)
@@ -259,7 +259,7 @@ public extension WeekView {
      */
     public var allDayEventVerticalSpacing: CGFloat {
         get {
-            return LayoutVariables.allDayEventVerticalSpacing
+            return dayScrollView.layoutVariables.allDayEventVerticalSpacing
         }
         set(height) {
             dayScrollView.setAllDayEventVerticalSpacing(to: height)
@@ -271,7 +271,7 @@ public extension WeekView {
      */
     public var allDayEventsSpreadOnX: Bool {
         get {
-            return LayoutVariables.allDayEventsSpreadOnX
+            return dayScrollView.layoutVariables.allDayEventsSpreadOnX
         }
         set(onX) {
             self.dayScrollView.setAllDayEventsSpreadOnX(to: onX)
@@ -297,7 +297,7 @@ public extension WeekView {
      */
     public var visibleDaysInPortraitMode: Int {
         get {
-            return Int(LayoutVariables.portraitVisibleDays)
+            return Int(dayScrollView.layoutVariables.portraitVisibleDays)
         }
         set(days) {
             if self.dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
@@ -311,7 +311,7 @@ public extension WeekView {
      */
     public var visibleDaysInLandscapeMode: Int {
         get {
-            return Int(LayoutVariables.landscapeVisibleDays)
+            return Int(dayScrollView.layoutVariables.landscapeVisibleDays)
         }
         set(days) {
             if self.dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
@@ -409,7 +409,7 @@ public extension WeekView {
      */
     public var previewEventText: String {
         get {
-            return LayoutVariables.previewEventText
+            return dayScrollView.layoutVariables.previewEventText
         }
         set(text) {
             self.dayScrollView.setPreviewEventText(to: text)
@@ -421,7 +421,7 @@ public extension WeekView {
      */
     public var previewEventColor: UIColor {
         get {
-            return LayoutVariables.previewEventColor
+            return dayScrollView.layoutVariables.previewEventColor
         }
         set(color) {
             self.dayScrollView.setPreviewEventColor(to: color)
@@ -433,7 +433,7 @@ public extension WeekView {
      */
     public var previewEventHeightInHours: Double {
         get {
-            return LayoutVariables.previewEventHeightInHours
+            return dayScrollView.layoutVariables.previewEventHeightInHours
         }
         set(height) {
             self.dayScrollView.setPreviewEventHeightInHours(to: height)
@@ -445,7 +445,7 @@ public extension WeekView {
      */
     public var previewEventPrecisionInMinutes: Double {
         get {
-            return LayoutVariables.previewEventPrecisionInMinutes
+            return dayScrollView.layoutVariables.previewEventPrecisionInMinutes
         }
         set(mins) {
             self.dayScrollView.setPreviewEventPrecisionInMinutes(to: mins)
@@ -457,7 +457,7 @@ public extension WeekView {
      */
     public var showPreviewOnLongPress: Bool {
         get {
-            return LayoutVariables.showPreviewOnLongPress
+            return dayScrollView.layoutVariables.showPreviewOnLongPress
         }
         set(show) {
             self.dayScrollView.setShowPreviewOnLongPress(to: show)
@@ -469,7 +469,7 @@ public extension WeekView {
      */
     public var defaultDayViewColor: UIColor {
         get {
-            return LayoutVariables.defaultDayViewColor
+            return dayScrollView.layoutVariables.defaultDayViewColor
         }
         set(color) {
             if self.todayViewColor == self.defaultDayViewColor {
@@ -484,7 +484,7 @@ public extension WeekView {
      */
     public var weekendDayViewColor: UIColor {
         get {
-            return LayoutVariables.weekendDayViewColor
+            return dayScrollView.layoutVariables.weekendDayViewColor
         }
         set(color) {
             self.dayScrollView.setWeekendDayViewColor(to: color)
@@ -496,7 +496,7 @@ public extension WeekView {
      */
     public var passedDayViewColor: UIColor {
         get {
-            return LayoutVariables.passedDayViewColor
+            return dayScrollView.layoutVariables.passedDayViewColor
         }
         set(color) {
             self.dayScrollView.setPassedDayViewColor(to: color)
@@ -508,7 +508,7 @@ public extension WeekView {
      */
     public var passedWeekendDayViewColor: UIColor {
         get {
-            return LayoutVariables.passedWeekendDayViewColor
+            return dayScrollView.layoutVariables.passedWeekendDayViewColor
         }
         set(color) {
             self.dayScrollView.setPassedWeekendDayViewColor(to: color)
@@ -520,7 +520,7 @@ public extension WeekView {
      */
     public var todayViewColor: UIColor {
         get {
-            return LayoutVariables.todayViewColor
+            return dayScrollView.layoutVariables.todayViewColor
         }
         set(color) {
             self.dayScrollView.setTodayViewColor(to: color)
@@ -532,7 +532,7 @@ public extension WeekView {
      */
     public var dayViewHourIndicatorColor: UIColor {
         get {
-            return LayoutVariables.hourIndicatorColor
+            return dayScrollView.layoutVariables.hourIndicatorColor
         }
         set(color) {
             self.dayScrollView.setDayViewHourIndicatorColor(to: color)
@@ -544,7 +544,7 @@ public extension WeekView {
      */
     public var dayViewHourIndicatorThickness: CGFloat {
         get {
-            return LayoutVariables.hourIndicatorThickness
+            return dayScrollView.layoutVariables.hourIndicatorThickness
         }
         set(thickness) {
             self.dayScrollView.setDayViewHourIndicatorThickness(to: thickness)
@@ -556,7 +556,7 @@ public extension WeekView {
      */
     public var dayViewMainSeparatorColor: UIColor {
         get {
-            return LayoutVariables.mainSeparatorColor
+            return dayScrollView.layoutVariables.mainSeparatorColor
         }
         set(color) {
             self.dayScrollView.setDayViewMainSeparatorColor(to: color)
@@ -568,7 +568,7 @@ public extension WeekView {
      */
     public var dayViewMainSeparatorThickness: CGFloat {
         get {
-            return LayoutVariables.mainSeparatorThickness
+            return dayScrollView.layoutVariables.mainSeparatorThickness
         }
         set(thickness) {
             self.dayScrollView.setDayViewMainSeparatorThickness(to: thickness)
@@ -580,7 +580,7 @@ public extension WeekView {
      */
     public var dayViewDashedSeparatorColor: UIColor {
         get {
-            return LayoutVariables.dashedSeparatorColor
+            return dayScrollView.layoutVariables.dashedSeparatorColor
         }
         set(color) {
             self.dayScrollView.setDayViewDashedSeparatorColor(to: color)
@@ -592,7 +592,7 @@ public extension WeekView {
      */
     public var dayViewDashedSeparatorThickness: CGFloat {
         get {
-            return LayoutVariables.dashedSeparatorThickness
+            return dayScrollView.layoutVariables.dashedSeparatorThickness
         }
         set(thickness) {
             self.dayScrollView.setDayViewDashedSeparatorThickness(to: thickness)
@@ -610,7 +610,7 @@ public extension WeekView {
      */
     public var dayViewDashedSeparatorPattern: [NSNumber] {
         get {
-            return LayoutVariables.dashedSeparatorPattern
+            return dayScrollView.layoutVariables.dashedSeparatorPattern
         }
         set(pattern) {
             self.dayScrollView.setDayViewDashedSeparatorPattern(to: pattern)
@@ -622,7 +622,7 @@ public extension WeekView {
      */
     public var dayViewCellHeight: CGFloat {
         get {
-            return LayoutVariables.dayViewCellHeight
+            return dayScrollView.layoutVariables.dayViewCellHeight
         }
         set(height) {
             self.dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
@@ -634,7 +634,7 @@ public extension WeekView {
      */
     public var portraitDayViewSideSpacing: CGFloat {
         get {
-            return LayoutVariables.portraitDayViewHorizontalSpacing
+            return dayScrollView.layoutVariables.portraitDayViewHorizontalSpacing
         }
         set(width) {
             if self.dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
@@ -648,7 +648,7 @@ public extension WeekView {
      */
     public var landscapeDayViewSideSpacing: CGFloat {
         get {
-            return LayoutVariables.landscapeDayViewHorizontalSpacing
+            return dayScrollView.layoutVariables.landscapeDayViewHorizontalSpacing
         }
         set(width) {
             if self.dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
@@ -662,7 +662,7 @@ public extension WeekView {
      */
     public var portraitDayViewVerticalSpacing: CGFloat {
         get {
-            return LayoutVariables.portraitDayViewVerticalSpacing
+            return dayScrollView.layoutVariables.portraitDayViewVerticalSpacing
         }
         set(height) {
             if self.dayScrollView.setPortraitDayViewVerticalSpacing(to: height) {
@@ -676,7 +676,7 @@ public extension WeekView {
      */
     public var landscapeDayViewVerticalSpacing: CGFloat {
         get {
-            return LayoutVariables.landscapeDayViewVerticalSpacing
+            return dayScrollView.layoutVariables.landscapeDayViewVerticalSpacing
         }
         set(height) {
             if self.dayScrollView.setLandscapeDayViewVerticalSpacing(to: height) {
@@ -691,7 +691,7 @@ public extension WeekView {
      */
     public var minimumZoomScale: CGFloat {
         get {
-            return LayoutVariables.minimumZoomScale
+            return dayScrollView.layoutVariables.minimumZoomScale
         }
         set(scale) {
             self.dayScrollView.setMinimumZoomScale(to: scale)
@@ -704,7 +704,7 @@ public extension WeekView {
      */
     public var maximumZoomScale: CGFloat {
         get {
-            return LayoutVariables.minimumZoomScale
+            return dayScrollView.layoutVariables.minimumZoomScale
         }
         set(scale) {
             self.dayScrollView.setMaximumZoomScale(to: scale)
@@ -717,7 +717,7 @@ public extension WeekView {
      */
     public var velocityOffsetMultiplier: CGFloat {
         get {
-            return LayoutVariables.velocityOffsetMultiplier
+            return dayScrollView.layoutVariables.velocityOffsetMultiplier
         }
         set(multiplier) {
             self.dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
@@ -774,7 +774,12 @@ extension TextVariables {
 // Customization extension for LayoutVariables
 extension LayoutVariables {
 
+    private static var adjustedDefaultTopBarHeightValues = [ObjectIdentifier: CGFloat]()
+    
     // Default height of the top bar
-    fileprivate(set) static var defaultTopBarHeight = LayoutDefaults.defaultTopBarHeight
+    fileprivate(set) var defaultTopBarHeight: CGFloat {
+        get { return LayoutVariables.adjustedDefaultTopBarHeightValues[ObjectIdentifier(self)] ?? LayoutDefaults.defaultTopBarHeight }
+        set { LayoutVariables.adjustedDefaultTopBarHeightValues[ObjectIdentifier(self)] = newValue }
+    }
 
 }

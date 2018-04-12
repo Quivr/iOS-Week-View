@@ -241,10 +241,10 @@ open class WeekView: UIView {
         var label: UILabel!
         if !discardedDayLabels.isEmpty {
             label = discardedDayLabels.remove(at: 0)
-            label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+            label.frame = Util.generateDayLabelFrame(forIndex: indexPath, with: dayScrollView.layoutVariables)
         }
         else {
-            label = Util.makeDayLabel(withIndexPath: indexPath)
+            label = Util.makeDayLabel(withIndexPath: indexPath, with: dayScrollView.layoutVariables)
         }
         updateDayLabel(label, withDate: dayDate)
         visibleDayLabels[dayDate] = label
@@ -269,7 +269,7 @@ open class WeekView: UIView {
      Adds the allDayEvents provided by the events parameter at indexPath with given dayDate. This also triggers a topBar resize animation.
      */
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
-        let extraHeight = LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
+        let extraHeight = dayScrollView.layoutVariables.allDayEventVerticalSpacing*2+dayScrollView.layoutVariables.allDayEventHeight
 
         if self.topBarHeight < extraHeight {
             self.extraTopBarHeight = extraHeight
@@ -289,7 +289,7 @@ open class WeekView: UIView {
         var i = 0
         var layers: [EventData: CAShapeLayer] = [:]
         for event in events {
-            let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
+            let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max, with: dayScrollView.layoutVariables)
             let layer = event.generateLayer(withFrame: frame, resizeText: TextVariables.eventLabelFontResizingEnabled)
             self.topBarView.layer.addSublayer(layer)
             layers[event] = layer
@@ -309,7 +309,7 @@ open class WeekView: UIView {
             visibleAllDayEvents[dayDate] = nil
         }
 
-        if visibleAllDayEvents.isEmpty && self.topBarHeight > LayoutVariables.defaultTopBarHeight {
+        if visibleAllDayEvents.isEmpty && self.topBarHeight > dayScrollView.layoutVariables.defaultTopBarHeight {
             self.extraTopBarHeight = 0
             UIView.animate(withDuration: 0.25, animations: {
                 self.layoutIfNeeded()
@@ -363,14 +363,14 @@ open class WeekView: UIView {
     private func updateTopAndSideBarConstraints() {
 
         // Height of total side bar
-        let dayViewCellHeight = LayoutVariables.dayViewCellHeight
+        let dayViewCellHeight = dayScrollView.layoutVariables.dayViewCellHeight
         let dayViewCellHourHeight = dayViewCellHeight/DateSupport.hoursInDay
         let sideBarHeight = dayViewCellHeight + dayViewCellHourHeight
 
         // Set position and size constraints for side bar and hour view
         self.hourSideBarHeightConstraint.constant = dayViewCellHeight
         self.sideBarHeightConstraint.constant = sideBarHeight
-        self.sideBarTopBuffer = LayoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
+        self.sideBarTopBuffer = dayScrollView.layoutVariables.dayViewVerticalSpacing - dayViewCellHourHeight/2
 
         // Set correct size and constraints of top bar view
         self.topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width
@@ -389,7 +389,7 @@ open class WeekView: UIView {
                 let dayDate = dayViewCell.date
 
                 if let label = visibleDayLabels[dayDate] {
-                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath, with: dayScrollView.layoutVariables)
                     updateDayLabel(label, withDate: dayDate)
                 }
             }
@@ -412,7 +412,7 @@ open class WeekView: UIView {
      Method trashes any extra day labels in the discarded day label array.
      */
     private func trashExtraDiscardedDayLabels() {
-        let maxAllowed = Int(LayoutVariables.visibleDays)
+        let maxAllowed = Int(dayScrollView.layoutVariables.visibleDays)
 
         if discardedDayLabels.count > maxAllowed {
             let overflow = discardedDayLabels.count - maxAllowed
