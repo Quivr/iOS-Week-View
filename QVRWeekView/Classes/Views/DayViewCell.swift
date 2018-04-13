@@ -35,6 +35,10 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     private var hourHeight: CGFloat {
         return self.bounds.height/DateSupport.hoursInDay
     }
+    
+    private var layoutVariables: LayoutVariables {
+        return delegate?.layoutVariables(for: self) ?? LayoutVariables()
+    }
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
@@ -102,19 +106,19 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func updateTimeView() {
         if date.isToday() {
             self.overlayView.isHidden = false
-            if LayoutVariables.todayViewColor == LayoutVariables.defaultDayViewColor {
+            if layoutVariables.todayViewColor == layoutVariables.defaultDayViewColor {
                 self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
-                self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
+                self.backgroundColor = date.isWeekend() ? layoutVariables.weekendDayViewColor : layoutVariables.defaultDayViewColor
             } else {
-                self.backgroundColor = LayoutVariables.todayViewColor
+                self.backgroundColor = layoutVariables.todayViewColor
             }
         } else {
             self.overlayView.isHidden = true
             if date.hasPassed() {
-                self.backgroundColor = date.isWeekend() ? LayoutVariables.passedWeekendDayViewColor : LayoutVariables.passedDayViewColor
+                self.backgroundColor = date.isWeekend() ? layoutVariables.passedWeekendDayViewColor : layoutVariables.passedDayViewColor
             }
             else {
-                self.backgroundColor = date.isWeekend() ? LayoutVariables.weekendDayViewColor : LayoutVariables.defaultDayViewColor
+                self.backgroundColor = date.isWeekend() ? layoutVariables.weekendDayViewColor : layoutVariables.defaultDayViewColor
             }
         }
         updateOverlay()
@@ -155,12 +159,12 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
                                        y: 0,
                                        width: self.bounds.width,
                                        height: bottomDistancePercent*self.bounds.height)
-            overlayView.backgroundColor = date.isWeekend() ? LayoutVariables.passedWeekendDayViewColor : LayoutVariables.passedDayViewColor
+            overlayView.backgroundColor = date.isWeekend() ? layoutVariables.passedWeekendDayViewColor : layoutVariables.passedDayViewColor
             hourIndicatorView.frame = CGRect(x: 0,
-                                             y: overlayView.frame.height-LayoutVariables.hourIndicatorThickness/2,
+                                             y: overlayView.frame.height-layoutVariables.hourIndicatorThickness/2,
                                              width: self.bounds.width,
-                                             height: LayoutVariables.hourIndicatorThickness)
-            hourIndicatorView.backgroundColor = LayoutVariables.hourIndicatorColor
+                                             height: layoutVariables.hourIndicatorThickness)
+            hourIndicatorView.backgroundColor = layoutVariables.hourIndicatorColor
         }
 
     }
@@ -196,18 +200,18 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         // Generate line separator shape layers
         let lineLayer = CAShapeLayer()
         lineLayer.path=linePathCombine
-        lineLayer.lineWidth = LayoutVariables.mainSeparatorThickness
+        lineLayer.lineWidth = layoutVariables.mainSeparatorThickness
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.opacity = 1.0
-        lineLayer.strokeColor = LayoutVariables.mainSeparatorColor.cgColor
+        lineLayer.strokeColor = layoutVariables.mainSeparatorColor.cgColor
 
         let dottedLineLayer = CAShapeLayer()
         dottedLineLayer.path=dottedPathCombine
-        dottedLineLayer.lineDashPattern = LayoutVariables.dashedSeparatorPattern
-        dottedLineLayer.lineWidth = LayoutVariables.dashedSeparatorThickness
+        dottedLineLayer.lineDashPattern = layoutVariables.dashedSeparatorPattern
+        dottedLineLayer.lineWidth = layoutVariables.dashedSeparatorThickness
         dottedLineLayer.fillColor = UIColor.clear.cgColor
         dottedLineLayer.opacity = 1.0
-        dottedLineLayer.strokeColor = LayoutVariables.dashedSeparatorColor.cgColor
+        dottedLineLayer.strokeColor = layoutVariables.dashedSeparatorColor.cgColor
 
         // Add separator layers as sublayers
         self.separatorLayers.append(dottedLineLayer)
@@ -278,18 +282,18 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         removePreviewLayer()
 
         let startingBounds = CGRect(x: 0, y: 0, width: 0, height: 0)
-        let endingBounds = CGRect(x: 0, y: 0, width: self.frame.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
+        let endingBounds = CGRect(x: 0, y: 0, width: self.frame.width, height: hourHeight*CGFloat(layoutVariables.previewEventHeightInHours))
 
         let previewLayer = CALayer()
         previewLayer.bounds = startingBounds
         previewLayer.position = position
-        previewLayer.backgroundColor = LayoutVariables.previewEventColor.cgColor
+        previewLayer.backgroundColor = layoutVariables.previewEventColor.cgColor
         previewLayer.masksToBounds = true
 
         let textLayer = CATextLayer()
         textLayer.frame = endingBounds
         let mainFontAttributes: [String: Any] = [NSFontAttributeName: TextVariables.eventLabelFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
-        let mainAttributedString = NSMutableAttributedString(string: LayoutVariables.previewEventText, attributes: mainFontAttributes)
+        let mainAttributedString = NSMutableAttributedString(string: layoutVariables.previewEventText, attributes: mainFontAttributes)
         textLayer.string = mainAttributedString
         textLayer.isWrapped = true
         textLayer.contentsScale = UIScreen.main.scale
@@ -297,7 +301,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         previewLayer.addSublayer(textLayer)
         self.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
-        self.previewVisible = LayoutVariables.showPreviewOnLongPress
+        self.previewVisible = layoutVariables.showPreviewOnLongPress
 
         let anim = CABasicAnimation(keyPath: "bounds")
         anim.duration = 0.15
@@ -320,7 +324,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func releasePreviewLayer(at position: CGPoint) {
         if let prevLayer = self.previewLayer {
             let anim = CABasicAnimation(keyPath: "position")
-            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0))*hourHeight
+            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearest(layoutVariables.previewEventPrecisionInMinutes/60.0))*hourHeight
             let roundedPos = CGPoint(x: position.x, y: rounded)
             anim.duration = 0.20
             anim.fromValue = prevLayer.position
@@ -334,8 +338,8 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         // Animation is either finished, or preview is not visible
         if let prevLayer = self.previewLayer, (flag || !previewVisible) {
-            let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours/2)))/self.frame.height)*24 )
-            let rounded = time.roundToNearest(LayoutVariables.previewEventPrecisionInMinutes/60.0)
+            let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(layoutVariables.previewEventHeightInHours/2)))/self.frame.height)*24 )
+            let rounded = time.roundToNearest(layoutVariables.previewEventPrecisionInMinutes/60.0)
             let hours = Int(rounded)
             let minutes = Int((rounded-Double(hours))*60.0)
 
@@ -373,5 +377,7 @@ protocol DayViewCellDelegate: class {
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int)
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
+    
+    func layoutVariables(for dayViewCell: DayViewCell) -> LayoutVariables
 
 }

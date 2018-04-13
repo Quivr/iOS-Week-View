@@ -13,10 +13,10 @@ import Foundation
 struct Util {
 
     // Function returns a dayLabel UILabel with the correct size and position according to given indexPath.
-    static func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
+    static func makeDayLabel(withIndexPath indexPath: IndexPath, with layoutVariables: LayoutVariables) -> UILabel {
 
         // Make as daylabel
-        let labelFrame = Util.generateDayLabelFrame(forIndex: indexPath)
+        let labelFrame = Util.generateDayLabelFrame(forIndex: indexPath, with: layoutVariables)
         let dayLabel = UILabel(frame: labelFrame)
         dayLabel.textAlignment = .center
         return dayLabel
@@ -39,9 +39,9 @@ struct Util {
     }
 
     // Function generates a frame for a day label with given index path.
-    static func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
+    static func generateDayLabelFrame(forIndex indexPath: IndexPath, with layoutVariables: LayoutVariables) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.defaultTopBarHeight)
+        return CGRect(x: row*(layoutVariables.totalDayViewCellWidth), y: 0, width: layoutVariables.dayViewCellWidth, height: layoutVariables.defaultTopBarHeight)
     }
 
     /**
@@ -104,21 +104,21 @@ struct Util {
      the count (= how many'th all day event frame in current day) and the max (= how many all day events in current day.
      Depending on LayoutVariables.allDayEventsSpreadOnX, events will be spreaded on x or y axis.
      */
-    static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
-        if LayoutVariables.allDayEventsSpreadOnX {
+    static func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int, with layoutVariables: LayoutVariables) -> CGRect {
+        if layoutVariables.allDayEventsSpreadOnX {
             let row = CGFloat(indexPath.row)
-            let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
-            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
-                          y: LayoutVariables.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
+            let width = layoutVariables.dayViewCellWidth/CGFloat(max)
+            return CGRect(x: row*(layoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
+                          y: layoutVariables.defaultTopBarHeight+layoutVariables.allDayEventVerticalSpacing,
                           width: width,
-                          height: LayoutVariables.allDayEventHeight)
+                          height: layoutVariables.allDayEventHeight)
 
         } else {
             let row = CGFloat(indexPath.row)
-            let height = LayoutVariables.allDayEventHeight/CGFloat(max)
-            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth),
-                          y: LayoutVariables.defaultTopBarHeight+CGFloat(count)*height,
-                          width: LayoutVariables.dayViewCellWidth,
+            let height = layoutVariables.allDayEventHeight/CGFloat(max)
+            return CGRect(x: row*(layoutVariables.totalDayViewCellWidth),
+                          y: layoutVariables.defaultTopBarHeight+CGFloat(count)*height,
+                          width: layoutVariables.dayViewCellWidth,
                           height: height)
         }
     }
