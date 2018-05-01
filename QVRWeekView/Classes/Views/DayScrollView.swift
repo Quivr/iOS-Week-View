@@ -12,7 +12,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // MARK: - INSTANCE VARIABLES -
 
     var layoutVariables = LayoutVariables()
-    
+
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
     // All eventData objects
@@ -222,13 +222,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
         }
     }
-    
+
     func layoutVariables(for dayViewCell: DayViewCell) -> LayoutVariables {
         return layoutVariables
     }
 
     // solution == nil => do not render events. solution.isEmpty => render empty
-    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String : CGRect]?) {
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?) {
         let date = calculator.date
         allEventFrames[date] = solution
         frameCalculators[date] = nil
@@ -264,7 +264,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let yOffset = layoutVariables.totalContentHeight*time.getPercentDayPassed()-(layoutVariables.activeFrameHeight/2)
             let minOffsetY = layoutVariables.minOffsetY
             let maxOffsetY = layoutVariables.maxOffsetY
-            self.setContentOffset(CGPoint(x:0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
+            self.setContentOffset(CGPoint(x: 0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
         }
     }
 
@@ -547,7 +547,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
 // MARK: - PERIOD CHANGE ENUM -
 
-fileprivate enum PeriodChange {
+private enum PeriodChange {
     case forward
     case backward
 }
@@ -1097,7 +1097,7 @@ class LayoutVariables {
         maxOffsetX = CGFloat(daysInActiveYear)*totalDayViewCellWidth
         maxOffsetY = totalContentHeight - activeFrameHeight
     }
-    
+
     // MARK: - UPDATE FUNCTIONS -
 
     private func updateOrientationValues() {

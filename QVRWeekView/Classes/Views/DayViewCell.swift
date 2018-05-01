@@ -35,7 +35,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     private var hourHeight: CGFloat {
         return self.bounds.height/DateSupport.hoursInDay
     }
-    
+
     private var layoutVariables: LayoutVariables {
         return delegate?.layoutVariables(for: self) ?? LayoutVariables()
     }
@@ -377,7 +377,7 @@ protocol DayViewCellDelegate: class {
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int)
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
-    
+
     func layoutVariables(for dayViewCell: DayViewCell) -> LayoutVariables
 
 }

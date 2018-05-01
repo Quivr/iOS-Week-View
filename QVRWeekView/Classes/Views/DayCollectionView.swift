@@ -38,11 +38,11 @@ class DayCollectionView: UICollectionView {
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
     private let layoutVariables: LayoutVariables
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     init(layoutVariables: LayoutVariables) {
         self.layoutVariables = layoutVariables
         super.init()

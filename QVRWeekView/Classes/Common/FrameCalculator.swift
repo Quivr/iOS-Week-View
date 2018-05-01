@@ -274,7 +274,7 @@ protocol FrameCalculatorDelegate: class {
 /**
  ConstraintSolver class provided a CSP backtracking algorithm used by FrameCalculator to solve frames.
  */
-fileprivate class ConstraintSolver {
+private class ConstraintSolver {
 
     // All domains of each variables.
     let domains: [Set<WidthPosValue>]
@@ -433,7 +433,7 @@ fileprivate class ConstraintSolver {
 /**
  EventFrame class provides a convenient way to store the frame of an event including the id.
  */
-fileprivate class EventFrame: CustomStringConvertible, Hashable {
+private class EventFrame: CustomStringConvertible, Hashable {
 
     init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat, id: String) {
         self.x = x
@@ -501,7 +501,7 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
 /**
  WidthPodValue struct is the type of object used as variable domain value used by ConstraintSolver.
  */
-fileprivate struct WidthPosValue: Hashable, CustomStringConvertible {
+private struct WidthPosValue: Hashable, CustomStringConvertible {
     var x: CGFloat
     var width: CGFloat
 

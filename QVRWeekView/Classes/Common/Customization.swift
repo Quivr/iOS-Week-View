@@ -775,7 +775,7 @@ extension TextVariables {
 extension LayoutVariables {
 
     private static var adjustedDefaultTopBarHeightValues = [ObjectIdentifier: CGFloat]()
-    
+
     // Default height of the top bar
     fileprivate(set) var defaultTopBarHeight: CGFloat {
         get { return LayoutVariables.adjustedDefaultTopBarHeightValues[ObjectIdentifier(self)] ?? LayoutDefaults.defaultTopBarHeight }
