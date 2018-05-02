@@ -162,6 +162,8 @@ WeekView handles all top level operations such as pinch gestures and orientation
 - [ ] Add: testing project, where pod can be tested
 - [ ] Clean: remove useless folders and unify the naming across them
 - [ ] Re-write: how all day events are added to the view using autolayout
+- [ ] Add: CI for building/testing
+- [ ] Add: tests
 - [ ] Add: scroll to all day events
 
 ## Author
