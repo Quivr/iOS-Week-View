@@ -125,7 +125,7 @@ Below is a table of all customizable properties of the `WeekView`
 | eventLabelFont:`UIFont`         | |
 | eventLabelTextColor:`UIColor`         | |
 | eventLabelMinimumFontSize:`CGFloat`         | |
-| eventShowTimeOfEvent:`Bool`               ||
+| eventShowTimeOfEvent:`Bool`               | Should time of events be shown |
 | defaultDayViewColor:`UIColor`         | |
 | weekendDayViewColor:`UIColor`         | |
 | passedDayViewColor:`UIColor`         | |
