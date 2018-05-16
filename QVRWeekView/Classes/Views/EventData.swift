@@ -166,7 +166,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             )
         }
         if self.location != "" {
-            mainAttributedString.append(NSMutableAttributedString(string: " | \(self.location)", attributes: infoFontAttributes))
+            mainAttributedString.append(NSMutableAttributedString(string: " \(self.location)", attributes: infoFontAttributes))
         }
         return mainAttributedString
 
