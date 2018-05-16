@@ -405,6 +405,18 @@ public extension WeekView {
     }
 
     /**
+     Should time of events be shown.
+     */
+    public var eventShowTimeOfEvent: Bool {
+        get {
+            return TextVariables.eventShowTimeOfEvent
+        }
+        set(showTime) {
+            self.dayScrollView.setEventShowTimeOfEvent(to: showTime)
+        }
+    }
+
+    /**
      The text shown inside the previw event.
      */
     public var previewEventText: String {

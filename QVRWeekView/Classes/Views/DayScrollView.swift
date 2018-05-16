@@ -641,6 +641,14 @@ extension DayScrollView {
     }
 
     /**
+     Sets if time of events should be shown.
+     */
+    func setEventShowTimeOfEvent(to showTime: Bool) {
+        TextVariables.eventShowTimeOfEvent = showTime
+        updateLayout()
+    }
+
+    /**
      Sets the vertical padding of the text within event labels.
      */
     func setEventLabelVerticalTextPadding(to padding: CGFloat) {
@@ -1176,5 +1184,7 @@ extension TextVariables {
     fileprivate(set) static var eventLabelHorizontalTextPadding = LayoutDefaults.eventLabelHorizontalTextPadding
     // Vertical padding of text in event labels
     fileprivate(set) static var eventLabelVerticalTextPadding = LayoutDefaults.eventLabelVerticalTextPadding
+    // Showing events' time.
+    fileprivate(set) static var eventShowTimeOfEvent = LayoutDefaults.eventShowTimeOfEvent
 
 }

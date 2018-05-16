@@ -48,6 +48,8 @@ struct LayoutDefaults {
     static let eventLabelHorizontalTextPadding = CGFloat(2)
     // Default vertical padding of text in event labels
     static let eventLabelVerticalTextPadding = CGFloat(2)
+    // Default for showing events' time
+    static let eventShowTimeOfEvent = true
 
     // Default text of preview event
     static let previewEventText = "New Item"

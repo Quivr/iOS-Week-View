@@ -153,7 +153,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         let mainFontAttributes: [String: Any] = [NSFontAttributeName: mainFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
-        if !self.allDay {
+        if !self.allDay && TextVariables.eventShowTimeOfEvent {
             var startShow = self.startDate
             var endShow = self.endDate
             if let origin = self.originalTime, let start = origin["startDate"], let end = origin["endDate"] {
