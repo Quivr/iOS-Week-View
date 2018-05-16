@@ -148,28 +148,37 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
      Returns the string that will be displayed by this event. Overridable.
      */
     open func getDisplayString(withMainFont mainFont: UIFont = TextVariables.eventLabelFont, andInfoFont infoFont: UIFont = TextVariables.eventLabelInfoFont) -> NSAttributedString {
-        let df = DateFormatter()
-        df.dateFormat = "HH:mm"
         let mainFontAttributes: [String: Any] = [NSFontAttributeName: mainFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
         let infoFontAttributes: [String: Any] = [NSFontAttributeName: infoFont, NSForegroundColorAttributeName: TextVariables.eventLabelTextColor.cgColor]
-        let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
-        if !self.allDay && TextVariables.eventShowTimeOfEvent {
-            var startShow = self.startDate
-            var endShow = self.endDate
-            if let origin = self.originalTime, let start = origin["startDate"], let end = origin["endDate"] {
-                startShow = start
-                endShow = end
-            }
-            mainAttributedString.append(NSMutableAttributedString(
-                string: " (\(df.string(from: startShow)) - \(df.string(from: endShow)))",
-                attributes: infoFontAttributes)
-            )
-        }
-        if self.location != "" {
-            mainAttributedString.append(NSMutableAttributedString(string: " \(self.location)", attributes: infoFontAttributes))
-        }
-        return mainAttributedString
 
+        if TextVariables.eventsDataInOneLine {
+            return NSMutableAttributedString(string: "\(self.title) \(time()) \(self.location)", attributes: mainFontAttributes)
+        } else {
+            let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
+            if !self.allDay && TextVariables.eventShowTimeOfEvent {
+                mainAttributedString.append(NSMutableAttributedString(
+                    string: " \(time())",
+                    attributes: infoFontAttributes)
+                )
+            }
+            if self.location != "" {
+                mainAttributedString.append(NSMutableAttributedString(string: " \(self.location)", attributes: infoFontAttributes))
+            }
+            return mainAttributedString
+        }
+    }
+
+    private func time() -> String {
+        let df = DateFormatter()
+        df.dateFormat = "HH:mm"
+
+        var startShow = self.startDate
+        var endShow = self.endDate
+        if let origin = self.originalTime, let start = origin["startDate"], let end = origin["endDate"] {
+            startShow = start
+            endShow = end
+        }
+        return "(\(df.string(from: startShow)) - \(df.string(from: endShow)))"
     }
 
     // Configures the gradient based on the provided color and given endColor.

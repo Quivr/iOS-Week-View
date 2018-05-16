@@ -649,6 +649,14 @@ extension DayScrollView {
     }
 
     /**
+     Sets showing all event's data in one line.
+     */
+    func setEventsDataInOneLine(to dataInOneLine: Bool) {
+        TextVariables.eventsDataInOneLine = dataInOneLine
+        updateLayout()
+    }
+
+    /**
      Sets the vertical padding of the text within event labels.
      */
     func setEventLabelVerticalTextPadding(to padding: CGFloat) {
@@ -1186,5 +1194,7 @@ extension TextVariables {
     fileprivate(set) static var eventLabelVerticalTextPadding = LayoutDefaults.eventLabelVerticalTextPadding
     // Showing events' time.
     fileprivate(set) static var eventShowTimeOfEvent = LayoutDefaults.eventShowTimeOfEvent
+    // Showing all event's data in one line
+    fileprivate(set) static var eventsDataInOneLine = LayoutDefaults.eventsDataInOneLine
 
 }

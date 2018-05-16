@@ -50,6 +50,8 @@ struct LayoutDefaults {
     static let eventLabelVerticalTextPadding = CGFloat(2)
     // Default for showing events' time
     static let eventShowTimeOfEvent = true
+    // Default for showing all event's data in one line
+    static let eventsDataInOneLine = false
 
     // Default text of preview event
     static let previewEventText = "New Item"

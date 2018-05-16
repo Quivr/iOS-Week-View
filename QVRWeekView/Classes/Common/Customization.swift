@@ -417,6 +417,18 @@ public extension WeekView {
     }
 
     /**
+     Should all event's data be in one line
+     */
+    public var eventsDataInOneLine: Bool {
+        get {
+            return TextVariables.eventsDataInOneLine
+        }
+        set(dataInOneLine) {
+            self.dayScrollView.setEventsDataInOneLine(to: dataInOneLine)
+        }
+    }
+
+    /**
      The text shown inside the previw event.
      */
     public var previewEventText: String {
