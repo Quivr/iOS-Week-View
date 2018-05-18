@@ -429,6 +429,18 @@ public extension WeekView {
     }
 
     /**
+     Set's smalles heigh for event.
+     */
+    public var eventsSmallestHeight: CGFloat {
+        get {
+            return TextVariables.eventsSmallestHeight
+        }
+        set(height) {
+            self.dayScrollView.setEventsSmallestHeight(to: height)
+        }
+    }
+
+    /**
      The text shown inside the previw event.
      */
     public var previewEventText: String {

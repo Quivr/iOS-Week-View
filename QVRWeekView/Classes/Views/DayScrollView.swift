@@ -657,6 +657,14 @@ extension DayScrollView {
     }
 
     /**
+     Set's smalles heigh for event.
+     */
+    func setEventsSmallestHeight(to height: CGFloat) {
+        TextVariables.eventsSmallestHeight = height
+        updateLayout()
+    }
+
+    /**
      Sets the vertical padding of the text within event labels.
      */
     func setEventLabelVerticalTextPadding(to padding: CGFloat) {
@@ -1199,4 +1207,6 @@ extension TextVariables {
     fileprivate(set) static var eventShowTimeOfEvent = LayoutDefaults.eventShowTimeOfEvent
     // Showing all event's data in one line
     fileprivate(set) static var eventsDataInOneLine = LayoutDefaults.eventsDataInOneLine
+    // Smalles heigh for event
+    fileprivate(set) static var eventsSmallestHeight = LayoutDefaults.eventsSmallestHeight
 }

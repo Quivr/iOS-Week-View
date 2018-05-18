@@ -215,13 +215,18 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
      Creates a layer object for current event data and given frame.
      */
     func generateLayer(withFrame frame: CGRect, resizeText: Bool = false) -> CAShapeLayer {
+        var newFrame = frame
 
-        self.layer.path = CGPath(rect: frame, transform: nil)
+        if TextVariables.eventsSmallestHeight > CGFloat(0) && frame.height < TextVariables.eventsSmallestHeight {
+            newFrame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: TextVariables.eventsSmallestHeight)
+        }
+
+        self.layer.path = CGPath(rect: newFrame, transform: nil)
         for sub in self.layer.sublayers! {
             if let gradient = sub as? CAGradientLayer {
                 CATransaction.begin()
                 CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-                gradient.frame = frame
+                gradient.frame = newFrame
                 CATransaction.commit()
             }
             else if let text = sub as? CATextLayer {
@@ -230,7 +235,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                     if let string = text.string as? NSAttributedString {
                         let font = TextVariables.eventLabelFont
                         var fontSize = font.pointSize
-                        while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: frame).height > frame.height &&
+                        while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: newFrame).height > newFrame.height &&
                             fontSize > TextVariables.eventLabelMinimumFontSize {
                                 fontSize -= 1
                         }
@@ -244,10 +249,10 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                 CATransaction.setDisableActions(true)
                 let xPadding = TextVariables.eventLabelHorizontalTextPadding
                 let yPadding = TextVariables.eventLabelVerticalTextPadding
-                text.frame = CGRect(x: frame.origin.x + xPadding,
-                                    y: frame.origin.y + yPadding,
-                                    width: frame.width - 2*xPadding,
-                                    height: frame.height - 2*yPadding)
+                text.frame = CGRect(x: newFrame.origin.x + xPadding,
+                                    y: newFrame.origin.y + yPadding,
+                                    width: newFrame.width - 2*xPadding,
+                                    height: newFrame.height - 2*yPadding)
             }
         }
         return self.layer

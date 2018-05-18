@@ -52,6 +52,8 @@ struct LayoutDefaults {
     static let eventShowTimeOfEvent = true
     // Default for showing all event's data in one line
     static let eventsDataInOneLine = false
+    // Smalles heigh for event
+    static let eventsSmallestHeight = CGFloat(0)
 
     // Default text of preview event
     static let previewEventText = "New Item"
