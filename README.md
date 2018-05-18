@@ -147,6 +147,7 @@ Below is a table of all customizable properties of the `WeekView`
 | velocityOffsetMultiplier:`CGFloat`         | |
 | showPreviewOnLongPress: `Bool`            | |
 | allDayEventsSpreadOnX: `Bool`            | Sets spread all day events on x axis, if not true than spread will be made on y axis. |
+| eventsSmallestHeight: `CGFloat`            | smalles heigh for an event. |
 
 ## How it works
 
@@ -167,6 +168,7 @@ WeekView handles all top level operations such as pinch gestures and orientation
 - [ ] Add: CI for building/testing
 - [ ] Add: tests
 - [ ] Add: scroll to all day events
+- [ ] Move: eventsSmallestHeight to LayoutsVariables, from TextVariables
 
 ## Author
 
