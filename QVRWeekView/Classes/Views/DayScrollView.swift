@@ -932,12 +932,14 @@ class LayoutVariables {
             updateDayViewCellWidth()
         }
     }
+
     // Width of spacing between day columns in landscape mode
     private(set) var dayViewHorizontalSpacing = LayoutDefaults.portraitDayViewHorizontalSpacing {
         didSet {
             updateDayViewCellWidth()
         }
     }
+
     // Width of spacing between day columns in landscape mode
     private(set) var dayViewVerticalSpacing = LayoutDefaults.portraitDayViewVerticalSpacing {
         didSet {
@@ -951,6 +953,7 @@ class LayoutVariables {
             updateDayViewCellHeight()
         }
     }
+
     // Height of the current day columns
     private(set) var dayViewCellHeight = LayoutDefaults.dayViewCellHeight {
         didSet {
@@ -1015,6 +1018,7 @@ class LayoutVariables {
             updateOrientationValues()
         }
     }
+
     // Width of spacing between day columns in landscape mode
     fileprivate(set) var landscapeDayViewHorizontalSpacing = LayoutDefaults.landscapeDayViewHorizontalSpacing {
         didSet {
@@ -1177,7 +1181,6 @@ class LayoutVariables {
 }
 
 extension TextVariables {
-
     // Font for all event labels
     fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
     // Font for all event labels
@@ -1196,5 +1199,4 @@ extension TextVariables {
     fileprivate(set) static var eventShowTimeOfEvent = LayoutDefaults.eventShowTimeOfEvent
     // Showing all event's data in one line
     fileprivate(set) static var eventsDataInOneLine = LayoutDefaults.eventsDataInOneLine
-
 }
