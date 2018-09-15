@@ -75,6 +75,7 @@ class HourSideBarView: UIView {
             label.font = TextVariables.hourLabelFont
             label.textColor = TextVariables.hourLabelTextColor
             label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
+            label.numberOfLines = 2
             label.adjustsFontSizeToFitWidth = true
         }
     }
