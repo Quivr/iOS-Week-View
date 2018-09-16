@@ -7,7 +7,7 @@ import UIKit
 @IBDesignable
 class HourSideBarView: UIView {
 
-    @IBOutlet var hourLabels: [UILabel]!
+    @IBOutlet var hourLabels: [HourLabel]!
     var view: UIView?
 
     required init?(coder aDecoder: NSCoder) {
@@ -48,7 +48,7 @@ class HourSideBarView: UIView {
 
     func updateLabels () {
         hourLabels.sort { (label1, label2) -> Bool in
-            return label1.text! < label2.text!
+            return label1.order < label2.order
         }
 
         var date = DateSupport.getZeroDate()
@@ -62,17 +62,8 @@ class HourSideBarView: UIView {
 
     private func setView() {
         let bundle = Bundle(for: type(of: self))
-
-        var nib: UINib!
-        if #available(iOS 9.0, *) {
-            nib = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)
-        }
-        else {
-            nib = UINib(nibName: NibNames.constrainedHourSideBarView, bundle: bundle)
-        }
-
-        self.view = nib.instantiate(withOwner: self, options: nil).first as? UIView
-
+        self.view = UINib(nibName: NibNames.hourSideBarView, bundle: bundle)
+            .instantiate(withOwner: self, options: nil).first as? UIView
         if view != nil {
             self.view!.frame = self.bounds
             self.view!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -84,6 +75,7 @@ class HourSideBarView: UIView {
             label.font = TextVariables.hourLabelFont
             label.textColor = TextVariables.hourLabelTextColor
             label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
+            label.numberOfLines = 2
             label.adjustsFontSizeToFitWidth = true
         }
     }
