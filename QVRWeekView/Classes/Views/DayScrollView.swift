@@ -1,3 +1,5 @@
+// swiftlint:disable private_over_fileprivate
+
 import Foundation
 import UIKit
 
@@ -222,7 +224,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     // solution == nil => do not render events. solution.isEmpty => render empty
-    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String : CGRect]?) {
+    func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?) {
         let date = calculator.date
         allEventFrames[date] = solution
         frameCalculators[date] = nil
@@ -258,7 +260,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let yOffset = LayoutVariables.totalContentHeight*time.getPercentDayPassed()-(LayoutVariables.activeFrameHeight/2)
             let minOffsetY = LayoutVariables.minOffsetY
             let maxOffsetY = LayoutVariables.maxOffsetY
-            self.setContentOffset(CGPoint(x:0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
+            self.setContentOffset(CGPoint(x: 0, y: yOffset < minOffsetY ? minOffsetY : (yOffset > maxOffsetY ? maxOffsetY : yOffset)), animated: true)
         }
     }
 
