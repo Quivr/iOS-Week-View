@@ -79,7 +79,7 @@ Then you should be all set!
 | didTapEvent                      | weekView:`WeekView`, eventId:`Int`                                    | Called when an event is tapped. `eventId` of the tapped event is passed                           | Use this function to prompt event editing or removal |
 | loadNewEvents                 | weekView:`WeekView`, startDate:`Date` , endDate:`Date`  | Called when events are ready to be loaded. `startDate` and `endDate` indicate (inclusively) between which two dates events are required.  | Use this function to load in stored events                   |
 
-#### WeekView Public functions
+#### WeekView Public Functions
 
 | Function                            | Parameters                           | Behaviour                                                             |
 | ------------------------------|---------------------------------|--------------------------------------------------------|
@@ -87,6 +87,13 @@ Then you should be all set!
 | showDay                           | date:`Date`                           | Scrolls the week view to the day passed by `date`  |
 | showToday                        | `\`                                         | Scrolls the week view to today                              |
 | loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects.         |
+
+#### WeekView Public functions
+
+| Property                            | Type                             | Description                                                             |
+| ------------------------------|---------------------------|--------------------------------------------------------|
+| allVisibleEvents          | `[EventData]`                    | An array of EventData of the events currently visible on screen |
+| visibleDayDateRange | `ClosedRange<DayDate>` | A ClosedRange of DayDates of the day columns which are currently visible on screen  |
 
 #### EventData<sup>1</sup>
 

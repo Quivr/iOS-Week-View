@@ -35,11 +35,13 @@ open class WeekView: UIView {
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
 
+    // A DayDate range containing the current days visible on screen
     public var visibleDayDateRange: ClosedRange<DayDate> {
         let firstActiveDay = self.dayScrollView.activeDay
         return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
     }
 
+    // All EventData of events currently visible on screen
     public var allVisibleEvents: [EventData] {
         var visibleEvents: [EventData] = []
         for day in visibleDayDateRange {
