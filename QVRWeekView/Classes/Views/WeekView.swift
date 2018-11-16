@@ -35,6 +35,19 @@ open class WeekView: UIView {
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
 
+    public var visibleDayDateRange: ClosedRange<DayDate> {
+        let firstActiveDay = self.dayScrollView.activeDay
+        return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
+    }
+
+    public var allVisibleEvents: [EventData] {
+        var visibleEvents: [EventData] = []
+        for day in visibleDayDateRange {
+            visibleEvents.append(contentsOf: self.dayScrollView.getEventData(forDate: day))
+        }
+        return visibleEvents
+    }
+
     // MARK: - PRIVATE VARIABLES -
 
     // The actual view being displayed, all other views are subview of this mainview
@@ -478,8 +491,7 @@ extension WeekView {
 
     func didTapEvent(in weekView: WeekView, withId eventId: String)
 
-    @objc
-    optional func activeDayChanged(in weekView: WeekView, to date: Date)
+    @objc optional func activeDayChanged(in weekView: WeekView, to date: Date)
 
     func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date)
 }
