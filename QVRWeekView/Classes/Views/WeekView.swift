@@ -35,11 +35,14 @@ open class WeekView: UIView {
     // WeekView Delegate
     public weak var delegate: WeekViewDelegate?
 
-    public var allVisibleEvents: [EventData] {
+    public var visibleDayDateRange: ClosedRange<DayDate> {
         let firstActiveDay = self.dayScrollView.activeDay
-        let lastActiveDay = firstActiveDay + Int(LayoutVariables.visibleDays - 1)
+        return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
+    }
+
+    public var allVisibleEvents: [EventData] {
         var visibleEvents: [EventData] = []
-        for day in firstActiveDay...lastActiveDay {
+        for day in visibleDayDateRange {
             if let events = self.dayScrollView.allEventsData[day] {
                 visibleEvents.append(contentsOf: events)
             }

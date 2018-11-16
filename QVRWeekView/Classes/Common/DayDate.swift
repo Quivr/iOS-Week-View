@@ -23,7 +23,7 @@ public enum TextMode {
  storing event and frame data. DayDates are not influenced by timezones and thus the date it has been given will
  remain. DayDates are also easy to compare, print as strings and are hashable.
  */
-struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
+public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
 
     let day: Int
     let month: Int
@@ -40,7 +40,7 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
         return Calendar.current.date(from: dateComps)!
     }
 
-    var hashValue: Int {
+    public var hashValue: Int {
         return "\(day)-\(month)-\(year)-\(era)".hashValue
     }
 
@@ -95,11 +95,11 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
         self.era = -1
     }
 
-    static func == (lhs: DayDate, rhs: DayDate) -> Bool {
+    public static func == (lhs: DayDate, rhs: DayDate) -> Bool {
         return lhs.day == rhs.day && lhs.month == rhs.month && lhs.year == rhs.year && lhs.era == rhs.era
     }
 
-    static func < (lhs: DayDate, rhs: DayDate) -> Bool {
+    public static func < (lhs: DayDate, rhs: DayDate) -> Bool {
         if lhs.era == rhs.era {
             if lhs.year == rhs.year {
                 if lhs.month == rhs.month {
@@ -159,13 +159,13 @@ struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
         return DayDate(date: self.dateObj.advancedBy(days: days))
     }
 
-    typealias Stride = Int
+    public typealias Stride = Int
 
-    func distance(to other: DayDate) -> Int {
+    public func distance(to other: DayDate) -> Int {
         return abs(dateObj.dayDifference(withDate: other.dateObj))
     }
 
-    func advanced(by n: Int) -> DayDate {
+    public func advanced(by n: Int) -> DayDate {
         return getDayDateWith(daysAdded: n)
     }
 }
