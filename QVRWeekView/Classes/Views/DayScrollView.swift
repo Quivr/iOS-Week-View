@@ -13,17 +13,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INSTANCE VARIABLES -
 
-    var allEventsData: [DayDate: [EventData]] {
-        var allEvents: [DayDate: [EventData]] = [:]
-        for (dayDate, dayEvents) in eventsData {
-            allEvents[dayDate] = Array(dayEvents.values)
-            if let allDayEvents = allDayEventsData[dayDate] {
-                allEvents[dayDate]?.append(contentsOf: allDayEvents)
-            }
-        }
-        return allEvents
-    }
-
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
     // EventData objects that are not all-day events
@@ -250,6 +239,17 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     // MARK: - INTERNAL FUNCTIONS -
+
+    func getEventData(forDate dayDate: DayDate) -> [EventData] {
+        var allEvents: [EventData] = []
+        if let regularEventData = self.eventsData[dayDate]?.values {
+            allEvents.append(contentsOf: regularEventData)
+        }
+        if let allDayEvents = allDayEventsData[dayDate] {
+            allEvents.append(contentsOf: allDayEvents)
+        }
+        return allEvents
+    }
 
     func goToAndShow(dayDate: DayDate, showTime: Date? = nil) {
         let animated = dayDate.year == activeYear

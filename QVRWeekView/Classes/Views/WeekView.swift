@@ -43,9 +43,7 @@ open class WeekView: UIView {
     public var allVisibleEvents: [EventData] {
         var visibleEvents: [EventData] = []
         for day in visibleDayDateRange {
-            if let events = self.dayScrollView.allEventsData[day] {
-                visibleEvents.append(contentsOf: events)
-            }
+            visibleEvents.append(contentsOf: self.dayScrollView.getEventData(forDate: day))
         }
         return visibleEvents
     }
