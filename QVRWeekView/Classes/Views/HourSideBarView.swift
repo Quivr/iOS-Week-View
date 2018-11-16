@@ -56,7 +56,7 @@ class HourSideBarView: UIView {
         df.dateFormat = TextVariables.hourLabelDateFormat
         for label in hourLabels {
             label.text = df.string(from: date)
-            date.advanceBy(hours: 1)
+            date.add(hours: 1)
         }
     }
 

@@ -30,7 +30,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     // Stores an optional gradient layer which will be used to draw event. Can only be set once.
     private(set) var gradientLayer: CAGradientLayer? { didSet { gradientLayer = oldValue ?? gradientLayer } }
     // Stores an optional dictionary, containing the time of the original event before splitting
-    private(set) var originalTime: [String:Date]?
+    private(set) var originalTime: [String: Date]?
 
     // Hashvalue
     public var hashValue: Int {
@@ -198,7 +198,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     }
 
     // Set original time dict. based on provided dict.
-    public func setOriginalTime(originTime: [String:Date]) {
+    public func setOriginalTime(originTime: [String: Date]) {
         self.originalTime = originTime
     }
 
@@ -248,7 +248,7 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
      In case this event spans multiple days this function will be called to split it into multiple events
      which can be assigned to individual dayViewCells.
      */
-    func checkForSplitting () -> [DayDate:EventData] {
+    func checkForSplitting () -> [DayDate: EventData] {
         var splitEvents: [DayDate: EventData] = [:]
         let startDayDate = DayDate(date: startDate)
         if startDate.isSameDayAs(endDate) {

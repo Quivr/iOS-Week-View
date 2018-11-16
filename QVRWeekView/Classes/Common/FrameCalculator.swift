@@ -1,3 +1,4 @@
+// swiftlint:disable private_over_fileprivate
 //
 //  EventFrameCalculator.swift
 //  QVRWeekView

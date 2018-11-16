@@ -11,7 +11,7 @@ public class DateSupport {
 
     // Gets the date for 'days' number of days in the future (or past if days is negative)
     public static func getDate(forDaysInFuture days: Int) -> Date {
-        return Date().date(withDayAdded: days)
+        return Date().advancedBy(days: days)
     }
 
     // Returns an array of dates between and including startDay and endDay.
