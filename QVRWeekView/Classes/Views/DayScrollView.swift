@@ -13,14 +13,25 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - INSTANCE VARIABLES -
 
+    var allEventsData: [DayDate: [EventData]] {
+        var allEvents: [DayDate: [EventData]] = [:]
+        for (dayDate, dayEvents) in eventsData {
+            allEvents[dayDate] = Array(dayEvents.values)
+            if let allDayEvents = allDayEventsData[dayDate] {
+                allEvents[dayDate]?.append(contentsOf: allDayEvents)
+            }
+        }
+        return allEvents
+    }
+
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
-    // All eventData objects
-    private(set) var allEventsData: [DayDate: [String: EventData]] = [:]
-    // All event framesAll
-    private(set) var allEventFrames: [DayDate: [String: CGRect]] = [:]
+    // EventData objects that are not all-day events
+    private(set) var eventsData: [DayDate: [String: EventData]] = [:]
+    // Event frames for all non all-day events
+    private(set) var eventFrames: [DayDate: [String: CGRect]] = [:]
     // All fullday events
-    private var allDayEvents: [DayDate: [EventData]] = [:]
+    private var allDayEventsData: [DayDate: [EventData]] = [:]
     // All active dayViewCells
     private var dayViewCells: [Int: DayViewCell] = [:]
     // All frame calculators
@@ -32,7 +43,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
     // Current active day
-    private var activeDay: DayDate = DayDate.today {
+    private(set) var activeDay: DayDate = DayDate.today {
         didSet {
             if let weekView = self.superview?.superview as? WeekView {
                 weekView.activeDayWasChanged(to: self.activeDay)
@@ -180,7 +191,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             dayViewCells[dayViewCell.id] = dayViewCell
             let dayDateForCell = getDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)
-            if let eventDataForCell = allEventsData[dayDateForCell], let eventFramesForCell = allEventFrames[dayDateForCell] {
+            if let eventDataForCell = eventsData[dayDateForCell], let eventFramesForCell = eventFrames[dayDateForCell] {
                 dayViewCell.setEventsData(eventDataForCell, andFrames: eventFramesForCell)
             }
             return dayViewCell
@@ -192,7 +203,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
             let dayDate = dayViewCell.date
             weekView.addDayLabel(forIndexPath: indexPath, withDate: dayDate)
-            if let allDayEvents = allDayEvents[dayDate] {
+            if let allDayEvents = allDayEventsData[dayDate] {
                 weekView.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayDate)
             }
         }
@@ -226,10 +237,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // solution == nil => do not render events. solution.isEmpty => render empty
     func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?) {
         let date = calculator.date
-        allEventFrames[date] = solution
+        eventFrames[date] = solution
         frameCalculators[date] = nil
         for (_, dayViewCell) in dayViewCells where dayViewCell.date == date {
-            if let eventsData = allEventsData[date], let eventFrames = allEventFrames[date] {
+            if let eventsData = eventsData[date], let eventFrames = eventFrames[date] {
                 dayViewCell.setEventsData(eventsData, andFrames: eventFrames)
             }
             else if solution != nil {
@@ -374,7 +385,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                     }
                     else {
                         if !changedDayDates.contains(dayDate) &&
-                            Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.allEventsData) {
+                            Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.eventsData) {
                             changedDayDates.insert(dayDate)
                         }
                         newEventsData.addEvent(event, onDay: dayDate)
@@ -386,7 +397,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.startDate,
                                                          and: self.currentPeriod.endDate)
             // Iterate through all old days that have not been checked yet to look for inactive days
-            for (dayDate, oldEvents) in self.allEventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
+            for (dayDate, oldEvents) in self.eventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
                 for (_, oldEvent) in oldEvents where Util.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
                     changedDayDates.insert(dayDate)
                     break
@@ -408,13 +419,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             DispatchQueue.main.sync {
                 self.eptRunning = false
                 self.eptSafeContinue = false
-                self.allEventsData = newEventsData
-                self.allDayEvents = newAllDayEvents
+                self.eventsData = newEventsData
+                self.allDayEventsData = newAllDayEvents
                 if let weekView = self.superview?.superview as? WeekView {
                     for cell in self.dayCollectionView.visibleCells {
                         if let dayViewCell = cell as? DayViewCell {
                             let dayDate = dayViewCell.date
-                            let allThisDayEvents = self.allDayEvents[dayDate]
+                            let allThisDayEvents = self.allDayEventsData[dayDate]
                             if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
                                 weekView.removeAllDayEvents(forDate: dayDate)
                                 dayViewCell.setNeedsLayout()
@@ -530,7 +541,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         calc.delegate = self
         frameCalculators[dayDate]?.cancelCalculation()
         frameCalculators[dayDate] = calc
-        calc.calculate(withData: allEventsData[dayDate])
+        calc.calculate(withData: eventsData[dayDate])
     }
 
     private func updatePeriod() {
