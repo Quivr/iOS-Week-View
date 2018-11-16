@@ -103,11 +103,6 @@ public extension Date {
         return cal.date(byAdding: comps, to: self)!
     }
 
-    // Returns date with number of days in future.
-    func date(withDayAdded days: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: days, to: self)!
-    }
-
     // Returns true if self has passed.
     func hasPassed() -> Bool {
         return (self.compare(Date()).rawValue == -1)
@@ -137,13 +132,30 @@ public extension Date {
         return Calendar.current.dateComponents(dayComponenets, from: self)
     }
 
+    func dayDifference(withDate date: Date) -> Int {
+        guard let selfDayOrd = Calendar.current.ordinality(of: .day, in: .era, for: self) else {
+            return 0
+        }
+        guard let dateDayOrd = Calendar.current.ordinality(of: .day, in: .era, for: date) else {
+            return 0
+        }
+        print(selfDayOrd)
+        print(dateDayOrd)
+        return selfDayOrd - dateDayOrd
+    }
+
     // Returns date advanced by number of seconds.
     func advancedBy(seconds sec: Double) -> Date {
         return self.addingTimeInterval(sec)
     }
 
     // Returns date advanced by number of seconds.
-    mutating func advanceBy(hours hour: Double) {
+    func advancedBy(days: Int) -> Date {
+        return Calendar.current.date(byAdding: .day, value: days, to: self)!
+    }
+
+    // Returns date advanced by number of seconds.
+    mutating func add(hours hour: Double) {
         self.addTimeInterval(hour*60*60)
     }
 }

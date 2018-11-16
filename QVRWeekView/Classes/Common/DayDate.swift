@@ -23,7 +23,7 @@ public enum TextMode {
  storing event and frame data. DayDates are not influenced by timezones and thus the date it has been given will
  remain. DayDates are also easy to compare, print as strings and are hashable.
  */
-class DayDate: Hashable, Comparable, CustomStringConvertible {
+struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
 
     let day: Int
     let month: Int
@@ -34,40 +34,40 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         return "\(day)-\(month)-\(year)-\(era)"
     }
 
-    lazy var dateObj: Date = {
-        var dateComps = self.dateComponents
+    var dateObj: Date {
+        var dateComps = dateComponents
         dateComps.hour = 12
         return Calendar.current.date(from: dateComps)!
-    }()
+    }
 
-    lazy var hashValue: Int = {
-        return "\(self.day)-\(self.month)-\(self.year)-\(self.era)".hashValue
-    }()
+    var hashValue: Int {
+        return "\(day)-\(month)-\(year)-\(era)".hashValue
+    }
 
-    lazy var largeString: String = {
-        return self.getString(forMode: .large)
-    }()
+    var largeString: String {
+        return getString(forMode: .large)
+    }
 
-    lazy var defaultString: String = {
-        return self.getString(forMode: .normal)
-    }()
+    var defaultString: String {
+        return getString(forMode: .normal)
+    }
 
-    lazy var smallString: String = {
+    var smallString: String {
         return self.getString(forMode: .small)
-    }()
+    }
 
-    lazy var dayInYear: Int = {
+    var dayInYear: Int {
         return self.dateObj.getDayOfYear()
-    }()
+    }
 
-    private lazy var dateComponents: DateComponents = {
+    private var dateComponents: DateComponents {
         var dateComps: DateComponents = DateComponents()
         dateComps.day = self.day
         dateComps.month = self.month
         dateComps.year = self.year
         dateComps.era = self.era
         return dateComps
-    }()
+    }
 
     static var today: DayDate {
         return DayDate(date: Date())
@@ -111,6 +111,10 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
         } else { return lhs.era < rhs.era }
     }
 
+    static func + (lhs: DayDate, rhs: Int) -> DayDate {
+        return DayDate(day: lhs.day + rhs, month: lhs.month, year: lhs.year, era: lhs.era)
+    }
+
     func getString(forMode mode: TextMode) -> String {
         let df = DateFormatter()
         df.dateFormat = TextVariables.dayLabelDateFormats[mode]
@@ -137,7 +141,7 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     }
 
     func getDateWithTime(hours: Int, minutes: Int, seconds: Int) -> Date {
-        var comps = self.dateComponents
+        var comps = dateComponents
         comps.hour = hours
         comps.minute = minutes
         comps.second = seconds
@@ -152,6 +156,16 @@ class DayDate: Hashable, Comparable, CustomStringConvertible {
     }
 
     func getDayDateWith(daysAdded days: Int) -> DayDate {
-        return DayDate(date: Calendar.current.date(byAdding: .day, value: days, to: self.dateObj)!)
+        return DayDate(date: self.dateObj.advancedBy(days: days))
+    }
+
+    typealias Stride = Int
+
+    func distance(to other: DayDate) -> Int {
+        return abs(dateObj.dayDifference(withDate: other.dateObj))
+    }
+
+    func advanced(by n: Int) -> DayDate {
+        return getDayDateWith(daysAdded: n)
     }
 }
