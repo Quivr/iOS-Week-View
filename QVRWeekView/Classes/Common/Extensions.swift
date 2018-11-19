@@ -13,7 +13,7 @@ extension String {
 
     // Gets first N character from self.
     func getFirstNCharacters(n count: Int) -> String {
-        return self.substring(to: self.index(self.startIndex, offsetBy: count))
+        return "\(self[..<Index(encodedOffset: count)])"
     }
 }
 

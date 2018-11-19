@@ -233,7 +233,7 @@ open class WeekView: UIView {
     /**
      Triggered by pinch gesture to zoom the dayScrollView,
      */
-    func zoomView(_ sender: UIPinchGestureRecognizer) {
+    @objc func zoomView(_ sender: UIPinchGestureRecognizer) {
 
         let currentScale = sender.scale
         var touchCenter: CGPoint! = nil
@@ -342,7 +342,7 @@ open class WeekView: UIView {
     /**
      Method is triggered when the top bar is tapped.
      */
-    func tapTopBar(_ sender: UITapGestureRecognizer) {
+    @objc func tapTopBar(_ sender: UITapGestureRecognizer) {
         let touchPoint = sender.location(ofTouch: 0, in: self.topBarView)
         for (_, eventLayers) in visibleAllDayEvents {
             for (event, layer) in eventLayers {
