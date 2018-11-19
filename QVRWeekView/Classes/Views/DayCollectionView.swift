@@ -29,7 +29,7 @@ class DayCollectionView: UICollectionView {
         self.register(DayViewCell.self, forCellWithReuseIdentifier: CellKeys.dayViewCell)
         self.showsVerticalScrollIndicator = false
         self.showsHorizontalScrollIndicator = false
-        self.decelerationRate = UIScrollViewDecelerationRateFast
+        self.decelerationRate = UIScrollView.DecelerationRate.fast
     }
 }
 

@@ -53,12 +53,12 @@ struct Util {
         let currentFont = label.font!
         let labelWidth = label.frame.width
         var possibleText = dayDate.getString(forMode: TextVariables.dayLabelTextMode) as NSString
-        var textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
+        var textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
 
         label.text = possibleText as String
         if textSize.width > labelWidth && TextVariables.dayLabelTextMode != .small {
             possibleText = dayDate.defaultString as NSString
-            textSize = possibleText.size(attributes: [NSFontAttributeName: currentFont])
+            textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
             if textSize.width <= labelWidth {
                 label.text = possibleText as String
                 TextVariables.dayLabelTextMode = .normal
@@ -67,7 +67,7 @@ struct Util {
                 let scale = (labelWidth / textSize.width)
                 var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
 
-                while possibleText.size(attributes: [NSFontAttributeName: newFont]).width > labelWidth && newFont.pointSize > TextVariables.dayLabelMinimumFontSize {
+                while possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth && newFont.pointSize > TextVariables.dayLabelMinimumFontSize {
                     newFont = newFont.withSize(newFont.pointSize-0.25)
                 }
 
@@ -76,7 +76,7 @@ struct Util {
                 }
 
                 label.font = newFont
-                if possibleText.size(attributes: [NSFontAttributeName: newFont]).width > labelWidth {
+                if possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth {
                     label.text = dayDate.smallString
                     TextVariables.dayLabelTextMode = .small
                 }
@@ -124,7 +124,7 @@ struct Util {
     }
 
     static func getSize(ofString string: String, withFont font: UIFont, inFrame frame: CGRect) -> CGRect {
-        let text = NSAttributedString(string: string, attributes: [NSFontAttributeName: font])
+        let text = NSAttributedString(string: string, attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): font]))
         return text.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
     }
 
@@ -136,4 +136,15 @@ extension TextVariables {
     // Day label text mode determines which format the day labels will be displayed in. 0 is the longest, 1 is smaller, 2 is smallest format.
     fileprivate(set) static var dayLabelTextMode: TextMode = .large
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }
