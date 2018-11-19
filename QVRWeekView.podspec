@@ -8,8 +8,9 @@
 
 Pod::Spec.new do |s|
 s.name             = 'QVRWeekView'
-s.version          = '0.11.4'
+s.version          = '0.11.5'
 s.summary          = 'QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.'
+s.swift_version    = '4.2'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
