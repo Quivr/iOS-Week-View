@@ -19,6 +19,9 @@ disabled_rules:
   - identifier_name
   - cyclomatic_complexity
   - line_length
+  - private_over_fileprivate
+  - conditional_returns_on_newline
+  - attributes
 
 file_length:
   warning: 1500
