@@ -699,6 +699,19 @@ public extension WeekView {
     }
 
     /**
+     The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview
+     can be zoomed to half the original given hourHeight.
+     */
+    public var currentZoomScale: CGFloat {
+        get {
+            return LayoutVariables.zoomScale
+        }
+        set(scale) {
+            self.dayScrollView.setCurrentZoomScale(to: scale)
+        }
+    }
+
+    /**
      The maximum zoom scale to which the weekview can be zoomed. Ex. 2.0 means that the weekview
      can be zoomed to double the original given hourHeight.
      */

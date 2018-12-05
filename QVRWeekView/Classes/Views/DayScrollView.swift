@@ -299,9 +299,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         else if currentZoom > LayoutVariables.maximumZoomScale {
             currentZoom = LayoutVariables.maximumZoomScale
         }
-        LayoutVariables.zoomScale = currentZoom
-        // Update the height and contents of the visible day views
-        updateLayout()
+        self.setCurrentZoomScale(to: currentZoom)
+
         // Calculate the new y content offset based on zoom change and touch center
         let m = previousZoom/currentZoom
 
@@ -836,10 +835,21 @@ extension DayScrollView {
         return false
     }
 
+    /**
+     */
     func setMinimumZoomScale(to scale: CGFloat) {
         LayoutVariables.minimumZoomScale = scale
     }
 
+    /**
+     */
+    func setCurrentZoomScale(to scale: CGFloat) {
+        LayoutVariables.zoomScale = scale
+        updateLayout()
+    }
+
+    /**
+     */
     func setMaximumZoomScale(to scale: CGFloat) {
         LayoutVariables.maximumZoomScale = scale
     }

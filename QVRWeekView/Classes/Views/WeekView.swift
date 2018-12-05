@@ -236,6 +236,7 @@ open class WeekView: UIView {
     @objc func zoomView(_ sender: UIPinchGestureRecognizer) {
 
         let currentScale = sender.scale
+        let state = sender.state
         var touchCenter: CGPoint! = nil
 
         if sender.numberOfTouches >= 2 {
@@ -244,8 +245,12 @@ open class WeekView: UIView {
             touchCenter = CGPoint(x: (touch1.x+touch2.x)/2, y: (touch1.y+touch2.y)/2)
         }
 
-        dayScrollView.zoomContent(withNewScale: currentScale, newTouchCenter: touchCenter, andState: sender.state)
+        dayScrollView.zoomContent(withNewScale: currentScale, newTouchCenter: touchCenter, andState: state)
         updateTopAndSideBarConstraints()
+
+        if state == .cancelled || state == .ended || state == .failed {
+            self.delegate?.didEndZooming?(in: self, scale: LayoutVariables.zoomScale)
+        }
     }
 
     /**
@@ -493,9 +498,11 @@ extension WeekView {
 
     func didTapEvent(in weekView: WeekView, withId eventId: String)
 
+    func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date)
+
     @objc optional func activeDayChanged(in weekView: WeekView, to date: Date)
 
-    func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date)
+    @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
