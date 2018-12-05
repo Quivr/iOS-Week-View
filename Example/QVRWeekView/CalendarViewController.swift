@@ -213,6 +213,10 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         weekView.loadEvents(withData: allEvents.isEmpty ? nil : Array(allEvents.values))
     }
 
+    func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat) {
+        // OPTIONAL
+    }
+
     func activeDayChanged(in weekView: WeekView, to date: Date) {
         // OPTIONAL
     }
