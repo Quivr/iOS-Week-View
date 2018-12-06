@@ -33,7 +33,7 @@ open class WeekView: UIView {
     // MARK: - PUBLIC PROPERTIES -
 
     // WeekView Delegate
-    public weak var delegate: WeekViewDelegate?
+    @objc public weak var delegate: WeekViewDelegate?
 
     // A DayDate range containing the current days visible on screen
     public var visibleDayDateRange: ClosedRange<DayDate> {
@@ -143,7 +143,7 @@ open class WeekView: UIView {
     /**
      Updates the time displayed on the calendar
      */
-    public func updateTimeDisplayed() {
+     @objc public func updateTimeDisplayed() {
         if let dayCollectionView = dayScrollView.dayCollectionView {
             for cell in dayCollectionView.visibleCells {
                 if let dayViewCell = cell as? DayViewCell {
@@ -156,7 +156,7 @@ open class WeekView: UIView {
     /**
      Redraws all events in the dayview cells
      */
-    public func redrawEvents() {
+     @objc public func redrawEvents() {
         if let dayCollectionView = dayScrollView.dayCollectionView {
             for cell in dayCollectionView.visibleCells {
                 if let dayViewCell = cell as? DayViewCell {
@@ -169,7 +169,7 @@ open class WeekView: UIView {
     /**
      Shows the day view cell corresponding to asked day.
      */
-    public func showDay(withDate date: Date, showTime: Bool = false) {
+     @objc public func showDay(withDate date: Date, showTime: Bool = false) {
         if showTime {
             dayScrollView.goToAndShow(dayDate: DayDate(date: date), showTime: date)
         } else {
@@ -180,7 +180,7 @@ open class WeekView: UIView {
     /**
      Shows the day view cell corresponding to today.
      */
-    public func showToday() {
+     @objc public func showToday() {
         let now = Date()
         dayScrollView.goToAndShow(dayDate: DayDate(date: now), showTime: now)
     }
