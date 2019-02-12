@@ -230,6 +230,13 @@ open class WeekView: UIView {
 
     // MARK: - INTERNAL FUNCTIONS -
 
+    @objc func didEndScrolling(_ sender: DayScrollView) {
+        self.delegate?.didEndScrolling?(in: self,
+                                        top: Double(sender.contentOffset.y / sender.contentSize.height),
+                                        bottom: Double((sender.frame.size.height + sender.contentOffset.y) / sender.contentSize.height)
+        )
+    }
+
     /**
      Triggered by pinch gesture to zoom the dayScrollView,
      */
@@ -503,6 +510,9 @@ extension WeekView {
     @objc optional func activeDayChanged(in weekView: WeekView, to date: Date)
 
     @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
+
+    @objc optional func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
+
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -

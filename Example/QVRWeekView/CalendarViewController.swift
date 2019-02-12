@@ -221,6 +221,10 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         // OPTIONAL
     }
 
+    func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double) {
+        // OPTIONAL
+    }
+
     private func dateWithIntervalFromNow(_ interval: Int) -> Date {
         return Date(timeIntervalSinceNow: TimeInterval(exactly: interval)!)
     }

@@ -34,9 +34,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Current active day
     private(set) var activeDay: DayDate = DayDate.today {
         didSet {
-            if let weekView = self.superview?.superview as? WeekView {
-                weekView.activeDayWasChanged(to: self.activeDay)
-            }
+            self.weekView?.activeDayWasChanged(to: self.activeDay)
         }
     }
     // Year todauy
@@ -55,6 +53,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
     private var lastTouchZoomScale = CGFloat(1)
+
+    var weekView: WeekView? {
+        return self.superview?.superview as? WeekView
+    }
 
     // MARK: - CONSTRUCTORS/OVERRIDES -
 
@@ -124,9 +126,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
         // Handle side and top bar animations
-        if let weekView = self.superview?.superview as? WeekView {
-            weekView.updateTopAndSideBarPositions()
-        }
+        self.weekView?.updateTopAndSideBarPositions()
 
         if let collectionView = scrollView as? DayCollectionView {
             if collectionView.contentOffset.x < LayoutVariables.minOffsetX {
@@ -161,11 +161,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
+            self.weekView?.didEndScrolling(self)
             scrollToNearestCell()
         }
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        self.weekView?.didEndScrolling(self)
         scrollToNearestCell()
     }
 
@@ -189,37 +191,33 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
+        if let dayViewCell = cell as? DayViewCell {
             let dayDate = dayViewCell.date
-            weekView.addDayLabel(forIndexPath: indexPath, withDate: dayDate)
+            self.weekView?.addDayLabel(forIndexPath: indexPath, withDate: dayDate)
             if let allDayEvents = allDayEventsData[dayDate] {
-                weekView.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayDate)
+                self.weekView?.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayDate)
             }
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let weekView = self.superview?.superview as? WeekView, let dayViewCell = cell as? DayViewCell {
+        if let dayViewCell = cell as? DayViewCell {
             let dayDate = dayViewCell.date
-            weekView.discardDayLabel(withDate: dayDate)
-            if weekView.hasAllDayEvents(forDate: dayDate) {
-                weekView.removeAllDayEvents(forDate: dayDate)
+            self.weekView?.discardDayLabel(withDate: dayDate)
+            if self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
+                self.weekView?.removeAllDayEvents(forDate: dayDate)
             }
         }
     }
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
-        if let weekView = self.superview?.superview as? WeekView {
-            weekView.eventViewWasTapped(eventData)
-        }
+        self.weekView?.eventViewWasTapped(eventData)
     }
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int) {
-        if let weekView = self.superview?.superview as? WeekView {
-            weekView.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
-            for (_, dayViewCell) in dayViewCells {
-                dayViewCell.addingEvent = true
-            }
+        self.weekView?.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
+        for (_, dayViewCell) in dayViewCells {
+            dayViewCell.addingEvent = true
         }
     }
 
@@ -420,19 +418,17 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 self.eptSafeContinue = false
                 self.eventsData = newEventsData
                 self.allDayEventsData = newAllDayEvents
-                if let weekView = self.superview?.superview as? WeekView {
-                    for cell in self.dayCollectionView.visibleCells {
-                        if let dayViewCell = cell as? DayViewCell {
-                            let dayDate = dayViewCell.date
-                            let allThisDayEvents = self.allDayEventsData[dayDate]
-                            if allThisDayEvents == nil && weekView.hasAllDayEvents(forDate: dayDate) {
-                                weekView.removeAllDayEvents(forDate: dayDate)
-                                dayViewCell.setNeedsLayout()
-                            }
-                            else if allThisDayEvents != nil {
-                                weekView.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
-                                dayViewCell.setNeedsLayout()
-                            }
+                for cell in self.dayCollectionView.visibleCells {
+                    if let dayViewCell = cell as? DayViewCell {
+                        let dayDate = dayViewCell.date
+                        let allThisDayEvents = self.allDayEventsData[dayDate]
+                        if allThisDayEvents == nil && self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
+                            self.weekView?.removeAllDayEvents(forDate: dayDate)
+                            dayViewCell.setNeedsLayout()
+                        }
+                        else if allThisDayEvents != nil {
+                            self.weekView?.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
+                            dayViewCell.setNeedsLayout()
                         }
                     }
                 }
@@ -449,14 +445,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func requestEvents() {
-        if let weekView = self.superview?.superview as? WeekView, !scrollingToDay {
+        if !scrollingToDay {
             self.currentPeriod = Period(ofDate: activeDay)
             let startDate = currentPeriod.startDate
             let endDate = currentPeriod.endDate
             for (date, calc) in frameCalculators where date < startDate || date > endDate {
                 calc.cancelCalculation()
             }
-            weekView.requestEvents(between: startDate, and: endDate)
+            self.weekView?.requestEvents(between: startDate, and: endDate)
         }
     }
 
@@ -498,9 +494,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         // Update content size
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
 
-        if let weekView = self.superview?.superview as? WeekView {
-            weekView.updateVisibleLabelsAndMainConstraints()
-        }
+        self.weekView?.updateVisibleLabelsAndMainConstraints()
     }
 
     private func resetView(withYearOffsetChange change: Int) {
