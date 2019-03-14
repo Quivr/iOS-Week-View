@@ -24,15 +24,18 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     @IBAction func testButtonPress(_ sender: Any) {
-        let df = DateFormatter()
-        df.dateFormat="yyyy-MM-dd|HH:mm:ss"
-        let date = df.date(from: "2017-12-25|17:15:06")!
-        weekView.showDay(withDate: date, showTime: true)
+        if weekView.currentZoomScale == 2.0 {
+            weekView.currentZoomScale = 0.5
+        } else {
+            weekView.currentZoomScale = 2.0
+        }
+
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         weekView.delegate = self
+//        weekView.currentZoomScale = 2.0
     }
 
     override func didReceiveMemoryWarning() {

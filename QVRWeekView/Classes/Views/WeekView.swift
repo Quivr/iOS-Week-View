@@ -35,6 +35,8 @@ open class WeekView: UIView {
     // WeekView Delegate
     @objc public weak var delegate: WeekViewDelegate?
 
+    public var zoomOffsetPreservation: ZoomOffsetPreservation = .top
+
     // A DayDate range containing the current days visible on screen
     public var visibleDayDateRange: ClosedRange<DayDate> {
         let firstActiveDay = self.dayScrollView.activeDay
@@ -231,10 +233,7 @@ open class WeekView: UIView {
     // MARK: - INTERNAL FUNCTIONS -
 
     @objc func didEndScrolling(_ sender: DayScrollView) {
-        self.delegate?.didEndScrolling?(in: self,
-                                        top: Double(sender.contentOffset.y / sender.contentSize.height),
-                                        bottom: Double((sender.frame.size.height + sender.contentOffset.y) / sender.contentSize.height)
-        )
+        self.delegate?.didEndScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
     }
 
     /**

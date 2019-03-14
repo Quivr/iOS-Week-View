@@ -54,8 +54,52 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Current zoom scale of content
     private var lastTouchZoomScale = CGFloat(1)
 
+    private var verticalOffset: CGFloat {
+        get {
+            return self.contentOffset.y
+        }
+        set {
+            if newValue <= LayoutVariables.maxOffsetY && newValue >= LayoutVariables.minOffsetY {
+                self.setContentOffset(CGPoint(x: self.contentOffset.x, y: newValue), animated: false)
+            }
+        }
+    }
+
+    // MARK: - INTERNAL VARIABLES -
+
+    // The WeekView that this DayScrollView belongs to
     var weekView: WeekView? {
         return self.superview?.superview as? WeekView
+    }
+
+    // Percentual offset at the top of the current DayScrollView
+    var topOffset: Double {
+        get {
+            return Double(self.verticalOffset / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue)
+        }
+    }
+
+    // Percentual offset at the bottom of the current DayScrollView
+    var bottomOffset: Double {
+        get {
+            return Double((self.frame.size.height + self.verticalOffset) / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight
+        }
+    }
+
+    // Percentual offset in the center of the current DayScrollView
+    var centerOffset: Double {
+        get {
+            return self.topOffset + Double((LayoutVariables.activeFrameHeight / 2) / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight / 2
+        }
     }
 
     // MARK: - CONSTRUCTORS/OVERRIDES -
