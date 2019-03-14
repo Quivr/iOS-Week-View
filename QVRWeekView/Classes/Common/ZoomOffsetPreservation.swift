@@ -11,5 +11,6 @@ public enum ZoomOffsetPreservation {
     case top
     case center
     case bottom
+    case reset
     case none
 }
