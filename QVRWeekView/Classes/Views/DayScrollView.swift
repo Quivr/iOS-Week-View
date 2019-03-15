@@ -62,9 +62,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             return self.contentOffset.y
         }
         set {
-            if newValue <= LayoutVariables.maxOffsetY && newValue >= LayoutVariables.minOffsetY {
-                self.setContentOffset(CGPoint(x: self.contentOffset.x, y: newValue), animated: false)
-            }
+            let offset = newValue > LayoutVariables.maxOffsetY
+                ? LayoutVariables.maxOffsetY
+                : (newValue < LayoutVariables.minOffsetY ? LayoutVariables.minOffsetY : newValue)
+            self.setContentOffset(CGPoint(x: self.contentOffset.x, y: offset), animated: false)
         }
     }
 

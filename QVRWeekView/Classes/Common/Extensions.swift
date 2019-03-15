@@ -139,8 +139,6 @@ public extension Date {
         guard let dateDayOrd = Calendar.current.ordinality(of: .day, in: .era, for: date) else {
             return 0
         }
-        print(selfDayOrd)
-        print(dateDayOrd)
         return selfDayOrd - dateDayOrd
     }
 

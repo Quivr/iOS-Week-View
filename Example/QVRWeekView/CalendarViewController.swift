@@ -29,13 +29,16 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         } else {
             weekView.currentZoomScale = 2.0
         }
-
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        weekView.zoomOffsetPreservation = .reset
         weekView.delegate = self
-//        weekView.currentZoomScale = 2.0
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        weekView.currentZoomScale = 0.75
     }
 
     override func didReceiveMemoryWarning() {
