@@ -129,7 +129,7 @@ Below is a table of all customizable properties of the `WeekView`
 | hourLabelFont:`UIFont`         | The font the the hour labels. |
 | hourLabelTextColor:`UIColor`         | The text color of the hour labels. |
 | hourLabelMinimumFontSize:`CGFloat`      | The minimum day label font size. Used during automatic resizing. |
-| hourLabelDateFormat:`String`      | |
+| hourLabelDateFormat:`String`      | The date format used to display the hours in the side bar. |
 | allDayEventHeight:`CGFloat`         | The height of an all day event. |
 | allDayEventVerticalSpacing:`CGFloat`    | The vertical spacing above and below an all day event. |
 | allDayEventsSpreadOnX:`Bool`    | When enabled, all day events are displayed next to each other, instead of above and below each other. |
@@ -157,13 +157,7 @@ Below is a table of all customizable properties of the `WeekView`
 | dayViewMainSeparatorThickness:`CGFloat`         | Thickness of the main hour separators in the day view cells. Main separators are full lines and not dashed. |
 | dayViewDashedSeparatorColor:`UIColor`         | Color of the dashed/dotted hour separators in the day view cells. |
 | dayViewDashedSeparatorThickness:`CGFloat`         | Thickness of the dashed/dotted hour separators in the day view cells. |
-| dayViewDashedSeparatorPattern:`[NSNumber]`         | Sets the pattern for the dashed/dotted hour separators. Requires an array of NSNumbers.
-Example 1: [10, 5] will provide a pattern of 10 points drawn, 5 points empty, repeated.
-Example 2: [3, 4, 9, 2] will provide a pattern of 4 points drawn, 4 points empty, 9 points
-drawn, 2 points empty.
-
-See Apple API for additional information on pattern drawing.
-https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern |
+| dayViewDashedSeparatorPattern:`[NSNumber]`         | Sets the pattern for the dashed/dotted hour separators. Requires an array of NSNumbers. Example 1: (10, 5) will set a pattern of 10 points drawn, 5 points empty, repeated. Example 2: (3, 4, 9, 2) will set a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty, repeated. See [Apple API](https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern) for additional information on pattern drawing. |
 | dayViewCellHeight:`CGFloat`         | Height for the day columns. This is the initial height for zoom scale = 1.0. |
 | portraitDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in portrait mode. | 
 | landscapeDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in landscape mode. | 
