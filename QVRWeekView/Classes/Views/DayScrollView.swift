@@ -53,7 +53,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
     private var lastTouchZoomScale = CGFloat(1)
+    // Offset added to the offset when displaying now
+    private static let showNowOffset = 0.005
 
+    // The vertical scrolling offset of the current DayScrollView.
     private var verticalOffset: CGFloat {
         get {
             return self.contentOffset.y
@@ -294,7 +297,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func showNow() {
-        self.contentOffset = CGPoint(x: 0, y: LayoutVariables.dayViewCellHeight*DateSupport.getPercentTodayPassed())
+         self.topOffset = Double(DateSupport.getPercentTodayPassed()) - DayScrollView.showNowOffset
     }
 
     func goToAndShow(dayDate: DayDate, showTime: Date? = nil) {
