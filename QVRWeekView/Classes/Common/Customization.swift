@@ -405,7 +405,7 @@ public extension WeekView {
     }
 
     /**
-     The text shown inside the previw event.
+     The text shown inside the preview event.
      */
     @objc public var previewEventText: String {
         get {
@@ -453,7 +453,7 @@ public extension WeekView {
     }
 
     /**
-     Show preview on long press.
+     When enabled a preview event will be displayed on a long press.
      */
     @objc public var showPreviewOnLongPress: Bool {
         get {
@@ -528,7 +528,7 @@ public extension WeekView {
     }
 
     /**
-     Color of the hour indicator.
+     Color of the current hour indicator.
      */
     @objc public var dayViewHourIndicatorColor: UIColor {
         get {
@@ -540,7 +540,7 @@ public extension WeekView {
     }
 
     /**
-     Thickness (or height) of the hour indicator.
+     Thickness (or height) of the current hour indicator.
      */
     @objc public var dayViewHourIndicatorThickness: CGFloat {
         get {
@@ -552,7 +552,7 @@ public extension WeekView {
     }
 
     /**
-     Color of the main separators in the day view cells. Main separators are full lines and not dashed.
+     Color of the main hour separators in the day view cells. Main separators are full lines and not dashed.
      */
     @objc public var dayViewMainSeparatorColor: UIColor {
         get {
@@ -564,7 +564,7 @@ public extension WeekView {
     }
 
     /**
-     Thickness of the main separators in the day view cells. Main separators are full lines and not dashed.
+     Thickness of the main hour separators in the day view cells. Main separators are full lines and not dashed.
      */
     @objc public var dayViewMainSeparatorThickness: CGFloat {
         get {
@@ -576,7 +576,7 @@ public extension WeekView {
     }
 
     /**
-     Color of the dashed/dotted separators in the day view cells.
+     Color of the dashed/dotted hour separators in the day view cells.
      */
     @objc public var dayViewDashedSeparatorColor: UIColor {
         get {
@@ -588,7 +588,7 @@ public extension WeekView {
     }
 
     /**
-     Thickness of the dashed/dotted separators in the day view cells.
+     Thickness of the dashed/dotted hour separators in the day view cells.
      */
     @objc public var dayViewDashedSeparatorThickness: CGFloat {
         get {
@@ -700,7 +700,7 @@ public extension WeekView {
 
     /**
      The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview
-     can be zoomed to half the original given hourHeight.
+     will be zoomed to half the original given hourHeight.
      */
     @objc public var currentZoomScale: CGFloat {
         get {

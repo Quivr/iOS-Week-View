@@ -6,7 +6,7 @@ import UIKit
 
 /**
  Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
- and all customization can be done with public functions. No delegates have been implemented yet.
+ and all customization can be done with public functions. The is a WeekViewDelegate which can be used to receive certain events.
  WeekView can be used in both landscape and portrait mode.
  */
 open class WeekView: UIView {
@@ -35,6 +35,7 @@ open class WeekView: UIView {
     // WeekView Delegate
     @objc public weak var delegate: WeekViewDelegate?
 
+    // Determines what offset preservation technique is used when customising the current zoom scale.
     public var zoomOffsetPreservation: ZoomOffsetPreservation = .top
 
     // A DayDate range containing the current days visible on screen
