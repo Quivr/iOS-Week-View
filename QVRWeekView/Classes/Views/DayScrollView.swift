@@ -41,14 +41,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var yearToday: Int = DayDate.today.year
     // Current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
-    // Bool stores if event thread is running
+    // Bool stores if the Event Processing Thread (ept) is running
     private var eptRunning: Bool = false
-    // Bool stores if event thread should stop
-    private var eptSafeContinue: Bool = false
+    // Stores temp data that was attempted to be set while Event Processing Thread was running
+    private var eptTempData: [EventData]?
     // Bool stores is view is scrolling to a specific day
     private var scrollingToDay: Bool = false
-    // Stores most recently assigned event data
-    private var eptTempData: [EventData]?
     // Previous zoom scale of content
     private var previousZoomTouch: CGPoint?
     // Current zoom scale of content
@@ -298,7 +296,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func showNow() {
-         self.topOffset = Double(DateSupport.getPercentTodayPassed()) - DayScrollView.showNowOffset
+        self.topOffset = Double(DateSupport.getPercentTodayPassed()) - DayScrollView.showNowOffset
     }
 
     func goToAndShow(dayDate: DayDate, showTime: Date? = nil) {
@@ -404,13 +402,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         if eptRunning {
             eptTempData = eventsData
-            eptSafeContinue = false
             return
-        }
-        else {
+        } else {
             eptRunning = true
-            eptSafeContinue = true
+            eptTempData = nil
         }
+        // Start of Event Processing Thread
         DispatchQueue.global(qos: .userInitiated).async {
 
             // New eventsdata
@@ -423,8 +420,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
             // days have had any changes done to them to queue them up for processing.
             for eventData in eventsData {
-                guard self.eptSafeContinue else {
-                    self.safeCallbackOverwriteAllEvents()
+                // This check will halt the loop in case an attempt was made to overwrite events while this
+                // thread was running.
+                if let overwriteTempData = self.eptTempData {
+                    self.forceSyncOverwriteAllEvents(overwriteData: overwriteTempData)
                     return
                 }
                 let possibleSplitEvents = eventData.checkForSplitting()
@@ -453,8 +452,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 }
             }
 
-            guard self.eptSafeContinue else {
-                self.safeCallbackOverwriteAllEvents()
+            // This check will halt the loop in case an attempt was made to overwrite events while this
+            // thread was running. This prevents the relatively expensive sort from being executed.
+            if let overwriteTempData = self.eptTempData {
+                self.forceSyncOverwriteAllEvents(overwriteData: overwriteTempData)
                 return
             }
 
@@ -464,10 +465,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 return diff1 == diff2 ? smaller > larger : diff1 < diff2
             }
 
-            // Safe exit
+            // Safe exit from Event Processing Thread
             DispatchQueue.main.sync {
                 self.eptRunning = false
-                self.eptSafeContinue = false
                 self.eventsData = newEventsData
                 self.allDayEventsData = newAllDayEvents
                 for cell in self.dayCollectionView.visibleCells {
@@ -492,6 +492,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 for (_, dayViewCell) in self.dayViewCells where !sortedChangedDays.contains(dayViewCell.date) {
                     dayViewCell.setNeedsLayout()
                 }
+
+                // If an attempt was made to overwrite events while the above process was running
+                // this if-check will notice this and recall overwriteAllEvents
+                if let overwriteTempData = self.eptTempData {
+                    self.overwriteAllEvents(withData: overwriteTempData)
+                }
             }
         }
     }
@@ -510,10 +516,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     // MARK: - HELPER/PRIVATE FUNCTIONS -
 
-    private func safeCallbackOverwriteAllEvents() {
+    // Forces synchronous execution of event overwrite with the given data
+    private func forceSyncOverwriteAllEvents(overwriteData: [EventData]) {
         DispatchQueue.main.sync {
-            eptRunning = false
-            overwriteAllEvents(withData: eptTempData)
+            overwriteAllEvents(withData: overwriteData)
         }
     }
 
@@ -675,7 +681,7 @@ extension DayScrollView {
     }
 
     /**
-    Sets the horizontal padding of the text within event labels.
+     Sets the horizontal padding of the text within event labels.
      */
     func setEventLabelHorizontalTextPadding(to padding: CGFloat) {
         TextVariables.eventLabelHorizontalTextPadding = padding
