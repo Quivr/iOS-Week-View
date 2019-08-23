@@ -279,6 +279,18 @@ public extension WeekView {
     }
 
     /**
+     Enable this to automatically allow events to be converted to allDay events if they go from midnight to midnight. (default true)
+     */
+    @objc var autoConvertAllDayEvents: Bool {
+        get {
+            return LayoutVariables.autoConvertAllDayEvents
+        }
+        set(enable) {
+            LayoutVariables.autoConvertAllDayEvents = enable
+        }
+    }
+
+    /**
      Helper function for hour label customization.
      */
     @objc private func updateHourSideBarView() {
@@ -808,5 +820,8 @@ extension LayoutVariables {
 
     // Default height of the top bar
     fileprivate(set) static var defaultTopBarHeight = LayoutDefaults.defaultTopBarHeight
+
+    // Automatically
+    fileprivate(set) static var autoConvertAllDayEvents = false
 
 }

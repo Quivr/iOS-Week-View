@@ -234,29 +234,41 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         var splitEvents: [DayDate: EventData] = [:]
         let startDayDate = DayDate(date: startDate)
         if startDate.isSameDayAs(endDate) {
+            // Case: regular event that starts and ends in same day
             splitEvents[startDayDate] = self
         }
         else if !startDate.isSameDayAs(endDate) && endDate.isMidnight(afterDate: startDate) {
+            // Case: an event that goes from to 00:00 the next day. Gets recreated to end with 23:59:59.
             let newData = self.remakeEventData(withStart: startDate, andEnd: startDate.getEndOfDay())
             newData.setOriginalTime(oldStartDate: startDate, oldEndDate: endDate)
             splitEvents[startDayDate] = newData
         }
         else if !endDate.isMidnight(afterDate: startDate) {
+            // Case: an event that goes across multiple days
             let dateRange = DateSupport.getAllDates(between: startDate, and: endDate)
+            // Iterate over all days that the event traverses
             for date in dateRange {
                 if self.allDay {
+                    // If the event is an allday event remake it as all day for this day.
                     splitEvents[DayDate(date: date)] = self.remakeEventDataAsAllDay(forDate: date)
                 }
                 else {
                     var newData = EventData()
                     if date.isSameDayAs(startDate) {
+                        // The first fragment of a split event
                         newData = self.remakeEventData(withStart: startDate, andEnd: date.getEndOfDay())
                     }
                     else if date.isSameDayAs(endDate) {
+                        // The last fragment of a split event
                         newData = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: endDate)
                     }
                     else {
-                        newData = self.remakeEventDataAsAllDay(forDate: date)
+                        // A fragment in the middle
+                        if LayoutVariables.autoConvertAllDayEvents {
+                            newData = self.remakeEventDataAsAllDay(forDate: date)
+                        } else {
+                            newData = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: date.getEndOfDay())
+                        }
                     }
                     newData.setOriginalTime(oldStartDate: self.startDate, oldEndDate: self.endDate)
                     splitEvents[DayDate(date: date)] = newData
