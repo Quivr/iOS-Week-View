@@ -40,10 +40,6 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         return Calendar.current.date(from: dateComps)!
     }
 
-    public var hashValue: Int {
-        return "\(day)-\(month)-\(year)-\(era)".hashValue
-    }
-
     var largeString: String {
         return getString(forMode: .large)
     }
@@ -113,6 +109,13 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
 
     static func + (lhs: DayDate, rhs: Int) -> DayDate {
         return DayDate(day: lhs.day + rhs, month: lhs.month, year: lhs.year, era: lhs.era)
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(day)
+        hasher.combine(month)
+        hasher.combine(year)
+        hasher.combine(era)
     }
 
     func getString(forMode mode: TextMode) -> String {

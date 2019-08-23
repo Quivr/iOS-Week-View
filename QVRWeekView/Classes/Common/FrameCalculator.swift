@@ -466,12 +466,12 @@ fileprivate class EventFrame: CustomStringConvertible, Hashable {
         return CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
     }
 
-    var hashValue: Int {
-        return id.hashValue
-    }
-
     static func == (lhs: EventFrame, rhs: EventFrame) -> Bool {
         return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
     func intersects(withFrameFrom eventFrames: [EventFrame]) -> Bool {
@@ -506,15 +506,16 @@ fileprivate struct WidthPosValue: Hashable, CustomStringConvertible {
     var x: CGFloat
     var width: CGFloat
 
-    var hashValue: Int {
-        return "[\(x),\(width)]".hashValue
-    }
-
     var description: String {
         return "\n{x: \(x), width: \(width)}"
     }
 
     static func == (lhs: WidthPosValue, rhs: WidthPosValue) -> Bool {
         return lhs.x.isEqual(to: rhs.x, decimalPlaces: 12) && lhs.width.isEqual(to: rhs.width, decimalPlaces: 12)
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(x)
+        hasher.combine(width)
     }
 }

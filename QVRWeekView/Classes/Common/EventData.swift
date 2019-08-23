@@ -32,11 +32,6 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     // Stores an optional dictionary, containing the time of the original event before splitting
     private(set) var originalTime: [String: Date]?
 
-    // Hashvalue
-    public var hashValue: Int {
-        return id.hashValue
-    }
-
     // String descriptor
     public var description: String {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
@@ -142,6 +137,10 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             (lhs.location == rhs.location) &&
             (lhs.allDay == rhs.allDay) &&
             (lhs.color.isEqual(rhs.color))
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
     /**
