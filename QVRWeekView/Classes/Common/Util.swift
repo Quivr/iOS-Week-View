@@ -11,10 +11,8 @@ import Foundation
  Util struct provides static utility methods.
  */
 struct Util {
-
     // Function returns a dayLabel UILabel with the correct size and position according to given indexPath.
     static func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
-
         // Make as daylabel
         let labelFrame = Util.generateDayLabelFrame(forIndex: indexPath)
         let dayLabel = UILabel(frame: labelFrame)

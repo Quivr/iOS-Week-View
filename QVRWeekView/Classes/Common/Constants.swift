@@ -13,7 +13,6 @@ import UIKit
  LayoutDefaults struct provides default values for all layout variables.
  */
 struct LayoutDefaults {
-
     // MARK: - FONTS, LABEL AND TEXT COLOUR VALUES -
 
     // Default font of day labels

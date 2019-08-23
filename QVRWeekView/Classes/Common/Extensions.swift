@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 extension String {
-
     // Gets first N character from self.
     func getFirstNCharacters(n count: Int) -> String {
         return "\(self[..<Index(utf16Offset: count, in: self)])"
@@ -18,7 +17,6 @@ extension String {
 }
 
 public extension Date {
-
     // Returns the day number of self in year.
     func getDayOfYear() -> Int {
         return (Calendar.current.ordinality(of: .day, in: .year, for: self)!-1)

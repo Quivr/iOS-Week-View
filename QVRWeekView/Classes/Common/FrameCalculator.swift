@@ -12,7 +12,6 @@ import Foundation
  FrameCalculator class is responsible for calculating event frames based on provided eventData.
  */
 class FrameCalculator {
-
     // The date of the day view cell that is being analysed.
     let date: DayDate
     // Width of the current day view cell.

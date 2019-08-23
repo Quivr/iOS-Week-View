@@ -10,7 +10,6 @@ import UIKit
  WeekView can be used in both landscape and portrait mode.
  */
 open class WeekView: UIView {
-
     // MARK: - OUTLETS -
 
     @IBOutlet var topBarView: UIView!
@@ -515,7 +514,6 @@ extension WeekView {
             self.topLeftBufferHeightConstraint.constant = height
         }
     }
-
 }
 
 // MARK: - WEEKVIEW DELEGATE -
@@ -535,13 +533,11 @@ extension WeekView {
     @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
 
     @objc optional func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
-
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
 public struct TextVariables {
-
     // Minimum font for all day labels
     fileprivate static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
         didSet {
@@ -555,5 +551,4 @@ public struct TextVariables {
     static func updateDayLabelCurrentFont () {
         dayLabelCurrentFont = dayLabelDefaultFont.withSize(dayLabelCurrentFontSize)
     }
-
 }

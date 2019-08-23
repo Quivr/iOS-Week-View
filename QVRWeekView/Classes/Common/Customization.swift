@@ -11,7 +11,6 @@ import Foundation
  This WeekView extension contains all public computed properties which are exposed as customizable properties.
  */
 public extension WeekView {
-
     // MARK: - WEEKVIEW CUSTOMIZATION -
 
     /**
@@ -771,7 +770,6 @@ public extension WeekView {
 
 // Customization extension for FontVariables.
 extension TextVariables {
-
     // Default font for all day labels
     fileprivate(set) static var dayLabelDefaultFont = LayoutDefaults.dayLabelFont {
         didSet {
@@ -812,7 +810,6 @@ extension TextVariables {
     private static func updateHourMinScale () {
         hourLabelMinimumScale = hourLabelMinimumFontSize / hourLabelFont.pointSize
     }
-
 }
 
 // Customization extension for LayoutVariables

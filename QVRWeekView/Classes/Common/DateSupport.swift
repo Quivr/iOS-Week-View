@@ -1,7 +1,6 @@
 import Foundation
 
 public class DateSupport {
-
     public static let hoursInDay: CGFloat = 24
 
     // Returns number between 0.0 and 1.0 to indicate how much of today has passed.
@@ -74,5 +73,4 @@ public class DateSupport {
         dc.nanosecond = 0
         return Calendar.current.date(from: dc)!
     }
-
 }

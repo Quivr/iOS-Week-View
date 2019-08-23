@@ -11,7 +11,6 @@ import UIKit
 // MARK: - DAY COLLECTION VIEW -
 
 class DayCollectionView: UICollectionView {
-
     // MARK: - INITIALIZERS & OVERRIDES -
 
     required init?(coder aDecoder: NSCoder) {
@@ -36,7 +35,6 @@ class DayCollectionView: UICollectionView {
 // MARK: - DAY COLLECTION VIEW FLOW LAYOUT -
 
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
@@ -70,5 +68,4 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
             return CGPoint(x: proposedContentOffset.x, y: proposedContentOffset.y)
         }
     }
-
 }

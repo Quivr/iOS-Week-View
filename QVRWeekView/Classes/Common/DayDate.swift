@@ -24,7 +24,6 @@ public enum TextMode {
  remain. DayDates are also easy to compare, print as strings and are hashable.
  */
 public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
-
     let day: Int
     let month: Int
     let year: Int

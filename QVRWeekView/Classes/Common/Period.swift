@@ -13,7 +13,6 @@ import Foundation
  being displayed in which periods will have to be loaded next.
  */
 class Period: CustomStringConvertible {
-
     let startDate: DayDate
     let endDate: DayDate
 
@@ -43,5 +42,4 @@ class Period: CustomStringConvertible {
     func allDaysInPeriod() -> [DayDate] {
         return DateSupport.getAllDayDates(between: startDate, and: endDate)
     }
-
 }

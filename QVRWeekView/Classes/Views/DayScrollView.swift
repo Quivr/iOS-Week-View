@@ -10,7 +10,6 @@ import UIKit
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate,
 UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, FrameCalculatorDelegate {
-
     // MARK: - INSTANCE VARIABLES -
 
     // Collection view
@@ -1218,7 +1217,6 @@ struct LayoutVariables {
 }
 
 extension TextVariables {
-
     // Font for all event labels
     public fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
     // Font for all event labels
@@ -1233,5 +1231,4 @@ extension TextVariables {
     fileprivate(set) static var eventLabelHorizontalTextPadding = LayoutDefaults.eventLabelHorizontalTextPadding
     // Vertical padding of text in event labels
     fileprivate(set) static var eventLabelVerticalTextPadding = LayoutDefaults.eventLabelVerticalTextPadding
-
 }

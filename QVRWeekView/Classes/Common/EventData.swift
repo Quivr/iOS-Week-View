@@ -12,7 +12,6 @@ import Foundation
  Class event data stores basic data needed by the rest of the code to calculate and draw events in the dayViewCells in the dayScrollView.
  */
 open class EventData: CustomStringConvertible, Equatable, Hashable {
-
     // Id of the event
     public let id: String
     // Title of the event
@@ -193,13 +192,9 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         layer.path = CGPath(rect: frame, transform: nil)
 
         // Configure gradient and colour layer
-        if let gradient = self.gradientLayer {
+        if let gradient = self.copyGradientLayer(withFrame: frame) {
             layer.fillColor = UIColor.clear.cgColor
             layer.addSublayer(gradient)
-            CATransaction.begin()
-            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-            gradient.frame = frame
-            CATransaction.commit()
         }
         else {
             layer.fillColor = self.color.cgColor
@@ -296,10 +291,6 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         return newEvent
     }
 
-    private func layout(gradientLayer: CAGradientLayer, withFrame frame: CGRect) {
-
-    }
-
     private func configureTextResizing(withTextLayer eventTextLayer: CATextLayer, andFrame frame: CGRect) {
         CATransaction.setDisableActions(false)
         if let string = eventTextLayer.string as? NSAttributedString {
@@ -314,6 +305,21 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                 andInfoFont: TextVariables.eventLabelInfoFont.withSize(fontSize))
         }
         CATransaction.setDisableActions(true)
+    }
+
+    private func copyGradientLayer(withFrame frame: CGRect) -> CAGradientLayer? {
+        guard let gradient = self.gradientLayer else {
+            return nil
+        }
+        let newGrad = CAGradientLayer()
+        newGrad.colors = gradient.colors
+        newGrad.startPoint = gradient.startPoint
+        newGrad.endPoint = gradient.endPoint
+        CATransaction.begin()
+        CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+        newGrad.frame = frame
+        CATransaction.commit()
+        return newGrad
     }
 }
 
