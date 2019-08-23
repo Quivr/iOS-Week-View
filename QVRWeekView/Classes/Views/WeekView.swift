@@ -315,7 +315,7 @@ open class WeekView: UIView {
         let max = events.count
         var i = 0
         var layers: [EventData: CAShapeLayer] = [:]
-        for event in events {
+        for event in Util.sortedById(eventsToSort: events) {
             let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
             let layer = event.generateLayer(withFrame: frame, resizeText: TextVariables.eventLabelFontResizingEnabled)
             self.topBarView.layer.addSublayer(layer)
@@ -435,7 +435,7 @@ open class WeekView: UIView {
             }
             var newEventLayers: [EventData: CAShapeLayer] = [:]
             var i = 0
-            for (eventData, eventLayer) in events {
+            for (eventData, eventLayer) in Util.sortedById(eventsToSort: events) {
                 eventLayer.removeFromSuperlayer()
                 let layer = eventData.generateLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count))
                 newEventLayers[eventData] = layer

@@ -128,6 +128,19 @@ struct Util {
         return text.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
     }
 
+    static func sortedById(eventsToSort events: [EventData]) -> [EventData] {
+        return events.sorted(by: Util.sortById)
+    }
+
+    static func sortedById<T>(eventsToSort events: [EventData: T]) -> [(key: EventData, value: T)] {
+        return events.sorted(by: { (entry1, entry2) -> Bool in
+            Util.sortById(event1: entry1.key, event2: entry2.key)
+        })
+    }
+
+    static func sortById(event1: EventData, event2: EventData) -> Bool {
+        return event1.id < event2.id
+    }
 }
 
 // Util extension for FontVariables.
