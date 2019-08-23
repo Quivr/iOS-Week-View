@@ -113,60 +113,62 @@ EventData is the main object used to communicate events between the WeekView and
 
 Below is a table of all customizable properties of the `WeekView`
 
-| Property | Description |
-| ------------- |:-------------:|
-| mainBackgroundColor:`UIColor`       | The background color of the WeekView. |
-| defaultTopBarHeight:`CGFloat`     | The default height of the top bar containing the day labels. |
-| topBarColor:`UIColor`         | The color of the top bar containing the day labels. |
-| sideBarWidth:`CGFloat`         | The width of the sidebar containing the hour labels. |
-| dayLabelDefaultFont:`UIFont`         | The default font the the day labels. |
-| dayLabelTextColor:`UIColor`         | The text color of the day labels. |
-| dayLabelMinimumFontSize:`CGFloat`  | The minimum day label font size. Used during automatic resizing. |
-| dayLabelShortDateFormat:`String`      | The date format of the day label when there is not enough space to display the normal date format. Date formats can be found [here](http://nsdateformatter.com/). |
-| dayLabelNormalDateFormat:`String`      | The date format of the day label when there is not enough space to display the long date format. Date formats can be found [here](http://nsdateformatter.com/). |
-| dayLabelLongDateFormat:`String`      | The longest date format of the day label, only shown when there is enough space to display it. Date formats can be found [here](http://nsdateformatter.com/). |  
-| dayLabelDateLocaleIdentifier:`String`      | Locale used by the day label formatter. Locales can be found [here](https://gist.github.com/jacobbubu/1836273) |
-| hourLabelFont:`UIFont`         | The font the the hour labels. |
-| hourLabelTextColor:`UIColor`         | The text color of the hour labels. |
-| hourLabelMinimumFontSize:`CGFloat`      | The minimum day label font size. Used during automatic resizing. |
-| hourLabelDateFormat:`String`      | The date format used to display the hours in the side bar. |
-| allDayEventHeight:`CGFloat`         | The height of an all day event. |
-| allDayEventVerticalSpacing:`CGFloat`    | The vertical spacing above and below an all day event. |
-| allDayEventsSpreadOnX:`Bool`    | When enabled, all day events are displayed next to each other, instead of above and below each other. |
-| visibleDaysInPortraitMode:`Int`       | How many day columns are visible in portrait mode. |
-| visibleDaysInLandscapeMode:`Int`    | How many day columns are visible in landscape mode. |
-| eventLabelFont:`UIFont`         | The font of the text inside events. |
-| eventLabelTextColor:`UIColor`         | The color of the text inside events. |
-| eventLabelMinimumFontSize:`CGFloat`         | The minimum size of the text inside events. |
-| eventLabelFontResizingEnabled:`Bool`         | Determines if font resizing is used inside event labels. **This feature may be very laggy and slow.** |
-| eventLabelHorizontalTextPadding:`CGFloat`         | Horizontal padding of the text within event labels. |
-| eventLabelVerticalTextPadding:`CGFloat`         | Vertical padding of the text within event labels. |
-| previewEventText:`String`         | The text shown inside the preview event. |
-| previewEventColor:`UIColor`         | The color of the preview event. |
-| previewEventHeightInHours:`Double`         | Height of the preview event in hours. |
-| previewEventPrecisionInMinutes:`Double`         | The number of minutes the preview event will snap to. Ex: 15.0 will snap preview event to nearest 15 minutes. |
-| showPreviewOnLongPress:`Bool`         | When enabled a preview event will be displayed on a long press. |
-| defaultDayViewColor:`UIColor`         | The default color of a day column. |
-| weekendDayViewColor:`UIColor`         | The color of a weekend day column. |
-| passedDayViewColor:`UIColor`         | The color of a day column that is in the past. |
-| passedWeekendDayViewColor:`UIColor`         | The color of a weekend day column that is in the past. |
-| todayViewColor:`UIColor`         | The color of today's day column. ||
-| dayViewHourIndicatorColor:`UIColor`         | Color of the current hour indicator. |
-| dayViewHourIndicatorThickness:`CGFloat`         | Thickness (or height) of the current hour indicator. |
-| dayViewMainSeparatorColor:`UIColor`         | Color of the main hour separators in the day view cells. Main separators are full lines and not dashed. |
-| dayViewMainSeparatorThickness:`CGFloat`         | Thickness of the main hour separators in the day view cells. Main separators are full lines and not dashed. |
-| dayViewDashedSeparatorColor:`UIColor`         | Color of the dashed/dotted hour separators in the day view cells. |
-| dayViewDashedSeparatorThickness:`CGFloat`         | Thickness of the dashed/dotted hour separators in the day view cells. |
-| dayViewDashedSeparatorPattern:`[NSNumber]`         | Sets the pattern for the dashed/dotted hour separators. Requires an array of NSNumbers. Example 1: (10, 5) will set a pattern of 10 points drawn, 5 points empty, repeated. Example 2: (3, 4, 9, 2) will set a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty, repeated. See [Apple API](https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern) for additional information on pattern drawing. |
-| dayViewCellHeight:`CGFloat`         | Height for the day columns. This is the initial height for zoom scale = 1.0. |
-| portraitDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in portrait mode. | 
-| landscapeDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in landscape mode. | 
-| portraitDayViewVerticalSpacing:`CGFloat`         | Amount of spacing above and below day columns when in portrait mode. |
-| landscapeDayViewVerticalSpacing:`CGFloat`         | Amount of spacing above and below day columns when in landscape mode. |
-| minimumZoomScale:`CGFloat`         | The minimum zoom scale to which the weekview can be zoomed. Ex. 0.5 means that the weekview can be zoomed to half the original given hourHeight. |
-| currentZoomScale:`CGFloat`         | The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview will be zoomed to half the original given hourHeight. |
-| maximumZoomScale:`CGFloat`         | The maximum zoom scale to which the weekview can be zoomed. Ex. 2.0 means that the weekview can be zoomed to double the original given hourHeight. |
-| velocityOffsetMultiplier:`CGFloat`         | Sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling. |
+| Property | Description | Default |
+| ------------- |:----------:|:-:|
+| mainBackgroundColor:`UIColor`       | The background color of the WeekView. | `dark grey: #cacaca` |
+| defaultTopBarHeight:`CGFloat`     | The default height of the top bar containing the day labels. | `35` |
+| topBarColor:`UIColor`         | The color of the top bar containing the day labels. | `grey: #dcdcdc` |
+| sideBarWidth:`CGFloat`         | The width of the sidebar containing the hour labels. | `25` |
+| dayLabelDefaultFont:`UIFont`         | The default font the the day labels. | `boldSystemFont size: 14` |
+| dayLabelTextColor:`UIColor`         | The text color of the day labels. | `black: #000` |
+| dayLabelMinimumFontSize:`CGFloat`  | The minimum day label font size. Used during automatic resizing. | `8` |
+| dayLabelShortDateFormat:`String`      | The date format of the day label when there is not enough space to display the normal date format. Date formats can be found [here](http://nsdateformatter.com/). | `d MMM` |
+| dayLabelNormalDateFormat:`String`      | The date format of the day label when there is not enough space to display the long date format. Date formats can be found [here](http://nsdateformatter.com/). | `E d MMM` |
+| dayLabelLongDateFormat:`String`      | The longest date format of the day label, only shown when there is enough space to display it. Date formats can be found [here](http://nsdateformatter.com/). |  `E d MMM y` |
+| dayLabelDateLocaleIdentifier:`String`      | Locale used by the day label formatter. Locales can be found [here](https://gist.github.com/jacobbubu/1836273) | `nil` |
+| hourLabelFont:`UIFont`         | The font the the hour labels. | `boldSystemFont size: 12` |
+| hourLabelTextColor:`UIColor`         | The text color of the hour labels. | `black #000` |
+| hourLabelMinimumFontSize:`CGFloat`      | The minimum day label font size. Used during automatic resizing. | `6` |
+| hourLabelDateFormat:`String`      | The date format used to display the hours in the side bar. | `HH` |
+| allDayEventHeight:`CGFloat`         | The height of an all day event. | `40` |
+| allDayEventVerticalSpacing:`CGFloat`    | The vertical spacing above and below an all day event. | `5` |
+| allDayEventsSpreadOnX:`Bool`    | When enabled, all day events are displayed next to each other, instead of above and below each other. | `true` |
+|autoConvertAllDayEvents:`Bool`| When enabled, events that cross multiple days will be converted to all day events. | `true` |
+| visibleDaysInPortraitMode:`Int`       | How many day columns are visible in portrait mode. | `2` |
+| visibleDaysInLandscapeMode:`Int`    | How many day columns are visible in landscape mode. | `7` |
+| eventLabelFont:`UIFont`         | The font of the text inside events. | `boldSystemFont size: 12` |
+| eventLabelInfoFont:`UIFont`         | The info font of the text inside events. | `boldFont size: 12` |
+| eventLabelTextColor:`UIColor`         | The color of the text inside events. | `white #fff` |
+| eventLabelMinimumFontSize:`CGFloat`         | The minimum size of the text inside events. | `8` |
+| eventLabelFontResizingEnabled:`Bool`         | Determines if font resizing is used inside event labels. **This feature may be very laggy and slow.** | `false` |
+| eventLabelHorizontalTextPadding:`CGFloat`         | Horizontal padding of the text within event labels. | `2` |
+| eventLabelVerticalTextPadding:`CGFloat`         | Vertical padding of the text within event labels. | `2` |
+| previewEventText:`String`         | The text shown inside the preview event. | `New Event` |
+| previewEventColor:`UIColor`         | The color of the preview event. | `random color` |
+| previewEventHeightInHours:`Double`         | Height of the preview event in hours. | `2.0` |
+| previewEventPrecisionInMinutes:`Double`         | The number of minutes the preview event will snap to. Ex: 15.0 will snap preview event to nearest 15 minutes. | `15.0` |
+| showPreviewOnLongPress:`Bool`         | When enabled a preview event will be displayed on a long press. | `true` |
+| defaultDayViewColor:`UIColor`         | The default color of a day column. | `light grey #f8f8f8` |
+| weekendDayViewColor:`UIColor`         | The color of a weekend day column. | `grey #eaeaea` |
+| passedDayViewColor:`UIColor`         | The color of a day column that is in the past. | `grey #f0f0f0` |
+| passedWeekendDayViewColor:`UIColor`         | The color of a weekend day column that is in the past. | `grey #e4e4e4` |
+| todayViewColor:`UIColor`         | The color of today's day column. | `light grey #f8f8f8` |
+| dayViewHourIndicatorColor:`UIColor`         | Color of the current hour indicator. | `very dark grey #5a5a5a` |
+| dayViewHourIndicatorThickness:`CGFloat`         | Thickness (or height) of the current hour indicator. | `3` |
+| dayViewMainSeparatorColor:`UIColor`         | Color of the main hour separators in the day view cells. Main separators are full lines and not dashed. | `dark grey: #cacaca` |
+| dayViewMainSeparatorThickness:`CGFloat`         | Thickness of the main hour separators in the day view cells. Main separators are full lines and not dashed. | `1` |
+| dayViewDashedSeparatorColor:`UIColor`         | Color of the dashed/dotted hour separators in the day view cells. | `dark grey: #cacaca` |
+| dayViewDashedSeparatorThickness:`CGFloat`         | Thickness of the dashed/dotted hour separators in the day view cells. | `1` |
+| dayViewDashedSeparatorPattern:`[NSNumber]`         | Sets the pattern for the dashed/dotted hour separators. Requires an array of NSNumbers. Example 1: (10, 5) will set a pattern of 10 points drawn, 5 points empty, repeated. Example 2: (3, 4, 9, 2) will set a pattern of 4 points drawn, 4 points empty, 9 points drawn, 2 points empty, repeated. See [Apple API](https://developer.apple.com/documentation/quartzcore/cashapelayer/1521921-linedashpattern) for additional information on pattern drawing. | `[3, 1]` |
+| dayViewCellHeight:`CGFloat`         | Height for the day columns. This is the initial height for zoom scale = 1.0. | `1400` |
+| portraitDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in portrait mode. |  `5` |
+| landscapeDayViewSideSpacing:`CGFloat`         | Amount of spacing in between day columns when in landscape mode. | `1` |
+| portraitDayViewVerticalSpacing:`CGFloat`         | Amount of spacing above and below day columns when in portrait mode. | `15` |
+| landscapeDayViewVerticalSpacing:`CGFloat`         | Amount of spacing above and below day columns when in landscape mode. | `10` |
+| minimumZoomScale:`CGFloat`         | The minimum zoom scale to which the weekview can be zoomed. Ex. 0.5 means that the weekview can be zoomed to half the original given dayViewCellHeight. | `0.75` |
+| currentZoomScale:`CGFloat`         | The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview will be zoomed to half the original given dayViewCellHeight. | `1.0` |
+| maximumZoomScale:`CGFloat`         | The maximum zoom scale to which the weekview can be zoomed. Ex. 2.0 means that the weekview can be zoomed to double the original given dayViewCellHeight. | `3.0` |
+| velocityOffsetMultiplier:`CGFloat`         | Sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling. | `0.75` |
 
 ## How it works
 
