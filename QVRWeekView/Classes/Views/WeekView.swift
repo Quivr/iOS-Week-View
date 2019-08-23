@@ -372,6 +372,7 @@ open class WeekView: UIView {
         resetFontValues()
         updateTopAndSideBarConstraints()
         updateVisibleDayLabels()
+        updateAllDayEventLayers()
     }
 
     /**
@@ -420,6 +421,28 @@ open class WeekView: UIView {
                     updateDayLabel(label, withDate: dayDate)
                 }
             }
+        }
+    }
+
+    /**
+     * Method regenerates the layers of all visible all day events
+     */
+    private func updateAllDayEventLayers() {
+        for (dayDate, events) in self.visibleAllDayEvents {
+            let visibleIndexPath = self.dayScrollView.visibleIndexPath(forDate: dayDate)
+            guard let indexPath = visibleIndexPath else {
+                continue
+            }
+            var newEventLayers: [EventData: CAShapeLayer] = [:]
+            var i = 0
+            for (eventData, eventLayer) in events {
+                eventLayer.removeFromSuperlayer()
+                let layer = eventData.generateLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count))
+                newEventLayers[eventData] = layer
+                self.topBarView.layer.addSublayer(layer)
+                i += 1
+            }
+            self.visibleAllDayEvents[dayDate] = newEventLayers
         }
     }
 

@@ -37,23 +37,6 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         return "[Event: {id: \(id), startDate: \(startDate), endDate: \(endDate)}]\n"
     }
 
-    // Layer of this event
-    lazy var layer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        if let gradient = self.gradientLayer {
-            layer.fillColor = UIColor.clear.cgColor
-            layer.addSublayer(gradient)
-        }
-        else {
-            layer.fillColor = self.color.cgColor
-        }
-        let eventTextLayer = CATextLayer()
-        eventTextLayer.isWrapped = true
-        eventTextLayer.contentsScale = UIScreen.main.scale
-        layer.addSublayer(eventTextLayer)
-        return layer
-    }()
-
     /**
      Main initializer. All properties.
      */
@@ -204,43 +187,43 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     /**
      Creates a layer object for current event data and given frame.
      */
-    func generateLayer(withFrame frame: CGRect, resizeText: Bool = false) -> CAShapeLayer {
+    func generateLayer(withFrame frame: CGRect, resizeText: Bool = TextVariables.eventLabelFontResizingEnabled) -> CAShapeLayer {
+        // Create base layer
+        let layer = CAShapeLayer()
+        layer.path = CGPath(rect: frame, transform: nil)
 
-        self.layer.path = CGPath(rect: frame, transform: nil)
-        for sub in self.layer.sublayers! {
-            if let gradient = sub as? CAGradientLayer {
-                CATransaction.begin()
-                CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-                gradient.frame = frame
-                CATransaction.commit()
-            }
-            else if let text = sub as? CATextLayer {
-                if resizeText {
-                    CATransaction.setDisableActions(false)
-                    if let string = text.string as? NSAttributedString {
-                        let font = TextVariables.eventLabelFont
-                        var fontSize = font.pointSize
-                        while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: frame).height > frame.height &&
-                            fontSize > TextVariables.eventLabelMinimumFontSize {
-                                fontSize -= 1
-                        }
-                        text.string = self.getDisplayString(
-                            withMainFont: TextVariables.eventLabelFont.withSize(fontSize),
-                            andInfoFont: TextVariables.eventLabelInfoFont.withSize(fontSize))
-                    }
-                } else {
-                    text.string = self.getDisplayString()
-                }
-                CATransaction.setDisableActions(true)
-                let xPadding = TextVariables.eventLabelHorizontalTextPadding
-                let yPadding = TextVariables.eventLabelVerticalTextPadding
-                text.frame = CGRect(x: frame.origin.x + xPadding,
-                                    y: frame.origin.y + yPadding,
-                                    width: frame.width - 2*xPadding,
-                                    height: frame.height - 2*yPadding)
-            }
+        // Configure gradient and colour layer
+        if let gradient = self.gradientLayer {
+            layer.fillColor = UIColor.clear.cgColor
+            layer.addSublayer(gradient)
+            CATransaction.begin()
+            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+            gradient.frame = frame
+            CATransaction.commit()
         }
-        return self.layer
+        else {
+            layer.fillColor = self.color.cgColor
+        }
+
+        // Configure event text layer
+        let eventTextLayer = CATextLayer()
+        eventTextLayer.isWrapped = true
+        eventTextLayer.contentsScale = UIScreen.main.scale
+        if resizeText {
+            configureTextResizing(withTextLayer: eventTextLayer, andFrame: frame)
+        } else {
+            eventTextLayer.string = self.getDisplayString()
+        }
+
+        let xPadding = TextVariables.eventLabelHorizontalTextPadding
+        let yPadding = TextVariables.eventLabelVerticalTextPadding
+        eventTextLayer.frame = CGRect(x: frame.origin.x + xPadding,
+                                      y: frame.origin.y + yPadding,
+                                      width: frame.width - 2*xPadding,
+                                      height: frame.height - 2*yPadding)
+        layer.addSublayer(eventTextLayer)
+        // Return created layer
+        return layer
     }
 
     /**
@@ -299,6 +282,26 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
+    }
+
+    private func layout(gradientLayer: CAGradientLayer, withFrame frame: CGRect) {
+
+    }
+
+    private func configureTextResizing(withTextLayer eventTextLayer: CATextLayer, andFrame frame: CGRect) {
+        CATransaction.setDisableActions(false)
+        if let string = eventTextLayer.string as? NSAttributedString {
+            let font = TextVariables.eventLabelFont
+            var fontSize = font.pointSize
+            while Util.getSize(ofString: string.string, withFont: font.withSize(fontSize), inFrame: frame).height > frame.height &&
+                fontSize > TextVariables.eventLabelMinimumFontSize {
+                    fontSize -= 1
+            }
+            eventTextLayer.string = self.getDisplayString(
+                withMainFont: TextVariables.eventLabelFont.withSize(fontSize),
+                andInfoFont: TextVariables.eventLabelInfoFont.withSize(fontSize))
+        }
+        CATransaction.setDisableActions(true)
     }
 }
 

@@ -514,6 +514,15 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
+    func visibleIndexPath(forDate dayDate: DayDate) -> IndexPath? {
+        return self.dayCollectionView.visibleCells.reduce(nil, {(result, cell) -> IndexPath? in
+            if let dayViewCell = cell as? DayViewCell, dayViewCell.date == dayDate {
+                return self.dayCollectionView.indexPath(for: cell)
+            }
+            return result
+        })
+    }
+
     // MARK: - HELPER/PRIVATE FUNCTIONS -
 
     // Forces synchronous execution of event overwrite with the given data
