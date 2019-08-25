@@ -382,6 +382,7 @@ public extension WeekView {
     /**
      Sets whether event label font resizing is enabled or not.
      */
+    @available(*, deprecated, message: "This functionality has been removed")
     @objc var eventLabelFontResizingEnabled: Bool {
         get {
             return TextVariables.eventLabelFontResizingEnabled
@@ -819,6 +820,6 @@ extension LayoutVariables {
     fileprivate(set) static var defaultTopBarHeight = LayoutDefaults.defaultTopBarHeight
 
     // Automatically
-    fileprivate(set) static var autoConvertAllDayEvents = false
+    fileprivate(set) static var autoConvertAllDayEvents = true
 
 }

@@ -4,6 +4,8 @@
 import Foundation
 import UIKit
 
+public typealias EventStlyeCallback = (CALayer, EventData?) -> Void
+
 /**
  Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
  and all customization can be done with public functions. The is a WeekViewDelegate which can be used to receive certain events.
@@ -52,6 +54,12 @@ open class WeekView: UIView {
         return visibleEvents
     }
 
+    public var eventStyleCallback: EventStlyeCallback? {
+        didSet (value) {
+            self.dayScrollView?.dayViewCells.values.forEach({ dayViewCell in dayViewCell.eventStyleCallback = value })
+        }
+    }
+
     // MARK: - PRIVATE VARIABLES -
 
     // The actual view being displayed, all other views are subview of this mainview
@@ -59,7 +67,7 @@ open class WeekView: UIView {
     // Array of visible daylabels
     private var visibleDayLabels: [DayDate: UILabel] = [:]
     // Array of visible allDayEvents
-    private var visibleAllDayEvents: [DayDate: [EventData: CAShapeLayer]] = [:]
+    private var visibleAllDayEvents: [DayDate: [EventData: EventLayer]] = [:]
     // Array of labels not being displayed
     private var discardedDayLabels: [UILabel] = []
     // Left side buffer for top bar
@@ -232,8 +240,8 @@ open class WeekView: UIView {
 
     // MARK: - INTERNAL FUNCTIONS -
 
-    @objc func didEndScrolling(_ sender: DayScrollView) {
-        self.delegate?.didEndScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
+    @objc func didEndVerticalScrolling(_ sender: DayScrollView) {
+        self.delegate?.didEndVerticalScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
     }
 
     /**
@@ -311,17 +319,7 @@ open class WeekView: UIView {
             visibleAllDayEvents[dayDate] = nil
         }
 
-        let max = events.count
-        var i = 0
-        var layers: [EventData: CAShapeLayer] = [:]
-        for event in Util.sortedById(eventsToSort: events) {
-            let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
-            let layer = event.generateLayer(withFrame: frame, resizeText: TextVariables.eventLabelFontResizingEnabled)
-            self.topBarView.layer.addSublayer(layer)
-            layers[event] = layer
-            i += 1
-        }
-        self.visibleAllDayEvents[dayDate] = layers
+        self.renderLayers(ofAllDayEvents: events, forIndexPath: indexPath, withDate: dayDate)
     }
 
     /**
@@ -357,7 +355,7 @@ open class WeekView: UIView {
         let touchPoint = sender.location(ofTouch: 0, in: self.topBarView)
         for (_, eventLayers) in visibleAllDayEvents {
             for (event, layer) in eventLayers {
-                if layer.path!.contains(touchPoint) {
+                if layer.frame.contains(touchPoint) {
                     eventViewWasTapped(event)
                 }
             }
@@ -432,17 +430,28 @@ open class WeekView: UIView {
             guard let indexPath = visibleIndexPath else {
                 continue
             }
-            var newEventLayers: [EventData: CAShapeLayer] = [:]
-            var i = 0
-            for (eventData, eventLayer) in Util.sortedById(eventsToSort: events) {
-                eventLayer.removeFromSuperlayer()
-                let layer = eventData.generateLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count))
-                newEventLayers[eventData] = layer
-                self.topBarView.layer.addSublayer(layer)
-                i += 1
-            }
-            self.visibleAllDayEvents[dayDate] = newEventLayers
+            renderLayers(ofAllDayEvents: Array(events.keys), forIndexPath: indexPath, withDate: dayDate)
         }
+    }
+
+    private func renderLayers(ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+        var newEventLayers: [EventData: EventLayer] = [:]
+        var i = 0
+        for eventData in Util.sortedById(eventsToSort: events) {
+            guard eventData.allDay else {
+                continue
+            }
+            if let previousLayer = self.visibleAllDayEvents[dayDate]?[eventData] {
+                previousLayer.removeFromSuperlayer()
+            }
+            let layer = EventLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count),
+                                   andEvent: eventData)
+            self.eventStyleCallback?(layer, eventData)
+            newEventLayers[eventData] = layer
+            self.topBarView.layer.addSublayer(layer)
+            i += 1
+        }
+        self.visibleAllDayEvents[dayDate] = newEventLayers
     }
 
     /**
@@ -532,7 +541,7 @@ extension WeekView {
 
     @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
 
-    @objc optional func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
+    @objc optional func didEndVerticalScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
