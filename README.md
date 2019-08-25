@@ -1,6 +1,5 @@
 # QVRWeekView
 
-[![CI Status](http://img.shields.io/travis/reilem/QVRWeekView.svg?style=flat)](https://travis-ci.org/reilem/QVRWeekView)
 [![Version](https://img.shields.io/cocoapods/v/QVRWeekView.svg?style=flat)](http://cocoapods.org/pods/QVRWeekView)
 [![License](https://img.shields.io/cocoapods/l/QVRWeekView.svg?style=flat)](http://cocoapods.org/pods/QVRWeekView)
 [![Platform](https://img.shields.io/cocoapods/p/QVRWeekView.svg?style=flat)](http://cocoapods.org/pods/QVRWeekView)
@@ -75,9 +74,12 @@ Then you should be all set!
 
 | Function                            | Parameters                                                                             | Behaviour                                                             | Recommended use                                                     |
 | ------------------------------|---------------------------------------------------------------------|--------------------------------------------------------|-------------------------------------------------------------|
-| didLongPressDayView      | weekView:`WeekView`, date:`Date`                                       | Called when a dayView column is long pressed. The passed `date` contains which time point was pressed | Use this function to add individual user events           |
-| didTapEvent                      | weekView:`WeekView`, eventId:`Int`                                    | Called when an event is tapped. `eventId` of the tapped event is passed                           | Use this function to prompt event editing or removal |
-| loadNewEvents                 | weekView:`WeekView`, startDate:`Date` , endDate:`Date`  | Called when events are ready to be loaded. `startDate` and `endDate` indicate (inclusively) between which two dates events are required.  | Use this function to load in stored events                   |
+| didLongPressDayView      | weekView:`WeekView`, date:`Date`                                       | Called when a dayView column is long pressed. The passed `date` contains which time point was pressed | Use this to trigger the creation of an event       |
+| didTapEvent                      | weekView:`WeekView`, eventId:`Int`                                    | Called when an event is tapped. `eventId` of the tapped event is passed                           | Use this to prompt event editing or removal |
+| eventLoadRequest                 | weekView:`WeekView`, startDate:`Date` , endDate:`Date`  | Called when events are ready to be loaded. `startDate` and `endDate` indicate (inclusively) between which two dates events are required.  | Use this to load in stored events |
+| activeDayChanged                 | weekView:`WeekView`, date: `Date` | Called when the current leftmost day changes.  | Use this to keep track of current active day |
+| didEndZooming | weekView:`WeekView`, scale: `Double` | Called when zooming stops, the scale is the current zoomScale | Use this to persist the zoom scale of the WeekView |
+| didEndVerticalScrolling | weekView:`WeekView`, top: `Double`, bottom: `Double` | Called when vertical scrolling stops. The top an bottom values are percentages values of how far down the screen is. | Use this to persist vertical position of the WeekView |
 
 #### WeekView Public Functions
 
@@ -87,13 +89,15 @@ Then you should be all set!
 | showDay                           | date:`Date`                           | Scrolls the week view to the day passed by `date`  |
 | showToday                        | `\`                                         | Scrolls the week view to today                              |
 | loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects.         |
+| redrawEvents | | Triggers a `setNeedsLayout` on all DayViewCells and will trigger a redrawing of all events |
 
-#### WeekView Public functions
+#### WeekView Public Properties
 
 | Property                            | Type                             | Description                                                             |
 | ------------------------------|---------------------------|--------------------------------------------------------|
 | allVisibleEvents          | `[EventData]`                    | An array of EventData of the events currently visible on screen |
 | visibleDayDateRange | `ClosedRange<DayDate>` | A ClosedRange of DayDates of the day columns which are currently visible on screen  |
+| delegate | `WeekViewDelegate?` | The delegate of this WeekView |
 
 #### EventData<sup>1</sup>
 
@@ -102,12 +106,13 @@ EventData is the main object used to communicate events between the WeekView and
 | Variable/Function            | Purpose                           |
 | ----------------------------|---------------------------------|
 | id:`String`                    | A unique identifier for this event |
-| title:`String`                 | A title that will be displayed for this event|
+| title:`String`                 | A title that will be displayed for this event |
+| locating:`String`                 | The "location" of this event (or any other data you wish to be displayed alongside the title in an event) |
 | startDate:`Date`            |  The start date for this event |
 | endDate:`Date`              | The end date for this event |
 | color:`UIColor`              | The main color for this event  |
 | allDay:`Bool`                  | Indicates if this event is an all day event, all day events are displayed along the top bar |
-| configureGradient()       | Used to configure a gradient that will be used to render your event instead of just a solid color |
+| `configureGradient(CAGradientLayer?) -> Void`       | Use to configure a gradient that will be used to render your event instead of just a solid color |
 
 ### Customizing WeekView
 
@@ -143,6 +148,7 @@ Below is a table of all customizable properties of the `WeekView`
 | eventLabelFontResizingEnabled:`Bool`         | Determines if font resizing is used inside event labels. **This feature may be very laggy and slow.** | `false` |
 | eventLabelHorizontalTextPadding:`CGFloat`         | Horizontal padding of the text within event labels. | `2` |
 | eventLabelVerticalTextPadding:`CGFloat`         | Vertical padding of the text within event labels. | `2` |
+| eventStyleCallback:`(CALayer, EventData?) -> Void` | Use this callback to customise an Event layer any way you want. The EventData will be nil if it is the Preview Event layer that is being rendered. Example usage in CalendarViewController. | `nil` |
 | previewEventText:`String`         | The text shown inside the preview event. | `New Event` |
 | previewEventColor:`UIColor`         | The color of the preview event. | `random color` |
 | previewEventHeightInHours:`Double`         | Height of the preview event in hours. | `2.0` |
