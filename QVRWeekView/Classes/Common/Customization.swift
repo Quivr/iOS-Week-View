@@ -820,6 +820,6 @@ extension LayoutVariables {
     fileprivate(set) static var defaultTopBarHeight = LayoutDefaults.defaultTopBarHeight
 
     // Automatically
-    fileprivate(set) static var autoConvertAllDayEvents = false
+    fileprivate(set) static var autoConvertAllDayEvents = true
 
 }
