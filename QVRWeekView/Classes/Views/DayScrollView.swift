@@ -205,13 +205,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            self.weekView?.didEndScrolling(self)
+            self.weekView?.didEndVerticalScrolling(self)
             scrollToNearestCell()
         }
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        self.weekView?.didEndScrolling(self)
+        self.weekView?.didEndVerticalScrolling(self)
         scrollToNearestCell()
     }
 

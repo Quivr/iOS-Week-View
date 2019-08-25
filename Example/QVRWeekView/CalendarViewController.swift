@@ -232,7 +232,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         // OPTIONAL
     }
 
-    func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double) {
+    func didEndVerticalScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double) {
         // OPTIONAL
     }
 

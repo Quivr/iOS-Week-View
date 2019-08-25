@@ -240,8 +240,8 @@ open class WeekView: UIView {
 
     // MARK: - INTERNAL FUNCTIONS -
 
-    @objc func didEndScrolling(_ sender: DayScrollView) {
-        self.delegate?.didEndScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
+    @objc func didEndVerticalScrolling(_ sender: DayScrollView) {
+        self.delegate?.didEndVerticalScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
     }
 
     /**
@@ -541,7 +541,7 @@ extension WeekView {
 
     @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
 
-    @objc optional func didEndScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
+    @objc optional func didEndVerticalScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
 }
 
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
