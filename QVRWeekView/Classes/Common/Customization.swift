@@ -382,6 +382,7 @@ public extension WeekView {
     /**
      Sets whether event label font resizing is enabled or not.
      */
+    @available(*, deprecated, message: "This functionality has been removed")
     @objc var eventLabelFontResizingEnabled: Bool {
         get {
             return TextVariables.eventLabelFontResizingEnabled

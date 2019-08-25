@@ -22,7 +22,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     // separator shape layers
     private var separatorLayers: [CAShapeLayer] = []
     // Event rectangle shape layers
-    private var eventLayers: [CAShapeLayer] = []
+    private var eventLayers: [EventLayer] = []
     // Layer of the preview event
     private var previewLayer: CALayer?
     // Stores if preview should be currently visible or not
@@ -230,20 +230,19 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         // Generate event rectangle shape layers and text layers
         for (id, frame) in self.eventFrames {
-
-            guard eventsData[id] != nil else {
-                return
+            guard let event = eventsData[id] else {
+                continue
             }
+
             let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
             var newFrame = frame
             if scaleY != 1.0 || scaleX != 1.0 {
                 self.eventFrames[id] = frame.applying(transform)
                 newFrame = self.eventFrames[id]!
             }
-            let layer = eventsData[id]!.generateLayer(withFrame: newFrame, resizeText: resizeText)
-
-            self.eventLayers.append(layer)
-            self.layer.addSublayer(layer)
+            let eventLayer = EventLayer(withFrame: newFrame, andEvent: event)
+            self.eventLayers.append(eventLayer)
+            self.layer.addSublayer(eventLayer)
         }
         if let pLayer = self.previewLayer {
             pLayer.removeFromSuperlayer()

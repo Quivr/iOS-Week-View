@@ -59,7 +59,7 @@ open class WeekView: UIView {
     // Array of visible daylabels
     private var visibleDayLabels: [DayDate: UILabel] = [:]
     // Array of visible allDayEvents
-    private var visibleAllDayEvents: [DayDate: [EventData: CAShapeLayer]] = [:]
+    private var visibleAllDayEvents: [DayDate: [EventData: EventLayer]] = [:]
     // Array of labels not being displayed
     private var discardedDayLabels: [UILabel] = []
     // Left side buffer for top bar
@@ -311,17 +311,7 @@ open class WeekView: UIView {
             visibleAllDayEvents[dayDate] = nil
         }
 
-        let max = events.count
-        var i = 0
-        var layers: [EventData: CAShapeLayer] = [:]
-        for event in Util.sortedById(eventsToSort: events) {
-            let frame = Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: max)
-            let layer = event.generateLayer(withFrame: frame, resizeText: TextVariables.eventLabelFontResizingEnabled)
-            self.topBarView.layer.addSublayer(layer)
-            layers[event] = layer
-            i += 1
-        }
-        self.visibleAllDayEvents[dayDate] = layers
+        self.renderLayers(ofAllDayEvents: events, forIndexPath: indexPath, withDate: dayDate)
     }
 
     /**
@@ -432,17 +422,27 @@ open class WeekView: UIView {
             guard let indexPath = visibleIndexPath else {
                 continue
             }
-            var newEventLayers: [EventData: CAShapeLayer] = [:]
-            var i = 0
-            for (eventData, eventLayer) in Util.sortedById(eventsToSort: events) {
-                eventLayer.removeFromSuperlayer()
-                let layer = eventData.generateLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count))
-                newEventLayers[eventData] = layer
-                self.topBarView.layer.addSublayer(layer)
-                i += 1
-            }
-            self.visibleAllDayEvents[dayDate] = newEventLayers
+            renderLayers(ofAllDayEvents: Array(events.keys), forIndexPath: indexPath, withDate: dayDate)
         }
+    }
+
+    private func renderLayers(ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+        var newEventLayers: [EventData: EventLayer] = [:]
+        var i = 0
+        for eventData in Util.sortedById(eventsToSort: events) {
+            guard eventData.allDay else {
+                continue
+            }
+            if let previousLayer = self.visibleAllDayEvents[dayDate]?[eventData] {
+                previousLayer.removeFromSuperlayer()
+            }
+            let layer = EventLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count),
+                                   andEvent: eventData)
+            newEventLayers[eventData] = layer
+            self.topBarView.layer.addSublayer(layer)
+            i += 1
+        }
+        self.visibleAllDayEvents[dayDate] = newEventLayers
     }
 
     /**
