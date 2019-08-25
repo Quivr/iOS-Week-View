@@ -131,7 +131,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                                                             width: self.bounds.width,
                                                             height: LayoutVariables.totalContentHeight),
                                               collectionViewLayout: DayCollectionViewFlowLayout())
-        dayCollectionView.contentOffset = CGPoint(x: LayoutVariables.totalDayViewCellWidth*CGFloat(DayDate.today.dayInYear), y: 0)
+        dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: DayDate.today.dayInYear), y: 0)
         dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
@@ -306,7 +306,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if animated {
             scrollingToDay = true
         }
-        dayCollectionView.setContentOffset(CGPoint(x: CGFloat(dayDate.dayInYear)*LayoutVariables.totalDayViewCellWidth,
+        dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forDay: dayDate.dayInYear),
                                                    y: 0),
                                            animated: animated)
         if !animated {
@@ -550,10 +550,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: LayoutVariables.activeFrameWidth, height: LayoutVariables.totalContentHeight)
 
         if oldWidth != LayoutVariables.totalContentWidth {
-            let newXOffset = CGFloat(CGFloat(activeDay.dayInYear)*LayoutVariables.totalDayViewCellWidth).roundUpAdditionalHalf()
-            dayCollectionView.contentOffset = CGPoint(x: newXOffset, y: 0)
-        }
-        else {
+            dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay.dayInYear), y: 0)
+        } else {
             dayCollectionView.contentOffset = CGPoint(x: oldXOffset, y: 0)
         }
 
@@ -567,14 +565,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         activeYear += change
 
         if change < 0 {
-            dayCollectionView.contentOffset.x = (LayoutVariables.maxOffsetX).roundDownSubtractedHalf()
-        }
-        else if change > 0 {
-            dayCollectionView.contentOffset.x = (LayoutVariables.minOffsetX).roundUpAdditionalHalf()
+            dayCollectionView.contentOffset.x = LayoutVariables.maxOffsetX
+        } else if change > 0 {
+            dayCollectionView.contentOffset.x = LayoutVariables.minOffsetX
         }
     }
 
     private func scrollToNearestCell() {
+
         let xOffset = dayCollectionView.contentOffset.x
         let yOffset = dayCollectionView.contentOffset.y
 
@@ -582,8 +580,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         let truncatedToPagingWidth = xOffset.truncatingRemainder(dividingBy: totalDayViewWidth)
 
         if truncatedToPagingWidth >= 0.5 && yOffset >= LayoutVariables.minOffsetY && yOffset <= LayoutVariables.maxOffsetY {
-            let targetXOffset = (round(xOffset / totalDayViewWidth)*totalDayViewWidth).roundUpAdditionalHalf()
-            dayCollectionView.setContentOffset(CGPoint(x: targetXOffset, y: dayCollectionView.contentOffset.y), animated: true)
+            dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forDay: round(xOffset / totalDayViewWidth)),
+                                                       y: dayCollectionView.contentOffset.y), animated: true)
         }
     }
 
@@ -608,6 +606,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         self.currentPeriod = Period(ofDate: self.activeDay)
         // Load new events for new period
         requestEvents()
+    }
+
+    private func calcXOffset(forDay day: Int) -> CGFloat {
+        return calcXOffset(forDay: CGFloat(day))
+    }
+
+    private func calcXOffset(forDay day: CGFloat) -> CGFloat {
+        return day * LayoutVariables.totalDayViewCellWidth
     }
 }
 
