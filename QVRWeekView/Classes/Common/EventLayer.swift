@@ -7,17 +7,18 @@
 
 import Foundation
 
-class EventLayer: CAShapeLayer {
+class EventLayer: CALayer {
     init(withFrame frame: CGRect, andEvent event: EventData) {
         super.init()
-        self.path = CGPath(rect: frame, transform: nil)
+        self.bounds = frame
+        self.frame = frame
 
         // Configure gradient and colour layer
         if let gradient = event.getGradientLayer(withFrame: frame) {
-            self.fillColor = UIColor.clear.cgColor
+            self.backgroundColor = UIColor.clear.cgColor
             self.addSublayer(gradient)
         } else {
-            self.fillColor = event.color.cgColor
+            self.backgroundColor = event.color.cgColor
         }
 
         // Configure event text layer

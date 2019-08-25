@@ -4,6 +4,8 @@
 import Foundation
 import UIKit
 
+public typealias EventStlyeCallback = (CALayer, EventData?) -> Void
+
 /**
  Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
  and all customization can be done with public functions. The is a WeekViewDelegate which can be used to receive certain events.
@@ -50,6 +52,12 @@ open class WeekView: UIView {
             visibleEvents.append(contentsOf: self.dayScrollView.getEventData(forDate: day))
         }
         return visibleEvents
+    }
+
+    public var eventStyleCallback: EventStlyeCallback? {
+        didSet (value) {
+            self.dayScrollView?.dayViewCells.values.forEach({ dayViewCell in dayViewCell.eventStyleCallback = value })
+        }
     }
 
     // MARK: - PRIVATE VARIABLES -
@@ -347,7 +355,7 @@ open class WeekView: UIView {
         let touchPoint = sender.location(ofTouch: 0, in: self.topBarView)
         for (_, eventLayers) in visibleAllDayEvents {
             for (event, layer) in eventLayers {
-                if layer.path!.contains(touchPoint) {
+                if layer.frame.contains(touchPoint) {
                     eventViewWasTapped(event)
                 }
             }

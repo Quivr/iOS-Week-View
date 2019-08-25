@@ -10,6 +10,43 @@ import UIKit
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate,
 UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, FrameCalculatorDelegate {
+    // MARK: - INTERNAL VARIABLES -
+
+    // The WeekView that this DayScrollView belongs to
+    var weekView: WeekView? {
+        return self.superview?.superview as? WeekView
+    }
+
+    // Percentual offset at the top of the current DayScrollView
+    var topOffset: Double {
+        get {
+            return Double(self.verticalOffset / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue)
+        }
+    }
+
+    // Percentual offset at the bottom of the current DayScrollView
+    var bottomOffset: Double {
+        get {
+            return Double((self.frame.size.height + self.verticalOffset) / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight
+        }
+    }
+
+    // Percentual offset in the center of the current DayScrollView
+    var centerOffset: Double {
+        get {
+            return self.topOffset + Double((LayoutVariables.activeFrameHeight / 2) / self.contentSize.height)
+        }
+        set {
+            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight / 2
+        }
+    }
+
     // MARK: - INSTANCE VARIABLES -
 
     // Collection view
@@ -21,7 +58,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // All fullday events
     private var allDayEventsData: [DayDate: [EventData]] = [:]
     // All active dayViewCells
-    private var dayViewCells: [Int: DayViewCell] = [:]
+    private(set) var dayViewCells: [Int: DayViewCell] = [:]
     // All frame calculators
     private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
@@ -63,43 +100,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 ? LayoutVariables.maxOffsetY
                 : (newValue < LayoutVariables.minOffsetY ? LayoutVariables.minOffsetY : newValue)
             self.setContentOffset(CGPoint(x: self.contentOffset.x, y: offset), animated: false)
-        }
-    }
-
-    // MARK: - INTERNAL VARIABLES -
-
-    // The WeekView that this DayScrollView belongs to
-    var weekView: WeekView? {
-        return self.superview?.superview as? WeekView
-    }
-
-    // Percentual offset at the top of the current DayScrollView
-    var topOffset: Double {
-        get {
-            return Double(self.verticalOffset / self.contentSize.height)
-        }
-        set {
-            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue)
-        }
-    }
-
-    // Percentual offset at the bottom of the current DayScrollView
-    var bottomOffset: Double {
-        get {
-            return Double((self.frame.size.height + self.verticalOffset) / self.contentSize.height)
-        }
-        set {
-            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight
-        }
-    }
-
-    // Percentual offset in the center of the current DayScrollView
-    var centerOffset: Double {
-        get {
-            return self.topOffset + Double((LayoutVariables.activeFrameHeight / 2) / self.contentSize.height)
-        }
-        set {
-            self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - LayoutVariables.activeFrameHeight / 2
         }
     }
 
@@ -153,7 +153,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     override func layoutSubviews() {
-
         if self.frame.width != LayoutVariables.activeFrameWidth || self.frame.height != LayoutVariables.activeFrameHeight {
             updateLayout()
         }
@@ -224,6 +223,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if let dayViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CellKeys.dayViewCell, for: indexPath) as? DayViewCell {
             dayViewCell.clearValues()
             dayViewCell.delegate = self
+            dayViewCell.eventStyleCallback = self.weekView?.eventStyleCallback
             dayViewCells[dayViewCell.id] = dayViewCell
             let dayDateForCell = getDayDate(forIndexPath: indexPath)
             dayViewCell.setDate(as: dayDateForCell)

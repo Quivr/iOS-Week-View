@@ -38,19 +38,21 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
     // Delegate variable
     weak var delegate: DayViewCellDelegate?
-    let id: Int
+    // Unique day view cell id
+    let id: Int = DayViewCell.genUniqueId()
+    // Flag storing if event is being added or not
     var addingEvent: Bool = false
+    // EventLayer style callback
+    var eventStyleCallback: EventStlyeCallback?
 
     // MARK: - INITIALIZERS & OVERRIDES -
 
     required init?(coder aDecoder: NSCoder) {
-        self.id = DayViewCell.genUniqueId()
         super.init(coder: aDecoder)
         self.initialize()
     }
 
     override init(frame: CGRect) {
-        self.id = DayViewCell.genUniqueId()
         super.init(frame: frame)
         self.initialize()
     }
@@ -237,8 +239,8 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
             let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
             var newFrame = frame
             if scaleY != 1.0 || scaleX != 1.0 {
-                self.eventFrames[id] = frame.applying(transform)
-                newFrame = self.eventFrames[id]!
+                newFrame = frame.applying(transform)
+                self.eventFrames[id] = newFrame
             }
             let eventLayer = EventLayer(withFrame: newFrame, andEvent: event)
             self.eventLayers.append(eventLayer)
@@ -276,12 +278,11 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     private func makePreviewLayer(at position: CGPoint) {
         removePreviewLayer()
 
-        let startingBounds = CGRect(x: 0, y: 0, width: 0, height: 0)
-        let endingBounds = CGRect(x: 0, y: 0, width: self.frame.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours))
+        let startingBounds = CGRect(origin: position, size: CGSize(width: 0, height: 0))
+        let endingBounds = CGRect(origin: position, size: CGSize(width: self.frame.width, height: hourHeight*CGFloat(LayoutVariables.previewEventHeightInHours)))
 
         let previewLayer = CALayer()
-        previewLayer.bounds = startingBounds
-        previewLayer.position = position
+        previewLayer.frame = startingBounds
         previewLayer.backgroundColor = LayoutVariables.previewEventColor.cgColor
         previewLayer.masksToBounds = true
 
@@ -300,7 +301,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         let anim = CABasicAnimation(keyPath: "bounds")
         anim.duration = 0.15
-        anim.fromValue = previewLayer.bounds
+        anim.fromValue = startingBounds
         anim.toValue = endingBounds
 
         previewLayer.bounds = endingBounds
