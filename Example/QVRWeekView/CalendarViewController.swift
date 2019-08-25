@@ -35,6 +35,11 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         super.viewDidLoad()
         weekView.zoomOffsetPreservation = .reset
         weekView.delegate = self
+        weekView.eventStyleCallback = { (layer, data) in
+            layer.borderWidth = 2.0
+            layer.borderColor = UIColor.black.cgColor
+            layer.cornerRadius = 5.0
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {

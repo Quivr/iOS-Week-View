@@ -446,6 +446,7 @@ open class WeekView: UIView {
             }
             let layer = EventLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count),
                                    andEvent: eventData)
+            self.eventStyleCallback?(layer, eventData)
             newEventLayers[eventData] = layer
             self.topBarView.layer.addSublayer(layer)
             i += 1

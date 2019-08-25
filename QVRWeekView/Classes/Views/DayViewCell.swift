@@ -243,6 +243,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
                 self.eventFrames[id] = newFrame
             }
             let eventLayer = EventLayer(withFrame: newFrame, andEvent: event)
+            self.eventStyleCallback?(eventLayer, event)
             self.eventLayers.append(eventLayer)
             self.layer.addSublayer(eventLayer)
         }
@@ -295,6 +296,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         textLayer.contentsScale = UIScreen.main.scale
 
         previewLayer.addSublayer(textLayer)
+        self.eventStyleCallback?(previewLayer, nil)
         self.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
         self.previewVisible = LayoutVariables.showPreviewOnLongPress
