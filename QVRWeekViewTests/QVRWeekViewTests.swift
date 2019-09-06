@@ -43,9 +43,11 @@ class QVRWeekViewTests: XCTestCase {
             XCTFail()
             return
         }
+        var allLoaded = true
         for event in checkEvents {
-            XCTAssertTrue(weekView.allVisibleEvents.contains(event))
+            allLoaded = allLoaded && weekView.allVisibleEvents.contains(event)
         }
+        XCTAssertTrue(allLoaded)
     }
 
     func testSingleEventLoad() {
