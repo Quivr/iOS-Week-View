@@ -24,10 +24,10 @@ class QVRWeekViewTests: XCTestCase {
 
     private func generateValidEventData() -> EventData {
         let event = EventData(id: eventIdCounter,
-                         title: "Test-\(eventIdCounter!)",
-                         startDate: Date().getStartOfDay().applyTimeInHours(hourTime: startOffset),
-                         endDate: Date().getStartOfDay().applyTimeInHours(hourTime: endOffset),
-                         color: UIColor.black)
+                              title: "Test-\(eventIdCounter!)",
+                              startDate: Date().getStartOfDay().applyTimeInHours(hourTime: startOffset),
+                              endDate: Date().getStartOfDay().applyTimeInHours(hourTime: endOffset),
+                              color: UIColor.black)
         eventIdCounter += 1
         startOffset += 1.0
         endOffset += 1.0
@@ -40,7 +40,7 @@ class QVRWeekViewTests: XCTestCase {
 
     private func AssertEventsLoaded(events: [EventData]?) {
         guard let checkEvents = events else {
-            XCTFail()
+            XCTFail("Passed events are nil")
             return
         }
         var allLoaded = true
