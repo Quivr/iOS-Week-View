@@ -27,7 +27,8 @@ s.source           = { :git => 'https://github.com/Quivr/iOS-Week-View.git', :ta
 
 s.ios.deployment_target = '9.0'
 
-s.source_files = 'QVRWeekView/Classes/**/*'
+s.source_files = 'QVRWeekView/Classes/**/*.swift'
+s.resources = 'QVRWeekView/Classes/Xibs/*.xib'
 
 s.frameworks = 'UIKit'
 
