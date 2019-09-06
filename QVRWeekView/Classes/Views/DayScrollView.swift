@@ -430,12 +430,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             }
         }
 
-        let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
-            let diff1 = abs(smaller.dayInYear - self.activeDay.dayInYear)
-            let diff2 = abs(larger.dayInYear - self.activeDay.dayInYear)
-            return diff1 == diff2 ? smaller > larger : diff1 < diff2
-        }
-
         self.eventsData = newEventsData
         self.allDayEventsData = newAllDayEvents
         for cell in self.dayCollectionView.visibleCells {
@@ -451,7 +445,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                 }
             }
         }
-        // Process events for days with changed data
+
+        // Process events for days with changed data, sort them to load visible days first
+        let sortedChangedDays: [DayDate] = changedDayDates.sorted { (smaller, larger) -> Bool in
+            let diff1 = abs(smaller.dayInYear - self.activeDay.dayInYear)
+            let diff2 = abs(larger.dayInYear - self.activeDay.dayInYear)
+            return diff1 == diff2 ? smaller > larger : diff1 < diff2
+        }
         for dayDate in sortedChangedDays {
             self.processEventsData(forDayDate: dayDate)
         }
@@ -553,7 +553,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     private func processEventsData(forDayDate dayDate: DayDate) {
-        frameCalculators[dayDate]?.cancelCalculation()
         let calc = FrameCalculator(date: dayDate)
         calc.delegate = self
         frameCalculators[dayDate]?.cancelCalculation()
