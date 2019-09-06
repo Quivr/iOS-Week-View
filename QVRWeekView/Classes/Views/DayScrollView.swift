@@ -77,10 +77,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var yearToday: Int = DayDate.today.year
     // Current period
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
-    // Bool stores if the Event Processing Thread (ept) is running
-    private var eptRunning: Bool = false
-    // Stores temp data that was attempted to be set while Event Processing Thread was running
-    private var eptTempData: [EventData]?
     // Bool stores is view is scrolling to a specific day
     private var scrollingToDay: Bool = false
     // Previous zoom scale of content
@@ -399,105 +395,69 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             return
         }
 
-        if eptRunning {
-            eptTempData = eventsData
-            return
-        } else {
-            eptRunning = true
-            eptTempData = nil
+        // New eventsdata
+        var newEventsData: [DayDate: [String: EventData]] = [:]
+        // New all day events
+        var newAllDayEvents: [DayDate: [EventData]] = [:]
+        // Stores the days which will be changed
+        var changedDayDates = Set<DayDate>()
+
+        // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
+        // days have had any changes done to them to queue them up for processing.
+        for eventData in eventsData {
+            let possibleSplitEvents = eventData.checkForSplitting()
+            for (dayDate, event) in possibleSplitEvents {
+                if event.allDay {
+                    newAllDayEvents.addEvent(event, onDay: dayDate)
+                }
+                else {
+                    if !changedDayDates.contains(dayDate) && Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.eventsData) {
+                        changedDayDates.insert(dayDate)
+                    }
+                    newEventsData.addEvent(event, onDay: dayDate)
+                }
+            }
         }
-        // Start of Event Processing Thread
-        DispatchQueue.global(qos: .userInitiated).async {
 
-            // New eventsdata
-            var newEventsData: [DayDate: [String: EventData]] = [:]
-            // New all day events
-            var newAllDayEvents: [DayDate: [EventData]] = [:]
-            // Stores the days which will be changed
-            var changedDayDates = Set<DayDate>()
-
-            // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
-            // days have had any changes done to them to queue them up for processing.
-            for eventData in eventsData {
-                // This check will halt the loop in case an attempt was made to overwrite events while this
-                // thread was running.
-                if let overwriteTempData = self.eptTempData {
-                    self.forceSyncOverwriteAllEvents(overwriteData: overwriteTempData)
-                    return
-                }
-                let possibleSplitEvents = eventData.checkForSplitting()
-                for (dayDate, event) in possibleSplitEvents {
-                    if event.allDay {
-                        newAllDayEvents.addEvent(event, onDay: dayDate)
-                    }
-                    else {
-                        if !changedDayDates.contains(dayDate) &&
-                            Util.isEvent(event, fromDay: dayDate, notInOrHasChanged: self.eventsData) {
-                            changedDayDates.insert(dayDate)
-                        }
-                        newEventsData.addEvent(event, onDay: dayDate)
-                    }
-                }
+        // Get sequence of active days
+        let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.startDate,
+                                                     and: self.currentPeriod.endDate)
+        // Iterate through all old days that have not been checked yet to look for inactive days
+        for (dayDate, oldEvents) in self.eventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
+            for (_, oldEvent) in oldEvents where Util.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
+                changedDayDates.insert(dayDate)
+                break
             }
+        }
 
-            // Get sequence of active days
-            let activeDates = DateSupport.getAllDayDates(between: self.currentPeriod.startDate,
-                                                         and: self.currentPeriod.endDate)
-            // Iterate through all old days that have not been checked yet to look for inactive days
-            for (dayDate, oldEvents) in self.eventsData where !changedDayDates.contains(dayDate) && activeDates.contains(dayDate) {
-                for (_, oldEvent) in oldEvents where Util.isEvent(oldEvent, fromDay: dayDate, notInOrHasChanged: newEventsData) {
-                    changedDayDates.insert(dayDate)
-                    break
-                }
-            }
+        let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
+            let diff1 = abs(smaller.dayInYear - self.activeDay.dayInYear)
+            let diff2 = abs(larger.dayInYear - self.activeDay.dayInYear)
+            return diff1 == diff2 ? smaller > larger : diff1 < diff2
+        }
 
-            // This check will halt the loop in case an attempt was made to overwrite events while this
-            // thread was running. This prevents the relatively expensive sort from being executed.
-            if let overwriteTempData = self.eptTempData {
-                self.forceSyncOverwriteAllEvents(overwriteData: overwriteTempData)
-                return
-            }
-
-            let sortedChangedDays = changedDayDates.sorted { (smaller, larger) -> Bool in
-                let diff1 = abs(smaller.dayInYear - self.activeDay.dayInYear)
-                let diff2 = abs(larger.dayInYear - self.activeDay.dayInYear)
-                return diff1 == diff2 ? smaller > larger : diff1 < diff2
-            }
-
-            // Safe exit from Event Processing Thread
-            DispatchQueue.main.sync {
-                self.eptRunning = false
-                self.eventsData = newEventsData
-                self.allDayEventsData = newAllDayEvents
-                for cell in self.dayCollectionView.visibleCells {
-                    if let dayViewCell = cell as? DayViewCell {
-                        let dayDate = dayViewCell.date
-                        let allThisDayEvents = self.allDayEventsData[dayDate]
-                        if allThisDayEvents == nil && self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
-                            self.weekView?.removeAllDayEvents(forDate: dayDate)
-                            dayViewCell.setNeedsLayout()
-                        }
-                        else if allThisDayEvents != nil {
-                            self.weekView?.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
-                            dayViewCell.setNeedsLayout()
-                        }
-                    }
-                }
-                // Process events for days with changed data
-                for dayDate in sortedChangedDays {
-                    self.processEventsData(forDayDate: dayDate)
-                }
-                // Redraw days with no changed data
-                for (_, dayViewCell) in self.dayViewCells where !sortedChangedDays.contains(dayViewCell.date) {
+        self.eventsData = newEventsData
+        self.allDayEventsData = newAllDayEvents
+        for cell in self.dayCollectionView.visibleCells {
+            if let dayViewCell = cell as? DayViewCell {
+                let dayDate = dayViewCell.date
+                let allThisDayEvents = self.allDayEventsData[dayDate]
+                if allThisDayEvents == nil && self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
+                    self.weekView?.removeAllDayEvents(forDate: dayDate)
+                    dayViewCell.setNeedsLayout()
+                } else if allThisDayEvents != nil {
+                    self.weekView?.addAllDayEvents(allThisDayEvents!, forIndexPath: self.dayCollectionView.indexPath(for: cell)!, withDate: dayDate)
                     dayViewCell.setNeedsLayout()
                 }
-
-                // If an attempt was made to overwrite events while the above process was running
-                // this if-check will notice this and recall overwriteAllEvents
-                if let overwriteTempData = self.eptTempData {
-                    self.overwriteAllEvents(withData: overwriteTempData)
-                }
             }
+        }
+        // Process events for days with changed data
+        for dayDate in sortedChangedDays {
+            self.processEventsData(forDayDate: dayDate)
+        }
+        // Redraw days with no changed data
+        for (_, dayViewCell) in self.dayViewCells where !sortedChangedDays.contains(dayViewCell.date) {
+            dayViewCell.setNeedsLayout()
         }
     }
 
