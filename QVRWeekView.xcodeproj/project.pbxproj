@@ -32,6 +32,8 @@
 		64A16376202AFD80002FEF01 /* CalendarWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 64A16368202AFD80002FEF01 /* CalendarWeekView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		912D361D2170C99900699638 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912D361C2170C99900699638 /* EventData.swift */; };
 		912D361F2170C9B600699638 /* HourLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 912D361E2170C9B600699638 /* HourLabel.swift */; };
+		917247262322E6D900E339DC /* EventLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917247242322E6D900E339DC /* EventLayer.swift */; };
+		917247272322E6D900E339DC /* ZoomOffsetPreservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917247252322E6D900E339DC /* ZoomOffsetPreservation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,8 @@
 		64A16375202AFD80002FEF01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		912D361C2170C99900699638 /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 		912D361E2170C9B600699638 /* HourLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HourLabel.swift; sourceTree = "<group>"; };
+		917247242322E6D900E339DC /* EventLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventLayer.swift; sourceTree = "<group>"; };
+		917247252322E6D900E339DC /* ZoomOffsetPreservation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomOffsetPreservation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +188,8 @@
 		64988F262029D68000C1A3BF /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				917247242322E6D900E339DC /* EventLayer.swift */,
+				917247252322E6D900E339DC /* ZoomOffsetPreservation.swift */,
 				912D361E2170C9B600699638 /* HourLabel.swift */,
 				912D361C2170C99900699638 /* EventData.swift */,
 				64988F272029D68000C1A3BF /* Constants.swift */,
@@ -429,7 +435,9 @@
 				64988F3F2029D68000C1A3BF /* FrameCalculator.swift in Sources */,
 				64988F3E2029D68000C1A3BF /* Period.swift in Sources */,
 				64988F3D2029D68000C1A3BF /* Constants.swift in Sources */,
+				917247262322E6D900E339DC /* EventLayer.swift in Sources */,
 				64988F442029D68000C1A3BF /* DayDate.swift in Sources */,
+				917247272322E6D900E339DC /* ZoomOffsetPreservation.swift in Sources */,
 				64988F4A2029D68000C1A3BF /* WeekView.swift in Sources */,
 				64988F432029D68000C1A3BF /* Util.swift in Sources */,
 				64988F402029D68000C1A3BF /* DateSupport.swift in Sources */,
