@@ -348,10 +348,12 @@
 				TargetAttributes = {
 					64988F042029D66600C1A3BF = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1030;
 						ProvisioningStyle = Automatic;
 					};
 					64988F0D2029D66600C1A3BF = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1030;
 						ProvisioningStyle = Automatic;
 					};
 					64A16365202AFD7F002FEF01 = {
@@ -617,7 +619,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.QVRWeekView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -638,7 +640,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.QVRWeekView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -653,7 +655,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.QVRWeekViewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -668,7 +670,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.opensource.QVRWeekViewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
