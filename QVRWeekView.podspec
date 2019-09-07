@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 s.name             = 'QVRWeekView'
-s.version          = '0.13.2'
+s.version          = '0.13.3'
 s.summary          = 'QVRWeekView is a simple calendar week view with support for horizontal, vertical scrolling and zooming.'
 s.swift_version    = '5'
 
