@@ -719,6 +719,9 @@ public extension WeekView {
             return LayoutVariables.zoomScale
         }
         set(scale) {
+            guard currentZoomScale != scale else {
+                return
+            }
             switch self.zoomOffsetPreservation {
             case .center:
                 let offset = self.dayScrollView.centerOffset
