@@ -44,6 +44,21 @@ open class WeekView: UIView {
         let firstActiveDay = self.dayScrollView.activeDay
         return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
     }
+    
+    //A date range containing the current days visible on screen
+    public var visibleDateRange: ClosedRange<Date> {
+        let firstActiveDay = self.dayScrollView.activeDay
+        let lastActiveDay = (firstActiveDay + Int(LayoutVariables.visibleDays - 1))
+        return firstActiveDay.getDateWithTime(hours: 0, minutes: 0, seconds: 0)...lastActiveDay.getDateWithTime(hours: 23, minutes: 59, seconds: 59)
+    }
+    
+    //Reloads the events from the delegate
+    func notifyDataSetChanged() {
+        if let delegate = self.delegate {
+            let range = visibleDateRange
+            delegate.eventLoadRequest(in: self, between: range.lowerBound, and: range.upperBound)
+        }
+    }
 
     // All EventData of events currently visible on screen
     public var allVisibleEvents: [EventData] {
