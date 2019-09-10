@@ -53,7 +53,7 @@ open class WeekView: UIView {
     }
     
     //Reloads the events from the delegate
-    func notifyDataSetChanged() {
+    public func notifyDataSetChanged() {
         if let delegate = self.delegate {
             let range = visibleDateRange
             delegate.eventLoadRequest(in: self, between: range.lowerBound, and: range.upperBound)
