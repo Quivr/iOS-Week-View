@@ -24,38 +24,38 @@ public enum TextMode {
  remain. DayDates are also easy to compare, print as strings and are hashable.
  */
 public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
-    let day: Int
-    let month: Int
-    let year: Int
-    let era: Int
+    public let day: Int
+    public let month: Int
+    public let year: Int
+    public let era: Int
 
     public var description: String {
         return "\(day)-\(month)-\(year)-\(era)"
     }
 
-    var dateObj: Date {
+    public var dateObj: Date {
         var dateComps = dateComponents
         dateComps.hour = 12
         return Calendar.current.date(from: dateComps)!
     }
 
-    var largeString: String {
+    public var largeString: String {
         return getString(forMode: .large)
     }
 
-    var defaultString: String {
+    public var defaultString: String {
         return getString(forMode: .normal)
     }
 
-    var smallString: String {
+    public var smallString: String {
         return self.getString(forMode: .small)
     }
 
-    var dayInYear: Int {
+    public var dayInYear: Int {
         return self.dateObj.getDayOfYear()
     }
 
-    private var dateComponents: DateComponents {
+    public var dateComponents: DateComponents {
         var dateComps: DateComponents = DateComponents()
         dateComps.day = self.day
         dateComps.month = self.month
@@ -64,18 +64,18 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         return dateComps
     }
 
-    static var today: DayDate {
+    public static var today: DayDate {
         return DayDate(date: Date())
     }
 
-    init(day: Int, month: Int, year: Int, era: Int) {
+    public init(day: Int, month: Int, year: Int, era: Int) {
         self.day = day
         self.month = month
         self.year = year
         self.era = era
     }
 
-    init(date: Date) {
+    public init(date: Date) {
         let cal = Calendar.current
         self.day = cal.component(.day, from: date)
         self.month = cal.component(.month, from: date)
@@ -83,7 +83,7 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         self.era = cal.component(.era, from: date)
     }
 
-    init() {
+    public init() {
         self.day = -1
         self.month = -1
         self.year = -1
@@ -128,21 +128,21 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         return df.string(from: self.dateObj)
     }
 
-    func hasPassed() -> Bool {
+    public func hasPassed() -> Bool {
         return self <= DayDate.today
     }
 
-    func isToday() -> Bool {
+    public func isToday() -> Bool {
         return self == DayDate.today
     }
 
-    func isWeekend() -> Bool {
+    public func isWeekend() -> Bool {
         let cal = Calendar.current
         let weekDay = cal.component(.weekday, from: dateObj)
         return (weekDay == 1 || weekDay == 7)
     }
 
-    func getDateWithTime(hours: Int, minutes: Int, seconds: Int) -> Date {
+    public func getDateWithTime(hours: Int, minutes: Int, seconds: Int) -> Date {
         var comps = dateComponents
         comps.hour = hours
         comps.minute = minutes
@@ -150,14 +150,14 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         return Calendar.current.date(from: comps)!
     }
 
-    func getDayDateMonday() -> DayDate {
+    public func getDayDateMonday() -> DayDate {
         var cal = Calendar.current
         cal.firstWeekday = 2
         let comps = cal.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self.dateObj)
         return DayDate(date: cal.date(from: comps)!)
     }
 
-    func getDayDateWith(daysAdded days: Int) -> DayDate {
+    public func getDayDateWith(daysAdded days: Int) -> DayDate {
         return DayDate(date: self.dateObj.advancedBy(days: days))
     }
 
