@@ -8,6 +8,10 @@
 import Foundation
 
 class EventLayer: CALayer {
+    override init(layer: Any) {
+        super.init(layer: layer)
+    }
+
     init(withFrame frame: CGRect, andEvent event: EventData) {
         super.init()
         self.bounds = frame
