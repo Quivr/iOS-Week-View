@@ -466,9 +466,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             self.currentPeriod = Period(ofDate: activeDay)
             let startDate = currentPeriod.startDate
             let endDate = currentPeriod.endDate
-            for (date, calc) in frameCalculators where date < startDate || date > endDate {
-                calc.cancelCalculation()
-            }
             self.weekView?.requestEvents(between: startDate, and: endDate)
         }
     }
