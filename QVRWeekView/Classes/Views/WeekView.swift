@@ -48,13 +48,13 @@ open class WeekView: UIView {
     // A DayDate range containing the current days visible on screen
     public var visibleDayDateRange: ClosedRange<DayDate> {
         let firstActiveDay = self.dayScrollView.activeDay
-        return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
+        return firstActiveDay...(firstActiveDay + Int(self.dayScrollView.visibleDays - 1))
     }
 
     //A date range containing the current days visible on screen
     public var visibleDateRange: ClosedRange<Date> {
         let firstActiveDay = self.dayScrollView.activeDay
-        let lastActiveDay = (firstActiveDay + Int(LayoutVariables.visibleDays - 1))
+        let lastActiveDay = (firstActiveDay + Int(self.dayScrollView.visibleDays - 1))
         return firstActiveDay.dateObj.getStartOfDay()...lastActiveDay.dateObj.getEndOfDay()
     }
 
@@ -746,7 +746,7 @@ open class WeekView: UIView {
      Method trashes any extra day labels in the discarded day label array.
      */
     private func trashExtraDiscardedDayLabels() {
-        let maxAllowed = Int(LayoutVariables.visibleDays)
+        let maxAllowed = Int(self.dayScrollView.visibleDays)
 
         if discardedDayLabels.count > maxAllowed {
             let overflow = discardedDayLabels.count - maxAllowed
@@ -791,7 +791,7 @@ open class WeekView: UIView {
     // Function generates a frame for a day label with given index path.
     private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: self.defaultTopBarHeight)
+        return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth), y: 0, width: self.dayScrollView.dayViewCellWidth, height: self.defaultTopBarHeight)
     }
 
     /**
@@ -802,8 +802,8 @@ open class WeekView: UIView {
     private func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
         if self.allDayEventsSpreadOnX {
             let row = CGFloat(indexPath.row)
-            let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
-            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
+            let width = self.dayScrollView.dayViewCellWidth/CGFloat(max)
+            return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth)+CGFloat(count)*width,
                           y: self.defaultTopBarHeight+self.allDayEventVerticalSpacing,
                           width: width,
                           height: self.allDayEventHeight)
@@ -811,9 +811,9 @@ open class WeekView: UIView {
         } else {
             let row = CGFloat(indexPath.row)
             let height = self.allDayEventHeight/CGFloat(max)
-            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth),
+            return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth),
                           y: self.defaultTopBarHeight+CGFloat(count)*height,
-                          width: LayoutVariables.dayViewCellWidth,
+                          width: self.dayScrollView.dayViewCellWidth,
                           height: height)
         }
     }

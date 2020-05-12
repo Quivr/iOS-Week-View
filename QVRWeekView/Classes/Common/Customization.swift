@@ -38,6 +38,30 @@ public extension WeekView {
     }
 
     /**
+     Amount of spacing in between day view cells when in portrait mode.
+     */
+    @objc var portraitDayViewSideSpacing: CGFloat {
+        get {
+            return self.dayScrollView.portraitDayViewHorizontalSpacing
+        }
+        set(width) {
+            self.dayScrollView.portraitDayViewHorizontalSpacing = width
+        }
+    }
+
+    /**
+     Amount of spacing in between day view cells when in landscape mode.
+     */
+    @objc var landscapeDayViewSideSpacing: CGFloat {
+        get {
+            return self.dayScrollView.landscapeDayViewHorizontalSpacing
+        }
+        set(width) {
+            self.dayScrollView.landscapeDayViewHorizontalSpacing = width
+        }
+    }
+
+    /**
      Font used for all event labels contained in the day view cells.
      */
     @objc var eventLabelFont: UIFont {
@@ -344,34 +368,6 @@ public extension WeekView {
         }
         set(height) {
             self.dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
-        }
-    }
-
-    /**
-     Amount of spacing in between day view cells when in portrait mode.
-     */
-    @objc var portraitDayViewSideSpacing: CGFloat {
-        get {
-            return LayoutVariables.portraitDayViewHorizontalSpacing
-        }
-        set(width) {
-            if self.dayScrollView.setPortraitDayViewHorizontalSpacing(to: width) {
-                updateVisibleLabelsAndMainConstraints()
-            }
-        }
-    }
-
-    /**
-     Amount of spacing in between day view cells when in landscape mode.
-     */
-    @objc var landscapeDayViewSideSpacing: CGFloat {
-        get {
-            return LayoutVariables.landscapeDayViewHorizontalSpacing
-        }
-        set(width) {
-            if self.dayScrollView.setLandscapeDayViewHorizontalSpacing(to: width) {
-                updateVisibleLabelsAndMainConstraints()
-            }
         }
     }
 
