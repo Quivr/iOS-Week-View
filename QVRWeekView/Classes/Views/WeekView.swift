@@ -139,6 +139,20 @@ open class WeekView: UIView {
     */
     public var dayLabelDefaultFont: UIFont = UIFont.boldSystemFont(ofSize: 14) {
         didSet {
+            self.updateDayLabelCurrentFont()
+        }
+    }
+
+    // Minimum font for all day labels
+    private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
+        didSet {
+            self.updateDayLabelCurrentFont()
+        }
+    }
+
+    // Current font for all day labels
+    private var dayLabelCurrentFont = LayoutDefaults.dayLabelFont {
+        didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -171,11 +185,20 @@ open class WeekView: UIView {
     }
 
     /**
+     Current text mode of the day labels
+     */
+    private var dayLabelTextMode: TextMode = .large
+
+    /**
      Short date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelShortDateFormat: String = LayoutDefaults.dayLabelShortDateFormat {
-        didSet {
+    public var dayLabelShortDateFormat: String {
+        get {
+            return self.dayLabelDateFormats[.small]!
+        }
+        set(format) {
+            self.dayLabelDateFormats[.small] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -184,8 +207,12 @@ open class WeekView: UIView {
      Normal date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelNormalDateFormat: String = LayoutDefaults.dayLabelNormalDateFormat {
-        didSet {
+    public var dayLabelNormalDateFormat: String {
+        get {
+            return self.dayLabelDateFormats[.normal]!
+        }
+        set(format) {
+            self.dayLabelDateFormats[.normal] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
@@ -194,17 +221,23 @@ open class WeekView: UIView {
      Long date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelLongDateFormat: String = LayoutDefaults.dayLabelLongDateFormat {
-        didSet {
+    public var dayLabelLongDateFormat: String {
+        get {
+            return self.dayLabelDateFormats[.large]!
+        }
+        set(format) {
+            self.dayLabelDateFormats[.large] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
+
+    private var dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
 
     /**
      Locale for the day labels.
      If none is given device locale will be used.
      */
-    public var dayLabelDateLocaleIdentifier: String = NSLocale.current.languageCode! {
+    public var dayLabelDateLocale: Locale = NSLocale.current {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
@@ -685,10 +718,10 @@ open class WeekView: UIView {
      Method updates a day labels font, text color and also performs a text assignment resize check.
      */
     private func updateDayLabel(_ dayLabel: UILabel, withDate dayDate: DayDate) {
-        dayLabel.font = TextVariables.dayLabelCurrentFont
-        dayLabel.textColor = dayDate == DayDate.today ? TextVariables.dayLabelTodayTextColor : TextVariables.dayLabelTextColor
-        if let newFontSize = Util.assignTextAndResizeFont(forLabel: dayLabel, andDate: dayDate) {
-            TextVariables.dayLabelCurrentFontSize = newFontSize
+        dayLabel.font = self.dayLabelCurrentFont
+        dayLabel.textColor = dayDate == DayDate.today ? self.dayLabelTodayTextColor : self.dayLabelTextColor
+        if let newFontSize = self.assignTextAndResizeFont(forLabel: dayLabel, andDate: dayDate) {
+            self.dayLabelCurrentFontSize = newFontSize
             updateVisibleDayLabels()
         }
     }
@@ -711,8 +744,8 @@ open class WeekView: UIView {
      Method resets all font values such as font resizing and day label text mode.
      */
     private func resetFontValues() {
-        TextVariables.dayLabelCurrentFontSize = TextVariables.dayLabelDefaultFont.pointSize
-        Util.resetDayLabelTextMode()
+        self.dayLabelCurrentFontSize = self.dayLabelDefaultFont.pointSize
+        self.dayLabelTextMode = .large
     }
 
     private func updateHourSideBarLabels() {
@@ -721,6 +754,13 @@ open class WeekView: UIView {
                 hourSideBarView.updateLabels()
             }
         }
+    }
+
+    private func getString(forDate dayDate: DayDate, andMode mode: TextMode) -> String {
+        let df = DateFormatter()
+        df.dateFormat = self.dayLabelDateFormats[mode]
+        df.locale = self.dayLabelDateLocale
+        return df.string(from: dayDate.dateObj)
     }
 
     // Function returns a dayLabel UILabel with the correct size and position according to given indexPath.
@@ -773,7 +813,64 @@ open class WeekView: UIView {
             }
         }
     }
+
+    // Method updates the current font of day labels.
+    private func updateDayLabelCurrentFont () {
+        self.dayLabelCurrentFont = dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize)
+    }
+
+    /**
+     Function will analyse the valid strings given from the dayDate object and determines which string will fit into the given
+     label. Function will also check for font resizing if neccessary and will return the new font size if it is different to the
+     current font size.
+     */
+    private func assignTextAndResizeFont(forLabel label: UILabel, andDate dayDate: DayDate) -> CGFloat? {
+        let currentFont = label.font!
+        let labelWidth = label.frame.width
+        var possibleText = self.getString(forDate: dayDate, andMode: self.dayLabelTextMode) as NSString
+        var textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
+
+        label.text = possibleText as String
+        if textSize.width > labelWidth && self.dayLabelTextMode != .small {
+            possibleText = getString(forDate: dayDate, andMode: .normal) as NSString
+            textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
+            if textSize.width <= labelWidth {
+                label.text = possibleText as String
+                self.dayLabelTextMode = .normal
+            }
+            else {
+                let scale = (labelWidth / textSize.width)
+                var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
+
+                while possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth && newFont.pointSize > self.dayLabelMinimumFontSize {
+                    newFont = newFont.withSize(newFont.pointSize-0.25)
+                }
+
+                if newFont.pointSize < self.dayLabelMinimumFontSize {
+                    newFont = newFont.withSize(self.dayLabelMinimumFontSize)
+                }
+
+                label.font = newFont
+                if possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth {
+                    label.text = getString(forDate: dayDate, andMode: .small)
+                    self.dayLabelTextMode = .small
+                }
+                else {
+                    label.text = possibleText as String
+                    self.dayLabelTextMode = .normal
+                }
+
+                if newFont.pointSize < self.dayLabelCurrentFont.pointSize {
+                    label.font = newFont
+                    return newFont.pointSize
+                }
+            }
+        }
+        return nil
+    }
 }
+
+// MARK: - WEEKVIEW EXTENSION -
 
 /**
  This extension makes it so that topBarHeight can not be directly set, and will
@@ -824,17 +921,15 @@ extension WeekView {
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
 public struct TextVariables {
-    // Minimum font for all day labels
-    fileprivate static var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
-        didSet {
-            updateDayLabelCurrentFont()
-        }
-    }
-    // Current font for all day labels
-    private(set) static var dayLabelCurrentFont = LayoutDefaults.dayLabelFont
+}
 
-    // Method updates the current font of day labels.
-    static func updateDayLabelCurrentFont () {
-        dayLabelCurrentFont = dayLabelDefaultFont.withSize(dayLabelCurrentFontSize)
-    }
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+    guard let input = input else { return nil }
+    return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value) })
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+    return input.rawValue
 }

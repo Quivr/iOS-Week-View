@@ -484,22 +484,6 @@ public extension WeekView {
 
 // Customization extension for FontVariables.
 extension TextVariables {
-    // Default font for all day labels
-    fileprivate(set) static var dayLabelDefaultFont = LayoutDefaults.dayLabelFont {
-        didSet {
-            updateDayLabelCurrentFont()
-        }
-    }
-    // Text color for all day labels
-    fileprivate(set) static var dayLabelTextColor = LayoutDefaults.dayLabelTextColor
-    // Text color for today day labels
-    fileprivate(set) static var dayLabelTodayTextColor = LayoutDefaults.dayLabelTodayTextColor
-    // Minimum font for all day labels
-    fileprivate(set) static var dayLabelMinimumFontSize = LayoutDefaults.dayLabelMinimumFontSize
-    // Date formats for day labels
-    fileprivate(set) static var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
-    // Locale of day labels
-    fileprivate(set) static var dayLabelDateLocale: Locale?
 
     // Font for all hour labels
     fileprivate(set) static var hourLabelFont = LayoutDefaults.hourLabelFont {

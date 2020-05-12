@@ -67,7 +67,7 @@ class StartViewController: UIViewController {
             weekView.dayLabelLongDateFormat = "y M d"
             weekView.dayLabelNormalDateFormat = "y M"
             weekView.dayLabelMinimumFontSize = 2
-            weekView.dayLabelDateLocaleIdentifier = "nl"
+            weekView.dayLabelDateLocale = Locale(identifier: "nl")
 
             weekView.topBarColor = UIColor.green
             weekView.defaultTopBarHeight = 70

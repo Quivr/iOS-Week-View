@@ -24,7 +24,7 @@ struct LayoutDefaults {
     // Default minimum event label scaling
     static let dayLabelMinimumFontSize = CGFloat(8)
 
-    static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"] // TODO: REMOVE
+    static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
 
     // Date formats for day labels
     static let dayLabelShortDateFormat: String = "d MMM"

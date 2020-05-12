@@ -27,61 +27,6 @@ struct Util {
         return (eventStore[dayDate] == nil) || (!eventStore[dayDate]!.contains(event))
     }
 
-    /**
-     Function will analyse the valid strings given from the dayDate object and determines which string will fit into the given
-     label. Function will also check for font resizing if neccessary and will return the new font size if it is different to the
-     current font size.
-     */
-    static func assignTextAndResizeFont(forLabel label: UILabel, andDate dayDate: DayDate) -> CGFloat? {
-        let currentFont = label.font!
-        let labelWidth = label.frame.width
-        var possibleText = dayDate.getString(forMode: TextVariables.dayLabelTextMode) as NSString
-        var textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
-
-        label.text = possibleText as String
-        if textSize.width > labelWidth && TextVariables.dayLabelTextMode != .small {
-            possibleText = dayDate.defaultString as NSString
-            textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
-            if textSize.width <= labelWidth {
-                label.text = possibleText as String
-                TextVariables.dayLabelTextMode = .normal
-            }
-            else {
-                let scale = (labelWidth / textSize.width)
-                var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
-
-                while possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth && newFont.pointSize > TextVariables.dayLabelMinimumFontSize {
-                    newFont = newFont.withSize(newFont.pointSize-0.25)
-                }
-
-                if newFont.pointSize < TextVariables.dayLabelMinimumFontSize {
-                    newFont = newFont.withSize(TextVariables.dayLabelMinimumFontSize)
-                }
-
-                label.font = newFont
-                if possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth {
-                    label.text = dayDate.smallString
-                    TextVariables.dayLabelTextMode = .small
-                }
-                else {
-                    label.text = possibleText as String
-                    TextVariables.dayLabelTextMode = .normal
-                }
-
-                if newFont.pointSize < TextVariables.dayLabelCurrentFont.pointSize {
-                    label.font = newFont
-                    return newFont.pointSize
-                }
-            }
-        }
-        return nil
-    }
-
-    // Method resets the day label text mode back to zero.
-    static func resetDayLabelTextMode() {
-        TextVariables.dayLabelTextMode = .large
-    }
-
     static func getSize(ofString string: String, withFont font: UIFont, inFrame frame: CGRect) -> CGRect {
         let text = NSAttributedString(string: string, attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): font]))
         return text.boundingRect(with: CGSize(width: frame.width, height: CGFloat.infinity), options: .usesLineFragmentOrigin, context: nil)
@@ -100,14 +45,6 @@ struct Util {
     static func sortById(event1: EventData, event2: EventData) -> Bool {
         return event1.id < event2.id
     }
-}
-
-// Util extension for FontVariables.
-extension TextVariables {
-
-    // Day label text mode determines which format the day labels will be displayed in. 0 is the longest, 1 is smaller, 2 is smallest format.
-    fileprivate(set) static var dayLabelTextMode: TextMode = .large
-
 }
 
 // Helper function inserted by Swift 4.2 migrator.
