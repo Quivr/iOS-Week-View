@@ -536,7 +536,7 @@ open class WeekView: UIView {
         updateTopAndSideBarConstraints()
 
         if state == .cancelled || state == .ended || state == .failed {
-            self.delegate?.didEndZooming?(in: self, scale: LayoutVariables.zoomScale)
+            self.delegate?.didEndZooming?(in: self, scale: self.dayScrollView.zoomScaleCurrent)
         }
     }
 

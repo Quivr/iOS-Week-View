@@ -401,45 +401,10 @@ public extension WeekView {
      */
     @objc var minimumZoomScale: CGFloat {
         get {
-            return LayoutVariables.minimumZoomScale
+            return self.dayScrollView.zoomScaleMin
         }
         set(scale) {
-            self.dayScrollView.setMinimumZoomScale(to: scale)
-        }
-    }
-
-    /**
-     The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview
-     will be zoomed to half the original given hourHeight.
-     */
-    @objc var currentZoomScale: CGFloat {
-        get {
-            return LayoutVariables.zoomScale
-        }
-        set(scale) {
-            guard currentZoomScale != scale else {
-                return
-            }
-            switch self.zoomOffsetPreservation {
-            case .center:
-                let offset = self.dayScrollView.centerOffset
-                self.dayScrollView.setCurrentZoomScale(to: scale)
-                self.dayScrollView.centerOffset = offset
-            case .top:
-                let offset = self.dayScrollView.topOffset
-                self.dayScrollView.setCurrentZoomScale(to: scale)
-                self.dayScrollView.topOffset = offset
-            case .bottom:
-                let offset = self.dayScrollView.bottomOffset
-                self.dayScrollView.setCurrentZoomScale(to: scale)
-                self.dayScrollView.bottomOffset = offset
-            case .reset:
-                self.dayScrollView.setCurrentZoomScale(to: scale)
-                self.dayScrollView.showNow()
-            default:
-                self.dayScrollView.setCurrentZoomScale(to: scale)
-            }
-
+            self.dayScrollView.zoomScaleMin = scale
         }
     }
 
@@ -449,12 +414,43 @@ public extension WeekView {
      */
     @objc var maximumZoomScale: CGFloat {
         get {
-            return LayoutVariables.minimumZoomScale
+            return self.dayScrollView.zoomScaleMax
         }
         set(scale) {
-            self.dayScrollView.setMaximumZoomScale(to: scale)
+            self.dayScrollView.zoomScaleMax = scale
         }
     }
+
+    /**
+     The current zoom scale to which the weekview will be zoomed. Ex. 0.5 means that the weekview
+     will be zoomed to half the original given hourHeight.
+     */
+    @objc var currentZoomScale: CGFloat {
+        get {
+            return self.dayScrollView.zoomScaleCurrent
+        }
+        set(scale) {
+            guard currentZoomScale != scale else {
+                return
+            }
+            self.dayScrollView.zoomScaleCurrent = scale
+            switch self.zoomOffsetPreservation {
+            case .center:
+                self.dayScrollView.centerOffset = self.dayScrollView.centerOffset
+            case .top:
+                self.dayScrollView.topOffset = self.dayScrollView.topOffset
+            case .bottom:
+                self.dayScrollView.bottomOffset = self.dayScrollView.bottomOffset
+            case .reset:
+                self.dayScrollView.showNow()
+            case .none:
+                ()
+            }
+
+        }
+    }
+
+
 
     /**
      Sensitivity for horizontal scrolling. A higher number will multiply input velocity

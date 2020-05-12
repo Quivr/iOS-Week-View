@@ -132,6 +132,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         return dayViewVerticalSpacing * 2 + dayViewCellHeight
     }
 
+    // Zoom scale of current layout
+    var zoomScaleCurrent: CGFloat = CGFloat(1)
+    // Maximum possible zoom scale
+    var zoomScaleMax: CGFloat = LayoutDefaults.maximumZoom
+    // Minimum possible zoom scale
+    var zoomScaleMin: CGFloat = LayoutDefaults.minimumZoom
+
     // MARK: - PRIVATE VARIABLES -
 
     // Min x-axis value that repeating starts at
@@ -419,7 +426,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizer.State) {
 
         // Store previous zoom scale
-        let previousZoom = LayoutVariables.zoomScale
+        let previousZoom = self.zoomScaleCurrent
 
         var zoomChange = CGFloat(0)
         // If zoom just began, set last touch scale
@@ -434,13 +441,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 
         // Set current zoom
         var currentZoom = previousZoom + zoomChange
-        if currentZoom < LayoutVariables.minimumZoomScale {
-            currentZoom = LayoutVariables.minimumZoomScale
+        if currentZoom < self.zoomScaleMin {
+            currentZoom = self.zoomScaleMin
         }
-        else if currentZoom > LayoutVariables.maximumZoomScale {
-            currentZoom = LayoutVariables.maximumZoomScale
+        else if currentZoom > self.zoomScaleMax {
+            currentZoom = self.zoomScaleMax
         }
-        self.setCurrentZoomScale(to: currentZoom)
+        self.zoomScaleCurrent = currentZoom
 
         // Calculate the new y content offset based on zoom change and touch center
         let m = previousZoom/currentZoom
@@ -903,24 +910,24 @@ extension DayScrollView {
 //        return false
 //    }
 
-    /**
-     */
-    func setMinimumZoomScale(to scale: CGFloat) {
-        LayoutVariables.minimumZoomScale = scale
-    }
-
-    /**
-     */
-    func setCurrentZoomScale(to scale: CGFloat) {
+//    /**
+//     */
+//    func setMinimumZoomScale(to scale: CGFloat) {
+//        LayoutVariables.minimumZoomScale = scale
+//    }
+//
+//    /**
+//     */
+//    func setCurrentZoomScale(to scale: CGFloat) {
 //        LayoutVariables.zoomScale = scale
-        updateLayout()
-    }
-
-    /**
-     */
-    func setMaximumZoomScale(to scale: CGFloat) {
-        LayoutVariables.maximumZoomScale = scale
-    }
+//        updateLayout()
+//    }
+//
+//    /**
+//     */
+//    func setMaximumZoomScale(to scale: CGFloat) {
+//        LayoutVariables.maximumZoomScale = scale
+//    }
 
     /**
      Sets the sensitivity of horizontal scrolling.
@@ -990,10 +997,10 @@ struct LayoutVariables {
 //        }
 //    }
 
-    // Minimum zoom scale value
-    fileprivate(set) static var minimumZoomScale = LayoutDefaults.minimumZoom
-    // Maximum zoom scale valueapp store
-    fileprivate(set) static var maximumZoomScale = LayoutDefaults.maximumZoom
+//    // Minimum zoom scale value
+//    fileprivate(set) static var minimumZoomScale = LayoutDefaults.minimumZoom
+//    // Maximum zoom scale valueapp store
+//    fileprivate(set) static var maximumZoomScale = LayoutDefaults.maximumZoom
 
 //    // Max y-axis values that can be scrolled to
 //    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight {
