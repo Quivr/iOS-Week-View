@@ -14,9 +14,15 @@ public typealias EventStlyeCallback = (CALayer, EventData?) -> Void
 open class WeekView: UIView {
     // MARK: - OUTLETS -
 
+    // Top bar view containing day labels
     @IBOutlet var topBarView: UIView!
+    // Small buffer view in top left corner
     @IBOutlet var topLeftBufferView: UIView!
+    // The view containing the hourSideBarView
     @IBOutlet var sideBarView: UIView!
+    // Direct refence to hourSideBarView containing hour labels
+    @IBOutlet var hourSideBarView: HourSideBarView!
+    // The main scroll view in the center displaying day cells
     @IBOutlet var dayScrollView: DayScrollView!
 
     // MARK: - CONSTRAINTS -
@@ -243,36 +249,48 @@ open class WeekView: UIView {
     /**
      Font for all hour labels contained in the side bar.
      */
-    public var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont {
-        didSet {
-            updateHourSideBarView()
+    public var hourLabelFont: UIFont {
+        get {
+            return self.hourSideBarView.hourLabelFont
+        }
+        set(font) {
+            self.hourSideBarView.hourLabelFont = font
         }
     }
 
     /**
      Text color for all hour labels contained in the side bar.
      */
-    public var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor {
-        didSet {
-            updateHourSideBarView()
+    public var hourLabelTextColor: UIColor {
+        get {
+            return self.hourSideBarView.hourLabelTextColor
+        }
+        set(color) {
+            self.hourSideBarView.hourLabelTextColor = color
         }
     }
 
     /**
      Minimum percentage that hour label text will be resized to if label is too small.
      */
-    public var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize {
-        didSet {
-            updateHourSideBarView()
+    public var hourLabelMinimumFontSize: CGFloat {
+        get {
+            return self.hourSideBarView.hourLabelMinimumFontSize
+        }
+        set(size) {
+            self.hourSideBarView.hourLabelMinimumFontSize = size
         }
     }
 
     /**
      Format of all hour labels.
      */
-    public var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat {
-        didSet {
-            updateHourSideBarView()
+    public var hourLabelDateFormat: String {
+        get {
+            return self.hourSideBarView.hourLabelDateFormat
+        }
+        set(format) {
+            self.hourSideBarView.hourLabelDateFormat = format
         }
     }
 
@@ -803,18 +821,6 @@ open class WeekView: UIView {
                           y: self.defaultTopBarHeight+CGFloat(count)*height,
                           width: LayoutVariables.dayViewCellWidth,
                           height: height)
-        }
-    }
-
-    /**
-     Helper function for hour label customization.
-     */
-    private func updateHourSideBarView() {
-        for view in self.sideBarView.subviews {
-            if let hourSideBarView = view as? HourSideBarView {
-                hourSideBarView.layoutIfNeeded()
-                hourSideBarView.updateLabels()
-            }
         }
     }
 
