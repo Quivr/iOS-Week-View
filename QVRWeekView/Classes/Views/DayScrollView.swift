@@ -48,15 +48,70 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    /**
-     Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
-     */
-    public var autoConvertLongEventsToAllDay: Bool = true
+    // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
+    var autoConvertLongEventsToAllDay: Bool = true
+
+    // Number of visible days when in portait mode.
+    var visibleDaysInPortraitMode: CGFloat = LayoutDefaults.visibleDaysPortrait {
+        didSet {
+            updateLayout()
+        }
+    }
+
+    // Number of visible days when in landscape mode.
+    var visibleDaysInLandscapeMode: CGFloat = LayoutDefaults.visibleDaysLandscape {
+        didSet {
+            updateLayout()
+        }
+    }
+
+    // Width of spacing between day columns in portrait mode
+    var portraitDayViewHorizontalSpacing = LayoutDefaults.portraitDayViewHorizontalSpacing {
+        didSet {
+            updateLayout()
+        }
+    }
+    // Width of spacing between day columns in landscape mode
+    var landscapeDayViewHorizontalSpacing = LayoutDefaults.landscapeDayViewHorizontalSpacing {
+        didSet {
+            updateLayout()
+        }
+    }
 
     // MARK: - PRIVATE VARIABLES -
 
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
+
+    // Number of cells in collection view
+    private var dayCollectionViewCellCount: Int {
+        return DateSupport.getDaysInYear(activeYear) + Int(max(self.visibleDaysInLandscapeMode, self.visibleDaysInPortraitMode))
+    }
+
+    // Width of spacing between day columns in landscape mode
+    private var dayViewHorizontalSpacing: CGFloat {
+        return UIDevice.current.orientation.isPortrait ? self.portraitDayViewHorizontalSpacing : self.landscapeDayViewHorizontalSpacing
+    }
+
+    private var visibleDays: CGFloat {
+        return UIDevice.current.orientation.isPortrait ? self.visibleDaysInPortraitMode : self.visibleDaysInLandscapeMode
+    }
+
+    // Width of a single day view cell
+    private var dayViewCellWidth: CGFloat {
+        return (self.frame.width - dayViewHorizontalSpacing*(visibleDays-1)) / visibleDays
+    }
+
+    // Total width of a day view cell including spacing
+    private var totalDayViewCellWidth: CGFloat {
+        return self.dayViewCellWidth + dayViewHorizontalSpacing
+    }
+
+    // Width of all scrollable content
+    private var totalContentWidth: CGFloat {
+        CGFloat(self.dayCollectionViewCellCount) * self.totalDayViewCellWidth + self.dayViewHorizontalSpacing
+    }
+
     // EventData objects that are not all-day events
     private(set) var eventsData: [DayDate: [String: EventData]] = [:]
     // Event frames for all non all-day events
@@ -68,11 +123,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // All frame calculators
     private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
-    private var activeYear: Int = DayDate.today.year {
-        didSet {
-            LayoutVariables.daysInActiveYear = DateSupport.getDaysInYear(activeYear)
-        }
-    }
+    private var activeYear: Int = DayDate.today.year
     // Current active day
     private(set) var activeDay: DayDate = DayDate.today {
         didSet {
@@ -123,7 +174,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private func initDayScrollView() {
 
         // Set visible days variable for device orientation
-        LayoutVariables.orientation = UIApplication.shared.statusBarOrientation
         LayoutVariables.activeFrameWidth = self.frame.width
         LayoutVariables.activeFrameHeight = self.frame.height
 
@@ -134,7 +184,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
                                                             height: LayoutVariables.totalContentHeight),
                                               collectionViewLayout: DayCollectionViewFlowLayout())
         dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: DayDate.today.dayInYear), y: 0)
-        dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
+        dayCollectionView.contentSize = CGSize(width: self.totalContentWidth, height: LayoutVariables.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
         self.addSubview(dayCollectionView)
@@ -218,7 +268,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return LayoutVariables.collectionViewCellCount
+        return self.dayCollectionViewCellCount
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -512,14 +562,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: LayoutVariables.activeFrameWidth, height: LayoutVariables.totalContentHeight)
 
-        if oldWidth != LayoutVariables.totalContentWidth {
+        if oldWidth != self.totalContentWidth {
             dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay.dayInYear), y: 0)
         } else {
             dayCollectionView.contentOffset = CGPoint(x: oldXOffset, y: 0)
         }
 
         // Update content size
-        dayCollectionView.contentSize = CGSize(width: LayoutVariables.totalContentWidth, height: LayoutVariables.totalContentHeight)
+        dayCollectionView.contentSize = CGSize(width: self.totalContentWidth, height: LayoutVariables.totalContentHeight)
 
         self.weekView?.updateVisibleLabelsAndMainConstraints()
     }
@@ -589,32 +639,6 @@ fileprivate enum PeriodChange {
 // MARK: - CUSTOMIZATION EXTENSION -
 
 extension DayScrollView {
-
-    /**
-     Sets the number of days visible in the week view when in portrait mode.
-     */
-    func setVisiblePortraitDays(to days: CGFloat) -> Bool {
-
-        // Set portrait visisble days variable
-        LayoutVariables.portraitVisibleDays = days
-        if LayoutVariables.orientation.isPortrait {
-            updateLayout()
-            return true
-        }
-        return false
-    }
-
-    /**
-     Sets the number of days visible in the week view when in landscape mode.
-     */
-    func setVisibleLandscapeDays(to days: CGFloat) -> Bool {
-        LayoutVariables.landscapeVisibleDays = days
-        if LayoutVariables.orientation.isLandscape {
-            updateLayout()
-            return true
-        }
-        return false
-    }
 
     /**
      Sets the default font for event labels.
@@ -969,19 +993,6 @@ struct LayoutVariables {
         }
     }
 
-    // Visible day cells in protrait mode
-    fileprivate(set) static var portraitVisibleDays = LayoutDefaults.visibleDaysPortrait {
-        didSet {
-            updateMaximumVisibleDays()
-        }
-    }
-    // Visible day cells in landscape mode
-    fileprivate(set) static var landscapeVisibleDays = LayoutDefaults.visibleDaysLandscape {
-        didSet {
-            updateMaximumVisibleDays()
-        }
-    }
-
     // Number of days in current year being displayed
     fileprivate(set) static var daysInActiveYear = DateSupport.getDaysInYear(DayDate.today.year) {
         didSet {
@@ -992,7 +1003,7 @@ struct LayoutVariables {
 
     // Collection view cell count buffer, number of cells to de added to the "right" side of the colelction view.
     // This is equal to maximum number of days visisble plus one. This allows for smooth scrolling when crossing the year mark.
-    private(set) static var collectionViewCellCountBuffer = Int(max(portraitVisibleDays, landscapeVisibleDays))+1 {
+    private(set) static var collectionViewCellCountBuffer = 1 {
         didSet {
             updateCollectionViewCellCount()
         }
@@ -1107,12 +1118,10 @@ struct LayoutVariables {
 
     private static func updateOrientationValues() {
         if orientation.isPortrait {
-            visibleDays = portraitVisibleDays
             dayViewHorizontalSpacing = portraitDayViewHorizontalSpacing
             dayViewVerticalSpacing = portraitDayViewVerticalSpacing
         }
         else if orientation.isLandscape {
-            visibleDays = landscapeVisibleDays
             dayViewHorizontalSpacing = landscapeDayViewHorizontalSpacing
             dayViewVerticalSpacing = landscapeDayViewVerticalSpacing
         }
@@ -1139,7 +1148,7 @@ struct LayoutVariables {
     }
 
     private static func updateMaximumVisibleDays() {
-        collectionViewCellCountBuffer = Int(max(portraitVisibleDays, landscapeVisibleDays))
+        collectionViewCellCountBuffer = 1
     }
 
     private static func updateCollectionViewCellCount() {

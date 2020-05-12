@@ -16,14 +16,12 @@ public extension WeekView {
     /**
      Number of visible days when in portait mode.
      */
-    @objc var visibleDaysInPortraitMode: Int {
+    var visibleDaysInPortraitMode: Int {
         get {
-            return Int(LayoutVariables.portraitVisibleDays)
+            return Int(self.dayScrollView.visibleDaysInPortraitMode)
         }
         set(days) {
-            if self.dayScrollView.setVisiblePortraitDays(to: CGFloat(days)) {
-                updateVisibleLabelsAndMainConstraints()
-            }
+            self.dayScrollView.visibleDaysInPortraitMode = CGFloat(days)
         }
     }
 
@@ -32,12 +30,10 @@ public extension WeekView {
      */
     @objc var visibleDaysInLandscapeMode: Int {
         get {
-            return Int(LayoutVariables.landscapeVisibleDays)
+            return Int(self.dayScrollView.visibleDaysInLandscapeMode)
         }
         set(days) {
-            if self.dayScrollView.setVisibleLandscapeDays(to: CGFloat(days)) {
-                updateVisibleLabelsAndMainConstraints()
-            }
+            self.dayScrollView.visibleDaysInLandscapeMode = CGFloat(days)
         }
     }
 
