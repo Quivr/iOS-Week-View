@@ -134,7 +134,7 @@ open class WeekView: UIView {
     /**
      Default height of the top bar
      */
-    public var defaultTopBarHeight: CGFloat = CGFloat(35) {
+    public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
         didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
@@ -143,7 +143,7 @@ open class WeekView: UIView {
     /**
      Font for all day labels contained in the top bar.
     */
-    public var dayLabelDefaultFont: UIFont = UIFont.boldSystemFont(ofSize: 14)
+    public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont
 
     /**
      Minimum font for all day labels
@@ -297,38 +297,17 @@ open class WeekView: UIView {
     /**
      Height of all day labels.
      */
-    public var allDayEventHeight: CGFloat {
-        get {
-            return LayoutVariables.allDayEventHeight
-        }
-        set(height) {
-            self.dayScrollView.setAllDayEventHeight(to: height)
-        }
-    }
+    public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight
 
     /**
      Height of all day labels.
      */
-    public var allDayEventVerticalSpacing: CGFloat {
-        get {
-            return LayoutVariables.allDayEventVerticalSpacing
-        }
-        set(height) {
-            dayScrollView.setAllDayEventVerticalSpacing(to: height)
-        }
-    }
+    public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing
 
     /**
      Spread all day events on x axis, if not true than spread will be made on y axis.
      */
-    public var allDayEventsSpreadOnX: Bool {
-        get {
-            return LayoutVariables.allDayEventsSpreadOnX
-        }
-        set(onX) {
-            self.dayScrollView.setAllDayEventsSpreadOnX(to: onX)
-        }
-    }
+    public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX
 
     /**
     Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
@@ -585,7 +564,7 @@ open class WeekView: UIView {
      Adds the allDayEvents provided by the events parameter at indexPath with given dayDate. This also triggers a topBar resize animation.
      */
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
-        let extraHeight = LayoutVariables.allDayEventVerticalSpacing*2+LayoutVariables.allDayEventHeight
+        let extraHeight = self.allDayEventVerticalSpacing*2+self.allDayEventHeight
 
         if self.topBarHeight < extraHeight {
             self.extraTopBarHeight = extraHeight
@@ -806,17 +785,17 @@ open class WeekView: UIView {
      Depending on LayoutVariables.allDayEventsSpreadOnX, events will be spreaded on x or y axis.
      */
     private func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
-        if LayoutVariables.allDayEventsSpreadOnX {
+        if self.allDayEventsSpreadOnX {
             let row = CGFloat(indexPath.row)
             let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
             return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
-                          y: self.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
+                          y: self.defaultTopBarHeight+self.allDayEventVerticalSpacing,
                           width: width,
-                          height: LayoutVariables.allDayEventHeight)
+                          height: self.allDayEventHeight)
 
         } else {
             let row = CGFloat(indexPath.row)
-            let height = LayoutVariables.allDayEventHeight/CGFloat(max)
+            let height = self.allDayEventHeight/CGFloat(max)
             return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth),
                           y: self.defaultTopBarHeight+CGFloat(count)*height,
                           width: LayoutVariables.dayViewCellWidth,
