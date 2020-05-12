@@ -90,10 +90,10 @@ public extension WeekView {
      */
     @objc var dayViewCellHeight: CGFloat {
         get {
-            return self.dayScrollView.dayViewCellHeight
+            return self.dayScrollView.initialDayViewCellHeight
         }
         set(height) {
-            self.dayScrollView.dayViewCellHeight = height
+            self.dayScrollView.initialDayViewCellHeight = height
         }
     }
 

@@ -105,16 +105,21 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         return UIDevice.current.orientation.isPortrait ? self.portraitDayViewVerticalSpacing : self.landscapeDayViewVerticalSpacing
     }
 
+    // Height of a single day view cell
+    var initialDayViewCellHeight: CGFloat = LayoutDefaults.dayViewCellHeight {
+        didSet {
+            updateLayout()
+        }
+    }
+
     // Width of a single day view cell
     var dayViewCellWidth: CGFloat {
         return (self.frame.width - dayViewHorizontalSpacing*(visibleDays-1)) / visibleDays
     }
 
-    // Height of a single day view cell
-    var dayViewCellHeight: CGFloat = LayoutDefaults.dayViewCellHeight {
-        didSet {
-            updateLayout()
-        }
+    // Width of a single day view cell
+    var dayViewCellHeight: CGFloat {
+        return self.zoomScaleCurrent * self.initialDayViewCellHeight
     }
 
     // Total width of a day view cell including spacing
@@ -185,9 +190,9 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var currentPeriod: Period = Period(ofDate: DayDate.today)
     // Bool stores is view is scrolling to a specific day
     private var scrollingToDay: Bool = false
-    // Previous zoom scale of content
+    // Previous zoom scale of content relative to start of current gesture
     private var previousZoomTouch: CGPoint?
-    // Current zoom scale of content
+    // Zoom scale of content relative to start of current gesture
     private var lastTouchZoomScale = CGFloat(1)
     // Offset added to the offset when displaying now
     private static let showNowOffset = 0.005
@@ -879,57 +884,6 @@ extension DayScrollView {
     }
 
     /**
-     Sets the height of the day view cells for zoom scale 1.
-     */
-    func setInitialVisibleDayViewCellHeight(to height: CGFloat) {
-//        LayoutVariables.initialDayViewCellHeight = height
-        updateLayout()
-    }
-
-//    /**
-//     Sets the spacing in between day view cells for portrait mode.
-//     */
-//    func setPortraitDayViewVerticalSpacing(to width: CGFloat) -> Bool {
-//        LayoutVariables.portraitDayViewVerticalSpacing = width
-//        if LayoutVariables.orientation.isPortrait {
-//            updateLayout()
-//            return true
-//        }
-//        return false
-//    }
-//
-//    /**
-//     Sets the spacing in between day view cells for landscape mode.
-//     */
-//    func setLandscapeDayViewVerticalSpacing(to width: CGFloat) -> Bool {
-//        LayoutVariables.landscapeDayViewVerticalSpacing = width
-//        if LayoutVariables.orientation.isLandscape {
-//            updateLayout()
-//            return true
-//        }
-//        return false
-//    }
-
-//    /**
-//     */
-//    func setMinimumZoomScale(to scale: CGFloat) {
-//        LayoutVariables.minimumZoomScale = scale
-//    }
-//
-//    /**
-//     */
-//    func setCurrentZoomScale(to scale: CGFloat) {
-//        LayoutVariables.zoomScale = scale
-//        updateLayout()
-//    }
-//
-//    /**
-//     */
-//    func setMaximumZoomScale(to scale: CGFloat) {
-//        LayoutVariables.maximumZoomScale = scale
-//    }
-
-    /**
      Sets the sensitivity of horizontal scrolling.
      */
     func setVelocityOffsetMultiplier(to multiplier: CGFloat) {
@@ -944,72 +898,6 @@ struct LayoutVariables {
 
     // MARK: - SCROLLVIEW LAYOUT & SPACING VARIABLES -
 
-//    fileprivate(set) static var activeFrameHeight = CGFloat(500) {
-//        didSet {
-//            updateMaxOffsetY()
-//        }
-//    }
-
-//    // Zoom scale of current layout
-//    fileprivate(set) static var zoomScale = CGFloat(1) {
-//        didSet {
-//            updateDayViewCellHeight()
-//        }
-//    }
-
-//    // Width of spacing between day columns in landscape mode
-//    private(set) static var dayViewVerticalSpacing = LayoutDefaults.portraitDayViewVerticalSpacing {
-//        didSet {
-//            updateTotalContentHeight()
-//        }
-//    }
-
-//    // Height of the initial day columns
-//    fileprivate(set) static var initialDayViewCellHeight = LayoutDefaults.dayViewCellHeight {
-//        didSet {
-//            updateDayViewCellHeight()
-//        }
-//    }
-//    // Height of the current day columns
-//    private(set) static var dayViewCellHeight = LayoutDefaults.dayViewCellHeight {
-//        didSet {
-//            updateTotalContentHeight()
-//        }
-//    }
-
-//    // Width of spacing between day columns in portrait mode
-//    fileprivate(set) static var portraitDayViewVerticalSpacing = LayoutDefaults.portraitDayViewVerticalSpacing {
-//        didSet {
-//            updateOrientationValues()
-//        }
-//    }
-//    // Width of spacing between day columns in landscape mode
-//    fileprivate(set) static var landscapeDayViewVerticalSpacing = LayoutDefaults.landscapeDayViewVerticalSpacing {
-//        didSet {
-//            updateOrientationValues()
-//        }
-//    }
-
-//    // Height of all scrollable content
-//    private(set) static var totalContentHeight = dayViewVerticalSpacing*2 + dayViewCellHeight {
-//        didSet {
-//            updateMaxOffsetY()
-//        }
-//    }
-
-//    // Minimum zoom scale value
-//    fileprivate(set) static var minimumZoomScale = LayoutDefaults.minimumZoom
-//    // Maximum zoom scale valueapp store
-//    fileprivate(set) static var maximumZoomScale = LayoutDefaults.maximumZoom
-
-//    // Max y-axis values that can be scrolled to
-//    private(set) static var maxOffsetY = totalContentHeight - activeFrameHeight {
-//        didSet {
-//            if maxOffsetY < minOffsetY {
-//                maxOffsetY = minOffsetY
-//            }
-//        }
-//    }
     // Velocity multiplier for pagin
     fileprivate(set) static var velocityOffsetMultiplier = LayoutDefaults.velocityOffsetMultiplier
 
@@ -1053,29 +941,6 @@ struct LayoutVariables {
     fileprivate(set) static var previewEventPrecisionInMinutes = LayoutDefaults.previewEventPrecisionInMinutes
     // Show preview on long press.
     fileprivate(set) static var showPreviewOnLongPress = LayoutDefaults.showPreviewOnLongPress
-
-    // MARK: - UPDATE FUNCTIONS -
-
-//    private static func updateOrientationValues() {
-//        if orientation.isPortrait {
-//            dayViewVerticalSpacing = portraitDayViewVerticalSpacing
-//        }
-//        else if orientation.isLandscape {
-//            dayViewVerticalSpacing = landscapeDayViewVerticalSpacing
-//        }
-//    }
-
-//    private static func updateDayViewCellHeight() {
-//        dayViewCellHeight = initialDayViewCellHeight*zoomScale
-//    }
-
-//    private static func updateTotalContentHeight() {
-//        totalContentHeight = dayViewVerticalSpacing*2 + dayViewCellHeight
-//    }
-//
-//    private static func updateMaxOffsetY() {
-//        maxOffsetY = totalContentHeight - activeFrameHeight
-//    }
 }
 
 extension TextVariables {
