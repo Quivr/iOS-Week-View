@@ -482,15 +482,3 @@ public extension WeekView {
     }
 }
 
-// Customization extension for FontVariables.
-extension TextVariables {
-
-    // Text color for all hour labels
-    fileprivate(set) static var hourLabelTextColor = LayoutDefaults.hourLabelTextColor
-    // Minimum font size for all hour labels
-    fileprivate(set) static var hourLabelMinimumFontSize = LayoutDefaults.hourLabelMinimumFontSize
-    // Minimum scale for all hour labels
-    private(set) static var hourLabelMinimumScale = LayoutDefaults.hourLabelMinimumFontSize / LayoutDefaults.hourLabelFont.pointSize
-    // Default format for all hour labels
-    fileprivate(set) static var hourLabelDateFormat = LayoutDefaults.hourLabelDateFormat
-}
