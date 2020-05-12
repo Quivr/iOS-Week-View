@@ -44,14 +44,14 @@ open class WeekView: UIView {
         let firstActiveDay = self.dayScrollView.activeDay
         return firstActiveDay...(firstActiveDay + Int(LayoutVariables.visibleDays - 1))
     }
-    
+
     //A date range containing the current days visible on screen
     public var visibleDateRange: ClosedRange<Date> {
         let firstActiveDay = self.dayScrollView.activeDay
         let lastActiveDay = (firstActiveDay + Int(LayoutVariables.visibleDays - 1))
         return firstActiveDay.dateObj.getStartOfDay()...lastActiveDay.dateObj.getEndOfDay()
     }
-    
+
     //Reloads the events from the delegate
     public func notifyDataSetChanged() {
         delegate?.eventLoadRequest(in: self, between: visibleDateRange.lowerBound, and: visibleDateRange.upperBound)
@@ -71,6 +71,221 @@ open class WeekView: UIView {
             self.dayScrollView?.dayViewCells.values.forEach({ dayViewCell in dayViewCell.eventStyleCallback = value })
         }
     }
+
+    // MARK: - CUSTOMIZATION -
+
+    /**
+     Background color of main scrollview.
+     */
+    public var mainBackgroundColor: UIColor {
+        get {
+            return self.mainView.backgroundColor!
+        }
+        set(color) {
+            self.mainView.backgroundColor = color
+            self.sideBarView.backgroundColor = color
+        }
+    }
+
+    /**
+     Background color of top bar containing day labels.
+     */
+    public var topBarColor: UIColor {
+        get {
+            return self.topBarView.backgroundColor!
+        }
+        set(color) {
+            self.topLeftBufferView.backgroundColor = color
+            self.topBarView.backgroundColor = color
+        }
+    }
+
+    /**
+     Color of the side bar containing hour labels.
+     */
+    public var sideBarColor: UIColor {
+        get {
+            return self.sideBarView.backgroundColor!
+        }
+        set(color) {
+            self.sideBarView.backgroundColor = color
+        }
+    }
+
+    /**
+     Width of the side bar containing hour labels.
+     */
+    public var sideBarWidth: CGFloat {
+        get {
+            return self.sideBarView.frame.width
+        }
+        set(width) {
+            self.sideBarWidthConstraint.constant = width
+            self.topLeftBufferWidthConstraint.constant = width
+        }
+    }
+
+    /**
+     Default height of the top bar
+     */
+    public var defaultTopBarHeight: CGFloat = CGFloat(35) {
+        didSet {
+            self.updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+    Font for all day labels contained in the top bar.
+    */
+    public var dayLabelDefaultFont: UIFont = UIFont.boldSystemFont(ofSize: 14) {
+        didSet {
+            self.updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Text color for all day labels contained in the top bar.
+     */
+    public var dayLabelTextColor: UIColor = UIColor.black {
+        didSet {
+            self.updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Text color for today day label contained in the top bar.
+     */
+    public var dayLabelTodayTextColor: UIColor = UIColor(red: 20/255, green: 66/255, blue: 111/255, alpha: 1.0) {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+    Minimum font size that day label text will be resized to if label is too small.
+    */
+    public var dayLabelMinimumFontSize: CGFloat = CGFloat(8) {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Short date format for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelShortDateFormat: String = LayoutDefaults.dayLabelShortDateFormat {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Normal date format for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelNormalDateFormat: String = LayoutDefaults.dayLabelNormalDateFormat {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Long date format for day labels.
+     See reference of date formats at: http://nsdateformatter.com/
+     */
+    public var dayLabelLongDateFormat: String = LayoutDefaults.dayLabelLongDateFormat {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Locale for the day labels.
+     If none is given device locale will be used.
+     */
+    public var dayLabelDateLocaleIdentifier: String = NSLocale.current.languageCode! {
+        didSet {
+            updateVisibleLabelsAndMainConstraints()
+        }
+    }
+
+    /**
+     Font for all hour labels contained in the side bar.
+     */
+    public var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont {
+        didSet {
+            updateHourSideBarView()
+        }
+    }
+
+    /**
+     Text color for all hour labels contained in the side bar.
+     */
+    public var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor {
+        didSet {
+            updateHourSideBarView()
+        }
+    }
+
+    /**
+     Minimum percentage that hour label text will be resized to if label is too small.
+     */
+    public var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize {
+        didSet {
+            updateHourSideBarView()
+        }
+    }
+
+    /**
+     Format of all hour labels.
+     */
+    public var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat {
+        didSet {
+            updateHourSideBarView()
+        }
+    }
+
+    /**
+     Height of all day labels.
+     */
+    public var allDayEventHeight: CGFloat {
+        get {
+            return LayoutVariables.allDayEventHeight
+        }
+        set(height) {
+            self.dayScrollView.setAllDayEventHeight(to: height)
+        }
+    }
+
+    /**
+     Height of all day labels.
+     */
+    public var allDayEventVerticalSpacing: CGFloat {
+        get {
+            return LayoutVariables.allDayEventVerticalSpacing
+        }
+        set(height) {
+            dayScrollView.setAllDayEventVerticalSpacing(to: height)
+        }
+    }
+
+    /**
+     Spread all day events on x axis, if not true than spread will be made on y axis.
+     */
+    public var allDayEventsSpreadOnX: Bool {
+        get {
+            return LayoutVariables.allDayEventsSpreadOnX
+        }
+        set(onX) {
+            self.dayScrollView.setAllDayEventsSpreadOnX(to: onX)
+        }
+    }
+
+    /**
+     Enable this to automatically allow events to be converted to allDay events if they go from midnight to midnight. (default true)
+     */
+    public var autoConvertAllDayEvents: Bool = true
 
     // MARK: - PRIVATE VARIABLES -
 
@@ -287,10 +502,10 @@ open class WeekView: UIView {
         var label: UILabel!
         if !discardedDayLabels.isEmpty {
             label = discardedDayLabels.remove(at: 0)
-            label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+            label.frame = self.generateDayLabelFrame(forIndex: indexPath)
         }
         else {
-            label = Util.makeDayLabel(withIndexPath: indexPath)
+            label = self.makeDayLabel(withIndexPath: indexPath)
         }
         updateDayLabel(label, withDate: dayDate)
         visibleDayLabels[dayDate] = label
@@ -345,7 +560,7 @@ open class WeekView: UIView {
             visibleAllDayEvents[dayDate] = nil
         }
 
-        if visibleAllDayEvents.isEmpty && self.topBarHeight > LayoutVariables.defaultTopBarHeight {
+        if visibleAllDayEvents.isEmpty && self.topBarHeight > self.defaultTopBarHeight {
             self.extraTopBarHeight = 0
             UIView.animate(withDuration: 0.25, animations: {
                 self.layoutIfNeeded()
@@ -426,7 +641,7 @@ open class WeekView: UIView {
                 let dayDate = dayViewCell.date
 
                 if let label = visibleDayLabels[dayDate] {
-                    label.frame = Util.generateDayLabelFrame(forIndex: indexPath)
+                    label.frame = self.generateDayLabelFrame(forIndex: indexPath)
                     updateDayLabel(label, withDate: dayDate)
                 }
             }
@@ -456,7 +671,7 @@ open class WeekView: UIView {
             if let previousLayer = self.visibleAllDayEvents[dayDate]?[eventData] {
                 previousLayer.removeFromSuperlayer()
             }
-            let layer = EventLayer(withFrame: Util.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count),
+            let layer = EventLayer(withFrame: self.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count),
                                    andEvent: eventData)
             self.eventStyleCallback?(layer, eventData)
             newEventLayers[eventData] = layer
@@ -508,6 +723,56 @@ open class WeekView: UIView {
         }
     }
 
+    // Function returns a dayLabel UILabel with the correct size and position according to given indexPath.
+    private func makeDayLabel(withIndexPath indexPath: IndexPath) -> UILabel {
+        // Make as daylabel
+        let labelFrame = self.generateDayLabelFrame(forIndex: indexPath)
+        let dayLabel = UILabel(frame: labelFrame)
+        dayLabel.textAlignment = .center
+        return dayLabel
+    }
+
+    // Function generates a frame for a day label with given index path.
+    private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
+        let row = CGFloat(indexPath.row)
+        return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth), y: 0, width: LayoutVariables.dayViewCellWidth, height: self.defaultTopBarHeight)
+    }
+
+    /**
+     Functions generates a frame for an all day event according to the indexPath and
+     the count (= how many'th all day event frame in current day) and the max (= how many all day events in current day.
+     Depending on LayoutVariables.allDayEventsSpreadOnX, events will be spreaded on x or y axis.
+     */
+    private func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
+        if LayoutVariables.allDayEventsSpreadOnX {
+            let row = CGFloat(indexPath.row)
+            let width = LayoutVariables.dayViewCellWidth/CGFloat(max)
+            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth)+CGFloat(count)*width,
+                          y: self.defaultTopBarHeight+LayoutVariables.allDayEventVerticalSpacing,
+                          width: width,
+                          height: LayoutVariables.allDayEventHeight)
+
+        } else {
+            let row = CGFloat(indexPath.row)
+            let height = LayoutVariables.allDayEventHeight/CGFloat(max)
+            return CGRect(x: row*(LayoutVariables.totalDayViewCellWidth),
+                          y: self.defaultTopBarHeight+CGFloat(count)*height,
+                          width: LayoutVariables.dayViewCellWidth,
+                          height: height)
+        }
+    }
+
+    /**
+     Helper function for hour label customization.
+     */
+    private func updateHourSideBarView() {
+        for view in self.sideBarView.subviews {
+            if let hourSideBarView = view as? HourSideBarView {
+                hourSideBarView.layoutIfNeeded()
+                hourSideBarView.updateLabels()
+            }
+        }
+    }
 }
 
 /**

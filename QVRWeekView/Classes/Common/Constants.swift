@@ -23,8 +23,13 @@ struct LayoutDefaults {
     static let dayLabelTodayTextColor = UIColor(red: 20/255, green: 66/255, blue: 111/255, alpha: 1.0)
     // Default minimum event label scaling
     static let dayLabelMinimumFontSize = CGFloat(8)
+
+    static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"] // TODO: REMOVE
+
     // Date formats for day labels
-    static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
+    static let dayLabelShortDateFormat: String = "d MMM"
+    static let dayLabelNormalDateFormat: String = "E d MMM"
+    static let dayLabelLongDateFormat: String = "E d MMM y"
 
     // Default font of hour labels
     static let hourLabelFont = UIFont.boldSystemFont(ofSize: 12)
