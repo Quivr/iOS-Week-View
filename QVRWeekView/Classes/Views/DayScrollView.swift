@@ -892,7 +892,7 @@ extension DayScrollView {
     }
 
     /**
-     Sets the sensitivity of horizontal scrolling.
+     Sets the vertical spacing between all day events.
      */
     func setAllDayEventVerticalSpacing(to height: CGFloat) {
         LayoutVariables.allDayEventVerticalSpacing = height
@@ -1055,7 +1055,7 @@ struct LayoutVariables {
         }
     }
 
-    // Height of all scrollable content
+    // Width of all scrollable content
     private(set) static var totalContentWidth = CGFloat(collectionViewCellCount)*totalDayViewCellWidth+dayViewHorizontalSpacing
 
     // Minimum zoom scale value
