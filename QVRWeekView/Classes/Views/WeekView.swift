@@ -135,32 +135,26 @@ open class WeekView: UIView {
     }
 
     /**
-    Font for all day labels contained in the top bar.
+     Font for all day labels contained in the top bar.
     */
-    public var dayLabelDefaultFont: UIFont = UIFont.boldSystemFont(ofSize: 14) {
-        didSet {
-            self.updateDayLabelCurrentFont()
-        }
-    }
+    public var dayLabelDefaultFont: UIFont = UIFont.boldSystemFont(ofSize: 14)
 
-    // Minimum font for all day labels
-    private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize {
-        didSet {
-            self.updateDayLabelCurrentFont()
-        }
-    }
+    /**
+     Minimum font for all day labels
+    */
+    private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize
 
-    // Current font for all day labels
-    private var dayLabelCurrentFont = LayoutDefaults.dayLabelFont {
-        didSet {
-            self.updateVisibleLabelsAndMainConstraints()
-        }
+    /**
+     Current font for all day labels
+    */
+    private var dayLabelCurrentFont: UIFont {
+        return dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize)
     }
 
     /**
      Text color for all day labels contained in the top bar.
      */
-    public var dayLabelTextColor: UIColor = UIColor.black {
+    public var dayLabelTextColor: UIColor = LayoutDefaults.dayLabelTextColor {
         didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
@@ -169,7 +163,7 @@ open class WeekView: UIView {
     /**
      Text color for today day label contained in the top bar.
      */
-    public var dayLabelTodayTextColor: UIColor = UIColor(red: 20/255, green: 66/255, blue: 111/255, alpha: 1.0) {
+    public var dayLabelTodayTextColor: UIColor = LayoutDefaults.dayLabelTodayTextColor {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
@@ -178,7 +172,7 @@ open class WeekView: UIView {
     /**
     Minimum font size that day label text will be resized to if label is too small.
     */
-    public var dayLabelMinimumFontSize: CGFloat = CGFloat(8) {
+    public var dayLabelMinimumFontSize: CGFloat = LayoutDefaults.dayLabelMinimumFontSize {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
@@ -231,7 +225,10 @@ open class WeekView: UIView {
         }
     }
 
-    private var dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
+    /**
+     The formats used to show day label dates
+     */
+    private var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
 
     /**
      Locale for the day labels.
@@ -812,11 +809,6 @@ open class WeekView: UIView {
                 hourSideBarView.updateLabels()
             }
         }
-    }
-
-    // Method updates the current font of day labels.
-    private func updateDayLabelCurrentFont () {
-        self.dayLabelCurrentFont = dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize)
     }
 
     /**
