@@ -297,17 +297,29 @@ open class WeekView: UIView {
     /**
      Height of all day labels.
      */
-    public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight
+    public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight {
+        didSet {
+            self.updateAllDayEventLayers()
+        }
+    }
 
     /**
      Height of all day labels.
      */
-    public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing
+    public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing {
+       didSet {
+           self.updateAllDayEventLayers()
+       }
+   }
 
     /**
      Spread all day events on x axis, if not true than spread will be made on y axis.
      */
-    public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX
+    public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX {
+        didSet {
+            self.updateAllDayEventLayers()
+        }
+    }
 
     /**
     Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
@@ -695,6 +707,9 @@ open class WeekView: UIView {
         }
     }
 
+    /**
+     * Method renders the layers for all day events
+     */
     private func renderLayers(ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
         var newEventLayers: [EventData: EventLayer] = [:]
         var i = 0

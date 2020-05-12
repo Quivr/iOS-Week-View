@@ -79,8 +79,9 @@ class StartViewController: UIViewController {
 
             weekView.velocityOffsetMultiplier = 0.01
 
-            weekView.allDayEventHeight = 30
-            weekView.allDayEventVerticalSpacing = 10
+            weekView.allDayEventHeight = 100
+            weekView.allDayEventVerticalSpacing = 50
+            weekView.allDayEventsSpreadOnX = false
         }
     }
 
