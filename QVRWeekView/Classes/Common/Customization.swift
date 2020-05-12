@@ -458,10 +458,10 @@ public extension WeekView {
      */
     @objc var velocityOffsetMultiplier: CGFloat {
         get {
-            return LayoutVariables.velocityOffsetMultiplier
+            return self.dayScrollView.velocityOffsetMultiplier
         }
         set(multiplier) {
-            self.dayScrollView.setVelocityOffsetMultiplier(to: multiplier)
+            self.dayScrollView.velocityOffsetMultiplier = multiplier
         }
     }
 }
