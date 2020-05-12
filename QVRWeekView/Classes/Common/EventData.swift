@@ -203,9 +203,9 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
 
     /**
      In case this event spans multiple days this function will be called to split it into multiple events
-     which can be assigned to individual dayViewCells.
+     which can be assigned to individual dayViewCells.b
      */
-    func checkForSplitting () -> [DayDate: EventData] {
+    func checkForSplitting (andAutoConvert autoConvertAllDayEvents: Bool) -> [DayDate: EventData] {
         var splitEvents: [DayDate: EventData] = [:]
         let startDayDate = DayDate(date: startDate)
         if startDate.isSameDayAs(endDate) {
@@ -239,9 +239,11 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
                     }
                     else {
                         // A fragment in the middle
-                        if LayoutVariables.autoConvertAllDayEvents {
+                        if autoConvertAllDayEvents {
+                            // If enabled, split the day into an all day event
                             newData = self.remakeEventDataAsAllDay(forDate: date)
                         } else {
+                            // If not enabled, let the event run the full length of the day
                             newData = self.remakeEventData(withStart: date.getStartOfDay(), andEnd: date.getEndOfDay())
                         }
                     }

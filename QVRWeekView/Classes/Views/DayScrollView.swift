@@ -10,6 +10,7 @@ import UIKit
  */
 class DayScrollView: UIScrollView, UIScrollViewDelegate,
 UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, FrameCalculatorDelegate {
+
     // MARK: - INTERNAL VARIABLES -
 
     // The WeekView that this DayScrollView belongs to
@@ -47,7 +48,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    // MARK: - INSTANCE VARIABLES -
+    /**
+     Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
+     */
+    public var autoConvertLongEventsToAllDay: Bool = true
+
+    // MARK: - PRIVATE VARIABLES -
 
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
@@ -405,7 +411,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         // Process raw event data and sort it into the allEventsData dictionary. Also check to see which
         // days have had any changes done to them to queue them up for processing.
         for eventData in eventsData {
-            let possibleSplitEvents = eventData.checkForSplitting()
+            let possibleSplitEvents = eventData.checkForSplitting(andAutoConvert: self.autoConvertLongEventsToAllDay)
             for (dayDate, event) in possibleSplitEvents {
                 if event.allDay {
                     newAllDayEvents.addEvent(event, onDay: dayDate)

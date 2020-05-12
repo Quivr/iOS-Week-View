@@ -313,9 +313,16 @@ open class WeekView: UIView {
     }
 
     /**
-     Enable this to automatically allow events to be converted to allDay events if they go from midnight to midnight. (default true)
-     */
-    public var autoConvertAllDayEvents: Bool = true
+    Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
+    */
+    public var autoConvertAllDayEvents: Bool {
+        get {
+            self.dayScrollView.autoConvertLongEventsToAllDay
+        }
+        set(bool) {
+            self.dayScrollView.autoConvertLongEventsToAllDay = bool
+        }
+    }
 
     // MARK: - PRIVATE VARIABLES -
 

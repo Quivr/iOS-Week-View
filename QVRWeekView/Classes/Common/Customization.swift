@@ -509,11 +509,3 @@ extension TextVariables {
         hourLabelMinimumScale = hourLabelMinimumFontSize / hourLabelFont.pointSize
     }
 }
-
-// Customization extension for LayoutVariables
-extension LayoutVariables {
-
-    // Automatically
-    fileprivate(set) static var autoConvertAllDayEvents = true
-
-}
