@@ -820,12 +820,12 @@ open class WeekView: UIView {
         let currentFont = label.font!
         let labelWidth = label.frame.width
         var possibleText = self.getString(forDate: dayDate, andMode: self.dayLabelTextMode) as NSString
-        var textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
+        var textSize = possibleText.size(withAttributes: [.font: currentFont])
 
         label.text = possibleText as String
         if textSize.width > labelWidth && self.dayLabelTextMode != .small {
             possibleText = getString(forDate: dayDate, andMode: .normal) as NSString
-            textSize = possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): currentFont]))
+            textSize = possibleText.size(withAttributes: [.font: currentFont])
             if textSize.width <= labelWidth {
                 label.text = possibleText as String
                 self.dayLabelTextMode = .normal
@@ -834,7 +834,7 @@ open class WeekView: UIView {
                 let scale = (labelWidth / textSize.width)
                 var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
 
-                while possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth && newFont.pointSize > self.dayLabelMinimumFontSize {
+                while possibleText.size(withAttributes: [.font: newFont]).width > labelWidth && newFont.pointSize > self.dayLabelMinimumFontSize {
                     newFont = newFont.withSize(newFont.pointSize-0.25)
                 }
 
@@ -843,7 +843,7 @@ open class WeekView: UIView {
                 }
 
                 label.font = newFont
-                if possibleText.size(withAttributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.font): newFont])).width > labelWidth {
+                if possibleText.size(withAttributes: [.font: newFont]).width > labelWidth {
                     label.text = getString(forDate: dayDate, andMode: .small)
                     self.dayLabelTextMode = .small
                 }
@@ -913,15 +913,4 @@ extension WeekView {
 // MARK: - WEEKVIEW LAYOUT VARIABLES -
 
 public struct TextVariables {
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-    guard let input = input else { return nil }
-    return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value) })
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
-    return input.rawValue
 }
