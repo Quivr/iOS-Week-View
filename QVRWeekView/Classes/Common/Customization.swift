@@ -62,6 +62,42 @@ public extension WeekView {
     }
 
     /**
+     Amount of spacing above and below day view cells when in portrait mode.
+     */
+    @objc var portraitDayViewVerticalSpacing: CGFloat {
+        get {
+            return self.dayScrollView.portraitDayViewVerticalSpacing
+        }
+        set(height) {
+            self.dayScrollView.portraitDayViewVerticalSpacing = height
+        }
+    }
+
+    /**
+     Amount of spacing above and below day view cells when in landscape mode.
+     */
+    @objc var landscapeDayViewVerticalSpacing: CGFloat {
+        get {
+            return self.dayScrollView.landscapeDayViewVerticalSpacing
+        }
+        set(height) {
+            self.dayScrollView.landscapeDayViewVerticalSpacing = height
+        }
+    }
+
+    /**
+     Height for the day view cells. This is the initial height for zoom scale = 1.0.
+     */
+    @objc var dayViewCellHeight: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellHeight
+        }
+        set(height) {
+            self.dayScrollView.dayViewCellHeight = height
+        }
+    }
+
+    /**
      Font used for all event labels contained in the day view cells.
      */
     @objc var eventLabelFont: UIFont {
@@ -356,46 +392,6 @@ public extension WeekView {
         }
         set(pattern) {
             self.dayScrollView.setDayViewDashedSeparatorPattern(to: pattern)
-        }
-    }
-
-    /**
-     Height for the day view cells. This is the initial height for zoom scale = 1.0.
-     */
-    @objc var dayViewCellHeight: CGFloat {
-        get {
-            return LayoutVariables.dayViewCellHeight
-        }
-        set(height) {
-            self.dayScrollView.setInitialVisibleDayViewCellHeight(to: height)
-        }
-    }
-
-    /**
-     Amount of spacing above and below day view cells when in portrait mode.
-     */
-    @objc var portraitDayViewVerticalSpacing: CGFloat {
-        get {
-            return LayoutVariables.portraitDayViewVerticalSpacing
-        }
-        set(height) {
-            if self.dayScrollView.setPortraitDayViewVerticalSpacing(to: height) {
-                updateVisibleLabelsAndMainConstraints()
-            }
-        }
-    }
-
-    /**
-     Amount of spacing above and below day view cells when in landscape mode.
-     */
-    @objc var landscapeDayViewVerticalSpacing: CGFloat {
-        get {
-            return LayoutVariables.landscapeDayViewVerticalSpacing
-        }
-        set(height) {
-            if self.dayScrollView.setLandscapeDayViewVerticalSpacing(to: height) {
-                updateVisibleLabelsAndMainConstraints()
-            }
         }
     }
 
