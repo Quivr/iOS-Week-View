@@ -58,7 +58,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Total width of a day view cell including spacing
     var totalDayViewCellWidth: CGFloat { self.dayViewCellWidth + dayViewHorizontalSpacing }
     // Width of all scrollable content
-    var totalContentWidth: CGFloat { CGFloat(self.dayCollectionViewCellCount) * self.totalDayViewCellWidth + self.dayViewHorizontalSpacing }
+    var totalContentWidth: CGFloat { CGFloat(self.dayCollectionViewCellCount) * self.totalDayViewCellWidth - self.dayViewHorizontalSpacing }
     // Height of all scrollable content
     var totalContentHeight: CGFloat { dayViewVerticalSpacing * 2 + dayViewCellHeight }
     // Zoom scale of current layout
@@ -533,6 +533,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.totalContentHeight)
 
+        print(self.totalContentWidth, oldWidth)
         if oldWidth != self.totalContentWidth {
             dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay.dayInYear), y: 0)
         } else {
