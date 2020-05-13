@@ -506,6 +506,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         })
     }
 
+    func renderEventLayer(withFrame frame: CGRect, andEvent eventData: EventData) -> EventLayer {
+        return EventLayer(withFrame: frame, layout: self.dayViewCellLayout, andEvent: eventData)
+    }
+
     // MARK: - HELPER/PRIVATE FUNCTIONS -
 
     // Forces synchronous execution of event overwrite with the given data
@@ -888,8 +892,6 @@ struct LayoutVariables {
 }
 
 extension TextVariables {
-    // Font for all event labels
-    public fileprivate(set) static var eventLabelFont = LayoutDefaults.eventLabelFont
     // Font for all event labels
     public fileprivate(set) static var eventLabelInfoFont = LayoutDefaults.eventLabelThinFont
     // Text color for all event labels

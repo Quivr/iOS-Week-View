@@ -128,12 +128,12 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
     /**
      Returns the string that will be displayed by this event. Overridable.
      */
-    open func getDisplayString(withMainFont mainFont: UIFont = TextVariables.eventLabelFont, andInfoFont infoFont: UIFont = TextVariables.eventLabelInfoFont) -> NSAttributedString {
+    open func getDisplayString(withMainFont mainFont: UIFont, infoFont: UIFont, andColor color: UIColor) -> NSAttributedString {
         let df = DateFormatter()
         df.dateFormat = "HH:mm"
-        let mainFontAttributes: [String: Any] = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): mainFont, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): TextVariables.eventLabelTextColor.cgColor]
-        let infoFontAttributes: [String: Any] = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): infoFont, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): TextVariables.eventLabelTextColor.cgColor]
-        let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: convertToOptionalNSAttributedStringKeyDictionary(mainFontAttributes))
+        let mainFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: mainFont, NSAttributedString.Key.foregroundColor: color.cgColor]
+        let infoFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: infoFont, NSAttributedString.Key.foregroundColor: color.cgColor]
+        let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
         if !self.allDay {
             var startShow = self.startDate
             var endShow = self.endDate
@@ -143,11 +143,11 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
             }
             mainAttributedString.append(NSMutableAttributedString(
                 string: " (\(df.string(from: startShow)) - \(df.string(from: endShow)))",
-                attributes: convertToOptionalNSAttributedStringKeyDictionary(infoFontAttributes))
+                attributes: infoFontAttributes)
             )
         }
         if self.location != "" {
-            mainAttributedString.append(NSMutableAttributedString(string: " | \(self.location)", attributes: convertToOptionalNSAttributedStringKeyDictionary(infoFontAttributes)))
+            mainAttributedString.append(NSMutableAttributedString(string: " | \(self.location)", attributes: infoFontAttributes))
         }
         return mainAttributedString
 
@@ -269,15 +269,4 @@ open class EventData: CustomStringConvertible, Equatable, Hashable {
         CATransaction.commit()
         return newGrad
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
-	return input.rawValue
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value) })
 }

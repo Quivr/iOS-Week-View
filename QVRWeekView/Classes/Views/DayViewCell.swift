@@ -242,7 +242,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
                 newFrame = frame.applying(transform)
                 self.eventFrames[id] = newFrame
             }
-            let eventLayer = EventLayer(withFrame: newFrame, andEvent: event)
+            let eventLayer = EventLayer(withFrame: newFrame, layout: self.layout, andEvent: event)
             self.layout.eventStyleCallback?(eventLayer, event)
             self.eventLayers.append(eventLayer)
             self.layer.addSublayer(eventLayer)
