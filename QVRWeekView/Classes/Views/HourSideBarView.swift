@@ -15,13 +15,13 @@ class HourSideBarView: UIView {
     // MARK: - CUSTOMIZATION VARIABLES -
 
     // Font for all hour labels contained in the side bar.
-    var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont { didSet { self.layoutIfNeeded() } }
+    var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont { didSet { self.updateLabels() } }
     // Text color for all hour labels contained in the side bar.
-    var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor { didSet { self.layoutIfNeeded() } }
+    var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor { didSet { self.updateLabels() } }
     // Minimum percentage that hour label text will be resized to if label is too small.
-    var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize { didSet { self.layoutIfNeeded() } }
+    var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize { didSet { self.updateLabels() } }
     // Format of all hour labels.
-    var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat { didSet { self.layoutIfNeeded() } }
+    var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat { didSet { self.updateLabels() } }
     // Minimum scale
     private var hourLabelMinimumScale: CGFloat { self.hourLabelMinimumFontSize / self.hourLabelFont.pointSize }
 
@@ -45,27 +45,18 @@ class HourSideBarView: UIView {
     }
 
     override func layoutSubviews() {
-        if hourLabels[0].font != self.hourLabelFont {
-            for label in hourLabels {
-                label.font = self.hourLabelFont
-            }
-        }
-        if hourLabels[0].textColor != self.hourLabelTextColor {
-            for label in hourLabels {
-                label.textColor = self.hourLabelTextColor
-            }
-        }
-        if hourLabels[0].minimumScaleFactor != self.hourLabelMinimumScale {
-            for label in hourLabels {
-                label.minimumScaleFactor = self.hourLabelMinimumScale
-            }
-        }
         updateLabels()
     }
 
     func updateLabels () {
         hourLabels.sort { (label1, label2) -> Bool in
             return label1.order < label2.order
+        }
+
+        for label in hourLabels {
+            label.font = self.hourLabelFont
+            label.textColor = self.hourLabelTextColor
+            label.minimumScaleFactor = self.hourLabelMinimumScale
         }
 
         var date = DateSupport.getZeroDate()
