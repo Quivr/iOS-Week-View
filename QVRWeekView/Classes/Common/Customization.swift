@@ -11,12 +11,10 @@ import Foundation
  This WeekView extension contains all public computed properties which are exposed as customizable properties.
  */
 public extension WeekView {
-    // MARK: - DAYSCROLLVIEW CUSTOMIZATION -
-
     /**
      Number of visible days when in portait mode.
      */
-    var visibleDaysInPortraitMode: Int {
+    @objc var visibleDaysInPortraitMode: Int {
         get {
             return Int(self.dayScrollView.visibleDaysInPortraitMode)
         }

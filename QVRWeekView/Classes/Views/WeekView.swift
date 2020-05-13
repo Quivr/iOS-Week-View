@@ -77,7 +77,7 @@ open class WeekView: UIView {
     /**
      Background color of main scrollview.
      */
-    public var mainBackgroundColor: UIColor {
+    @objc public var mainBackgroundColor: UIColor {
         get {
             return self.mainView.backgroundColor!
         }
@@ -90,7 +90,7 @@ open class WeekView: UIView {
     /**
      Background color of top bar containing day labels.
      */
-    public var topBarColor: UIColor {
+    @objc public var topBarColor: UIColor {
         get {
             return self.topBarView.backgroundColor!
         }
@@ -103,7 +103,7 @@ open class WeekView: UIView {
     /**
      Color of the side bar containing hour labels.
      */
-    public var sideBarColor: UIColor {
+    @objc public var sideBarColor: UIColor {
         get {
             return self.sideBarView.backgroundColor!
         }
@@ -115,7 +115,7 @@ open class WeekView: UIView {
     /**
      Width of the side bar containing hour labels.
      */
-    public var sideBarWidth: CGFloat {
+    @objc public var sideBarWidth: CGFloat {
         get {
             return self.sideBarView.frame.width
         }
@@ -128,7 +128,7 @@ open class WeekView: UIView {
     /**
      Default height of the top bar
      */
-    public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
+    @objc public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
         didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
@@ -137,24 +137,12 @@ open class WeekView: UIView {
     /**
      Font for all day labels contained in the top bar.
     */
-    public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont
-
-    /**
-     Minimum font for all day labels
-    */
-    private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize
-
-    /**
-     Current font for all day labels
-    */
-    private var dayLabelCurrentFont: UIFont {
-        return dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize)
-    }
+    @objc public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont
 
     /**
      Text color for all day labels contained in the top bar.
      */
-    public var dayLabelTextColor: UIColor = LayoutDefaults.dayLabelTextColor {
+    @objc public var dayLabelTextColor: UIColor = LayoutDefaults.dayLabelTextColor {
         didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
@@ -163,7 +151,7 @@ open class WeekView: UIView {
     /**
      Text color for today day label contained in the top bar.
      */
-    public var dayLabelTodayTextColor: UIColor = LayoutDefaults.dayLabelTodayTextColor {
+    @objc public var dayLabelTodayTextColor: UIColor = LayoutDefaults.dayLabelTodayTextColor {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
@@ -172,22 +160,17 @@ open class WeekView: UIView {
     /**
     Minimum font size that day label text will be resized to if label is too small.
     */
-    public var dayLabelMinimumFontSize: CGFloat = LayoutDefaults.dayLabelMinimumFontSize {
+    @objc public var dayLabelMinimumFontSize: CGFloat = LayoutDefaults.dayLabelMinimumFontSize {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
     }
 
     /**
-     Current text mode of the day labels
-     */
-    private var dayLabelTextMode: TextMode = .large
-
-    /**
      Short date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelShortDateFormat: String {
+    @objc public var dayLabelShortDateFormat: String {
         get {
             return self.dayLabelDateFormats[.small]!
         }
@@ -201,7 +184,7 @@ open class WeekView: UIView {
      Normal date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelNormalDateFormat: String {
+    @objc public var dayLabelNormalDateFormat: String {
         get {
             return self.dayLabelDateFormats[.normal]!
         }
@@ -215,7 +198,7 @@ open class WeekView: UIView {
      Long date format for day labels.
      See reference of date formats at: http://nsdateformatter.com/
      */
-    public var dayLabelLongDateFormat: String {
+    @objc public var dayLabelLongDateFormat: String {
         get {
             return self.dayLabelDateFormats[.large]!
         }
@@ -226,15 +209,10 @@ open class WeekView: UIView {
     }
 
     /**
-     The formats used to show day label dates
-     */
-    private var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
-
-    /**
      Locale for the day labels.
      If none is given device locale will be used.
      */
-    public var dayLabelDateLocale: Locale = NSLocale.current {
+    @objc public var dayLabelDateLocale: Locale = NSLocale.current {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
@@ -243,7 +221,7 @@ open class WeekView: UIView {
     /**
      Font for all hour labels contained in the side bar.
      */
-    public var hourLabelFont: UIFont {
+    @objc public var hourLabelFont: UIFont {
         get {
             return self.hourSideBarView.hourLabelFont
         }
@@ -255,7 +233,7 @@ open class WeekView: UIView {
     /**
      Text color for all hour labels contained in the side bar.
      */
-    public var hourLabelTextColor: UIColor {
+    @objc public var hourLabelTextColor: UIColor {
         get {
             return self.hourSideBarView.hourLabelTextColor
         }
@@ -267,7 +245,7 @@ open class WeekView: UIView {
     /**
      Minimum percentage that hour label text will be resized to if label is too small.
      */
-    public var hourLabelMinimumFontSize: CGFloat {
+    @objc public var hourLabelMinimumFontSize: CGFloat {
         get {
             return self.hourSideBarView.hourLabelMinimumFontSize
         }
@@ -279,7 +257,7 @@ open class WeekView: UIView {
     /**
      Format of all hour labels.
      */
-    public var hourLabelDateFormat: String {
+    @objc public var hourLabelDateFormat: String {
         get {
             return self.hourSideBarView.hourLabelDateFormat
         }
@@ -291,7 +269,7 @@ open class WeekView: UIView {
     /**
      Height of all day labels.
      */
-    public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight {
+    @objc public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight {
         didSet {
             self.updateAllDayEventLayers()
         }
@@ -300,7 +278,7 @@ open class WeekView: UIView {
     /**
      Height of all day labels.
      */
-    public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing {
+    @objc public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing {
        didSet {
            self.updateAllDayEventLayers()
        }
@@ -309,7 +287,7 @@ open class WeekView: UIView {
     /**
      Spread all day events on x axis, if not true than spread will be made on y axis.
      */
-    public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX {
+    @objc public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX {
         didSet {
             self.updateAllDayEventLayers()
         }
@@ -318,7 +296,7 @@ open class WeekView: UIView {
     /**
     Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
     */
-    public var autoConvertAllDayEvents: Bool {
+    @objc public var autoConvertAllDayEvents: Bool {
         get {
             self.dayScrollView.autoConvertLongEventsToAllDay
         }
@@ -343,6 +321,14 @@ open class WeekView: UIView {
     private var sideBarTopBuffer: CGFloat = 0
     // The scale of the latest pinch event
     private var lastTouchScale = CGFloat(0)
+    // Current text mode of the day labels
+    private var dayLabelTextMode: TextMode = .large
+    // The formats used to show day label dates
+    private var dayLabelDateFormats: [TextMode: String] = LayoutDefaults.dayLabelDateFormats
+    // Minimum font for all day labels
+    private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize
+    // Current font for all day labels
+    private var dayLabelCurrentFont: UIFont { dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize) }
 
     /**
      Extra height added on to default top bar height.
