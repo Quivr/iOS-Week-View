@@ -890,16 +890,3 @@ struct LayoutVariables {
     // Show preview on long press.
     fileprivate(set) static var showPreviewOnLongPress = LayoutDefaults.showPreviewOnLongPress
 }
-
-extension TextVariables {
-    // Font for all event labels
-    public fileprivate(set) static var eventLabelInfoFont = LayoutDefaults.eventLabelThinFont
-    // Text color for all event labels
-    fileprivate(set) static var eventLabelTextColor = LayoutDefaults.eventLabelTextColor
-    // Stores if event label resizing is enabled
-    fileprivate(set) static var eventLabelFontResizingEnabled = false
-    // Horizontal padding of text in event labels
-    fileprivate(set) static var eventLabelHorizontalTextPadding = LayoutDefaults.eventLabelHorizontalTextPadding
-    // Vertical padding of text in event labels
-    fileprivate(set) static var eventLabelVerticalTextPadding = LayoutDefaults.eventLabelVerticalTextPadding
-}

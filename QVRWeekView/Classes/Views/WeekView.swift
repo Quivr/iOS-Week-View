@@ -909,8 +909,3 @@ extension WeekView {
 
     @objc optional func didEndVerticalScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
 }
-
-// MARK: - WEEKVIEW LAYOUT VARIABLES -
-
-public struct TextVariables {
-}
