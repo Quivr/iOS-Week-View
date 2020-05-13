@@ -48,6 +48,7 @@ class StartViewController: UIViewController {
             weekView.hourLabelTextColor = UIColor.white
             weekView.hourLabelDateFormat = "HH:mm"
 
+//            weekView.eventLabelMinimumFontSize = 3 DEPRECATED
             weekView.eventLabelTextColor = UIColor.green
             weekView.eventLabelFont = UIFont.italicSystemFont(ofSize: 25)
             weekView.eventLabelInfoFont = UIFont.boldSystemFont(ofSize: 15)
@@ -78,8 +79,8 @@ class StartViewController: UIViewController {
 
             weekView.velocityOffsetMultiplier = 0.01
 
-            weekView.allDayEventHeight = 100
-            weekView.allDayEventVerticalSpacing = 50
+            weekView.allDayEventHeight = 30
+            weekView.allDayEventVerticalSpacing = 10
             weekView.allDayEventsSpreadOnX = false
         }
     }

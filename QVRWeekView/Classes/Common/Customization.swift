@@ -134,14 +134,14 @@ public extension WeekView {
     /**
      Minimum percentage that event label text will be resized to if label is too small.
      */
-    @available(*, deprecated, message: "This functionality has been removed")
-    @objc var eventLabelMinimumFontSize: CGFloat { CGFloat(0) }
+    @available(*, deprecated, message: "This functionality has been removed") // swiftlint:disable unused_setter_value
+    @objc var eventLabelMinimumFontSize: CGFloat { get { CGFloat(0) } set(size) { () } }
 
     /**
      Sets whether event label font resizing is enabled or not.
      */
     @available(*, deprecated, message: "This functionality has been removed")
-    @objc var eventLabelFontResizingEnabled: Bool { false }
+    @objc var eventLabelFontResizingEnabled: Bool { get { false } set(enabled) { () } } // swiftlint:enable unused_setter_value
 
     /**
      Horizontal padding of the text within event labels.
