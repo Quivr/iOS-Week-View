@@ -144,31 +144,23 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
      Generates and fills the scroll view with day columns.
      */
     private func initDayScrollView() {
-
+        // Make day collection view and add it to frame
         let flowLayout = DayCollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: self.dayViewCellWidth, height: self.dayViewCellHeight)
         flowLayout.minimumLineSpacing = self.dayViewHorizontalSpacing
         flowLayout.velocityMultiplier = self.velocityOffsetMultiplier
-
-        // Make day collection view and add it to frame
         dayCollectionView = DayCollectionView(frame: CGRect(x: 0,
                                                             y: 0,
                                                             width: self.bounds.width,
                                                             height: self.totalContentHeight),
                                               collectionViewLayout: flowLayout)
-        dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: DayDate.today.dayInYear), y: 0)
-        dayCollectionView.contentSize = CGSize(width: self.totalContentWidth, height: self.totalContentHeight)
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
         self.addSubview(dayCollectionView)
-
         // Set content size for vertical scrolling
         self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
-        self.showNow()
-
         // Add tap gesture recognizer
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
-
         // Set scroll view properties
         self.isDirectionalLockEnabled = true
         self.showsVerticalScrollIndicator = false
@@ -184,14 +176,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // MARK: - GESTURE, SCROLL & DATA SOURCE FUNCTIONS -
 
     @objc func tap(_ sender: UITapGestureRecognizer) {
-
         if !self.dayCollectionView.isDragging && !self.dayCollectionView.isDecelerating {
             scrollToNearestCell()
         }
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
         // Handle side and top bar animations
         self.weekView?.updateTopAndSideBarPositions()
 
@@ -346,7 +336,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func zoomContent(withNewScale newZoomScale: CGFloat, newTouchCenter touchCenter: CGPoint?, andState state: UIGestureRecognizer.State) {
-
         // Store previous zoom scale
         let previousZoom = self.zoomScaleCurrent
 
@@ -520,29 +509,21 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     fileprivate func updateLayout() {
-
         // Get old offset ratio before resizing cells
-        let oldXOffset = dayCollectionView.contentOffset.x
         let oldWidth = dayCollectionView.contentSize.width
-
         // Update scroll view content size
         self.contentSize = CGSize(width: self.frame.width, height: self.totalContentHeight)
-
         // Update size of day view cells
         updateDayViewCellSizeAndSpacing()
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.totalContentHeight)
-
-        print(self.totalContentWidth, oldWidth)
+        // Offset change required for: maintaining active day during orientation change, and visible days change (hacky)
         if oldWidth != self.totalContentWidth {
             dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay.dayInYear), y: 0)
-        } else {
-            dayCollectionView.contentOffset = CGPoint(x: oldXOffset, y: 0)
         }
-
-        // Update content size
+        // Force update content size to ensure above offset changes are preserved (hacky)
         dayCollectionView.contentSize = CGSize(width: self.totalContentWidth, height: self.totalContentHeight)
-
+        // Update week view labels and constraints
         self.weekView?.updateVisibleLabelsAndMainConstraints()
     }
 
@@ -557,7 +538,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     private func scrollToNearestCell() {
-
         let xOffset = dayCollectionView.contentOffset.x
         let yOffset = dayCollectionView.contentOffset.y
 
