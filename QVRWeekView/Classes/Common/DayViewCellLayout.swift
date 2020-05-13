@@ -22,11 +22,11 @@ class DayViewCellLayout {
     // Thickness (height) of the current hour indicator.
     var hourIndicatorThickness: CGFloat = LayoutDefaults.hourIndicatorThickness
     // Color of the current hour indicator.
-    var hourIndicatorColor: UIColor = LayoutDefaults.backgroundColor
+    var hourIndicatorColor: UIColor = LayoutDefaults.hourIndicatorColor
     // Thickness of the main hour separators in the day view cells. Main separators are full lines and not dashed.
     var mainSeparatorThickness: CGFloat = LayoutDefaults.mainSeparatorThickness
     // Color of the main hour separators in the day view cells. Main separators are full lines and not dashed.
-    var mainSeparatorColor: UIColor = LayoutDefaults.hourIndicatorColor
+    var mainSeparatorColor: UIColor = LayoutDefaults.backgroundColor
     // Thickness of the dashed/dotted hour separators in the day view cells.
     var dashedSeparatorThickness: CGFloat = LayoutDefaults.dashedSeparatorThickness
     // Color of the dashed/dotted hour separators in the day view cells.
