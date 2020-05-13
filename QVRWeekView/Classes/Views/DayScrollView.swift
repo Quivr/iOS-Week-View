@@ -31,8 +31,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         set { self.verticalOffset = CGFloat(Double(self.contentSize.height) * newValue) - self.frame.height / 2 }
     }
 
-    // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
-    var autoConvertLongEventsToAllDay: Bool = true
     // Number of visible days when in portait mode.
     var visibleDaysInPortraitMode: CGFloat = LayoutDefaults.visibleDaysPortrait { didSet { updateLayout() } }
     // Number of visible days when in landscape mode.
@@ -71,6 +69,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     var zoomScaleMin: CGFloat = LayoutDefaults.minimumZoom { didSet { updateLayout() } }
     // Velocity multiplier for scrolling
     var velocityOffsetMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier { didSet { updateLayout() } }
+    // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
+    var autoConvertLongEventsToAllDay: Bool = true
+    // Day view cell layout object
+    let dayViewCellLayout: DayViewCellLayout = DayViewCellLayout()
 
     // MARK: - PRIVATE VARIABLES -
 
