@@ -46,8 +46,6 @@ struct LayoutDefaults {
     static let eventLabelThinFont = UIFont.systemFont(ofSize: 12)
     // Default text color of event labels
     static let eventLabelTextColor = UIColor.white
-    // Default minimum event label scaling
-    static let eventLabelMinimumFontSize = CGFloat(8)
     // Default horizontal padding of text in event labels
     static let eventLabelHorizontalTextPadding = CGFloat(2)
     // Default vertical padding of text in event labels

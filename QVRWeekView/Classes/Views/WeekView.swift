@@ -72,12 +72,6 @@ open class WeekView: UIView {
         return visibleEvents
     }
 
-    public var eventStyleCallback: EventStlyeCallback? {
-        didSet (value) {
-            self.dayScrollView?.dayViewCells.values.forEach({ dayViewCell in dayViewCell.eventStyleCallback = value })
-        }
-    }
-
     // MARK: - CUSTOMIZATION -
 
     /**

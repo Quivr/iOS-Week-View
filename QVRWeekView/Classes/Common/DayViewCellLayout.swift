@@ -44,6 +44,8 @@ class DayViewCellLayout {
     var eventLabelHorizontalTextPadding: CGFloat = LayoutDefaults.eventLabelHorizontalTextPadding
     // Vertical padding of the text within event labels.
     var eventLabelVerticalTextPadding: CGFloat = LayoutDefaults.eventLabelVerticalTextPadding
+    // Determines style the event layers
+    var eventStyleCallback: EventStlyeCallback?
 
     // The color of the preview event.
     var previewEventColor: UIColor = LayoutDefaults.previewEventColor
