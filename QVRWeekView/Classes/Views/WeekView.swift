@@ -96,12 +96,12 @@ open class WeekView: UIView {
     }
     // Default height of the top bar
     @objc public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
-        didSet {
-            self.updateVisibleLabelsAndMainConstraints()
-        }
+        didSet { self.updateVisibleLabelsAndMainConstraints() }
     }
     // Font for all day labels contained in the top bar.
-    @objc public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont
+    @objc public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont {
+        didSet { self.updateVisibleLabelsAndMainConstraints() }
+    }
     // Text color for all day labels contained in the top bar.
     @objc public var dayLabelTextColor: UIColor = LayoutDefaults.dayLabelTextColor {
         didSet { self.updateVisibleLabelsAndMainConstraints() }
@@ -112,9 +112,7 @@ open class WeekView: UIView {
     }
     // Minimum font size that day label text will be resized to if label is too small.
     @objc public var dayLabelMinimumFontSize: CGFloat = LayoutDefaults.dayLabelMinimumFontSize {
-        didSet {
-            updateVisibleLabelsAndMainConstraints()
-        }
+        didSet { updateVisibleLabelsAndMainConstraints() }
     }
     // Short date format for day labels. See reference of date formats at: http://nsdateformatter.com/
     @objc public var dayLabelShortDateFormat: String {
@@ -207,13 +205,17 @@ open class WeekView: UIView {
     // Current font for all day labels
     private var dayLabelCurrentFont: UIFont { dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize) }
 
-    /**
-     Extra height added on to default top bar height.
-     */
-    internal var extraTopBarHeight: CGFloat = 0 {
-        didSet {
-            self.updateTopBarHeight()
+    // Height of top bar.
+    private var topBarHeight: CGFloat {
+        get { return self.topBarView.frame.height }
+        set(height) {
+            self.topBarHeightConstraint.constant = height
+            self.topLeftBufferHeightConstraint.constant = height
         }
+    }
+    // Extra height added on to default top bar height.
+    private var extraTopBarHeight: CGFloat = 0 {
+        didSet { self.topBarHeight = self.extraTopBarHeight + self.defaultTopBarHeight }
     }
 
     // MARK: - INITIALIZERS/OVERRIDES -
@@ -516,6 +518,8 @@ open class WeekView: UIView {
      Method updates hour side bar height and position constraints, topBar height and width, and top left buffer size.
      */
     private func updateTopAndSideBarConstraints() {
+        // Recalculate size of top bar height
+        self.topBarHeight = self.extraTopBarHeight + self.defaultTopBarHeight
 
         // Height of total side bar
         let dayViewCellHourHeight = dayViewCellHeight/DateSupport.hoursInDay
@@ -530,7 +534,6 @@ open class WeekView: UIView {
         self.topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width
         self.topBarLeftBuffer = sideBarView.frame.width
         updateTopAndSideBarPositions()
-        updateTopBarHeight()
     }
 
     /**
@@ -722,35 +725,6 @@ open class WeekView: UIView {
             }
         }
         return nil
-    }
-}
-
-// MARK: - WEEKVIEW EXTENSION -
-
-/**
- This extension makes it so that topBarHeight can not be directly set, and will
- only be updated when updateTopBarHeight function is called.
- */
-extension WeekView {
-
-    /**
-     Method updates the top bar height.
-     */
-    func updateTopBarHeight() {
-        self.topBarHeight = self.extraTopBarHeight + self.defaultTopBarHeight
-    }
-
-    /**
-     Height of top bar.
-     */
-    private(set) var topBarHeight: CGFloat {
-        get {
-            return self.topBarView.frame.height
-        }
-        set(height) {
-            self.topBarHeightConstraint.constant = height
-            self.topLeftBufferHeightConstraint.constant = height
-        }
     }
 }
 
