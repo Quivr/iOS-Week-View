@@ -86,7 +86,7 @@ public extension WeekView {
     /**
      Height for the day view cells. This is the initial height for zoom scale = 1.0.
      */
-    @objc var dayViewCellHeight: CGFloat {
+    @objc var dayViewCellInitialHeight: CGFloat {
         get {
             return self.dayScrollView.initialDayViewCellHeight
         }

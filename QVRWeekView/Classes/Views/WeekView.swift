@@ -522,13 +522,13 @@ open class WeekView: UIView {
         self.topBarHeight = self.extraTopBarHeight + self.defaultTopBarHeight
 
         // Height of total side bar
-        let dayViewCellHourHeight = dayViewCellHeight/DateSupport.hoursInDay
+        let dayViewCellHourHeight = self.dayScrollView.dayViewCellHeight / DateSupport.hoursInDay
         let sideBarHeight = self.dayScrollView.dayViewCellHeight + dayViewCellHourHeight
 
         // Set position and size constraints for side bar and hour view
         self.hourSideBarHeightConstraint.constant = self.dayScrollView.dayViewCellHeight
         self.sideBarHeightConstraint.constant = sideBarHeight
-        self.sideBarTopBuffer = self.dayScrollView.dayViewVerticalSpacing - dayViewCellHourHeight/2
+        self.sideBarTopBuffer = self.dayScrollView.dayViewVerticalSpacing - (dayViewCellHourHeight / 2)
 
         // Set correct size and constraints of top bar view
         self.topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width

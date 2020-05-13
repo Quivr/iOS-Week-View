@@ -28,7 +28,7 @@ class StartViewController: UIViewController {
         if let weekView = calendarVC.weekView {
             weekView.dayViewHourIndicatorColor = UIColor.blue
             weekView.dayViewHourIndicatorThickness = 9
-            weekView.dayViewCellHeight = 500
+            weekView.dayViewCellInitialHeight = 500
             weekView.dayViewMainSeparatorColor = UIColor.red
             weekView.dayViewMainSeparatorThickness = 4
             weekView.dayViewDashedSeparatorColor = UIColor.orange
