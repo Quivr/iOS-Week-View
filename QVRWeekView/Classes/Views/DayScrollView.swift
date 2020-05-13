@@ -70,7 +70,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Velocity multiplier for scrolling
     var velocityOffsetMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier { didSet { updateLayout() } }
     // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
-    var autoConvertLongEventsToAllDay: Bool = true
+    var autoConvertLongEventsToAllDay: Bool = true { didSet { updateLayout() } }
 
     // MARK: - PRIVATE VARIABLES -
 

@@ -435,22 +435,6 @@ open class WeekView: UIView {
      Adds the allDayEvents provided by the events parameter at indexPath with given dayDate. This also triggers a topBar resize animation.
      */
     func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
-        let extraHeight = self.allDayEventVerticalSpacing*2+self.allDayEventHeight
-
-        if self.topBarHeight < extraHeight {
-            self.extraTopBarHeight = extraHeight
-            UIView.animate(withDuration: 0.25, animations: {
-                self.layoutIfNeeded()
-            })
-        }
-
-        if visibleAllDayEvents[dayDate] != nil {
-            for (_, layer) in visibleAllDayEvents[dayDate]! {
-                layer.removeFromSuperlayer()
-            }
-            visibleAllDayEvents[dayDate] = nil
-        }
-
         self.renderLayers(ofAllDayEvents: events, forIndexPath: indexPath, withDate: dayDate)
     }
 
@@ -570,6 +554,22 @@ open class WeekView: UIView {
      * Method renders the layers for all day events
      */
     private func renderLayers(ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+        let extraHeight = self.allDayEventVerticalSpacing * 2 + self.allDayEventHeight
+
+        if self.extraTopBarHeight != extraHeight {
+            self.extraTopBarHeight = extraHeight
+            UIView.animate(withDuration: 0.25, animations: {
+                self.layoutIfNeeded()
+            })
+        }
+
+        if visibleAllDayEvents[dayDate] != nil {
+            for (_, layer) in visibleAllDayEvents[dayDate]! {
+                layer.removeFromSuperlayer()
+            }
+            visibleAllDayEvents[dayDate] = nil
+        }
+
         var newEventLayers: [EventData: EventLayer] = [:]
         var i = 0
         for eventData in Util.sortedById(eventsToSort: events) {
