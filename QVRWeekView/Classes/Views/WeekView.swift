@@ -74,235 +74,112 @@ open class WeekView: UIView {
 
     // MARK: - CUSTOMIZATION -
 
-    /**
-     Background color of main scrollview.
-     */
+    // Background color of main scrollview.
     @objc public var mainBackgroundColor: UIColor {
-        get {
-            return self.mainView.backgroundColor!
-        }
-        set(color) {
-            self.mainView.backgroundColor = color
-            self.sideBarView.backgroundColor = color
-        }
+        get { self.mainView.backgroundColor! }
+        set(color) { self.mainView.backgroundColor = color; self.sideBarView.backgroundColor = color }
     }
-
-    /**
-     Background color of top bar containing day labels.
-     */
+    // Background color of top bar containing day labels.
     @objc public var topBarColor: UIColor {
-        get {
-            return self.topBarView.backgroundColor!
-        }
-        set(color) {
-            self.topLeftBufferView.backgroundColor = color
-            self.topBarView.backgroundColor = color
-        }
+        get { self.topBarView.backgroundColor! }
+        set(color) { self.topLeftBufferView.backgroundColor = color; self.topBarView.backgroundColor = color }
     }
-
-    /**
-     Color of the side bar containing hour labels.
-     */
+    // Color of the side bar containing hour labels.
     @objc public var sideBarColor: UIColor {
-        get {
-            return self.sideBarView.backgroundColor!
-        }
-        set(color) {
-            self.sideBarView.backgroundColor = color
-        }
+        get { self.sideBarView.backgroundColor! }
+        set(color) { self.sideBarView.backgroundColor = color }
     }
-
-    /**
-     Width of the side bar containing hour labels.
-     */
+    // Width of the side bar containing hour labels.
     @objc public var sideBarWidth: CGFloat {
-        get {
-            return self.sideBarView.frame.width
-        }
-        set(width) {
-            self.sideBarWidthConstraint.constant = width
-            self.topLeftBufferWidthConstraint.constant = width
-        }
+        get { self.sideBarView.frame.width }
+        set(width) { self.sideBarWidthConstraint.constant = width; self.topLeftBufferWidthConstraint.constant = width }
     }
-
-    /**
-     Default height of the top bar
-     */
+    // Default height of the top bar
     @objc public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
         didSet {
             self.updateVisibleLabelsAndMainConstraints()
         }
     }
-
-    /**
-     Font for all day labels contained in the top bar.
-    */
+    // Font for all day labels contained in the top bar.
     @objc public var dayLabelDefaultFont: UIFont = LayoutDefaults.dayLabelFont
-
-    /**
-     Text color for all day labels contained in the top bar.
-     */
+    // Text color for all day labels contained in the top bar.
     @objc public var dayLabelTextColor: UIColor = LayoutDefaults.dayLabelTextColor {
-        didSet {
-            self.updateVisibleLabelsAndMainConstraints()
-        }
+        didSet { self.updateVisibleLabelsAndMainConstraints() }
     }
-
-    /**
-     Text color for today day label contained in the top bar.
-     */
+    // Text color for today day label contained in the top bar.
     @objc public var dayLabelTodayTextColor: UIColor = LayoutDefaults.dayLabelTodayTextColor {
-        didSet {
-            updateVisibleLabelsAndMainConstraints()
-        }
+        didSet { updateVisibleLabelsAndMainConstraints() }
     }
-
-    /**
-    Minimum font size that day label text will be resized to if label is too small.
-    */
+    // Minimum font size that day label text will be resized to if label is too small.
     @objc public var dayLabelMinimumFontSize: CGFloat = LayoutDefaults.dayLabelMinimumFontSize {
         didSet {
             updateVisibleLabelsAndMainConstraints()
         }
     }
-
-    /**
-     Short date format for day labels.
-     See reference of date formats at: http://nsdateformatter.com/
-     */
+    // Short date format for day labels. See reference of date formats at: http://nsdateformatter.com/
     @objc public var dayLabelShortDateFormat: String {
-        get {
-            return self.dayLabelDateFormats[.small]!
-        }
+        get { self.dayLabelDateFormats[.small]! }
         set(format) {
             self.dayLabelDateFormats[.small] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
-
-    /**
-     Normal date format for day labels.
-     See reference of date formats at: http://nsdateformatter.com/
-     */
+    // Normal date format for day labels. See reference of date formats at: http://nsdateformatter.com/
     @objc public var dayLabelNormalDateFormat: String {
-        get {
-            return self.dayLabelDateFormats[.normal]!
-        }
+        get { self.dayLabelDateFormats[.normal]! }
         set(format) {
             self.dayLabelDateFormats[.normal] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
-
-    /**
-     Long date format for day labels.
-     See reference of date formats at: http://nsdateformatter.com/
-     */
+    // Long date format for day labels. See reference of date formats at: http://nsdateformatter.com/
     @objc public var dayLabelLongDateFormat: String {
-        get {
-            return self.dayLabelDateFormats[.large]!
-        }
+        get { self.dayLabelDateFormats[.large]! }
         set(format) {
             self.dayLabelDateFormats[.large] = format
             updateVisibleLabelsAndMainConstraints()
         }
     }
-
-    /**
-     Locale for the day labels.
-     If none is given device locale will be used.
-     */
+    // Locale for the day labels. If none is given device locale will be used.
     @objc public var dayLabelDateLocale: Locale = NSLocale.current {
-        didSet {
-            updateVisibleLabelsAndMainConstraints()
-        }
+        didSet { updateVisibleLabelsAndMainConstraints() }
     }
-
-    /**
-     Font for all hour labels contained in the side bar.
-     */
+    // Font for all hour labels contained in the side bar.
     @objc public var hourLabelFont: UIFont {
-        get {
-            return self.hourSideBarView.hourLabelFont
-        }
-        set(font) {
-            self.hourSideBarView.hourLabelFont = font
-        }
+        get { self.hourSideBarView.hourLabelFont }
+        set(font) { self.hourSideBarView.hourLabelFont = font }
     }
-
-    /**
-     Text color for all hour labels contained in the side bar.
-     */
+    // Text color for all hour labels contained in the side bar.
     @objc public var hourLabelTextColor: UIColor {
-        get {
-            return self.hourSideBarView.hourLabelTextColor
-        }
-        set(color) {
-            self.hourSideBarView.hourLabelTextColor = color
-        }
+        get { self.hourSideBarView.hourLabelTextColor }
+        set(color) { self.hourSideBarView.hourLabelTextColor = color }
     }
-
-    /**
-     Minimum percentage that hour label text will be resized to if label is too small.
-     */
+    // Minimum percentage that hour label text will be resized to if label is too small.
     @objc public var hourLabelMinimumFontSize: CGFloat {
-        get {
-            return self.hourSideBarView.hourLabelMinimumFontSize
-        }
-        set(size) {
-            self.hourSideBarView.hourLabelMinimumFontSize = size
-        }
+        get { self.hourSideBarView.hourLabelMinimumFontSize }
+        set(size) { self.hourSideBarView.hourLabelMinimumFontSize = size }
     }
-
-    /**
-     Format of all hour labels.
-     */
+    // Format of all hour labels.
     @objc public var hourLabelDateFormat: String {
-        get {
-            return self.hourSideBarView.hourLabelDateFormat
-        }
-        set(format) {
-            self.hourSideBarView.hourLabelDateFormat = format
-        }
+        get { self.hourSideBarView.hourLabelDateFormat }
+        set(format) { self.hourSideBarView.hourLabelDateFormat = format }
     }
-
-    /**
-     Height of all day labels.
-     */
+    // Height of all day labels.
     @objc public var allDayEventHeight: CGFloat = LayoutDefaults.allDayEventHeight {
-        didSet {
-            self.updateAllDayEventLayers()
-        }
+        didSet { self.updateAllDayEventLayers() }
     }
-
-    /**
-     Height of all day labels.
-     */
+    // Height of all day labels.
     @objc public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing {
-       didSet {
-           self.updateAllDayEventLayers()
-       }
+       didSet { self.updateAllDayEventLayers() }
    }
-
-    /**
-     Spread all day events on x axis, if not true than spread will be made on y axis.
-     */
+    // Spread all day events on x axis, if not true than spread will be made on y axis.
     @objc public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX {
-        didSet {
-            self.updateAllDayEventLayers()
-        }
+        didSet { self.updateAllDayEventLayers() }
     }
-
-    /**
-    Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
-    */
+    // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
     @objc public var autoConvertAllDayEvents: Bool {
-        get {
-            self.dayScrollView.autoConvertLongEventsToAllDay
-        }
-        set(bool) {
-            self.dayScrollView.autoConvertLongEventsToAllDay = bool
-        }
+        get { self.dayScrollView.autoConvertLongEventsToAllDay }
+        set(bool) { self.dayScrollView.autoConvertLongEventsToAllDay = bool }
     }
 
     // MARK: - PRIVATE VARIABLES -
