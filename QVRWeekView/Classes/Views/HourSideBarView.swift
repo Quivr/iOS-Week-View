@@ -14,45 +14,16 @@ class HourSideBarView: UIView {
 
     // MARK: - CUSTOMIZATION VARIABLES -
 
-    /**
-     Font for all hour labels contained in the side bar.
-     */
-    var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont {
-        didSet {
-            self.layoutIfNeeded()
-        }
-    }
-
-    /**
-     Text color for all hour labels contained in the side bar.
-     */
-    var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor {
-        didSet {
-            self.layoutIfNeeded()
-        }
-    }
-
-    /**
-     Minimum percentage that hour label text will be resized to if label is too small.
-     */
-    var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize {
-        didSet {
-            self.layoutIfNeeded()
-        }
-    }
-
-    /**
-     Format of all hour labels.
-     */
-    var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat {
-        didSet {
-            self.layoutIfNeeded()
-        }
-    }
-
-    private var hourLabelMinimumScale: CGFloat {
-        return self.hourLabelMinimumFontSize / self.hourLabelFont.pointSize
-    }
+    // Font for all hour labels contained in the side bar.
+    var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont { didSet { self.layoutIfNeeded() } }
+    // Text color for all hour labels contained in the side bar.
+    var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor { didSet { self.layoutIfNeeded() } }
+    // Minimum percentage that hour label text will be resized to if label is too small.
+    var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize { didSet { self.layoutIfNeeded() } }
+    // Format of all hour labels.
+    var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat { didSet { self.layoutIfNeeded() } }
+    // Minimum scale
+    private var hourLabelMinimumScale: CGFloat { self.hourLabelMinimumFontSize / self.hourLabelFont.pointSize }
 
     // MARK: - FUNCTIONS -
 
