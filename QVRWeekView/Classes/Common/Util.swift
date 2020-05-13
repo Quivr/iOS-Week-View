@@ -11,6 +11,14 @@ import Foundation
  Util struct provides static utility methods.
  */
 struct Util {
+
+    /**
+     Get the interface orientation from status bar
+     */
+    static var orientation: UIInterfaceOrientation {
+        return UIApplication.shared.statusBarOrientation
+    }
+
     /**
      Function returns true if given event from dayDate can not be found in the given eventStore,
      or if the event found in the eventStore with same id is different (has changed)

@@ -44,11 +44,11 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Amount of spacing above and below day view cells when in landscape mode.
     var landscapeDayViewVerticalSpacing = LayoutDefaults.landscapeDayViewVerticalSpacing { didSet { updateLayout() } }
     // Number of currently visible day view cells
-    var visibleDays: CGFloat { UIDevice.current.orientation.isPortrait ? self.visibleDaysInPortraitMode : self.visibleDaysInLandscapeMode }
+    var visibleDays: CGFloat { Util.orientation.isPortrait ? self.visibleDaysInPortraitMode : self.visibleDaysInLandscapeMode }
     // Width of spacing between day columns in landscape mode
-    var dayViewHorizontalSpacing: CGFloat { UIDevice.current.orientation.isPortrait ? self.portraitDayViewHorizontalSpacing : self.landscapeDayViewHorizontalSpacing }
+    var dayViewHorizontalSpacing: CGFloat { Util.orientation.isPortrait ? self.portraitDayViewHorizontalSpacing : self.landscapeDayViewHorizontalSpacing }
     // Height of spacing between day columns and borders
-    var dayViewVerticalSpacing: CGFloat { UIDevice.current.orientation.isPortrait ? self.portraitDayViewVerticalSpacing : self.landscapeDayViewVerticalSpacing }
+    var dayViewVerticalSpacing: CGFloat { Util.orientation.isPortrait ? self.portraitDayViewVerticalSpacing : self.landscapeDayViewVerticalSpacing }
     // Height of a single day view cell
     var initialDayViewCellHeight: CGFloat = LayoutDefaults.dayViewCellHeight { didSet { updateLayout() } }
     // Width of a single day view cell
