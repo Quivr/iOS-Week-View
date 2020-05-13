@@ -450,8 +450,6 @@ public extension WeekView {
         }
     }
 
-
-
     /**
      Sensitivity for horizontal scrolling. A higher number will multiply input velocity
      more and thus result in more cells being skipped when scrolling.

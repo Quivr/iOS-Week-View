@@ -146,7 +146,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         let flowLayout = DayCollectionViewFlowLayout()
         flowLayout.itemSize = CGSize(width: self.dayViewCellWidth, height: self.dayViewCellHeight)
         flowLayout.minimumLineSpacing = self.dayViewHorizontalSpacing
-        flowLayout.cellWidth = self.totalDayViewCellWidth
         flowLayout.velocityMultiplier = self.velocityOffsetMultiplier
 
         // Make day collection view and add it to frame
@@ -568,7 +567,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if let flowLayout = dayCollectionView.collectionViewLayout as? DayCollectionViewFlowLayout {
             flowLayout.itemSize = CGSize(width: self.dayViewCellWidth, height: self.dayViewCellHeight)
             flowLayout.minimumLineSpacing = self.dayViewHorizontalSpacing
-            flowLayout.cellWidth = self.totalDayViewCellWidth
             flowLayout.velocityMultiplier = self.velocityOffsetMultiplier
         }
     }

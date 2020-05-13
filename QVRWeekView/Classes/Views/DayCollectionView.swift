@@ -36,7 +36,6 @@ class DayCollectionView: UICollectionView {
 
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
 
-    var cellWidth: CGFloat = LayoutDefaults.dayViewCellWidth
     var velocityMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier
 
     required init?(coder aDecoder: NSCoder) {
@@ -58,11 +57,11 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
         let xOffset = proposedContentOffset.x
         let xVelocity = velocity.x
 
-        let cellOffset = round(xOffset / self.cellWidth)
+        let cellOffset = round(xOffset / self.itemSize.width)
         let velocityOffset = round(xVelocity * self.velocityMultiplier)
 
         if velocityOffset != 0 {
-            let targetXOffset = ((cellOffset + velocityOffset)*self.cellWidth).roundUpAdditionalHalf()
+            let targetXOffset = ((cellOffset + velocityOffset) * self.itemSize.width).roundUpAdditionalHalf()
             return CGPoint(x: targetXOffset, y: proposedContentOffset.y)
         }
         else {
