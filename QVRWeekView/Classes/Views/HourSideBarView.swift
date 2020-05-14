@@ -7,8 +7,25 @@ import UIKit
 @IBDesignable
 class HourSideBarView: UIView {
 
+    // MARK: - INSTANCE VARIABLES -
+
     @IBOutlet var hourLabels: [HourLabel]!
     var view: UIView?
+
+    // MARK: - CUSTOMIZATION VARIABLES -
+
+    // Font for all hour labels contained in the side bar.
+    var hourLabelFont: UIFont = LayoutDefaults.hourLabelFont { didSet { self.updateLabels() } }
+    // Text color for all hour labels contained in the side bar.
+    var hourLabelTextColor: UIColor = LayoutDefaults.hourLabelTextColor { didSet { self.updateLabels() } }
+    // Minimum percentage that hour label text will be resized to if label is too small.
+    var hourLabelMinimumFontSize: CGFloat = LayoutDefaults.hourLabelMinimumFontSize { didSet { self.updateLabels() } }
+    // Format of all hour labels.
+    var hourLabelDateFormat: String = LayoutDefaults.hourLabelDateFormat { didSet { self.updateLabels() } }
+    // Minimum scale
+    private var hourLabelMinimumScale: CGFloat { self.hourLabelMinimumFontSize / self.hourLabelFont.pointSize }
+
+    // MARK: - FUNCTIONS -
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -28,21 +45,6 @@ class HourSideBarView: UIView {
     }
 
     override func layoutSubviews() {
-        if hourLabels[0].font != TextVariables.hourLabelFont {
-            for label in hourLabels {
-                label.font = TextVariables.hourLabelFont
-            }
-        }
-        if hourLabels[0].textColor != TextVariables.hourLabelTextColor {
-            for label in hourLabels {
-                label.textColor = TextVariables.hourLabelTextColor
-            }
-        }
-        if hourLabels[0].minimumScaleFactor != TextVariables.hourLabelMinimumScale {
-            for label in hourLabels {
-                label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
-            }
-        }
         updateLabels()
     }
 
@@ -51,9 +53,15 @@ class HourSideBarView: UIView {
             return label1.order < label2.order
         }
 
+        for label in hourLabels {
+            label.font = self.hourLabelFont
+            label.textColor = self.hourLabelTextColor
+            label.minimumScaleFactor = self.hourLabelMinimumScale
+        }
+
         var date = DateSupport.getZeroDate()
         let df = DateFormatter()
-        df.dateFormat = TextVariables.hourLabelDateFormat
+        df.dateFormat = self.hourLabelDateFormat
         for label in hourLabels {
             label.text = df.string(from: date)
             date.add(hours: 1)
@@ -72,9 +80,9 @@ class HourSideBarView: UIView {
         self.backgroundColor = UIColor.clear
 
         for label in hourLabels {
-            label.font = TextVariables.hourLabelFont
-            label.textColor = TextVariables.hourLabelTextColor
-            label.minimumScaleFactor = TextVariables.hourLabelMinimumScale
+            label.font = self.hourLabelFont
+            label.textColor = self.hourLabelTextColor
+            label.minimumScaleFactor = self.hourLabelMinimumScale
             label.numberOfLines = 2
             label.adjustsFontSizeToFitWidth = true
         }

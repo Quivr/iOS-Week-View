@@ -25,7 +25,6 @@ struct LayoutDefaults {
     static let dayLabelMinimumFontSize = CGFloat(8)
     // Date formats for day labels
     static let dayLabelDateFormats: [TextMode: String] = [.large: "E d MMM y", .normal: "E d MMM", .small: "d MMM"]
-
     // Default font of hour labels
     static let hourLabelFont = UIFont.boldSystemFont(ofSize: 12)
     // Default text color of hour labels
@@ -41,8 +40,6 @@ struct LayoutDefaults {
     static let eventLabelThinFont = UIFont.systemFont(ofSize: 12)
     // Default text color of event labels
     static let eventLabelTextColor = UIColor.white
-    // Default minimum event label scaling
-    static let eventLabelMinimumFontSize = CGFloat(8)
     // Default horizontal padding of text in event labels
     static let eventLabelHorizontalTextPadding = CGFloat(2)
     // Default vertical padding of text in event labels

@@ -39,18 +39,6 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         return Calendar.current.date(from: dateComps)!
     }
 
-    public var largeString: String {
-        return getString(forMode: .large)
-    }
-
-    public var defaultString: String {
-        return getString(forMode: .normal)
-    }
-
-    public var smallString: String {
-        return self.getString(forMode: .small)
-    }
-
     public var dayInYear: Int {
         return self.dateObj.getDayOfYear()
     }
@@ -115,17 +103,6 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         hasher.combine(month)
         hasher.combine(year)
         hasher.combine(era)
-    }
-
-    func getString(forMode mode: TextMode) -> String {
-        let df = DateFormatter()
-        df.dateFormat = TextVariables.dayLabelDateFormats[mode]
-        var locale = NSLocale.current
-        if let customLocale = TextVariables.dayLabelDateLocale {
-            locale = customLocale
-        }
-        df.locale = locale
-        return df.string(from: self.dateObj)
     }
 
     public func hasPassed() -> Bool {

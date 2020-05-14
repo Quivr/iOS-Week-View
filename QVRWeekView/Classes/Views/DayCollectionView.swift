@@ -35,6 +35,9 @@ class DayCollectionView: UICollectionView {
 // MARK: - DAY COLLECTION VIEW FLOW LAYOUT -
 
 class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
+
+    var velocityMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
@@ -46,22 +49,19 @@ class DayCollectionViewFlowLayout: UICollectionViewFlowLayout {
     }
 
     private func initialize() {
-        self.itemSize = CGSize(width: LayoutVariables.dayViewCellWidth, height: LayoutVariables.dayViewCellHeight)
-        self.minimumLineSpacing = LayoutVariables.dayViewHorizontalSpacing
         self.scrollDirection = .horizontal
     }
 
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint,
                                       withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        let totalDayViewWidth = LayoutVariables.totalDayViewCellWidth
         let xOffset = proposedContentOffset.x
         let xVelocity = velocity.x
 
-        let cellOffset = round(xOffset / totalDayViewWidth)
-        let velocityOffset = round(xVelocity * LayoutVariables.velocityOffsetMultiplier)
+        let cellOffset = round(xOffset / self.itemSize.width)
+        let velocityOffset = round(xVelocity * self.velocityMultiplier)
 
         if velocityOffset != 0 {
-            let targetXOffset = ((cellOffset + velocityOffset)*totalDayViewWidth).roundUpAdditionalHalf()
+            let targetXOffset = ((cellOffset + velocityOffset) * self.itemSize.width).roundUpAdditionalHalf()
             return CGPoint(x: targetXOffset, y: proposedContentOffset.y)
         }
         else {

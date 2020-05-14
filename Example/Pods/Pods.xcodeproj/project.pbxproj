@@ -17,6 +17,7 @@
 		71848169A0D0B0F2BDBBAAE434F3925C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88AAE1F92055A60CC2FC970D7D34634 /* Foundation.framework */; };
 		84CFEDC3399056583BAD7312BC4E57D7 /* QVRWeekView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A90E1003711789B3DAD51CEFF9E832D /* QVRWeekView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		915055112312DBCB007859DD /* EventLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 915055102312DBCB007859DD /* EventLayer.swift */; };
+		918AC98E246C027C0047DF2C /* DayViewCellLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918AC98C246C027C0047DF2C /* DayViewCellLayout.swift */; };
 		91B3C791223A8132002FB46A /* ZoomOffsetPreservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B3C78F223A8132002FB46A /* ZoomOffsetPreservation.swift */; };
 		91FD8712214D579F00E2B165 /* HourLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FD8710214D579F00E2B165 /* HourLabel.swift */; };
 		92052C32E9D67B306AC7CC1FED69DE68 /* DayViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474A2140F482F108FBCDD5CD6C300C30 /* DayViewCell.swift */; };
@@ -67,6 +68,7 @@
 		8D2902E45CE5A0D092F208915A3F3E85 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DCBCD333FA607FE6DD6A34342818769 /* DayDate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DayDate.swift; sourceTree = "<group>"; };
 		915055102312DBCB007859DD /* EventLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLayer.swift; sourceTree = "<group>"; };
+		918AC98C246C027C0047DF2C /* DayViewCellLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayViewCellLayout.swift; sourceTree = "<group>"; };
 		91B3C78F223A8132002FB46A /* ZoomOffsetPreservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomOffsetPreservation.swift; sourceTree = "<group>"; };
 		91FD8710214D579F00E2B165 /* HourLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourLabel.swift; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -232,6 +234,7 @@
 				E87A1409DC2AFE585F22243107C12303 /* Customization.swift */,
 				17EDEADF7F010BE6F3CA2E50FFCA31C7 /* DateSupport.swift */,
 				8DCBCD333FA607FE6DD6A34342818769 /* DayDate.swift */,
+				918AC98C246C027C0047DF2C /* DayViewCellLayout.swift */,
 				F26E3761E455232E45D96D847C12E8D5 /* Extensions.swift */,
 				9F0DEDD29A1AD95E6281151323D09539 /* FrameCalculator.swift */,
 				6EB4AC9F71B654E7921C28D30AE7CD7B /* Period.swift */,
@@ -322,7 +325,7 @@
 						LastSwiftMigration = 1030;
 					};
 					8CE7256899A40CE9B63331170ABF9BAD = {
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1140;
 					};
 				};
 			};
@@ -355,6 +358,7 @@
 				563E8EE8E9F8DAD59819347C2029B379 /* DateSupport.swift in Sources */,
 				AD213F0068895F673C00C09C543328C0 /* DayCollectionView.swift in Sources */,
 				91FD8712214D579F00E2B165 /* HourLabel.swift in Sources */,
+				918AC98E246C027C0047DF2C /* DayViewCellLayout.swift in Sources */,
 				91B3C791223A8132002FB46A /* ZoomOffsetPreservation.swift in Sources */,
 				FB8253C800966CABA95E3DD90C1320C3 /* DayDate.swift in Sources */,
 				B58B8EBACFE149C8D7B0923E1F593570 /* DayScrollView.swift in Sources */,

@@ -12,7 +12,7 @@ class EventLayer: CALayer {
         super.init(layer: layer)
     }
 
-    init(withFrame frame: CGRect, andEvent event: EventData) {
+    init(withFrame frame: CGRect, layout: DayViewCellLayout, andEvent event: EventData) {
         super.init()
         self.bounds = frame
         self.frame = frame
@@ -29,10 +29,12 @@ class EventLayer: CALayer {
         let eventTextLayer = CATextLayer()
         eventTextLayer.isWrapped = true
         eventTextLayer.contentsScale = UIScreen.main.scale
-        eventTextLayer.string = event.getDisplayString()
+        eventTextLayer.string = event.getDisplayString(withMainFont: layout.eventLabelFont,
+                                                       infoFont: layout.eventLabelInfoFont,
+                                                       andColor: layout.eventLabelTextColor)
 
-        let xPadding = TextVariables.eventLabelHorizontalTextPadding
-        let yPadding = TextVariables.eventLabelVerticalTextPadding
+        let xPadding = layout.eventLabelHorizontalTextPadding
+        let yPadding = layout.eventLabelVerticalTextPadding
         eventTextLayer.frame = CGRect(x: frame.origin.x + xPadding,
                                       y: frame.origin.y + yPadding,
                                       width: frame.width - 2*xPadding,

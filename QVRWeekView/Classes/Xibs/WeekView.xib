@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,6 +11,7 @@
             <connections>
                 <outlet property="dayScrollView" destination="dhg-SP-fAj" id="bUp-E7-Ixh"/>
                 <outlet property="hourSideBarHeightConstraint" destination="dBr-bh-Ky5" id="7Oc-p1-rPJ"/>
+                <outlet property="hourSideBarView" destination="VcM-2k-vaz" id="rEu-gg-dJq"/>
                 <outlet property="hourSideBarYPositionConstraint" destination="257-A5-8hg" id="na7-fq-o5l"/>
                 <outlet property="sideBarHeightConstraint" destination="jQr-zE-7Aq" id="qFD-5X-C4h"/>
                 <outlet property="sideBarView" destination="uo6-Ir-nWX" id="UV0-OE-B2b"/>
