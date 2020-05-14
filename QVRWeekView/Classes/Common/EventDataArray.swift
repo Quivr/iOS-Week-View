@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+ Used to store an array of events in a Core Data Model
+ */
 open class EventDataArray: NSObject, NSCoding {
 
     public let eventsData: [EventData]

@@ -24,8 +24,15 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     @IBAction func testButtonPress(_ sender: Any) {
-//        self.saveEvents()
+        weekView.visibleDaysInPortraitMode = 4
+    }
+
+    @IBAction func loadButtonPress(_ sender: Any) {
         self.fetchEvents()
+    }
+
+    @IBAction func saveButtonPress(_ sender: Any) {
+        self.saveEvents()
     }
 
     override func viewDidLoad() {

@@ -3,11 +3,7 @@
     <entity name="EventArray" representedClassName="EventArray" syncable="YES" codeGenerationType="class">
         <attribute name="events" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName=".EventDataArray"/>
     </entity>
-    <entity name="TestEntity" representedClassName="TestEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="test" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-    </entity>
     <elements>
         <element name="EventArray" positionX="-63" positionY="-18" width="128" height="58"/>
-        <element name="TestEntity" positionX="-54" positionY="0" width="128" height="58"/>
     </elements>
 </model>

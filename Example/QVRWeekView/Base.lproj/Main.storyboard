@@ -26,11 +26,23 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                 <items>
                                     <navigationItem title="Calendar" id="AUC-76-hKQ">
-                                        <barButtonItem key="leftBarButtonItem" title="Test" id="lYZ-ic-prP">
-                                            <connections>
-                                                <action selector="testButtonPress:" destination="9UN-Ih-Ddw" id="ziz-Ju-4MV"/>
-                                            </connections>
-                                        </barButtonItem>
+                                        <leftBarButtonItems>
+                                            <barButtonItem title="Test" id="lYZ-ic-prP">
+                                                <connections>
+                                                    <action selector="testButtonPress:" destination="9UN-Ih-Ddw" id="ziz-Ju-4MV"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem title="Load" id="XlC-SX-Asc">
+                                                <connections>
+                                                    <action selector="loadButtonPress:" destination="9UN-Ih-Ddw" id="eRN-Jb-0tI"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem title="Save" id="JL8-7P-hje">
+                                                <connections>
+                                                    <action selector="saveButtonPress:" destination="9UN-Ih-Ddw" id="Nfg-NQ-ZHK"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </leftBarButtonItems>
                                         <barButtonItem key="rightBarButtonItem" title="Today" id="cxT-iA-Zgj">
                                             <connections>
                                                 <action selector="todayButtonPress:" destination="9UN-Ih-Ddw" id="OeT-pP-G4d"/>
