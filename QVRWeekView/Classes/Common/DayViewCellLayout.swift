@@ -9,6 +9,7 @@ import Foundation
 
 class DayViewCellLayout {
 
+    // Function is called when one of the properties changes
     var update: (() -> Void)?
 
     // Default color of the day view cells. These are all days that are not weekends and not passed.

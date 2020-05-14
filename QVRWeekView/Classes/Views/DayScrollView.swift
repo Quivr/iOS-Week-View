@@ -499,10 +499,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         })
     }
 
-    func renderEventLayer(withFrame frame: CGRect, andEvent eventData: EventData) -> EventLayer {
-        return EventLayer(withFrame: frame, layout: self.dayViewCellLayout, andEvent: eventData)
-    }
-
     // MARK: - HELPER/PRIVATE FUNCTIONS -
 
     // Forces synchronous execution of event overwrite with the given data
