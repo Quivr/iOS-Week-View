@@ -1,4 +1,4 @@
-//  swiftlint:disable force_cast
+//
 //  EventDataArray.swift
 //  Pods
 //
@@ -21,8 +21,11 @@ open class EventDataArray: NSObject, NSCoding {
     }
 
     required public convenience init?(coder: NSCoder) {
-       let eventsData = coder.decodeObject(forKey: EventDataArrayEncoderKey.eventsData) as! [EventData]
-       self.init(eventsData: eventsData)
+        if let eventsData = coder.decodeObject(forKey: EventDataArrayEncoderKey.eventsData) as? [EventData] {
+            self.init(eventsData: eventsData)
+        } else {
+            return nil
+        }
     }
 }
 

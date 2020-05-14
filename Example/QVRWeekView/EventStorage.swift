@@ -20,7 +20,6 @@ class EventStorage {
         let userEntity = NSEntityDescription.entity(forEntityName: "EventArray", in: managedContext)!
 
         if let cEventArray = NSManagedObject(entity: userEntity, insertInto: managedContext) as? EventArray {
-            print("setting value", events)
             cEventArray.setValue(EventDataArray(eventsData: events), forKey: "events")
             appDelegate.saveContext()
         }
@@ -31,13 +30,9 @@ class EventStorage {
         let managedContext = appDelegate.persistentContainer.viewContext
         do {
             let result = try managedContext.fetch(NSFetchRequest<NSFetchRequestResult>(entityName: "EventArray"))
-            print("Found results", result)
             if  let eventArray = result.first as? EventArray {
-                print("Found EventArray", eventArray, eventArray.value(forKey: "events"))
                 if let eventDataArray = eventArray.value(forKey: "events") as? EventDataArray {
-                    print("Found eventDataArray", eventDataArray)
                     let eventsData = eventDataArray.eventsData
-                    print("Found data", eventsData)
                     return eventsData
                 }
             }
@@ -50,7 +45,6 @@ class EventStorage {
     static func deleteEvents() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
-
         do {
             try managedContext.execute(NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: "EventArray")))
         } catch {

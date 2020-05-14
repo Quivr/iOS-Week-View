@@ -1,4 +1,4 @@
-//  swiftlint:disable force_cast
+//
 //  EventData.swift
 //  Pods
 //
@@ -123,23 +123,25 @@ open class EventData: NSObject, NSCoding {
     }
 
     public required convenience init?(coder: NSCoder) {
-        let dId = coder.decodeObject(forKey: EventDataEncoderKey.id) as! String
-        let dTitle = coder.decodeObject(forKey: EventDataEncoderKey.title) as! String
-        let dStartDate = coder.decodeObject(forKey: EventDataEncoderKey.startDate) as! Date
-        let dEndDate = coder.decodeObject(forKey: EventDataEncoderKey.endDate) as! Date
-        let dLocation = coder.decodeObject(forKey: EventDataEncoderKey.location) as! String
-        let dColor = coder.decodeObject(forKey: EventDataEncoderKey.color) as! UIColor
-        let dGradientLayer = coder.decodeObject(forKey: EventDataEncoderKey.gradientLayer) as! CAGradientLayer?
-        let dAllDay = coder.decodeBool(forKey: EventDataEncoderKey.allDay)
-
-        self.init(id: dId,
-                  title: dTitle,
-                  startDate: dStartDate,
-                  endDate: dEndDate,
-                  location: dLocation,
-                  color: dColor,
-                  allDay: dAllDay,
-                  gradientLayer: dGradientLayer)
+        if  let dId = coder.decodeObject(forKey: EventDataEncoderKey.id) as? String,
+            let dTitle = coder.decodeObject(forKey: EventDataEncoderKey.title) as? String,
+            let dStartDate = coder.decodeObject(forKey: EventDataEncoderKey.startDate) as? Date,
+            let dEndDate = coder.decodeObject(forKey: EventDataEncoderKey.endDate) as? Date,
+            let dLocation = coder.decodeObject(forKey: EventDataEncoderKey.location) as? String,
+            let dColor = coder.decodeObject(forKey: EventDataEncoderKey.color) as? UIColor {
+                let dGradientLayer = coder.decodeObject(forKey: EventDataEncoderKey.gradientLayer) as? CAGradientLayer
+                let dAllDay = coder.decodeBool(forKey: EventDataEncoderKey.allDay)
+                self.init(id: dId,
+                          title: dTitle,
+                          startDate: dStartDate,
+                          endDate: dEndDate,
+                          location: dLocation,
+                          color: dColor,
+                          allDay: dAllDay,
+                          gradientLayer: dGradientLayer)
+        } else {
+            return nil
+        }
     }
 
     // Static equal comparison operator
