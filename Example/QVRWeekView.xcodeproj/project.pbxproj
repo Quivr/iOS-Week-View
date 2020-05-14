@@ -16,6 +16,8 @@
 		91300C6D1F238FF6004A7FF9 /* TestWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91300C6C1F238FF6004A7FF9 /* TestWeekView.swift */; };
 		91412EF41ED34BF5006EC716 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91412EF31ED34BF5006EC716 /* TestViewController.swift */; };
 		916093741ECF3526004E62E3 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916093731ECF3526004E62E3 /* StartViewController.swift */; };
+		917C4490246D853200A78CBC /* EventStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 917C448F246D853200A78CBC /* EventStorage.swift */; };
+		917C4493246D855100A78CBC /* QVRWeekView_Example.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 917C4491246D855100A78CBC /* QVRWeekView_Example.xcdatamodeld */; };
 		D373495F948282220F0D1913 /* Pods_QVRWeekView_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -35,6 +37,9 @@
 		91300C6C1F238FF6004A7FF9 /* TestWeekView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestWeekView.swift; sourceTree = "<group>"; };
 		91412EF31ED34BF5006EC716 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		916093731ECF3526004E62E3 /* StartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		917C448F246D853200A78CBC /* EventStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventStorage.swift; sourceTree = "<group>"; };
+		917C4492246D855100A78CBC /* QVRWeekView_Example.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = QVRWeekView_Example.xcdatamodel; sourceTree = "<group>"; };
+		917C4494246D86D200A78CBC /* QVRWeekView-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QVRWeekView-Bridging-Header.h"; sourceTree = "<group>"; };
 		A778E5177EE518E5FF85E4C3 /* Pods-QVRWeekView_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QVRWeekView_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QVRWeekView_Example/Pods-QVRWeekView_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		CBEB959FC90B0B2E9641F2AB /* Pods_QVRWeekView_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QVRWeekView_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -82,6 +87,7 @@
 		607FACD21AFB9204008FA782 /* Example for QVRWeekView */ = {
 			isa = PBXGroup;
 			children = (
+				917C448F246D853200A78CBC /* EventStorage.swift */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* CalendarViewController.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -91,6 +97,8 @@
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 				91412EF31ED34BF5006EC716 /* TestViewController.swift */,
 				91300C6C1F238FF6004A7FF9 /* TestWeekView.swift */,
+				917C4491246D855100A78CBC /* QVRWeekView_Example.xcdatamodeld */,
+				917C4494246D86D200A78CBC /* QVRWeekView-Bridging-Header.h */,
 			);
 			name = "Example for QVRWeekView";
 			path = QVRWeekView;
@@ -268,10 +276,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				917C4493246D855100A78CBC /* QVRWeekView_Example.xcdatamodeld in Sources */,
 				607FACD81AFB9204008FA782 /* CalendarViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				91412EF41ED34BF5006EC716 /* TestViewController.swift in Sources */,
 				916093741ECF3526004E62E3 /* StartViewController.swift in Sources */,
+				917C4490246D853200A78CBC /* EventStorage.swift in Sources */,
 				91300C6D1F238FF6004A7FF9 /* TestWeekView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +360,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "QVRWeekView/QVRWeekView-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -399,6 +410,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "QVRWeekView/QVRWeekView-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
@@ -416,6 +428,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = QVRWeekView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -435,6 +448,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = QVRWeekView/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -465,6 +479,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		917C4491246D855100A78CBC /* QVRWeekView_Example.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				917C4492246D855100A78CBC /* QVRWeekView_Example.xcdatamodel */,
+			);
+			currentVersion = 917C4492246D855100A78CBC /* QVRWeekView_Example.xcdatamodel */;
+			path = QVRWeekView_Example.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 607FACC81AFB9204008FA782 /* Project object */;
 }

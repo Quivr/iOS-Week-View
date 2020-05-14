@@ -6,12 +6,34 @@
 //  Copyright (c) 2017 reilem. All rights reserved.
 //
 
+import CoreData
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "QVRWeekView_Example")
+        container.loadPersistentStores(completionHandler: { (_, error) in
+            if let error = error {
+                fatalError("Unresolved error, \((error as NSError).userInfo)")
+            }
+        })
+        return container
+    }()
+
+    func saveContext() {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch let error as NSError {
+                fatalError("Saving failed \(error), \(error.userInfo)")
+            }
+        }
+    }
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

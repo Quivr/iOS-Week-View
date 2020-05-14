@@ -88,7 +88,7 @@ Then you should be all set!
 | updateTimeDisplayed       | `\`                                         | Updates the time displayed by the hour indicator |
 | showDay                           | date:`Date`                           | Scrolls the week view to the day passed by `date`  |
 | showToday                        | `\`                                         | Scrolls the week view to today                              |
-| loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects.         |
+| loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects. Passing an empty array removes all visible events.  |
 | redrawEvents | | Triggers a `setNeedsLayout` on all DayViewCells and will trigger a redrawing of all events |
 
 #### WeekView Public Properties
@@ -113,6 +113,22 @@ EventData is the main object used to communicate events between the WeekView and
 | color:`UIColor`              | The main color for this event  |
 | allDay:`Bool`                  | Indicates if this event is an all day event, all day events are displayed along the top bar |
 | `configureGradient(CAGradientLayer?) -> Void`       | Use to configure a gradient that will be used to render your event instead of just a solid color |
+
+#### Saving and Persisting Events
+
+Events can be stored in Core Data (the following guide assumes some basic knowledge of Core Data):
+
+1. Create a new Core Data model if you don't have one already. Create a new Entity in this model.
+2. Add a new Attribute of type  `Transformable` to the new Entity.
+2. Select the new Attribute and make sure its `CustomClass` is set to (this can be changed in the right-hand side menu):
+    - `EventDataArray` if you want to store an array of events
+    - `EventData` if you want to store a single event
+3. If you are getting Undeclared Type warnings, you may need to add `@import QVRWeekView` to your `[ProjectName]-Bridging-Header.h` file.
+4. You can now use the new Core Data Entity to persist `EventData` objects.
+
+The `EventDataArray` class has a single variable:  `eventsData: [EventData]` and is simply used as a proxy to store an array of events.
+
+A detailed example can be found in the example Project folder `/Example`. A more detailed guide can be found [here](https://medium.com/@rezafarahani/store-array-of-custom-object-in-coredata-bea77b9eb629).
 
 ### Customizing WeekView
 
