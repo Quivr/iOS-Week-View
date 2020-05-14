@@ -88,7 +88,7 @@ Then you should be all set!
 | updateTimeDisplayed       | `\`                                         | Updates the time displayed by the hour indicator |
 | showDay                           | date:`Date`                           | Scrolls the week view to the day passed by `date`  |
 | showToday                        | `\`                                         | Scrolls the week view to today                              |
-| loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects.         |
+| loadEvents                        | eventsData:`[EventData]` | Loads, processes and displays the events provided by the `eventsData` array of `EventData`<sup>1</sup> objects. Passing an empty array removes all visible events.  |
 | redrawEvents | | Triggers a `setNeedsLayout` on all DayViewCells and will trigger a redrawing of all events |
 
 #### WeekView Public Properties
