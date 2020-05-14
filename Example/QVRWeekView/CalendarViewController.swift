@@ -24,7 +24,7 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     @IBAction func testButtonPress(_ sender: Any) {
-        weekView.visibleDaysInPortraitMode = 4
+        weekView.loadEvents(withData: [])
     }
 
     @IBAction func loadButtonPress(_ sender: Any) {
