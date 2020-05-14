@@ -71,23 +71,32 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     var velocityOffsetMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier { didSet { updateLayout() } }
     // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
     var autoConvertLongEventsToAllDay: Bool = true { didSet { updateLayout() } }
+    // Horizontal scrolling option
+    var horizontalScrolling: HorizontalScrolling = .infinite { didSet { updateLayout() } }
     // Day view cell layout object
     let dayViewCellLayout: DayViewCellLayout = DayViewCellLayout()
 
     // MARK: - PRIVATE VARIABLES -
 
     // Min x-axis value that repeating starts at
-    private var minOffsetX = CGFloat(0)
+    private var minOffsetX: CGFloat { CGFloat(0) }
     // Min y-axis value that can be scrolled to
     private var minOffsetY = CGFloat(0)
     // Max x-axis value that can be scrolled to
-    private var maxOffsetX: CGFloat { CGFloat(DateSupport.getDaysInYear(activeYear)) * self.totalDayViewCellWidth }
+    private var maxOffsetX: CGFloat { CGFloat(daysInActiveYear) * self.totalDayViewCellWidth }
     // Max y-axis values that can be scrolled to
     private var maxOffsetY: CGFloat { (self.totalContentHeight - self.frame.height) < self.minOffsetY ? self.minOffsetY : (self.totalContentHeight - self.frame.height) }
     // Collection view
     private(set) var dayCollectionView: DayCollectionView!
     // Number of cells in collection view
-    private var dayCollectionViewCellCount: Int { DateSupport.getDaysInYear(activeYear) + Int(max(self.visibleDaysInLandscapeMode, self.visibleDaysInPortraitMode)) }
+    private var dayCollectionViewCellCount: Int {
+        switch self.horizontalScrolling {
+        case .infinite:
+            return daysInActiveYear + Int(max(self.visibleDaysInLandscapeMode, self.visibleDaysInPortraitMode))
+        case .finite(let number, _):
+            return number
+        }
+    }
     // EventData objects that are not all-day events
     private(set) var eventsData: [DayDate: [String: EventData]] = [:]
     // Event frames for all non all-day events
@@ -100,6 +109,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var frameCalculators: [DayDate: FrameCalculator] = [:]
     // Active year on view
     private var activeYear: Int = DayDate.today.year
+    // Days in active year
+    private var daysInActiveYear: Int { DateSupport.getDaysInYear(activeYear) }
     // Current active day
     private(set) var activeDay: DayDate = DayDate.today { didSet { self.weekView?.activeDayWasChanged(to: self.activeDay) } }
     // Year todauy
@@ -121,9 +132,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             return self.contentOffset.y
         }
         set {
-            let offset = newValue > self.maxOffsetY
-                ? self.maxOffsetY
-                : (newValue < self.minOffsetY ? self.minOffsetY : newValue)
+            let offset = newValue > self.maxOffsetY ? self.maxOffsetY : (newValue < self.minOffsetY ? self.minOffsetY : newValue)
             self.setContentOffset(CGPoint(x: self.contentOffset.x, y: offset), animated: false)
         }
     }
@@ -190,13 +199,15 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         self.weekView?.updateTopAndSideBarPositions()
 
         if let collectionView = scrollView as? DayCollectionView {
-            if collectionView.contentOffset.x < self.minOffsetX {
-                resetView(withYearOffsetChange: -1)
+            if case .infinite = self.horizontalScrolling {
+                if collectionView.contentOffset.x < self.minOffsetX {
+                    activeYear -= 1
+                    dayCollectionView.contentOffset.x = self.maxOffsetX
+                } else if collectionView.contentOffset.x > self.maxOffsetX {
+                    activeYear += 1
+                    dayCollectionView.contentOffset.x = self.minOffsetX
+                }
             }
-            else if collectionView.contentOffset.x > self.maxOffsetX {
-                resetView(withYearOffsetChange: 1)
-            }
-
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
             if  let path = collectionView.indexPathForItem(at: cvLeft),
                 let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
@@ -323,9 +334,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if animated {
             scrollingToDay = true
         }
-        dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forDay: dayDate.dayInYear),
-                                                   y: 0),
-                                           animated: animated)
+        dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forDay: dayDate), y: 0), animated: animated)
         if !animated {
             requestEvents()
         }
@@ -406,8 +415,14 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func getDayDate(forIndexPath indexPath: IndexPath) -> DayDate {
-        let date = DateSupport.getDate(fromDayOfYear: indexPath.row, forYear: activeYear)
-        return DayDate(date: date)
+        switch self.horizontalScrolling {
+        case .infinite:
+            let date = DateSupport.getDate(fromDayOfYear: indexPath.row, forYear: activeYear)
+            return DayDate(date: date)
+        case .finite(_, let startDate):
+            return DayDate(date: startDate).advanced(by: indexPath.row)
+        }
+
     }
 
     func overwriteAllEvents(withData eventsData: [EventData]!) {
@@ -519,22 +534,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.totalContentHeight)
         // Offset change required for: maintaining active day during orientation change, and visible days change (hacky)
         if oldWidth != self.totalContentWidth {
-            dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay.dayInYear), y: 0)
+            dayCollectionView.contentOffset = CGPoint(x: calcXOffset(forDay: activeDay), y: 0)
         }
         // Force update content size to ensure above offset changes are preserved (hacky)
         dayCollectionView.contentSize = CGSize(width: self.totalContentWidth, height: self.totalContentHeight)
         // Update week view labels and constraints
         self.weekView?.updateVisibleLabelsAndMainConstraints()
-    }
-
-    private func resetView(withYearOffsetChange change: Int) {
-        activeYear += change
-
-        if change < 0 {
-            dayCollectionView.contentOffset.x = self.maxOffsetX
-        } else if change > 0 {
-            dayCollectionView.contentOffset.x = self.minOffsetX
-        }
     }
 
     private func scrollToNearestCell() {
@@ -545,7 +550,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         let truncatedToPagingWidth = xOffset.truncatingRemainder(dividingBy: totalDayViewWidth)
 
         if truncatedToPagingWidth >= 0.5 && yOffset >= self.minOffsetY && yOffset <= self.maxOffsetY {
-            dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forDay: round(xOffset / totalDayViewWidth)),
+            dayCollectionView.setContentOffset(CGPoint(x: calcXOffset(forIndex: round(xOffset / totalDayViewWidth)),
                                                        y: dayCollectionView.contentOffset.y), animated: true)
         }
     }
@@ -576,12 +581,29 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         requestEvents()
     }
 
-    private func calcXOffset(forDay day: Int) -> CGFloat {
-        return calcXOffset(forDay: CGFloat(day))
+    private func calcXOffset(forDay dayDate: DayDate) -> CGFloat {
+        switch self.horizontalScrolling {
+        case .infinite:
+            return self.calcXOffset(forIndex: dayDate.dayInYear)
+        case .finite(let number, let startDate):
+            let startDayDate = DayDate(date: startDate)
+            let endDayDate = DayDate(date: startDate.advancedBy(days: number))
+            if dayDate < startDayDate {
+                return self.calcXOffset(forIndex: 0)
+            } else if dayDate > endDayDate {
+                return self.calcXOffset(forIndex: number - 1)
+            } else {
+                return self.calcXOffset(forIndex: dayDate.dayInYear - startDayDate.dayInYear)
+            }
+        }
     }
 
-    private func calcXOffset(forDay day: CGFloat) -> CGFloat {
-        return day * self.totalDayViewCellWidth
+    private func calcXOffset(forIndex x: Int) -> CGFloat {
+        return calcXOffset(forIndex: CGFloat(x))
+    }
+
+    private func calcXOffset(forIndex x: CGFloat) -> CGFloat {
+        return x * self.totalDayViewCellWidth
     }
 }
 
@@ -590,4 +612,13 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 fileprivate enum PeriodChange {
     case forward
     case backward
+}
+
+// MARK: - HORIZONTAL OPTION -
+
+public enum HorizontalScrolling {
+    // Infinite scrolling
+    case infinite
+    // Finite scrolling for an exact number of days, starting from a specified date
+    case finite(number: Int, startDate: Date)
 }

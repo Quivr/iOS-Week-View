@@ -468,4 +468,18 @@ public extension WeekView {
             self.dayScrollView.velocityOffsetMultiplier = multiplier
         }
     }
+
+    /**
+     Determines behaviour of horizontal scrolling.
+     .infinite: infinite scrolling
+     .finite(number, startDate): finite scrolling for a number of days from given startDate
+     */
+    var horizontalScrolling: HorizontalScrolling {
+        get {
+            return self.dayScrollView.horizontalScrolling
+        }
+        set(option) {
+            self.dayScrollView.horizontalScrolling = option
+        }
+    }
 }
