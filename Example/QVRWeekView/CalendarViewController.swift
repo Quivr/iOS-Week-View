@@ -9,7 +9,7 @@
 import QVRWeekView
 import UIKit
 
-public var autoFillEvents = true
+public var autoFillEvents = false
 
 class CalendarViewController: UIViewController, WeekViewDelegate {
 
@@ -24,11 +24,8 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
     }
 
     @IBAction func testButtonPress(_ sender: Any) {
-        if weekView.currentZoomScale == 2.0 {
-            weekView.currentZoomScale = 0.5
-        } else {
-            weekView.currentZoomScale = 2.0
-        }
+//        self.saveEvents()
+        self.fetchEvents()
     }
 
     override func viewDidLoad() {
@@ -244,4 +241,15 @@ class CalendarViewController: UIViewController, WeekViewDelegate {
         return date.addingTimeInterval(TimeInterval(exactly: interval)! )
     }
 
+    func saveEvents() {
+        EventStorage.storeEvents(events: Array(allEvents.values))
+    }
+
+    func fetchEvents() {
+        self.weekView.loadEvents(withData: EventStorage.getEvents())
+    }
+
+    func deleteEvents() {
+        EventStorage.deleteEvents()
+    }
 }

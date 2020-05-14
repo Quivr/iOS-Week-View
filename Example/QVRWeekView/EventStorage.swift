@@ -12,17 +12,17 @@ import QVRWeekView
 
 class EventStorage {
     static func storeEvents(events: [EventData]) {
+        // First delete all previous stored event arays
+        deleteEvents()
+
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let managedContext = appDelegate.persistentContainer.viewContext
         let userEntity = NSEntityDescription.entity(forEntityName: "EventArray", in: managedContext)!
 
-        if let cEventArray = NSManagedObject(entity: userEntity, insertInto: managedContext) as? Events {
-            cEventArray.setValue(EventDataArray(eventsData: events), forKey: "eventsDataArray")
-            do {
-                try managedContext.save()
-            } catch let error as NSError {
-                print("Could not save", error, error.userInfo)
-            }
+        if let cEventArray = NSManagedObject(entity: userEntity, insertInto: managedContext) as? EventArray {
+            print("setting value", events)
+            cEventArray.setValue(EventDataArray(eventsData: events), forKey: "events")
+            appDelegate.saveContext()
         }
     }
 
@@ -31,13 +31,30 @@ class EventStorage {
         let managedContext = appDelegate.persistentContainer.viewContext
         do {
             let result = try managedContext.fetch(NSFetchRequest<NSFetchRequestResult>(entityName: "EventArray"))
-            if  let data = result.first as? NSManagedObject,
-                let eventDataArray = data.value(forKey: "eventsDataArray") as? EventDataArray {
-                return eventDataArray.eventsData
+            print("Found results", result)
+            if  let eventArray = result.first as? EventArray {
+                print("Found EventArray", eventArray, eventArray.value(forKey: "events"))
+                if let eventDataArray = eventArray.value(forKey: "events") as? EventDataArray {
+                    print("Found eventDataArray", eventDataArray)
+                    let eventsData = eventDataArray.eventsData
+                    print("Found data", eventsData)
+                    return eventsData
+                }
             }
         } catch {
             print("Fetch Failed")
         }
         return []
+    }
+
+    static func deleteEvents() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        do {
+            try managedContext.execute(NSBatchDeleteRequest(fetchRequest: NSFetchRequest(entityName: "EventArray")))
+        } catch {
+            print("Delete Failed")
+        }
     }
 }
