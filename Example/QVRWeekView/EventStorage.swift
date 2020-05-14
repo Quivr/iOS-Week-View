@@ -16,7 +16,7 @@ class EventStorage {
         let managedContext = appDelegate.persistentContainer.viewContext
         let userEntity = NSEntityDescription.entity(forEntityName: "EventArray", in: managedContext)!
 
-        if let cEventArray = NSManagedObject(entity: userEntity, insertInto: managedContext) as? EventArray {
+        if let cEventArray = NSManagedObject(entity: userEntity, insertInto: managedContext) as? Events {
             cEventArray.setValue(EventDataArray(eventsData: events), forKey: "eventsDataArray")
             do {
                 try managedContext.save()
