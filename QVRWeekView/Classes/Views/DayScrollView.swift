@@ -71,6 +71,8 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     var velocityOffsetMultiplier: CGFloat = LayoutDefaults.velocityOffsetMultiplier { didSet { updateLayout() } }
     // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
     var autoConvertLongEventsToAllDay: Bool = true { didSet { updateLayout() } }
+    // Day view cell layout object
+    let dayViewCellLayout: DayViewCellLayout = DayViewCellLayout()
 
     // MARK: - PRIVATE VARIABLES -
 
@@ -112,8 +114,6 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     private var lastTouchZoomScale = CGFloat(1)
     // Offset added to the offset when displaying now
     private static let showNowOffset = 0.005
-    // Day view cell layout object
-    private let dayViewCellLayout: DayViewCellLayout = DayViewCellLayout()
 
     // The vertical scrolling offset of the current DayScrollView.
     private var verticalOffset: CGFloat {
@@ -157,6 +157,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         dayCollectionView.delegate = self
         dayCollectionView.dataSource = self
         self.addSubview(dayCollectionView)
+
+        // Set update function in layout container
+        self.dayViewCellLayout.update = self.updateLayout
+
         // Set content size for vertical scrolling
         self.contentSize = CGSize(width: self.bounds.width, height: dayCollectionView.frame.height)
         // Add tap gesture recognizer
@@ -587,241 +591,4 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
 fileprivate enum PeriodChange {
     case forward
     case backward
-}
-
-// MARK: - CUSTOMIZATION EXTENSION -
-
-extension DayScrollView {
-    /**
-     Default font for event labels.
-     */
-    var eventLabelFont: UIFont {
-        get { self.dayViewCellLayout.eventLabelFont }
-        set(font) {
-            self.dayViewCellLayout.eventLabelFont = font
-            updateLayout()
-        }
-    }
-    /**
-     Thin font for event labels.
-     */
-    var eventLabelInfoFont: UIFont {
-        get { self.dayViewCellLayout.eventLabelInfoFont }
-        set(font) {
-            self.dayViewCellLayout.eventLabelInfoFont = font
-            updateLayout()
-        }
-    }
-    /**
-     Text color for event labels.
-     */
-    var eventLabelTextColor: UIColor {
-        get { self.dayViewCellLayout.eventLabelTextColor }
-        set(color) {
-            self.dayViewCellLayout.eventLabelTextColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Horizontal padding of the text within event labels.
-     */
-    var eventLabelHorizontalTextPadding: CGFloat {
-        get { self.dayViewCellLayout.eventLabelHorizontalTextPadding }
-        set(padding) {
-            self.dayViewCellLayout.eventLabelHorizontalTextPadding = padding
-            updateLayout()
-        }
-    }
-    /**
-     Vertical padding of the text within event labels.
-     */
-    var eventLabelVerticalTextPadding: CGFloat {
-        get { self.dayViewCellLayout.eventLabelVerticalTextPadding }
-        set(padding) {
-            self.dayViewCellLayout.eventLabelVerticalTextPadding = padding
-            updateLayout()
-        }
-    }
-    /**
-     Text of the preview event.
-     */
-    var previewEventText: String {
-        get { self.dayViewCellLayout.previewEventText }
-        set(text) {
-            self.dayViewCellLayout.previewEventText = text
-            updateLayout()
-        }
-    }
-    /**
-     Color of the preview event.
-     */
-    @objc var previewEventColor: UIColor {
-        get { self.dayViewCellLayout.previewEventColor }
-        set(color) {
-            self.dayViewCellLayout.previewEventColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Text of the preview event.
-     */
-    var previewEventHeightInHours: Double {
-        get {
-            self.dayViewCellLayout.previewEventHourHeight
-        }
-        set(height) {
-            self.dayViewCellLayout.previewEventHourHeight = height
-            updateLayout()
-        }
-    }
-    /**
-     Precision of the preview event.
-     */
-    var previewEventPrecisionInMinutes: Double {
-        get { self.dayViewCellLayout.previewEventMinutePrecision }
-        set(minutes) {
-            self.dayViewCellLayout.previewEventMinutePrecision = minutes
-            updateLayout()
-        }
-    }
-    /**
-     Show preview on long press.
-     */
-    var showPreviewOnLongPress: Bool {
-        get { self.dayViewCellLayout.showPreview }
-        set(show) {
-            self.dayViewCellLayout.showPreview = show
-            updateLayout()
-        }
-    }
-    /**
-    Color of default day view color.
-     */
-    var defaultDayViewColor: UIColor {
-        get { self.dayViewCellLayout.defaultDayViewColor }
-        set(color) {
-            self.dayViewCellLayout.defaultDayViewColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Color of weekend day view color.
-     */
-    var weekendDayViewColor: UIColor {
-        get { self.dayViewCellLayout.weekendDayViewColor }
-        set(color) {
-            self.dayViewCellLayout.weekendDayViewColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Color of a passed day view color.
-     */
-    var passedDayViewColor: UIColor {
-        get { self.dayViewCellLayout.passedDayViewColor }
-        set(color) {
-            self.dayViewCellLayout.passedDayViewColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Color of a passed weekend day view color.
-     */
-    var passedWeekendDayViewColor: UIColor {
-        get { self.dayViewCellLayout.passedWeekendDayViewColor }
-        set(color) {
-            self.dayViewCellLayout.passedWeekendDayViewColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Color of today's day view.
-     */
-    var todayViewColor: UIColor {
-        get { self.dayViewCellLayout.todayViewColor }
-        set(color) {
-            self.dayViewCellLayout.todayViewColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Color of day view hour indicators.
-     */
-    var hourIndicatorColor: UIColor {
-        get { self.dayViewCellLayout.hourIndicatorColor }
-        set(color) {
-            self.dayViewCellLayout.hourIndicatorColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Thickness of day view hour indicators.
-     */
-    var hourIndicatorThickness: CGFloat {
-        get { self.dayViewCellLayout.hourIndicatorThickness }
-        set(thickness) {
-            self.dayViewCellLayout.hourIndicatorThickness = thickness
-            updateLayout()
-        }
-    }
-    /**
-     Color of the main day view separators.
-     */
-    var mainSeparatorColor: UIColor {
-        get { self.dayViewCellLayout.mainSeparatorColor }
-        set(color) {
-            self.dayViewCellLayout.mainSeparatorColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Thickness of the main day view separators.
-     */
-    var mainSeparatorThickness: CGFloat {
-        get { self.dayViewCellLayout.mainSeparatorThickness }
-        set(thickness) {
-            self.dayViewCellLayout.mainSeparatorThickness = thickness
-            updateLayout()
-        }
-    }
-    /**
-    Color of the dashed day view separators.
-     */
-    var dashedSeparatorColor: UIColor {
-        get { self.dayViewCellLayout.dashedSeparatorColor }
-        set(color) {
-            self.dayViewCellLayout.dashedSeparatorColor = color
-            updateLayout()
-        }
-    }
-    /**
-     Thickness of the dashed day view separators.
-     */
-    var dashedSeparatorThickness: CGFloat {
-        get { self.dayViewCellLayout.dashedSeparatorThickness }
-        set(thickness) {
-            self.dayViewCellLayout.dashedSeparatorThickness = thickness
-            updateLayout()
-        }
-    }
-    /**
-    Pattern of the dashed day view separators.
-     */
-    var dashedSeparatorPattern: [NSNumber] {
-        get { self.dayViewCellLayout.dashedSeparatorPattern }
-        set(pattern) {
-            self.dayViewCellLayout.dashedSeparatorPattern = pattern
-            updateLayout()
-        }
-    }
-    /**
-     Determines style the event layers
-     */
-    var eventStyleCallback: EventStlyeCallback? {
-        get { self.dayViewCellLayout.eventStyleCallback }
-        set(callback) {
-            self.dayViewCellLayout.eventStyleCallback = callback
-            updateLayout()
-        }
-    }
 }

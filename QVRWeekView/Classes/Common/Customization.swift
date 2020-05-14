@@ -100,10 +100,10 @@ public extension WeekView {
      */
     @objc var eventLabelFont: UIFont {
         get {
-            return self.dayScrollView.eventLabelFont
+            return self.dayScrollView.dayViewCellLayout.eventLabelFont
         }
         set(font) {
-            self.dayScrollView.eventLabelFont = font
+            self.dayScrollView.dayViewCellLayout.eventLabelFont = font
         }
     }
 
@@ -112,10 +112,10 @@ public extension WeekView {
      */
     @objc var eventLabelInfoFont: UIFont {
         get {
-            return self.dayScrollView.eventLabelInfoFont
+            return self.dayScrollView.dayViewCellLayout.eventLabelInfoFont
         }
         set(font) {
-            self.dayScrollView.eventLabelInfoFont = font
+            self.dayScrollView.dayViewCellLayout.eventLabelInfoFont = font
         }
     }
 
@@ -124,10 +124,10 @@ public extension WeekView {
      */
     @objc var eventLabelTextColor: UIColor {
         get {
-            return self.dayScrollView.eventLabelTextColor
+            return self.dayScrollView.dayViewCellLayout.eventLabelTextColor
         }
         set(color) {
-            self.dayScrollView.eventLabelTextColor = color
+            self.dayScrollView.dayViewCellLayout.eventLabelTextColor = color
         }
     }
 
@@ -148,10 +148,10 @@ public extension WeekView {
      */
     @objc var eventLabelHorizontalTextPadding: CGFloat {
         get {
-            return self.dayScrollView.eventLabelHorizontalTextPadding
+            return self.dayScrollView.dayViewCellLayout.eventLabelHorizontalTextPadding
         }
         set(padding) {
-            self.dayScrollView.eventLabelHorizontalTextPadding = padding
+            self.dayScrollView.dayViewCellLayout.eventLabelHorizontalTextPadding = padding
         }
     }
 
@@ -160,10 +160,10 @@ public extension WeekView {
      */
     @objc var eventLabelVerticalTextPadding: CGFloat {
         get {
-            return self.dayScrollView.eventLabelVerticalTextPadding
+            return self.dayScrollView.dayViewCellLayout.eventLabelVerticalTextPadding
         }
         set(padding) {
-            self.dayScrollView.eventLabelVerticalTextPadding = padding
+            self.dayScrollView.dayViewCellLayout.eventLabelVerticalTextPadding = padding
         }
     }
 
@@ -172,10 +172,10 @@ public extension WeekView {
      */
     @objc var previewEventText: String {
         get {
-            return self.dayScrollView.previewEventText
+            return self.dayScrollView.dayViewCellLayout.previewEventText
         }
         set(text) {
-            self.dayScrollView.previewEventText = text
+            self.dayScrollView.dayViewCellLayout.previewEventText = text
         }
     }
 
@@ -184,10 +184,10 @@ public extension WeekView {
      */
     @objc var previewEventColor: UIColor {
         get {
-            return self.dayScrollView.previewEventColor
+            return self.dayScrollView.dayViewCellLayout.previewEventColor
         }
         set(color) {
-            self.dayScrollView.previewEventColor = color
+            self.dayScrollView.dayViewCellLayout.previewEventColor = color
         }
     }
 
@@ -196,10 +196,10 @@ public extension WeekView {
      */
     @objc var previewEventHeightInHours: Double {
         get {
-            return self.dayScrollView.previewEventHeightInHours
+            return self.dayScrollView.dayViewCellLayout.previewEventHourHeight
         }
         set(height) {
-            self.dayScrollView.previewEventHeightInHours = height
+            self.dayScrollView.dayViewCellLayout.previewEventHourHeight = height
         }
     }
 
@@ -208,10 +208,10 @@ public extension WeekView {
      */
     @objc var previewEventPrecisionInMinutes: Double {
         get {
-            return self.dayScrollView.previewEventPrecisionInMinutes
+            return self.dayScrollView.dayViewCellLayout.previewEventMinutePrecision
         }
         set(mins) {
-            self.dayScrollView.previewEventPrecisionInMinutes = mins
+            self.dayScrollView.dayViewCellLayout.previewEventMinutePrecision = mins
         }
     }
 
@@ -220,10 +220,10 @@ public extension WeekView {
      */
     @objc var showPreviewOnLongPress: Bool {
         get {
-            return self.dayScrollView.showPreviewOnLongPress
+            return self.dayScrollView.dayViewCellLayout.showPreview
         }
         set(show) {
-            self.dayScrollView.showPreviewOnLongPress = show
+            self.dayScrollView.dayViewCellLayout.showPreview = show
         }
     }
 
@@ -232,10 +232,10 @@ public extension WeekView {
      */
     @objc var defaultDayViewColor: UIColor {
         get {
-            return self.dayScrollView.defaultDayViewColor
+            return self.dayScrollView.dayViewCellLayout.defaultDayViewColor
         }
         set(color) {
-            self.dayScrollView.defaultDayViewColor = color
+            self.dayScrollView.dayViewCellLayout.defaultDayViewColor = color
         }
     }
 
@@ -244,10 +244,10 @@ public extension WeekView {
      */
     @objc var weekendDayViewColor: UIColor {
         get {
-            return self.dayScrollView.weekendDayViewColor
+            return self.dayScrollView.dayViewCellLayout.weekendDayViewColor
         }
         set(color) {
-            self.dayScrollView.weekendDayViewColor = color
+            self.dayScrollView.dayViewCellLayout.weekendDayViewColor = color
         }
     }
 
@@ -256,10 +256,10 @@ public extension WeekView {
      */
     @objc var passedDayViewColor: UIColor {
         get {
-            return self.dayScrollView.passedDayViewColor
+            return self.dayScrollView.dayViewCellLayout.passedDayViewColor
         }
         set(color) {
-            self.dayScrollView.passedDayViewColor = color
+            self.dayScrollView.dayViewCellLayout.passedDayViewColor = color
         }
     }
 
@@ -268,10 +268,10 @@ public extension WeekView {
      */
     @objc var passedWeekendDayViewColor: UIColor {
         get {
-            return self.dayScrollView.passedWeekendDayViewColor
+            return self.dayScrollView.dayViewCellLayout.passedWeekendDayViewColor
         }
         set(color) {
-            self.dayScrollView.passedWeekendDayViewColor = color
+            self.dayScrollView.dayViewCellLayout.passedWeekendDayViewColor = color
         }
     }
 
@@ -280,10 +280,10 @@ public extension WeekView {
      */
     @objc var todayViewColor: UIColor {
         get {
-            return self.dayScrollView.todayViewColor
+            return self.dayScrollView.dayViewCellLayout.todayViewColor
         }
         set(color) {
-            self.dayScrollView.todayViewColor = color
+            self.dayScrollView.dayViewCellLayout.todayViewColor = color
         }
     }
 
@@ -292,10 +292,10 @@ public extension WeekView {
      */
     @objc var dayViewHourIndicatorColor: UIColor {
         get {
-            return self.dayScrollView.hourIndicatorColor
+            return self.dayScrollView.dayViewCellLayout.hourIndicatorColor
         }
         set(color) {
-            self.dayScrollView.hourIndicatorColor = color
+            self.dayScrollView.dayViewCellLayout.hourIndicatorColor = color
         }
     }
 
@@ -304,10 +304,10 @@ public extension WeekView {
      */
     @objc var dayViewHourIndicatorThickness: CGFloat {
         get {
-            return self.dayScrollView.hourIndicatorThickness
+            return self.dayScrollView.dayViewCellLayout.hourIndicatorThickness
         }
         set(thickness) {
-            self.dayScrollView.hourIndicatorThickness = thickness
+            self.dayScrollView.dayViewCellLayout.hourIndicatorThickness = thickness
         }
     }
 
@@ -316,10 +316,10 @@ public extension WeekView {
      */
     @objc var dayViewMainSeparatorColor: UIColor {
         get {
-            return self.dayScrollView.mainSeparatorColor
+            return self.dayScrollView.dayViewCellLayout.mainSeparatorColor
         }
         set(color) {
-            self.dayScrollView.mainSeparatorColor = color
+            self.dayScrollView.dayViewCellLayout.mainSeparatorColor = color
         }
     }
 
@@ -328,10 +328,10 @@ public extension WeekView {
      */
     @objc var dayViewMainSeparatorThickness: CGFloat {
         get {
-            return self.dayScrollView.mainSeparatorThickness
+            return self.dayScrollView.dayViewCellLayout.mainSeparatorThickness
         }
         set(thickness) {
-            self.dayScrollView.mainSeparatorThickness = thickness
+            self.dayScrollView.dayViewCellLayout.mainSeparatorThickness = thickness
         }
     }
 
@@ -340,10 +340,10 @@ public extension WeekView {
      */
     @objc var dayViewDashedSeparatorColor: UIColor {
         get {
-            return self.dayScrollView.dashedSeparatorColor
+            return self.dayScrollView.dayViewCellLayout.dashedSeparatorColor
         }
         set(color) {
-            self.dayScrollView.dashedSeparatorColor = color
+            self.dayScrollView.dayViewCellLayout.dashedSeparatorColor = color
         }
     }
 
@@ -352,10 +352,10 @@ public extension WeekView {
      */
     @objc var dayViewDashedSeparatorThickness: CGFloat {
         get {
-            return self.dayScrollView.dashedSeparatorThickness
+            return self.dayScrollView.dayViewCellLayout.dashedSeparatorThickness
         }
         set(thickness) {
-            self.dayScrollView.dashedSeparatorThickness = thickness
+            self.dayScrollView.dayViewCellLayout.dashedSeparatorThickness = thickness
         }
     }
 
@@ -370,10 +370,10 @@ public extension WeekView {
      */
     @objc var dayViewDashedSeparatorPattern: [NSNumber] {
         get {
-            return self.dayScrollView.dashedSeparatorPattern
+            return self.dayScrollView.dayViewCellLayout.dashedSeparatorPattern
         }
         set(pattern) {
-            self.dayScrollView.dashedSeparatorPattern = pattern
+            self.dayScrollView.dayViewCellLayout.dashedSeparatorPattern = pattern
         }
     }
 
@@ -437,10 +437,10 @@ public extension WeekView {
      */
     var eventStyleCallback: EventStlyeCallback? {
         get {
-            self.dayScrollView.eventStyleCallback
+            self.dayScrollView.dayViewCellLayout.eventStyleCallback
         }
         set (callback) {
-            self.dayScrollView.eventStyleCallback = callback
+            self.dayScrollView.dayViewCellLayout.eventStyleCallback = callback
         }
     }
 
