@@ -72,7 +72,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     // Enable this to allow long events (that go from midnight to midnight) to be automatically converted to allDay events. (default true)
     var autoConvertLongEventsToAllDay: Bool = true { didSet { updateLayout() } }
     // Horizontal scrolling option
-    var horizontalScrolling: HorizontalScrolling = .infinite { didSet { updateLayout() } }
+    var horizontalScrolling: HorizontalScrolling = .infinite { didSet { updateLayout(); self.dayCollectionView.reloadData() } }
     // Day view cell layout object
     let dayViewCellLayout: DayViewCellLayout = DayViewCellLayout()
 
