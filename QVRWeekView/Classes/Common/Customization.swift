@@ -84,18 +84,6 @@ public extension WeekView {
     }
 
     /**
-     Height for the day view cells. This is the initial height for zoom scale = 1.0.
-     */
-    @objc var dayViewCellInitialHeight: CGFloat {
-        get {
-            return self.dayScrollView.initialDayViewCellHeight
-        }
-        set(height) {
-            self.dayScrollView.initialDayViewCellHeight = height
-        }
-    }
-
-    /**
      Font used for all event labels contained in the day view cells.
      */
     @objc var eventLabelFont: UIFont {
@@ -284,6 +272,18 @@ public extension WeekView {
         }
         set(color) {
             self.dayScrollView.dayViewCellLayout.todayViewColor = color
+        }
+    }
+
+    /**
+     Height for the day view cells. This is the initial height for zoom scale = 1.0.
+     */
+    @objc var dayViewCellInitialHeight: CGFloat {
+        get {
+            return self.dayScrollView.initialDayViewCellHeight
+        }
+        set(height) {
+            self.dayScrollView.initialDayViewCellHeight = height
         }
     }
 
