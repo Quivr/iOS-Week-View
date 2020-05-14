@@ -468,4 +468,13 @@ public extension WeekView {
             self.dayScrollView.velocityOffsetMultiplier = multiplier
         }
     }
+
+    var horizontalScrolling: HorizontalScrolling {
+        get {
+            return self.dayScrollView.horizontalScrolling
+        }
+        set(option) {
+            self.dayScrollView.horizontalScrolling = option
+        }
+    }
 }
