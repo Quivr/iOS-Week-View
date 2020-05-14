@@ -276,6 +276,18 @@ public extension WeekView {
     }
 
     /**
+     Whether or not to show the time overlay on the today day view cell. Default true.
+     */
+    @objc var showTodayTimeOverlay: Bool {
+        get {
+            return self.dayScrollView.dayViewCellLayout.showTimeOverlay
+        }
+        set(show) {
+            self.dayScrollView.dayViewCellLayout.showTimeOverlay = show
+        }
+    }
+
+    /**
      Height for the day view cells. This is the initial height for zoom scale = 1.0.
      */
     @objc var dayViewCellInitialHeight: CGFloat {

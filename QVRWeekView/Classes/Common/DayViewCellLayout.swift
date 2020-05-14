@@ -21,6 +21,8 @@ class DayViewCellLayout {
     var passedWeekendDayViewColor: UIColor = LayoutDefaults.passedWeekendDayViewColor { didSet { update?() } }
     // Color for all day view cells that are passed days and not weekends.
     var passedDayViewColor: UIColor = LayoutDefaults.passedDayViewColor { didSet { update?() } }
+    // Whether or not to show time overlay on today day view cell
+    var showTimeOverlay: Bool = true { didSet { update?() } }
 
     // Thickness (height) of the current hour indicator.
     var hourIndicatorThickness: CGFloat = LayoutDefaults.hourIndicatorThickness { didSet { update?() } }

@@ -42,6 +42,7 @@ class StartViewController: UIViewController {
             weekView.todayViewColor = .black
             weekView.passedDayViewColor = UIColor.green
             weekView.passedWeekendDayViewColor = UIColor.purple
+            weekView.showTodayTimeOverlay = false
 
             // Visible days and spacing customization
             weekView.visibleDaysInPortraitMode = 3
