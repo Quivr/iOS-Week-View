@@ -29,12 +29,9 @@ class EventStorage {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return [] }
         let managedContext = appDelegate.persistentContainer.viewContext
         do {
-            let result = try managedContext.fetch(NSFetchRequest<NSFetchRequestResult>(entityName: "EventArray"))
-            if  let eventArray = result.first as? EventArray {
-                if let eventDataArray = eventArray.value(forKey: "events") as? EventDataArray {
-                    let eventsData = eventDataArray.eventsData
-                    return eventsData
-                }
+            if  let eventArray = try managedContext.fetch(NSFetchRequest<NSFetchRequestResult>(entityName: "EventArray")).first as? EventArray,
+                let eventDataArray = eventArray.value(forKey: "events") as? EventDataArray {
+                return eventDataArray.eventsData
             }
         } catch {
             print("Fetch Failed")
