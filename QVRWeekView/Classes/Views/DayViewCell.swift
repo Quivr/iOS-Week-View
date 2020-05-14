@@ -147,10 +147,6 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         }
     }
 
-    func updateEventTextFontSize() {
-        self.generateEventLayers()
-    }
-
     private func updateOverlay() {
         if !self.overlayView.isHidden {
             overlayView.frame = CGRect(x: 0,

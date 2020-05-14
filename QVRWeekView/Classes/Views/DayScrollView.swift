@@ -399,7 +399,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         if state == .cancelled || state == .ended || state == .failed {
             self.previousZoomTouch = nil
             for (_, cell) in dayViewCells {
-                cell.updateEventTextFontSize()
+                cell.setNeedsLayout()
             }
             scrollToNearestCell()
         }
@@ -518,7 +518,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         // Update scroll view content size
         self.contentSize = CGSize(width: self.frame.width, height: self.totalContentHeight)
         // Update size of day view cells
-        updateDayViewCellSizeAndSpacing()
+        updateDayViewCellsSizeAndSpacing()
         // Update frame of day collection view
         dayCollectionView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.totalContentHeight)
         // Offset change required for: maintaining active day during orientation change, and visible days change (hacky)
@@ -554,7 +554,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         }
     }
 
-    private func updateDayViewCellSizeAndSpacing() {
+    private func updateDayViewCellsSizeAndSpacing() {
+        for (_, cell) in self.dayViewCells {
+            cell.setNeedsLayout()
+        }
         if let flowLayout = dayCollectionView.collectionViewLayout as? DayCollectionViewFlowLayout {
             flowLayout.itemSize = CGSize(width: self.dayViewCellWidth, height: self.dayViewCellHeight)
             flowLayout.minimumLineSpacing = self.dayViewHorizontalSpacing

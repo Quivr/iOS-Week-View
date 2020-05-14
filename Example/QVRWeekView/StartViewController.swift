@@ -26,7 +26,6 @@ class StartViewController: UIViewController {
 
     @IBAction func customizeButtonPress(_ sender: Any) {
         if let weekView = calendarVC.weekView {
-
             // Day view customization
             weekView.dayViewHourIndicatorColor = UIColor.blue
             weekView.dayViewHourIndicatorThickness = 9
