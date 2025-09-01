@@ -6,11 +6,9 @@ import UIKit
 
 public typealias EventStlyeCallback = (CALayer, EventData?) -> Void
 
-/**
- Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
- and all customization can be done with public functions. The is a WeekViewDelegate which can be used to receive certain events.
- WeekView can be used in both landscape and portrait mode.
- */
+/// Class of the main week view. This view can be placed anywhere and will adapt to given size. All behaviours are internal,
+/// and all customization can be done with public functions. The is a WeekViewDelegate which can be used to receive certain events.
+/// WeekView can be used in both landscape and portrait mode.
 open class WeekView: UIView {
     // MARK: - OUTLETS -
 
@@ -60,7 +58,8 @@ open class WeekView: UIView {
 
     //Reloads the events from the delegate
     public func notifyDataSetChanged() {
-        delegate?.eventLoadRequest(in: self, between: visibleDateRange.lowerBound, and: visibleDateRange.upperBound)
+        delegate?.eventLoadRequest(
+            in: self, between: visibleDateRange.lowerBound, and: visibleDateRange.upperBound)
     }
 
     // All EventData of events currently visible on screen
@@ -77,12 +76,18 @@ open class WeekView: UIView {
     // Background color of main scrollview.
     @objc public var mainBackgroundColor: UIColor {
         get { self.mainView.backgroundColor! }
-        set(color) { self.mainView.backgroundColor = color; self.sideBarView.backgroundColor = color }
+        set(color) {
+            self.mainView.backgroundColor = color
+            self.sideBarView.backgroundColor = color
+        }
     }
     // Background color of top bar containing day labels.
     @objc public var topBarColor: UIColor {
         get { self.topBarView.backgroundColor! }
-        set(color) { self.topLeftBufferView.backgroundColor = color; self.topBarView.backgroundColor = color }
+        set(color) {
+            self.topLeftBufferView.backgroundColor = color
+            self.topBarView.backgroundColor = color
+        }
     }
     // Color of the side bar containing hour labels.
     @objc public var sideBarColor: UIColor {
@@ -92,7 +97,10 @@ open class WeekView: UIView {
     // Width of the side bar containing hour labels.
     @objc public var sideBarWidth: CGFloat {
         get { self.sideBarView.frame.width }
-        set(width) { self.sideBarWidthConstraint.constant = width; self.topLeftBufferWidthConstraint.constant = width }
+        set(width) {
+            self.sideBarWidthConstraint.constant = width
+            self.topLeftBufferWidthConstraint.constant = width
+        }
     }
     // Default height of the top bar
     @objc public var defaultTopBarHeight: CGFloat = LayoutDefaults.defaultTopBarHeight {
@@ -168,8 +176,8 @@ open class WeekView: UIView {
     }
     // Height of all day labels.
     @objc public var allDayEventVerticalSpacing: CGFloat = LayoutDefaults.allDayVerticalSpacing {
-       didSet { self.updateAllDayEventLayers() }
-   }
+        didSet { self.updateAllDayEventLayers() }
+    }
     // Spread all day events on x axis, if not true than spread will be made on y axis.
     @objc public var allDayEventsSpreadOnX: Bool = LayoutDefaults.allDayEventsSpreadOnX {
         didSet { self.updateAllDayEventLayers() }
@@ -203,7 +211,9 @@ open class WeekView: UIView {
     // Minimum font for all day labels
     private var dayLabelCurrentFontSize = LayoutDefaults.dayLabelFont.pointSize
     // Current font for all day labels
-    private var dayLabelCurrentFont: UIFont { dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize) }
+    private var dayLabelCurrentFont: UIFont {
+        dayLabelDefaultFont.withSize(self.dayLabelCurrentFontSize)
+    }
 
     // Height of top bar.
     private var topBarHeight: CGFloat {
@@ -255,9 +265,11 @@ open class WeekView: UIView {
         // Get the view layout from the nib
         setView()
         // Create pinch recognizer
-        self.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomView(_:))))
+        self.addGestureRecognizer(
+            UIPinchGestureRecognizer(target: self, action: #selector(zoomView(_:))))
         // Create tap recognizer for top bar
-        self.topBarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapTopBar(_:))))
+        self.topBarView.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(tapTopBar(_:))))
         // Set clipping to bounds (prevents side bar, top bar and other sub view protrusion)
         self.clipsToBounds = true
         self.topBarView.clipsToBounds = true
@@ -285,7 +297,7 @@ open class WeekView: UIView {
     /**
      Updates the time displayed on the calendar
      */
-     @objc public func updateTimeDisplayed() {
+    @objc public func updateTimeDisplayed() {
         if let dayCollectionView = dayScrollView.dayCollectionView {
             for cell in dayCollectionView.visibleCells {
                 if let dayViewCell = cell as? DayViewCell {
@@ -298,7 +310,7 @@ open class WeekView: UIView {
     /**
      Redraws all events in the dayview cells
      */
-     @objc public func redrawEvents() {
+    @objc public func redrawEvents() {
         if let dayCollectionView = dayScrollView.dayCollectionView {
             for cell in dayCollectionView.visibleCells {
                 if let dayViewCell = cell as? DayViewCell {
@@ -311,7 +323,7 @@ open class WeekView: UIView {
     /**
      Shows the day view cell corresponding to asked day.
      */
-     @objc public func showDay(withDate date: Date, showTime: Bool = false) {
+    @objc public func showDay(withDate date: Date, showTime: Bool = false) {
         if showTime {
             dayScrollView.goToAndShow(dayDate: DayDate(date: date), showTime: date)
         } else {
@@ -322,7 +334,7 @@ open class WeekView: UIView {
     /**
      Shows the day view cell corresponding to today.
      */
-     @objc public func showToday() {
+    @objc public func showToday() {
         let now = Date()
         dayScrollView.goToAndShow(dayDate: DayDate(date: now), showTime: now)
     }
@@ -352,8 +364,10 @@ open class WeekView: UIView {
      Method delegates day view cell long presses, and sends a callback the pressed time up to the WeekViewDelegate.
      */
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, at hours: Int, and minutes: Int) {
-        let date = dayViewCell.date.getDateWithTime(hours: hours, minutes: minutes, seconds: 0)
-        self.delegate?.didLongPressDayView(in: self, atDate: date)
+        if let dayViewCellDate = dayViewCell.date {
+            let date = dayViewCellDate.getDateWithTime(hours: hours, minutes: minutes, seconds: 0)
+            self.delegate?.didLongPressDayView(in: self, atDate: date)
+        }
     }
 
     /**
@@ -373,7 +387,8 @@ open class WeekView: UIView {
     // MARK: - INTERNAL FUNCTIONS -
 
     @objc func didEndVerticalScrolling(_ sender: DayScrollView) {
-        self.delegate?.didEndVerticalScrolling?(in: self, top: sender.topOffset, bottom: sender.bottomOffset)
+        self.delegate?.didEndVerticalScrolling?(
+            in: self, top: sender.topOffset, bottom: sender.bottomOffset)
     }
 
     /**
@@ -388,10 +403,11 @@ open class WeekView: UIView {
         if sender.numberOfTouches >= 2 {
             let touch1 = sender.location(ofTouch: 0, in: self)
             let touch2 = sender.location(ofTouch: 1, in: self)
-            touchCenter = CGPoint(x: (touch1.x+touch2.x)/2, y: (touch1.y+touch2.y)/2)
+            touchCenter = CGPoint(x: (touch1.x + touch2.x) / 2, y: (touch1.y + touch2.y) / 2)
         }
 
-        dayScrollView.zoomContent(withNewScale: currentScale, newTouchCenter: touchCenter, andState: state)
+        dayScrollView.zoomContent(
+            withNewScale: currentScale, newTouchCenter: touchCenter, andState: state)
         updateTopAndSideBarConstraints()
 
         if state == .cancelled || state == .ended || state == .failed {
@@ -408,8 +424,7 @@ open class WeekView: UIView {
         if !discardedDayLabels.isEmpty {
             label = discardedDayLabels.remove(at: 0)
             label.frame = self.generateDayLabelFrame(forIndex: indexPath)
-        }
-        else {
+        } else {
             label = self.makeDayLabel(withIndexPath: indexPath)
         }
         updateDayLabel(label, withDate: dayDate)
@@ -434,7 +449,9 @@ open class WeekView: UIView {
     /**
      Adds the allDayEvents provided by the events parameter at indexPath with given dayDate. This also triggers a topBar resize animation.
      */
-    func addAllDayEvents(_ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+    func addAllDayEvents(
+        _ events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate
+    ) {
         self.renderLayers(ofAllDayEvents: events, forIndexPath: indexPath, withDate: dayDate)
     }
 
@@ -451,9 +468,11 @@ open class WeekView: UIView {
 
         if visibleAllDayEvents.isEmpty && self.topBarHeight > self.defaultTopBarHeight {
             self.extraTopBarHeight = 0
-            UIView.animate(withDuration: 0.25, animations: {
-                self.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: 0.25,
+                animations: {
+                    self.layoutIfNeeded()
+                })
         }
     }
 
@@ -493,7 +512,8 @@ open class WeekView: UIView {
      */
     func updateTopAndSideBarPositions() {
         hourSideBarYPositionConstraint.constant = -dayScrollView.contentOffset.y + sideBarTopBuffer
-        topBarXPositionConstraint.constant = -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
+        topBarXPositionConstraint.constant =
+            -dayScrollView.dayCollectionView.contentOffset.x + topBarLeftBuffer
     }
 
     // MARK: - PRIVATE/HELPER FUNCTIONS -
@@ -512,7 +532,8 @@ open class WeekView: UIView {
         // Set position and size constraints for side bar and hour view
         self.hourSideBarHeightConstraint.constant = self.dayScrollView.dayViewCellHeight
         self.sideBarHeightConstraint.constant = sideBarHeight
-        self.sideBarTopBuffer = self.dayScrollView.dayViewVerticalSpacing - (dayViewCellHourHeight / 2)
+        self.sideBarTopBuffer =
+            self.dayScrollView.dayViewVerticalSpacing - (dayViewCellHourHeight / 2)
 
         // Set correct size and constraints of top bar view
         self.topBarWidthConstraint.constant = dayScrollView.dayCollectionView.contentSize.width
@@ -526,9 +547,7 @@ open class WeekView: UIView {
     private func updateVisibleDayLabels() {
         for cell in dayScrollView.dayCollectionView.visibleCells {
             let indexPath = dayScrollView.dayCollectionView.indexPath(for: cell)!
-            if let dayViewCell = cell as? DayViewCell {
-                let dayDate = dayViewCell.date
-
+            if let dayViewCell = cell as? DayViewCell, let dayDate = dayViewCell.date {
                 if let label = visibleDayLabels[dayDate] {
                     label.frame = self.generateDayLabelFrame(forIndex: indexPath)
                     updateDayLabel(label, withDate: dayDate)
@@ -546,21 +565,27 @@ open class WeekView: UIView {
             guard let indexPath = visibleIndexPath else {
                 continue
             }
-            renderLayers(ofAllDayEvents: Array(events.keys), forIndexPath: indexPath, withDate: dayDate)
+            renderLayers(
+                ofAllDayEvents: Array(events.keys), forIndexPath: indexPath, withDate: dayDate)
         }
     }
 
     /**
      * Method renders the layers for all day events
      */
-    private func renderLayers(ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath, withDate dayDate: DayDate) {
+    private func renderLayers(
+        ofAllDayEvents events: [EventData], forIndexPath indexPath: IndexPath,
+        withDate dayDate: DayDate
+    ) {
         let extraHeight = self.allDayEventVerticalSpacing * 2 + self.allDayEventHeight
 
         if self.extraTopBarHeight != extraHeight {
             self.extraTopBarHeight = extraHeight
-            UIView.animate(withDuration: 0.25, animations: {
-                self.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: 0.25,
+                animations: {
+                    self.layoutIfNeeded()
+                })
         }
 
         if visibleAllDayEvents[dayDate] != nil {
@@ -579,8 +604,11 @@ open class WeekView: UIView {
             if let previousLayer = self.visibleAllDayEvents[dayDate]?[eventData] {
                 previousLayer.removeFromSuperlayer()
             }
-            let eventFrame = self.generateAllDayEventFrame(forIndex: indexPath, at: i, max: events.count)
-            let layer = EventLayer(withFrame: eventFrame, layout: self.dayScrollView.dayViewCellLayout, andEvent: eventData)
+            let eventFrame = self.generateAllDayEventFrame(
+                forIndex: indexPath, at: i, max: events.count)
+            let layer = EventLayer(
+                withFrame: eventFrame, layout: self.dayScrollView.dayViewCellLayout,
+                andEvent: eventData)
             self.eventStyleCallback?(layer, eventData)
             newEventLayers[eventData] = layer
             self.topBarView.layer.addSublayer(layer)
@@ -594,7 +622,8 @@ open class WeekView: UIView {
      */
     private func updateDayLabel(_ dayLabel: UILabel, withDate dayDate: DayDate) {
         dayLabel.font = self.dayLabelCurrentFont
-        dayLabel.textColor = dayDate == DayDate.today ? self.dayLabelTodayTextColor : self.dayLabelTextColor
+        dayLabel.textColor =
+            dayDate == DayDate.today ? self.dayLabelTodayTextColor : self.dayLabelTextColor
         if let newFontSize = self.assignTextAndResizeFont(forLabel: dayLabel, andDate: dayDate) {
             self.dayLabelCurrentFontSize = newFontSize
             updateVisibleDayLabels()
@@ -650,7 +679,9 @@ open class WeekView: UIView {
     // Function generates a frame for a day label with given index path.
     private func generateDayLabelFrame(forIndex indexPath: IndexPath) -> CGRect {
         let row = CGFloat(indexPath.row)
-        return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth), y: 0, width: self.dayScrollView.dayViewCellWidth, height: self.defaultTopBarHeight)
+        return CGRect(
+            x: row * (self.dayScrollView.totalDayViewCellWidth), y: 0,
+            width: self.dayScrollView.dayViewCellWidth, height: self.defaultTopBarHeight)
     }
 
     /**
@@ -658,22 +689,26 @@ open class WeekView: UIView {
      the count (= how many'th all day event frame in current day) and the max (= how many all day events in current day.
      Depending on LayoutVariables.allDayEventsSpreadOnX, events will be spreaded on x or y axis.
      */
-    private func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int) -> CGRect {
+    private func generateAllDayEventFrame(forIndex indexPath: IndexPath, at count: Int, max: Int)
+        -> CGRect
+    {
         if self.allDayEventsSpreadOnX {
             let row = CGFloat(indexPath.row)
-            let width = self.dayScrollView.dayViewCellWidth/CGFloat(max)
-            return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth)+CGFloat(count)*width,
-                          y: self.defaultTopBarHeight+self.allDayEventVerticalSpacing,
-                          width: width,
-                          height: self.allDayEventHeight)
+            let width = self.dayScrollView.dayViewCellWidth / CGFloat(max)
+            return CGRect(
+                x: row * (self.dayScrollView.totalDayViewCellWidth) + CGFloat(count) * width,
+                y: self.defaultTopBarHeight + self.allDayEventVerticalSpacing,
+                width: width,
+                height: self.allDayEventHeight)
 
         } else {
             let row = CGFloat(indexPath.row)
-            let height = self.allDayEventHeight/CGFloat(max)
-            return CGRect(x: row*(self.dayScrollView.totalDayViewCellWidth),
-                          y: self.defaultTopBarHeight+CGFloat(count)*height,
-                          width: self.dayScrollView.dayViewCellWidth,
-                          height: height)
+            let height = self.allDayEventHeight / CGFloat(max)
+            return CGRect(
+                x: row * (self.dayScrollView.totalDayViewCellWidth),
+                y: self.defaultTopBarHeight + CGFloat(count) * height,
+                width: self.dayScrollView.dayViewCellWidth,
+                height: height)
         }
     }
 
@@ -682,10 +717,13 @@ open class WeekView: UIView {
      label. Function will also check for font resizing if neccessary and will return the new font size if it is different to the
      current font size.
      */
-    private func assignTextAndResizeFont(forLabel label: UILabel, andDate dayDate: DayDate) -> CGFloat? {
+    private func assignTextAndResizeFont(forLabel label: UILabel, andDate dayDate: DayDate)
+        -> CGFloat?
+    {
         let currentFont = label.font!
         let labelWidth = label.frame.width
-        var possibleText = self.getString(forDate: dayDate, andMode: self.dayLabelTextMode) as NSString
+        var possibleText =
+            self.getString(forDate: dayDate, andMode: self.dayLabelTextMode) as NSString
         var textSize = possibleText.size(withAttributes: [.font: currentFont])
 
         label.text = possibleText as String
@@ -695,13 +733,14 @@ open class WeekView: UIView {
             if textSize.width <= labelWidth {
                 label.text = possibleText as String
                 self.dayLabelTextMode = .normal
-            }
-            else {
+            } else {
                 let scale = (labelWidth / textSize.width)
-                var newFont = currentFont.withSize(floor(currentFont.pointSize*scale))
+                var newFont = currentFont.withSize(floor(currentFont.pointSize * scale))
 
-                while possibleText.size(withAttributes: [.font: newFont]).width > labelWidth && newFont.pointSize > self.dayLabelMinimumFontSize {
-                    newFont = newFont.withSize(newFont.pointSize-0.25)
+                while possibleText.size(withAttributes: [.font: newFont]).width > labelWidth
+                    && newFont.pointSize > self.dayLabelMinimumFontSize
+                {
+                    newFont = newFont.withSize(newFont.pointSize - 0.25)
                 }
 
                 if newFont.pointSize < self.dayLabelMinimumFontSize {
@@ -712,8 +751,7 @@ open class WeekView: UIView {
                 if possibleText.size(withAttributes: [.font: newFont]).width > labelWidth {
                     label.text = getString(forDate: dayDate, andMode: .small)
                     self.dayLabelTextMode = .small
-                }
-                else {
+                } else {
                     label.text = possibleText as String
                     self.dayLabelTextMode = .normal
                 }
@@ -730,9 +768,7 @@ open class WeekView: UIView {
 
 // MARK: - WEEKVIEW DELEGATE -
 
-/**
- Protocol methods.
- */
+/// Protocol methods.
 @objc public protocol WeekViewDelegate: class {
     func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
@@ -744,5 +780,6 @@ open class WeekView: UIView {
 
     @objc optional func didEndZooming(in weekView: WeekView, scale zoomScale: CGFloat)
 
-    @objc optional func didEndVerticalScrolling(in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
+    @objc optional func didEndVerticalScrolling(
+        in weekView: WeekView, top topOffset: Double, bottom bottomOffset: Double)
 }

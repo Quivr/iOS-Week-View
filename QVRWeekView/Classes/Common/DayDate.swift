@@ -9,20 +9,16 @@
 import Foundation
 import UIKit
 
-/**
- Enum stores the text mode that the day date should return.
- */
+/// Enum stores the text mode that the day date should return.
 public enum TextMode {
     case large
     case normal
     case small
 }
 
-/**
- Day date class is used as a reliable way to assign a day to things such as dayViewCells and dictionaries
- storing event and frame data. DayDates are not influenced by timezones and thus the date it has been given will
- remain. DayDates are also easy to compare, print as strings and are hashable.
- */
+/// Day date class is used as a reliable way to assign a day to things such as dayViewCells and dictionaries
+/// storing event and frame data. DayDates are not influenced by timezones and thus the date it has been given will
+/// remain. DayDates are also easy to compare, print as strings and are hashable.
 public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable {
     public let day: Int
     public let month: Int
@@ -71,15 +67,9 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
         self.era = cal.component(.era, from: date)
     }
 
-    public init() {
-        self.day = -1
-        self.month = -1
-        self.year = -1
-        self.era = -1
-    }
-
     public static func == (lhs: DayDate, rhs: DayDate) -> Bool {
-        return lhs.day == rhs.day && lhs.month == rhs.month && lhs.year == rhs.year && lhs.era == rhs.era
+        return lhs.day == rhs.day && lhs.month == rhs.month && lhs.year == rhs.year
+            && lhs.era == rhs.era
     }
 
     public static func < (lhs: DayDate, rhs: DayDate) -> Bool {
@@ -88,14 +78,22 @@ public struct DayDate: Hashable, Comparable, CustomStringConvertible, Strideable
                 if lhs.month == rhs.month {
                     if lhs.day == rhs.day {
                         return false
-                    } else { return lhs.day < rhs.day }
-                } else { return lhs.month < rhs.month }
-            } else { return lhs.year < rhs.year }
-        } else { return lhs.era < rhs.era }
+                    } else {
+                        return lhs.day < rhs.day
+                    }
+                } else {
+                    return lhs.month < rhs.month
+                }
+            } else {
+                return lhs.year < rhs.year
+            }
+        } else {
+            return lhs.era < rhs.era
+        }
     }
 
     static func + (lhs: DayDate, rhs: Int) -> DayDate {
-        return DayDate(day: lhs.day + rhs, month: lhs.month, year: lhs.year, era: lhs.era)
+        return lhs.getDayDateWith(daysAdded: rhs)
     }
 
     public func hash(into hasher: inout Hasher) {

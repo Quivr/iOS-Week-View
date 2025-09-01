@@ -211,9 +211,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
             let cvLeft = CGPoint(x: collectionView.contentOffset.x, y: collectionView.center.y + collectionView.contentOffset.y)
             if  let path = collectionView.indexPathForItem(at: cvLeft),
                 let dayViewCell = collectionView.cellForItem(at: path) as? DayViewCell,
-                !scrollingToDay, activeDay != dayViewCell.date {
+                let dayViewCellDate = dayViewCell.date,
+                !scrollingToDay, activeDay != dayViewCellDate {
 
-                self.activeDay = dayViewCell.date
+                self.activeDay = dayViewCellDate
                 if activeDay > currentPeriod.lateMidLimit {
                     updatePeriod()
                 }
@@ -264,8 +265,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let dayViewCell = cell as? DayViewCell {
-            let dayDate = dayViewCell.date
+        if let dayViewCell = cell as? DayViewCell, let dayDate = dayViewCell.date {
             self.weekView?.addDayLabel(forIndexPath: indexPath, withDate: dayDate)
             if let allDayEvents = allDayEventsData[dayDate] {
                 self.weekView?.addAllDayEvents(allDayEvents, forIndexPath: indexPath, withDate: dayDate)
@@ -274,8 +274,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let dayViewCell = cell as? DayViewCell {
-            let dayDate = dayViewCell.date
+        if let dayViewCell = cell as? DayViewCell, let dayDate = dayViewCell.date {
             self.weekView?.discardDayLabel(withDate: dayDate)
             if self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
                 self.weekView?.removeAllDayEvents(forDate: dayDate)
@@ -468,8 +467,7 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         self.eventsData = newEventsData
         self.allDayEventsData = newAllDayEvents
         for cell in self.dayCollectionView.visibleCells {
-            if let dayViewCell = cell as? DayViewCell {
-                let dayDate = dayViewCell.date
+            if let dayViewCell = cell as? DayViewCell, let dayDate = dayViewCell.date {
                 let allThisDayEvents = self.allDayEventsData[dayDate]
                 if allThisDayEvents == nil && self.weekView?.hasAllDayEvents(forDate: dayDate) == true {
                     self.weekView?.removeAllDayEvents(forDate: dayDate)
@@ -490,10 +488,12 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         for dayDate in sortedChangedDays {
             self.processEventsData(forDayDate: dayDate)
         }
-        // Redraw days with no changed data
-        for (_, dayViewCell) in self.dayViewCells where !sortedChangedDays.contains(dayViewCell.date) {
-            dayViewCell.setNeedsLayout()
+        for (_, dayViewCell) in self.dayViewCells {
+            if let date = dayViewCell.date, !sortedChangedDays.contains(date) {
+                dayViewCell.setNeedsLayout()
+            }
         }
+
     }
 
     func requestEvents() {

@@ -1,16 +1,14 @@
 import Foundation
 import UIKit
 
-/**
- Class of the day view columns generated and displayed within DayScrollView
- */
+/// Class of the day view columns generated and displayed within DayScrollView
 class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
     // Static variable stores all ids of dayviewcells
     private static var uniqueIds: [Int] = []
 
     // Date and event variables
-    private(set) var date: DayDate = DayDate()
+    private(set) var date: DayDate? = nil
     private var eventsData: [String: EventData] = [:]
     private var eventFrames: [String: CGRect] = [:]
 
@@ -33,7 +31,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     private var lastResizeWidth: CGFloat!
     // Height of an hour
     private var hourHeight: CGFloat {
-        return self.bounds.height/DateSupport.hoursInDay
+        return self.bounds.height / DateSupport.hoursInDay
     }
 
     // Delegate variable
@@ -61,8 +59,10 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         // Initialization
         self.clipsToBounds = true
         self.backgroundColor = layout.defaultDayViewColor
-        self.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapAction)))
+        self.addGestureRecognizer(
+            UILongPressGestureRecognizer(target: self, action: #selector(longPressAction)))
+        self.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(tapAction)))
         self.lastResizeHeight = self.frame.height
         self.lastResizeWidth = self.frame.width
         // Setup overlay
@@ -80,7 +80,9 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         }
     }
 
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+    override func preferredLayoutAttributesFitting(
+        _ layoutAttributes: UICollectionViewLayoutAttributes
+    ) -> UICollectionViewLayoutAttributes {
         return layoutAttributes
     }
 
@@ -88,7 +90,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         for eventLayer in self.eventLayers {
             eventLayer.removeFromSuperlayer()
         }
-        self.date = DayDate()
+        self.date = nil
         self.eventsData.removeAll()
         self.eventFrames.removeAll()
         self.eventLayers.removeAll()
@@ -102,20 +104,25 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     }
 
     func updateTimeView() {
-        if date.isToday() {
-            self.overlayView.isHidden = !self.layout.showTimeOverlay
-            self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
-            self.backgroundColor = self.layout.todayViewColor
-        } else {
-            self.overlayView.isHidden = true
-            if date.hasPassed() {
-                self.backgroundColor = date.isWeekend() ? self.layout.passedWeekendDayViewColor : self.layout.passedDayViewColor
+        if let date {
+            if date.isToday() {
+                self.overlayView.isHidden = !self.layout.showTimeOverlay
+                self.bottomDistancePercent = DateSupport.getPercentTodayPassed()
+                self.backgroundColor = self.layout.todayViewColor
+            } else {
+                self.overlayView.isHidden = true
+                if date.hasPassed() {
+                    self.backgroundColor =
+                        date.isWeekend()
+                        ? self.layout.passedWeekendDayViewColor : self.layout.passedDayViewColor
+                } else {
+                    self.backgroundColor =
+                        date.isWeekend()
+                        ? self.layout.weekendDayViewColor : self.layout.defaultDayViewColor
+                }
             }
-            else {
-                self.backgroundColor = date.isWeekend() ? self.layout.weekendDayViewColor : self.layout.defaultDayViewColor
-            }
+            updateOverlay()
         }
-        updateOverlay()
     }
 
     func setEventsData(_ eventsData: [String: EventData], andFrames eventFrames: [String: CGRect]) {
@@ -144,19 +151,24 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     }
 
     private func updateOverlay() {
-        if !self.overlayView.isHidden {
-            overlayView.frame = CGRect(x: 0,
-                                       y: 0,
-                                       width: self.bounds.width,
-                                       height: bottomDistancePercent*self.bounds.height)
-            overlayView.backgroundColor = date.isWeekend() ? self.layout.passedWeekendDayViewColor : self.layout.passedDayViewColor
-            hourIndicatorView.frame = CGRect(x: 0,
-                                             y: overlayView.frame.height-self.layout.hourIndicatorThickness/2,
-                                             width: self.bounds.width,
-                                             height: self.layout.hourIndicatorThickness)
-            hourIndicatorView.backgroundColor = self.layout.hourIndicatorColor
+        if let date {
+            if !self.overlayView.isHidden {
+                overlayView.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: self.bounds.width,
+                    height: bottomDistancePercent * self.bounds.height)
+                overlayView.backgroundColor =
+                    date.isWeekend()
+                    ? self.layout.passedWeekendDayViewColor : self.layout.passedDayViewColor
+                hourIndicatorView.frame = CGRect(
+                    x: 0,
+                    y: overlayView.frame.height - self.layout.hourIndicatorThickness / 2,
+                    width: self.bounds.width,
+                    height: self.layout.hourIndicatorThickness)
+                hourIndicatorView.backgroundColor = self.layout.hourIndicatorColor
+            }
         }
-
     }
 
     private func generateSeparatorLayers() {
@@ -170,13 +182,13 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         let linePathCombine = CGMutablePath()
 
         // Generate line separator paths
-        for i in 0...Int(DateSupport.hoursInDay)-1 {
+        for i in 0...Int(DateSupport.hoursInDay) - 1 {
 
             let dottedPath = UIBezierPath()
             let linePath = UIBezierPath()
 
-            let y1 = hourHeight*CGFloat(i)
-            let y2 = hourHeight*CGFloat(i) + hourHeight/2
+            let y1 = hourHeight * CGFloat(i)
+            let y2 = hourHeight * CGFloat(i) + hourHeight / 2
 
             linePath.move(to: CGPoint(x: 0, y: y1))
             dottedPath.move(to: CGPoint(x: 0, y: y2))
@@ -189,14 +201,14 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         // Generate line separator shape layers
         let lineLayer = CAShapeLayer()
-        lineLayer.path=linePathCombine
+        lineLayer.path = linePathCombine
         lineLayer.lineWidth = self.layout.mainSeparatorThickness
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.opacity = 1.0
         lineLayer.strokeColor = self.layout.mainSeparatorColor.cgColor
 
         let dottedLineLayer = CAShapeLayer()
-        dottedLineLayer.path=dottedPathCombine
+        dottedLineLayer.path = dottedPathCombine
         dottedLineLayer.lineDashPattern = self.layout.dashedSeparatorPattern
         dottedLineLayer.lineWidth = self.layout.dashedSeparatorThickness
         dottedLineLayer.fillColor = UIColor.clear.cgColor
@@ -217,8 +229,8 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         }
         self.eventLayers.removeAll()
 
-        let scaleY = self.frame.height/lastResizeHeight
-        let scaleX = self.frame.width/lastResizeWidth
+        let scaleY = self.frame.height / lastResizeHeight
+        let scaleX = self.frame.width / lastResizeWidth
         lastResizeHeight = self.frame.height
         lastResizeWidth = self.frame.width
 
@@ -257,11 +269,9 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         if sender.state == .began {
             self.makePreviewLayer(at: previewPos)
-        }
-        else if sender.state == .ended {
+        } else if sender.state == .ended {
             self.releasePreviewLayer(at: previewPos)
-        }
-        else if sender.state == .changed {
+        } else if sender.state == .changed {
             movePreviewLayer(to: previewPos)
         } else if sender.state == .cancelled || sender.state == .failed {
             self.previewVisible = false
@@ -272,7 +282,11 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         removePreviewLayer()
 
         let startingBounds = CGRect(origin: position, size: CGSize(width: 0, height: 0))
-        let endingBounds = CGRect(origin: position, size: CGSize(width: self.frame.width, height: hourHeight*CGFloat(self.layout.previewEventHourHeight)))
+        let endingBounds = CGRect(
+            origin: position,
+            size: CGSize(
+                width: self.frame.width,
+                height: hourHeight * CGFloat(self.layout.previewEventHourHeight)))
 
         let previewLayer = CALayer()
         previewLayer.frame = startingBounds
@@ -281,8 +295,15 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
         let textLayer = CATextLayer()
         textLayer.frame = endingBounds
-        let mainFontAttributes: [String: Any] = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): self.layout.eventLabelFont, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): self.layout.eventLabelTextColor.cgColor]
-        let mainAttributedString = NSMutableAttributedString(string: self.layout.previewEventText, attributes: convertToOptionalNSAttributedStringKeyDictionary(mainFontAttributes))
+        let mainFontAttributes: [String: Any] = [
+            convertFromNSAttributedStringKey(NSAttributedString.Key.font): self.layout
+                .eventLabelFont,
+            convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): self.layout
+                .eventLabelTextColor.cgColor,
+        ]
+        let mainAttributedString = NSMutableAttributedString(
+            string: self.layout.previewEventText,
+            attributes: convertToOptionalNSAttributedStringKeyDictionary(mainFontAttributes))
         textLayer.string = mainAttributedString
         textLayer.isWrapped = true
         textLayer.contentsScale = UIScreen.main.scale
@@ -314,7 +335,10 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     func releasePreviewLayer(at position: CGPoint) {
         if let prevLayer = self.previewLayer {
             let anim = CABasicAnimation(keyPath: "position")
-            let rounded = CGFloat(Double(position.y/hourHeight).roundToNearest(self.layout.previewEventMinutePrecision / 60.0))*hourHeight
+            let rounded =
+                CGFloat(
+                    Double(position.y / hourHeight).roundToNearest(
+                        self.layout.previewEventMinutePrecision / 60.0)) * hourHeight
             let roundedPos = CGPoint(x: position.x, y: rounded)
             anim.duration = 0.20
             anim.fromValue = prevLayer.position
@@ -327,11 +351,14 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         // Animation is either finished, or preview is not visible
-        if let prevLayer = self.previewLayer, (flag || !previewVisible) {
-            let time = Double( ((prevLayer.position.y-(hourHeight*CGFloat(self.layout.previewEventHourHeight / 2)))/self.frame.height)*24 )
+        if let prevLayer = self.previewLayer, flag || !previewVisible {
+            let time = Double(
+                ((prevLayer.position.y
+                    - (hourHeight * CGFloat(self.layout.previewEventHourHeight / 2)))
+                    / self.frame.height) * 24)
             let rounded = time.roundToNearest(self.layout.previewEventMinutePrecision / 60.0)
             let hours = Int(rounded)
-            let minutes = Int((rounded-Double(hours))*60.0)
+            let minutes = Int((rounded - Double(hours)) * 60.0)
 
             self.previewVisible = false
             self.delegate?.dayViewCellWasLongPressed(self, hours: hours, minutes: minutes)
@@ -348,13 +375,13 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
     }
 
     private func previewPosition(forYCoordinate yCoord: CGFloat) -> CGPoint {
-        return CGPoint(x: self.frame.width/2, y: yCoord)
+        return CGPoint(x: self.frame.width / 2, y: yCoord)
     }
 
     private static func genUniqueId() -> Int {
         var id: Int!
         repeat {
-            id = Int(drand48()*100000)
+            id = Int(drand48() * 100000)
         } while uniqueIds.contains(id)
         uniqueIds.append(id)
         return id
@@ -371,12 +398,17 @@ protocol DayViewCellDelegate: class {
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
-	return input.rawValue
+private func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+    return input.rawValue
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value) })
+private func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?)
+    -> [NSAttributedString.Key: Any]?
+{
+    guard let input = input else { return nil }
+    return Dictionary(
+        uniqueKeysWithValues: input.map { key, value in
+            (NSAttributedString.Key(rawValue: key), value)
+        })
 }

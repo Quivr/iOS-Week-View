@@ -29,16 +29,18 @@ class EventLayer: CALayer {
         let eventTextLayer = CATextLayer()
         eventTextLayer.isWrapped = true
         eventTextLayer.contentsScale = UIScreen.main.scale
-        eventTextLayer.string = event.getDisplayString(withMainFont: layout.eventLabelFont,
-                                                       infoFont: layout.eventLabelInfoFont,
-                                                       andColor: layout.eventLabelTextColor)
+        eventTextLayer.string = event.getDisplayString(
+            withMainFont: layout.eventLabelFont,
+            infoFont: layout.eventLabelInfoFont,
+            andColor: layout.eventLabelTextColor)
 
         let xPadding = layout.eventLabelHorizontalTextPadding
         let yPadding = layout.eventLabelVerticalTextPadding
-        eventTextLayer.frame = CGRect(x: frame.origin.x + xPadding,
-                                      y: frame.origin.y + yPadding,
-                                      width: frame.width - 2*xPadding,
-                                      height: frame.height - 2*yPadding)
+        eventTextLayer.frame = CGRect(
+            x: frame.origin.x + xPadding,
+            y: frame.origin.y + yPadding,
+            width: frame.width - 2 * xPadding,
+            height: frame.height - 2 * yPadding)
         self.addSublayer(eventTextLayer)
     }
 
