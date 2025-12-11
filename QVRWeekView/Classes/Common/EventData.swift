@@ -26,6 +26,8 @@ open class EventData: NSObject, NSCoding {
     public let color: UIColor
     // Stores if event is an all day event
     public let allDay: Bool
+    // Tags associated with the event
+    public let tags: [String]
     // Stores an optional gradient layer which will be used to draw event. Can only be set once.
     private(set) var gradientLayer: CAGradientLayer? { didSet { gradientLayer = oldValue ?? gradientLayer } }
 
@@ -37,12 +39,13 @@ open class EventData: NSObject, NSCoding {
     /**
      Main initializer. All properties.
      */
-    public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool, gradientLayer: CAGradientLayer? = nil) {
+    public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool, tags: [String] = [], gradientLayer: CAGradientLayer? = nil) {
         self.id = id
         self.title = title
         self.location = location
         self.color = color
         self.allDay = allDay
+        self.tags = tags
         guard startDate.compare(endDate).rawValue <= 0 else {
             self.startDate = startDate
             self.endDate = startDate
@@ -119,6 +122,7 @@ open class EventData: NSObject, NSCoding {
         coder.encode(location, forKey: EventDataEncoderKey.location)
         coder.encode(color, forKey: EventDataEncoderKey.color)
         coder.encode(allDay, forKey: EventDataEncoderKey.allDay)
+        coder.encode(tags, forKey: EventDataEncoderKey.tags)
         coder.encode(gradientLayer, forKey: EventDataEncoderKey.gradientLayer)
     }
 
@@ -131,6 +135,7 @@ open class EventData: NSObject, NSCoding {
             let dColor = coder.decodeObject(forKey: EventDataEncoderKey.color) as? UIColor {
                 let dGradientLayer = coder.decodeObject(forKey: EventDataEncoderKey.gradientLayer) as? CAGradientLayer
                 let dAllDay = coder.decodeBool(forKey: EventDataEncoderKey.allDay)
+                let dTags = coder.decodeObject(forKey: EventDataEncoderKey.tags) as? [String] ?? []
                 self.init(id: dId,
                           title: dTitle,
                           startDate: dStartDate,
@@ -138,6 +143,7 @@ open class EventData: NSObject, NSCoding {
                           location: dLocation,
                           color: dColor,
                           allDay: dAllDay,
+                          tags: dTags,
                           gradientLayer: dGradientLayer)
         } else {
             return nil
@@ -152,7 +158,8 @@ open class EventData: NSObject, NSCoding {
             (lhs.title == rhs.title) &&
             (lhs.location == rhs.location) &&
             (lhs.allDay == rhs.allDay) &&
-            (lhs.color.isEqual(rhs.color))
+            (lhs.color.isEqual(rhs.color)) &&
+            (lhs.tags == rhs.tags)
     }
 
     public override var hash: Int {
@@ -167,8 +174,13 @@ open class EventData: NSObject, NSCoding {
     open func getDisplayString(withMainFont mainFont: UIFont, infoFont: UIFont, andColor color: UIColor) -> NSAttributedString {
         let df = DateFormatter()
         df.dateFormat = "HH:mm"
-        let mainFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: mainFont, NSAttributedString.Key.foregroundColor: color.cgColor]
-        let infoFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: infoFont, NSAttributedString.Key.foregroundColor: color.cgColor]
+        
+        // Use Montserrat Bold for title, Montserrat Medium for description
+        let titleFont = UIFont(name: "Montserrat-Bold", size: 12) ?? UIFont.boldSystemFont(ofSize: 12)
+        let descFont = UIFont(name: "Montserrat-Medium", size: 10) ?? UIFont.systemFont(ofSize: 10, weight: .medium)
+        
+        let mainFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: titleFont, NSAttributedString.Key.foregroundColor: UIColor.white]
+        let infoFontAttributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: descFont, NSAttributedString.Key.foregroundColor: UIColor.white]
         let mainAttributedString = NSMutableAttributedString(string: self.title, attributes: mainFontAttributes)
         if !self.allDay {
             mainAttributedString.append(NSMutableAttributedString(
@@ -204,19 +216,19 @@ open class EventData: NSObject, NSCoding {
     }
 
     public func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay, tags: self.tags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
 
     public func remakeEventData(withColor color: UIColor) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: self.startDate, endDate: self.endDate, location: self.location, color: color, allDay: self.allDay)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: self.startDate, endDate: self.endDate, location: self.location, color: color, allDay: self.allDay, tags: self.tags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
 
     public func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true, tags: self.tags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
@@ -297,5 +309,6 @@ struct EventDataEncoderKey {
     static let location = "EVENT_DATA_LOCATION"
     static let color = "EVENT_DATA_COLOR"
     static let allDay = "EVENT_DATA_ALL_DAY"
+    static let tags = "EVENT_DATA_TAGS"
     static let gradientLayer = "EVENT_DATA_GRADIENT_LAYER"
 }
