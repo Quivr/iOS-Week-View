@@ -73,13 +73,9 @@ class EventLayer: CALayer {
         
         for tag in tags {
             let tagLower = tag.lowercased()
-            let iconName = getIconForTag(tagLower)
-            var iconImage: UIImage? = nil
             
-            // Try to load icon if it exists
-            if let iconName = iconName {
-                iconImage = loadIconImage(named: iconName)
-            }
+            // Try to load icon for any tag (automatically detects from Images.xcassets/tags/)
+            let iconImage = loadIconImage(named: tagLower)
             
             // Calculate tag width
             var tagWidth: CGFloat
@@ -146,43 +142,26 @@ class EventLayer: CALayer {
         }
     }
     
-    private func getIconForTag(_ tag: String) -> String? {
-        switch tag {
-        case "bed":
-            return "bed"
-        case "alert":
-            return "alert"
-        case "fail":
-            return "fail"
-        case "success":
-            return "success"
-        case "drink":
-            return "drink"
-        default:
-            return nil
-        }
-    }
-    
     private func loadIconImage(named: String) -> UIImage? {
-        let bundle = Bundle(for: EventLayer.self)
-        
-        // Try SVG first
-        if let svgPath = bundle.path(forResource: named, ofType: "svg", inDirectory: "Assets/tags"),
-           let svgData = try? Data(contentsOf: URL(fileURLWithPath: svgPath)) {
-            if #available(iOS 13.0, *), let image = UIImage(data: svgData) {
-                return image
-            }
-        }
-        
-        // Try PNG
-        if let pngPath = bundle.path(forResource: named, ofType: "png", inDirectory: "Assets/tags"),
-           let image = UIImage(contentsOfFile: pngPath) {
+        // Try to load from main app bundle under tags namespace (Images.xcassets/tags/)
+        if let image = UIImage(named: "tags/\(named)", in: Bundle.main, compatibleWith: nil) {
             return image
         }
         
-        // Try PDF
-        if let pdfPath = bundle.path(forResource: named, ofType: "pdf", inDirectory: "Assets/tags"),
-           let image = UIImage(contentsOfFile: pdfPath) {
+        // Try without namespace in main bundle
+        if let image = UIImage(named: named, in: Bundle.main, compatibleWith: nil) {
+            return image
+        }
+        
+        // Try from framework bundle under tags namespace
+        let bundle = Bundle(for: EventLayer.self)
+        
+        if let image = UIImage(named: "tags/\(named)", in: bundle, compatibleWith: nil) {
+            return image
+        }
+        
+        // Try without namespace in framework bundle
+        if let image = UIImage(named: named, in: bundle, compatibleWith: nil) {
             return image
         }
         
