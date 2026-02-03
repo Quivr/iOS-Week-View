@@ -63,4 +63,17 @@ class DayViewCellLayout {
     var previewEventMinutePrecision: Double = LayoutDefaults.previewEventPrecisionInMinutes { didSet { update?() } }
     // Height of the preview event in hours.
     var previewEventHourHeight: Double = LayoutDefaults.previewEventHeightInHours { didSet { update?() } }
+    
+    // MARK: - TAG PROPERTIES -
+    
+    // Height of tags
+    var tagHeight: CGFloat = LayoutDefaults.tagHeight { didSet { update?() } }
+    // Horizontal spacing between tags
+    var tagSpacing: CGFloat = LayoutDefaults.tagSpacing { didSet { update?() } }
+    // Corner radius of tags
+    var tagCornerRadius: CGFloat = LayoutDefaults.tagCornerRadius { didSet { update?() } }
+    // Font size of tag text
+    var tagTextSize: CGFloat = LayoutDefaults.tagTextSize { didSet { update?() } }
+    // Vertical margin between tag and bottom of event
+    var tagVerticalMargin: CGFloat = LayoutDefaults.tagVerticalMargin { didSet { update?() } }
 }

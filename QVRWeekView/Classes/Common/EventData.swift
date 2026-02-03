@@ -9,6 +9,19 @@
 import Foundation
 
 /**
+ Represents a single tag with its associated color
+ */
+public struct EventTag {
+    public let name: String
+    public let color: UIColor
+    
+    public init(name: String, color: UIColor) {
+        self.name = name
+        self.color = color
+    }
+}
+
+/**
  Class event data stores basic data needed by the rest of the code to calculate and draw events in the dayViewCells in the dayScrollView.
  */
 open class EventData: NSObject, NSCoding {
@@ -26,8 +39,8 @@ open class EventData: NSObject, NSCoding {
     public let color: UIColor
     // Stores if event is an all day event
     public let allDay: Bool
-    // Tags associated with the event
-    public let tags: [String]
+    // Tags associated with the event with their colors
+    public let eventTags: [EventTag]
     // Stores an optional gradient layer which will be used to draw event. Can only be set once.
     private(set) var gradientLayer: CAGradientLayer? { didSet { gradientLayer = oldValue ?? gradientLayer } }
 
@@ -39,13 +52,13 @@ open class EventData: NSObject, NSCoding {
     /**
      Main initializer. All properties.
      */
-    public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool, tags: [String] = [], gradientLayer: CAGradientLayer? = nil) {
+    public init(id: String, title: String, startDate: Date, endDate: Date, location: String, color: UIColor, allDay: Bool, eventTags: [EventTag] = [], gradientLayer: CAGradientLayer? = nil) {
         self.id = id
         self.title = title
         self.location = location
         self.color = color
         self.allDay = allDay
-        self.tags = tags
+        self.eventTags = eventTags
         guard startDate.compare(endDate).rawValue <= 0 else {
             self.startDate = startDate
             self.endDate = startDate
@@ -122,7 +135,11 @@ open class EventData: NSObject, NSCoding {
         coder.encode(location, forKey: EventDataEncoderKey.location)
         coder.encode(color, forKey: EventDataEncoderKey.color)
         coder.encode(allDay, forKey: EventDataEncoderKey.allDay)
-        coder.encode(tags, forKey: EventDataEncoderKey.tags)
+        // Encode tags back to arrays for backward compatibility
+        let tagNames = eventTags.map { $0.name }
+        let tagColors = eventTags.map { $0.color }
+        coder.encode(tagNames, forKey: EventDataEncoderKey.tags)
+        coder.encode(tagColors, forKey: "tagColors")
         coder.encode(gradientLayer, forKey: EventDataEncoderKey.gradientLayer)
     }
 
@@ -135,7 +152,14 @@ open class EventData: NSObject, NSCoding {
             let dColor = coder.decodeObject(forKey: EventDataEncoderKey.color) as? UIColor {
                 let dGradientLayer = coder.decodeObject(forKey: EventDataEncoderKey.gradientLayer) as? CAGradientLayer
                 let dAllDay = coder.decodeBool(forKey: EventDataEncoderKey.allDay)
-                let dTags = coder.decodeObject(forKey: EventDataEncoderKey.tags) as? [String] ?? []
+                let dTagNames = coder.decodeObject(forKey: EventDataEncoderKey.tags) as? [String] ?? []
+                let dTagColors = coder.decodeObject(forKey: "tagColors") as? [UIColor] ?? []
+                // Reconstruct EventTag objects from decoded arrays
+                var eventTags: [EventTag] = []
+                for i in 0..<dTagNames.count {
+                    let color = i < dTagColors.count ? dTagColors[i] : UIColor.white
+                    eventTags.append(EventTag(name: dTagNames[i], color: color))
+                }
                 self.init(id: dId,
                           title: dTitle,
                           startDate: dStartDate,
@@ -143,7 +167,7 @@ open class EventData: NSObject, NSCoding {
                           location: dLocation,
                           color: dColor,
                           allDay: dAllDay,
-                          tags: dTags,
+                          eventTags: eventTags,
                           gradientLayer: dGradientLayer)
         } else {
             return nil
@@ -159,7 +183,12 @@ open class EventData: NSObject, NSCoding {
             (lhs.location == rhs.location) &&
             (lhs.allDay == rhs.allDay) &&
             (lhs.color.isEqual(rhs.color)) &&
-            (lhs.tags == rhs.tags)
+            (lhs.eventTags.count == rhs.eventTags.count) &&
+            (lhs.eventTags.enumerated().allSatisfy { i, tag in
+                i < rhs.eventTags.count &&
+                tag.name == rhs.eventTags[i].name &&
+                tag.color.isEqual(rhs.eventTags[i].color)
+            })
     }
 
     public override var hash: Int {
@@ -216,19 +245,19 @@ open class EventData: NSObject, NSCoding {
     }
 
     public func remakeEventData(withStart start: Date, andEnd end: Date) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay, tags: self.tags)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: start, endDate: end, location: self.location, color: self.color, allDay: self.allDay, eventTags: self.eventTags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
 
     public func remakeEventData(withColor color: UIColor) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: self.startDate, endDate: self.endDate, location: self.location, color: color, allDay: self.allDay, tags: self.tags)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: self.startDate, endDate: self.endDate, location: self.location, color: color, allDay: self.allDay, eventTags: self.eventTags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }
 
     public func remakeEventDataAsAllDay(forDate date: Date) -> EventData {
-        let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true, tags: self.tags)
+        let newEvent = EventData(id: self.id, title: self.title, startDate: date.getStartOfDay(), endDate: date.getEndOfDay(), location: self.location, color: self.color, allDay: true, eventTags: self.eventTags)
         newEvent.configureGradient(self.gradientLayer)
         return newEvent
     }

@@ -45,47 +45,61 @@ class EventLayer: CALayer {
         self.addSublayer(eventTextLayer)
         
         // Add tags at the bottom if available
-        if !event.tags.isEmpty {
-            let tagHeight: CGFloat = 18
-            let bottomMargin: CGFloat = 4
+        if !event.eventTags.isEmpty {
+            let tagHeight = layout.tagHeight
+            let bottomMargin = layout.tagVerticalMargin
             let tagsY = frame.origin.y + frame.height - yPadding - tagHeight - bottomMargin
             
             // Only render tags if there's enough space
             if tagsY > frame.origin.y + yPadding + 20 {
                 addTagsLayers(
-                    tags: event.tags,
+                    eventTags: event.eventTags,
                     x: frame.origin.x + xPadding,
                     y: tagsY,
                     maxWidth: frame.width - 2 * xPadding,
-                    tagHeight: tagHeight,
+                    layout: layout,
                     eventColor: event.color)
             }
         }
     }
     
-    private func addTagsLayers(tags: [String], x: CGFloat, y: CGFloat, maxWidth: CGFloat, tagHeight: CGFloat, eventColor: UIColor) {
-        let tagSpacing: CGFloat = 4
+    private func addTagsLayers(eventTags: [EventTag], x: CGFloat, y: CGFloat, maxWidth: CGFloat, layout: DayViewCellLayout, eventColor: UIColor) {
+        let tagHeight = layout.tagHeight
+        let tagSpacing = layout.tagSpacing
+        let tagCornerRadius = layout.tagCornerRadius
+        let tagTextSize = layout.tagTextSize
         let tagPadding: CGFloat = 6
-        let tagCornerRadius: CGFloat = tagHeight / 2
-        let iconSize: CGFloat = tagHeight // Icons same height as pills
+        let iconSize: CGFloat = tagHeight
         
         var currentX: CGFloat = x
         
-        for tag in tags {
-            let tagLower = tag.lowercased()
+        // Process tags
+        for eventTag in eventTags {
+            let tagName = eventTag.name
+            let tagColor = eventTag.color
+            
+            let tagLower = tagName.lowercased()
             
             // Try to load icon for any tag (automatically detects from Images.xcassets/tags/)
             let iconImage = loadIconImage(named: tagLower)
             
+            // Check if tag is emoji-only
+            let isEmojiOnly = isEmoji(tagName)
+            
             // Calculate tag width
             var tagWidth: CGFloat
-            let tagFont = UIFont(name: "Montserrat-Medium", size: 10) ?? UIFont.systemFont(ofSize: 10, weight: .medium)
+            let tagFont = UIFont(name: "Montserrat-Medium", size: tagTextSize) ?? UIFont.systemFont(ofSize: tagTextSize, weight: .medium)
             
             if iconImage != nil {
-                tagWidth = iconSize // Just icon width, no padding
+                // Icon from asset
+                tagWidth = iconSize
+            } else if isEmojiOnly {
+                // Emoji-only: no background, just emoji text
+                let emojiSize = tagName.size(withAttributes: [.font: UIFont.systemFont(ofSize: tagTextSize + 4)])
+                tagWidth = emojiSize.width + 4 // Small margin around emoji
             } else {
-                // Text only tags with padding (fallback when icon not found)
-                let tagText = tag as NSString
+                // Text-only with color background
+                let tagText = tagName as NSString
                 let textWidth = tagText.size(withAttributes: [.font: tagFont]).width
                 tagWidth = textWidth + (tagPadding * 2)
             }
@@ -106,20 +120,37 @@ class EventLayer: CALayer {
                     height: iconSize
                 )
                 iconLayer.contentsGravity = .resizeAspect
-                // Use destination out blend mode for transparent icons
                 iconLayer.compositingFilter = "destinationOut"
                 self.addSublayer(iconLayer)
+            } else if isEmojiOnly {
+                // Render emoji-only text without background (no foregroundColor set to preserve emoji colors)
+                let emojiTextLayer = CATextLayer()
+                
+                emojiTextLayer.frame = CGRect(
+                    x: currentX,
+                    y: y,
+                    width: tagWidth,
+                    height: tagHeight
+                )
+                emojiTextLayer.string = tagName
+                emojiTextLayer.font = UIFont.systemFont(ofSize: tagTextSize + 4)
+                emojiTextLayer.fontSize = tagTextSize + 4
+                emojiTextLayer.contentsScale = UIScreen.main.scale
+                emojiTextLayer.alignmentMode = .center
+                emojiTextLayer.isWrapped = false
+                self.addSublayer(emojiTextLayer)
             } else {
-                // Create tag background layer (white pill for text fallback)
+                // Text with tag color background
                 let tagBackgroundLayer = CALayer()
+                
                 tagBackgroundLayer.frame = CGRect(x: currentX, y: y, width: tagWidth, height: tagHeight)
-                tagBackgroundLayer.backgroundColor = UIColor.white.cgColor
+                tagBackgroundLayer.backgroundColor = tagColor.cgColor
                 tagBackgroundLayer.cornerRadius = tagCornerRadius
                 self.addSublayer(tagBackgroundLayer)
                 
-                // Create tag text layer with Montserrat Medium
+                // Create tag text layer with event color (creates stamp out effect)
                 let tagTextLayer = CATextLayer()
-                let tagText = tag as NSString
+                let tagText = tagName as NSString
                 let textWidth = tagText.size(withAttributes: [.font: tagFont]).width
                 
                 tagTextLayer.frame = CGRect(
@@ -128,9 +159,9 @@ class EventLayer: CALayer {
                     width: textWidth,
                     height: tagHeight - 6
                 )
-                tagTextLayer.string = tag
+                tagTextLayer.string = tagName
                 tagTextLayer.font = tagFont
-                tagTextLayer.fontSize = 10
+                tagTextLayer.fontSize = tagTextSize
                 tagTextLayer.foregroundColor = eventColor.cgColor
                 tagTextLayer.contentsScale = UIScreen.main.scale
                 tagTextLayer.alignmentMode = .center
@@ -140,6 +171,27 @@ class EventLayer: CALayer {
             // Move x position for next tag
             currentX += tagWidth + tagSpacing
         }
+    }
+
+        let cleaned = string.trimmingCharacters(in: .whitespaces)
+        if cleaned.isEmpty {
+            return false
+        }
+        
+        // Check if all characters are emoji
+        for scalar in cleaned.unicodeScalars {
+            // Skip variation selectors and joiners
+            if scalar.properties.isEmoji || 
+               scalar.properties.isEmojiComponent ||
+               scalar == "\u{200D}" { // Zero-width joiner
+                continue
+            }
+            // If we encounter a non-emoji character, it's not emoji-only
+            if !scalar.properties.isWhitespace {
+                return false
+            }
+        }
+        return true
     }
     
     private func loadIconImage(named: String) -> UIImage? {
