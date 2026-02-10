@@ -52,11 +52,12 @@ class EventLayer: CALayer {
             
             // Only render tags if there's enough space
             if tagsY > frame.origin.y + yPadding + 20 {
+                let tagLeftInset = bottomMargin
                 addTagsLayers(
                     eventTags: event.eventTags,
-                    x: frame.origin.x + xPadding,
+                    x: frame.origin.x + tagLeftInset,
                     y: tagsY,
-                    maxWidth: frame.width - 2 * xPadding,
+                    maxWidth: frame.width - 2 * tagLeftInset,
                     layout: layout,
                     eventColor: event.color)
             }
@@ -125,15 +126,18 @@ class EventLayer: CALayer {
             } else if isEmojiOnly {
                 // Render emoji-only text without background (no foregroundColor set to preserve emoji colors)
                 let emojiTextLayer = CATextLayer()
-                
+                let emojiFont = UIFont.systemFont(ofSize: tagTextSize + 4)
+                let emojiTextHeight = emojiFont.lineHeight
+                let emojiTextY = y + (tagHeight - emojiTextHeight) / 2
+
                 emojiTextLayer.frame = CGRect(
                     x: currentX,
-                    y: y,
+                    y: emojiTextY,
                     width: tagWidth,
-                    height: tagHeight
+                    height: emojiTextHeight
                 )
                 emojiTextLayer.string = tagName
-                emojiTextLayer.font = UIFont.systemFont(ofSize: tagTextSize + 4)
+                emojiTextLayer.font = emojiFont
                 emojiTextLayer.fontSize = tagTextSize + 4
                 emojiTextLayer.contentsScale = UIScreen.main.scale
                 emojiTextLayer.alignmentMode = .center
@@ -153,11 +157,14 @@ class EventLayer: CALayer {
                 let tagText = tagName as NSString
                 let textWidth = tagText.size(withAttributes: [.font: tagFont]).width
                 
+                let textHeight = tagFont.lineHeight
+                let textY = y + (tagHeight - textHeight) / 2
+
                 tagTextLayer.frame = CGRect(
                     x: currentX + tagPadding,
-                    y: y + 3,
+                    y: textY,
                     width: textWidth,
-                    height: tagHeight - 6
+                    height: textHeight
                 )
                 tagTextLayer.string = tagName
                 tagTextLayer.font = tagFont
