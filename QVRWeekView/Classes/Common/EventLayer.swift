@@ -172,24 +172,24 @@ class EventLayer: CALayer {
             currentX += tagWidth + tagSpacing
         }
     }
-
+    
+    private func isEmoji(_ string: String) -> Bool {
         let cleaned = string.trimmingCharacters(in: .whitespaces)
         if cleaned.isEmpty {
             return false
         }
         
-        // Check if all characters are emoji
+        // Check if all characters are emoji or zero-width joiners
         for scalar in cleaned.unicodeScalars {
-            // Skip variation selectors and joiners
-            if scalar.properties.isEmoji || 
-               scalar.properties.isEmojiComponent ||
-               scalar == "\u{200D}" { // Zero-width joiner
+            // Allow emoji and variation selectors/joiners
+            if scalar.properties.isEmoji || scalar == "\u{200D}" { // Zero-width joiner
                 continue
             }
             // If we encounter a non-emoji character, it's not emoji-only
-            if !scalar.properties.isWhitespace {
-                return false
+            if !scalar.isASCII {
+                continue
             }
+            return false
         }
         return true
     }
