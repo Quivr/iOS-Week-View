@@ -217,7 +217,7 @@ let event = EventData(
 
 #### Custom Tag Icons
 
-These tags will display as icons instead of text. If you add them to your app's Assets.xcassets
+These tags will display as icons instead of text if you add them to your app's Assets.xcassets
 
 To add your own custom tag icons:
    - Open your app's `Assets.xcassets`

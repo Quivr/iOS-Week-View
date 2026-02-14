@@ -135,11 +135,9 @@ open class EventData: NSObject, NSCoding {
         coder.encode(location, forKey: EventDataEncoderKey.location)
         coder.encode(color, forKey: EventDataEncoderKey.color)
         coder.encode(allDay, forKey: EventDataEncoderKey.allDay)
-        // Encode tags back to arrays for backward compatibility
-        let tagNames = eventTags.map { $0.name }
-        let tagColors = eventTags.map { $0.color }
-        coder.encode(tagNames, forKey: EventDataEncoderKey.tags)
-        coder.encode(tagColors, forKey: "tagColors")
+        // Encode tags as flat array [name, color, name, color, ...]
+        let flatTags = eventTags.flatMap { [$0.name, $0.color] as [Any] }
+        coder.encode(flatTags, forKey: EventDataEncoderKey.tags)
         coder.encode(gradientLayer, forKey: EventDataEncoderKey.gradientLayer)
     }
 
@@ -152,13 +150,13 @@ open class EventData: NSObject, NSCoding {
             let dColor = coder.decodeObject(forKey: EventDataEncoderKey.color) as? UIColor {
                 let dGradientLayer = coder.decodeObject(forKey: EventDataEncoderKey.gradientLayer) as? CAGradientLayer
                 let dAllDay = coder.decodeBool(forKey: EventDataEncoderKey.allDay)
-                let dTagNames = coder.decodeObject(forKey: EventDataEncoderKey.tags) as? [String] ?? []
-                let dTagColors = coder.decodeObject(forKey: "tagColors") as? [UIColor] ?? []
-                // Reconstruct EventTag objects from decoded arrays
+                // Decode tags from flat array [name, color, name, color, ...]
+                let flatTags = coder.decodeObject(forKey: EventDataEncoderKey.tags) as? [Any] ?? []
                 var eventTags: [EventTag] = []
-                for i in 0..<dTagNames.count {
-                    let color = i < dTagColors.count ? dTagColors[i] : UIColor.white
-                    eventTags.append(EventTag(name: dTagNames[i], color: color))
+                stride(from: 0, to: flatTags.count - 1, by: 2).forEach { i in
+                    if let name = flatTags[i] as? String, let color = flatTags[i+1] as? UIColor {
+                        eventTags.append(EventTag(name: name, color: color))
+                    }
                 }
                 self.init(id: dId,
                           title: dTitle,
