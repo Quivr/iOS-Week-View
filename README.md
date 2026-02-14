@@ -217,27 +217,15 @@ let event = EventData(
 
 #### Custom Tag Icons
 
-The library includes built-in icon support for: `bed`, `alert`, `fail`, `success`, `drink`. These tags will display as icons instead of text. If you add them to your app's Assets.xcassets
+These tags will display as icons instead of text. If you add them to your app's Assets.xcassets
 
 To add your own custom tag icons:
-
-1. **Add to your app's Asset Catalog** (Recommended):
    - Open your app's `Assets.xcassets`
    - Add a new Image Set for each icon (e.g., "meeting", "personal")
-   - Add PNG or PDF images to the image sets
-   - Use the image set name as the tag name
+   - Add images to the image sets
+   - Use the **image set name as the tag name**
 
-2. **Using PNG/PDF files**:
-   - Add PNG or PDF files to your app bundle
-   - Name them to match your tag names (e.g., "meeting.png")
-   - The library will automatically find and use them
-
-The library searches for icons in this order:
-1. Main app bundle's Asset Catalog
-2. Framework bundle's Asset Catalog
-3. Framework's Assets/tags directory (PNG/PDF)
-
-Tags without matching icons will be displayed as text pills with the event color.
+Tags without matching icons will be displayed as text tags with the event color.
 
 ## How it works
 
