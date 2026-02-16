@@ -776,7 +776,7 @@ open class WeekView: UIView {
 // MARK: - WEEKVIEW DELEGATE -
 
 /// Protocol methods.
-@objc public protocol WeekViewDelegate: class {
+@objc public protocol WeekViewDelegate: AnyObject {
     func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
     func didTapEvent(in weekView: WeekView, withId eventId: String)
