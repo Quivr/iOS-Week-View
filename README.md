@@ -196,13 +196,20 @@ Below is a table of all customizable properties of the `WeekView`
 
 ### Event Tags
 
-Events support tags which are displayed at the bottom of event cells. Tags can be text labels or icons.
+Events support tags which are displayed at the bottom of event cells. Tags can be displayed in three different ways:
+1. **Icon images** from your app's Assets
+2. **Emojis** (any unicode emoji)
+3. **Text labels** with colored backgrounds
 
 #### Using Tags
 
-Add tags to events by passing a string array:
+Add tags to events by passing tag objects:
 
 ```swift
+let bedTag = EventTag(name: "BED", color: .blue)
+let emojiTag = EventTag(name: "🎉", color: .clear)
+let textTag = EventTag(name: "Important", color: .red)
+
 let event = EventData(
     id: "1",
     title: "Meeting",
@@ -211,21 +218,65 @@ let event = EventData(
     location: "Room 101",
     color: .blue,
     allDay: false,
-    tags: ["Work", "Important"]
+    tags: [bedTag, emojiTag, textTag]
 )
 ```
 
-#### Custom Tag Icons
+#### Tag Types
 
-These tags will display as icons instead of text if you add them to your app's Assets.xcassets
+**Icon Tags**
+- Place image files (PNG, SVG, PDF) in your app's `Assets.xcassets`
+- Create an Image Set folder with the tag name (e.g., `BED.imageset`)
+- Add images to the set and set them to **Universal** (not Unassigned)
+- Use the **exact folder name as the tag name** in code
 
-To add your own custom tag icons:
-   - Open your app's `Assets.xcassets`
-   - Add a new Image Set for each icon (e.g., "meeting", "personal")
-   - Add images to the image sets
-   - Use the **image set name as the tag name**
+The framework searches for icons in these locations:
+- `Assets.xcassets/tags/TAGNAME` 
+- `Assets.xcassets/Tags/TAGNAME`
 
-Tags without matching icons will be displayed as text tags with the event color.
+Example folder structure:
+```
+Assets.xcassets/
+├── Tags/
+│   ├── BED.imageset/
+│   │   ├── bed.svg
+│   │   └── Contents.json
+│   ├── BEER.imageset/
+│   │   ├── beer.svg
+│   │   └── Contents.json
+```
+
+**Emoji Tags**
+- Use any unicode emoji as the tag name
+- Emojis are automatically detected and displayed as-is
+- Emojis preserve their native colors and do not use the `color` parameter
+- The `color` parameter is **ignored** for emoji tags
+
+Example:
+```swift
+EventTag(name: "🎉", color: .clear)  // color parameter ignored
+EventTag(name: "⭐", color: .red)    // color parameter ignored
+```
+
+**Text Tags**
+- Any text that's not an emoji and doesn't have a matching icon image
+- Displays with a colored background
+- Use the `color` parameter to set the background color
+
+Example:
+```swift
+EventTag(name: "Important", color: .red)
+EventTag(name: "Work", color: .blue)
+```
+
+#### Implementation Details
+
+Tags are rendered in this order:
+1. Check if a matching icon image exists in Assets
+2. Check if the tag name is emoji-only
+3. Display as a text label with color background
+
+Icon images are displayed without text, while text and emoji tags may include additional styling based on the event color.
 
 ## How it works
 
