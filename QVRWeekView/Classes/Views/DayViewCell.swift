@@ -264,7 +264,13 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
             return
         }
 
-        let yTouch = sender.location(ofTouch: 0, in: self).y
+        let touchPoint = sender.location(ofTouch: 0, in: self)
+        if sender.state == .began, let eventData = eventData(at: touchPoint) {
+            self.delegate?.eventViewWasLongPressedIn(self, withEventData: eventData)
+            return
+        }
+
+        let yTouch = touchPoint.y
         let previewPos = self.previewPosition(forYCoordinate: yTouch)
 
         if sender.state == .began {
@@ -378,6 +384,15 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
         return CGPoint(x: self.frame.width / 2, y: yCoord)
     }
 
+    private func eventData(at point: CGPoint) -> EventData? {
+        for (id, frame) in eventFrames {
+            if frame.contains(point), let eventData = eventsData[id] {
+                return eventData
+            }
+        }
+        return nil
+    }
+
     private static func genUniqueId() -> Int {
         var id: Int!
         repeat {
@@ -394,6 +409,8 @@ protocol DayViewCellDelegate: class {
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int)
 
     func eventViewWasTappedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
+
+    func eventViewWasLongPressedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData)
 
 }
 

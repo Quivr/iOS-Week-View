@@ -119,6 +119,19 @@ struct LayoutDefaults {
     static let passedWeekendDayViewColor = UIColor(red: 228/255, green: 228/255, blue: 228/255, alpha: 1.0)
     // Color for today's view cell.
     static let todayViewColor = defaultDayViewColor
+    
+    // MARK: - TAG DEFAULTS -
+    
+    // Default tag height
+    static let tagHeight = CGFloat(18)
+    // Default tag spacing (horizontal gap between tags)
+    static let tagSpacing = CGFloat(4)
+    // Default tag corner radius
+    static let tagCornerRadius = CGFloat(9)
+    // Default tag text size
+    static let tagTextSize = CGFloat(10)
+    // Default tag vertical margin (distance from bottom of event)
+    static let tagVerticalMargin = CGFloat(4)
 }
 
 struct NibNames {

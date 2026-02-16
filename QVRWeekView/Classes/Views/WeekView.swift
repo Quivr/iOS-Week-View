@@ -361,6 +361,13 @@ open class WeekView: UIView {
     }
 
     /**
+     Method delegates event view long presses, and sends a callback with the event id up to the WeekViewDelegate.
+     */
+    func eventViewWasLongPressed(_ eventData: EventData) {
+        self.delegate?.didLongPressEvent?(in: self, withId: eventData.id)
+    }
+
+    /**
      Method delegates day view cell long presses, and sends a callback the pressed time up to the WeekViewDelegate.
      */
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, at hours: Int, and minutes: Int) {
@@ -773,6 +780,8 @@ open class WeekView: UIView {
     func didLongPressDayView(in weekView: WeekView, atDate date: Date)
 
     func didTapEvent(in weekView: WeekView, withId eventId: String)
+
+    @objc optional func didLongPressEvent(in weekView: WeekView, withId eventId: String)
 
     func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date)
 

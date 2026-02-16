@@ -194,6 +194,39 @@ Below is a table of all customizable properties of the `WeekView`
 | velocityOffsetMultiplier:`CGFloat`         | Sensitivity for horizontal scrolling. A higher number will multiply input velocity more and thus result in more cells being skipped when scrolling. | `0.75` |
 | horizontalScrolling:`HorizontalScrolling` | Used to determine horizontal scrolling behaviour. `.infinite` is infinite scrolling, `.finite(number, startDate)` is finite scrolling for a given number of days from the starting date. | `.infinite`
 
+### Event Tags
+
+Events support tags which are displayed at the bottom of event cells. Tags can be text labels or icons.
+
+#### Using Tags
+
+Add tags to events by passing a string array:
+
+```swift
+let event = EventData(
+    id: "1",
+    title: "Meeting",
+    startDate: startDate,
+    endDate: endDate,
+    location: "Room 101",
+    color: .blue,
+    allDay: false,
+    tags: ["Work", "Important"]
+)
+```
+
+#### Custom Tag Icons
+
+These tags will display as icons instead of text if you add them to your app's Assets.xcassets
+
+To add your own custom tag icons:
+   - Open your app's `Assets.xcassets`
+   - Add a new Image Set for each icon (e.g., "meeting", "personal")
+   - Add images to the image sets
+   - Use the **image set name as the tag name**
+
+Tags without matching icons will be displayed as text tags with the event color.
+
 ## How it works
 
 The main WeekView view is a subclass of UIView. The view layout is retrieved from the WeekView xib file. WeekView contains a top and side bar sub view. The side bar contains an HourSideBarView which displays the hours. WeekView also contains a DayScrollView (UIScrollView subclass) which controls vertical scrolling and also delegates and contains a DayCollectionView (UICollectionView subclass) which controls the horizontal scrolling. DayCollectionView cells are DayViewCells, whose view is generated programtically (due to inefficiencies caused by auto-layout).

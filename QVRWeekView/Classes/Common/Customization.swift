@@ -482,4 +482,66 @@ public extension WeekView {
             self.dayScrollView.horizontalScrolling = option
         }
     }
+
+    // MARK: - TAG CUSTOMIZATION -
+
+    /**
+     Height of tags in event cells.
+     */
+    @objc var dayViewTagHeight: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellLayout.tagHeight
+        }
+        set(height) {
+            self.dayScrollView.dayViewCellLayout.tagHeight = height
+        }
+    }
+
+    /**
+     Horizontal spacing between tags.
+     */
+    @objc var dayViewTagSpacing: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellLayout.tagSpacing
+        }
+        set(spacing) {
+            self.dayScrollView.dayViewCellLayout.tagSpacing = spacing
+        }
+    }
+
+    /**
+     Corner radius of tags.
+     */
+    @objc var dayViewTagCornerRadius: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellLayout.tagCornerRadius
+        }
+        set(radius) {
+            self.dayScrollView.dayViewCellLayout.tagCornerRadius = radius
+        }
+    }
+
+    /**
+     Font size of tag text.
+     */
+    @objc var dayViewTagTextSize: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellLayout.tagTextSize
+        }
+        set(size) {
+            self.dayScrollView.dayViewCellLayout.tagTextSize = size
+        }
+    }
+
+    /**
+     Vertical margin between tag and bottom of event.
+     */
+    @objc var dayViewTagVerticalMargin: CGFloat {
+        get {
+            return self.dayScrollView.dayViewCellLayout.tagVerticalMargin
+        }
+        set(margin) {
+            self.dayScrollView.dayViewCellLayout.tagVerticalMargin = margin
+        }
+    }
 }

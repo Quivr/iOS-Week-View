@@ -286,6 +286,10 @@ UICollectionViewDelegate, UICollectionViewDataSource, DayViewCellDelegate, Frame
         self.weekView?.eventViewWasTapped(eventData)
     }
 
+    func eventViewWasLongPressedIn(_ dayViewCell: DayViewCell, withEventData eventData: EventData) {
+        self.weekView?.eventViewWasLongPressed(eventData)
+    }
+
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int) {
         self.weekView?.dayViewCellWasLongPressed(dayViewCell, at: hours, and: minutes)
         for (_, dayViewCell) in dayViewCells {
