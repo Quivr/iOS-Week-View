@@ -404,7 +404,7 @@ class DayViewCell: UICollectionViewCell, CAAnimationDelegate {
 
 }
 
-protocol DayViewCellDelegate: class {
+protocol DayViewCellDelegate: AnyObject {
 
     func dayViewCellWasLongPressed(_ dayViewCell: DayViewCell, hours: Int, minutes: Int)
 

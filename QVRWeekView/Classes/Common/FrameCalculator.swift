@@ -264,7 +264,7 @@ class FrameCalculator {
 // MARK: - FrameCalculator Delegate -
 
 // Protocol contains FrameCalculator delegate functions.
-protocol FrameCalculatorDelegate: class {
+protocol FrameCalculatorDelegate: AnyObject {
     // Delegate function passes solution back to main thread
     func passSolution(fromCalculator calculator: FrameCalculator, solution: [String: CGRect]?)
 }
