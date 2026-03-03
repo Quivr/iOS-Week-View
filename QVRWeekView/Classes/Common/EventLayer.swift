@@ -79,10 +79,8 @@ class EventLayer: CALayer {
             let tagName = eventTag.name
             let tagColor = eventTag.color
             
-            let tagLower = tagName.lowercased()
-            
-            // Try to load icon for any tag (automatically detects from Images.xcassets/tags/)
-            let iconImage = loadIconImage(named: tagLower)
+            // Try to load icon for the tag from app's Images.xcassets
+            let iconImage = loadIconImage(named: tagName)
             
             // Check if tag is emoji-only
             let isEmojiOnly = isEmoji(tagName)
@@ -226,25 +224,13 @@ class EventLayer: CALayer {
     }
     
     private func loadIconImage(named: String) -> UIImage? {
-        // Try to load from main app bundle under tags namespace (Images.xcassets/tags/)
+        // Load tag image from app's main bundle (Images.xcassets) with "tags/" prefix (e.g., "tags/BED")
         if let image = UIImage(named: "tags/\(named)", in: Bundle.main, compatibleWith: nil) {
             return image
         }
         
-        // Try without namespace in main bundle
-        if let image = UIImage(named: named, in: Bundle.main, compatibleWith: nil) {
-            return image
-        }
-        
-        // Try from framework bundle under tags namespace
-        let bundle = Bundle(for: EventLayer.self)
-        
-        if let image = UIImage(named: "tags/\(named)", in: bundle, compatibleWith: nil) {
-            return image
-        }
-        
-        // Try without namespace in framework bundle
-        if let image = UIImage(named: named, in: bundle, compatibleWith: nil) {
+        // Try with "Tags/" prefix (e.g., "Tags/BED")
+        if let image = UIImage(named: "Tags/\(named)", in: Bundle.main, compatibleWith: nil) {
             return image
         }
         
