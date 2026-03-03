@@ -233,6 +233,28 @@ class EventLayer: CALayer {
         if let image = UIImage(named: "Tags/\(named)", in: Bundle.main, compatibleWith: nil) {
             return image
         }
+
+        // Try without namespace in main bundle
+        if let image = UIImage(named: named, in: Bundle.main, compatibleWith: nil) {
+            return image
+        }
+
+        // Try from framework bundle under tags namespace
+        let bundle = Bundle(for: EventLayer.self)
+
+        if let image = UIImage(named: "tags/\(named)", in: bundle, compatibleWith: nil) {
+            return image
+        }
+
+        // Try with "Tags/" prefix in framework bundle
+        if let image = UIImage(named: "Tags/\(named)", in: bundle, compatibleWith: nil) {
+            return image
+        }
+
+        // Try without namespace in framework bundle
+        if let image = UIImage(named: named, in: bundle, compatibleWith: nil) {
+            return image
+        }
         
         return nil
     }
