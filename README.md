@@ -271,7 +271,7 @@ EventTag(name: "Work", color: .blue)
 
 #### Implementation Details
 
-Tags are rendered in this order:
+Tags are rendered like this:
 1. Check if a matching icon image exists in Assets
 2. Check if the tag name is emoji-only
 3. Display as a text label with color background
