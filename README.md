@@ -230,14 +230,6 @@ let event = EventData(
 - Add images to the set and set them to **Universal** (not Unassigned)
 - Use the **exact folder name as the tag name** in code
 
-The framework searches for icons in this order:
-1. Main app bundle: `tags/TAGNAME`
-2. Main app bundle: `Tags/TAGNAME`
-3. Main app bundle: `TAGNAME`
-4. QVRWeekView bundle: `tags/TAGNAME`
-5. QVRWeekView bundle: `Tags/TAGNAME`
-6. QVRWeekView bundle: `TAGNAME`
-
 Example folder structure:
 ```
 Assets.xcassets/
@@ -276,7 +268,7 @@ EventTag(name: "Work", color: .blue)
 #### Implementation Details
 
 Tags are rendered like this:
-1. Check if a matching icon image exists using the lookup order above
+1. Check if a matching icon image exists in your app's `Assets.xcassets` using the exact tag name
 2. Check if the tag name is emoji-only
 3. Display as a text label with color background
 
